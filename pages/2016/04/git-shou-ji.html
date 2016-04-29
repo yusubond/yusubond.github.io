@@ -69,9 +69,9 @@ by <a class="url fn" href="/pages/2016/04/git-shou-ji.html">subond</a>
         </div>
 
         <div>
-          <h2>指令介绍</h2>
+          <h2>基础篇</h2>
+          <h3>指令介绍</h3>
           <pre>
-            git adfasdf asdfas d
 git config --global user.name "username"   	#配置仓库参数，作为一个标志
 git config --global user.email "useremail"	#配置仓库参数，作为一个标志
 git init                      #把当前目录变成git可管理的仓库
@@ -88,6 +88,31 @@ git push origin <分支名1>          #推送本地内容到远程仓库分支1
 git clone <仓库地址>               #克隆远程仓库到本地仓库
 git remote            #查看远程仓库信息
 git remote -v         #查看远程仓库详细信息
+          </pre>
+          <h3>版本回退</h3>
+          <p>git&nbsp;reset&nbsp;--hard&nbsp;版本号</p>
+          <pre>
+git reset --hard HEAD^    #回退至上一版本
+git reset --hard HEAD^^   #回退至上上版本
+git reset --hard HEAD~10  #回退至前10个版本
+git reset --hard <版本号>  #结合git&nbsp;reflog使用
+          </pre>
+          <h3>分支操作</h3>
+          <pre>
+git branch                #查看分支
+git branch <分支名1>       #切换至分支名1
+git checkout -b <分支名1>  #创建并切换至分支名1
+git merge <分支名1>        #合并分支名1至当前分支
+          </pre>
+          <h3>提交文件步骤</h3>
+<p>第一步：<code>git add 文件</code>,提交文件到暂存区；
+  <br/>第二步：<code>git commit -m "提交信息"</code>，提交文件到仓库（本地仓库），即repository;
+  <br/>接下来，<b>提交文件到远程仓库</b>
+  <br/>第三步：<code>git push origin master</code>，提交文件到远程仓库master分支；
+  <b>注意</b>：第一次推送至master分支，需要使用<code>-u</code>参数，即<code>git push -u origin master</code>。
+</p>
+          <pre>
+
           </pre>
 
 
