@@ -109,7 +109,7 @@ git merge <分支名1>        #合并分支名1至当前分支</pre>
 <p>一般而言，主分支master分支是非常稳定的版本，可以用来直接发布，一般情况下不允许直接在上面进行修改。一般都是新建一个dev分支，在dev分支上进行修改操作，工作完成后可合并到主分支master上。其流程一般如下：
 <br/>1.创建一个dev分支；<br/>2.修改文件内容；<br/>3.添加到暂存区；<br/>4.切换至主分支(msater)；
 <br/>5.合并dev分支；</br>6.查看历史记录。</p>
-<p><b>注意<b/>:合并分支时，git一般使用“Fast Forward”模式，在这种模式下，删除分支后，会丢掉分支信息。为了保证可以随时查看分支信息，合并时可使用命令git&nbsp;merge&nbsp;-no-ff&nbsp;-m&nbsp;"注释信息"&nbsp;dev</p>
+<p><b>注意</b>:合并分支时，git一般使用“Fast Forward”模式，在这种模式下，删除分支后，会丢掉分支信息。为了保证可以随时查看分支信息，合并时可使用命令git&nbsp;merge&nbsp;-no-ff&nbsp;-m&nbsp;"注释信息"&nbsp;dev</p>
     <h3>stash功能介绍</h3>
       <ul>
         <li><p>使用场景</p>
@@ -129,6 +129,7 @@ git stash clear           #清空git栈</pre></P>
       </ul>
         </div>
 
+        <hr>
         <hr>
 
         <h2>Comments</h2>
