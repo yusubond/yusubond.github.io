@@ -57,18 +57,17 @@
 
 
     <div class='article'>
-        <div class="content-title">
-          <a href="/pages/2016/04/pelican-github-chuang-jian-bo-ke.html"><h1>利用Pelican+Github&nbsp;pages搭建个人博客</h1></a>
-2016-04-26
+      <a href="/pages/2016/04/pelican-github-chuang-jian-bo-ke2.html"><h1>利用Pelican+Github&nbsp;pages搭建个人博客</h1></a>
+        <div class="content-title">2016-04-26
 
-by <a class="url fn" href="/author/alexis-metaireau.html">subond</a>
-
+by <a class="url fn" href="/author/subond.html">subond</a>
 
 
 
-      </div>
+
+       </div>
 <!--我的第一篇博客开始-->
-      <div>
+      <div class="summary">
 <p>说明：本教程使用的系统平台为ubuntu系统14.04。
 </p>
 <h3>Github pages</h3>
@@ -92,66 +91,13 @@ $ sudo pip install markdown
 $ mkdir blog
 $ cd blog
 $ pelican-quickstart</pre>
-<p>执行pelican-quicstart命令后，会提示博客的配置选项，根据提示操作即可，除必填项之外，其他选择默认即可。如果有需要
-可以在之后的<code>pelicanconf.py</code>文件进行修改。完成之后，会出现Pelican框架，如下</p>
-<pre>bolg
-|__content             #存放输入的Markdown文件
-|__output              #存放最终生成的静态博客网页文件
-|__develop_server.sh   #本地测试服务器文件
-|__Makefile            #管理博客的Makefile
-|__pelicanconf.py      #博客配置文件
-|__publishconf.py      #发布文件，可删除
-</pre>
-</li>
-</ul>
-<h3>撰写博客</h3>
-<p>完成博客主题搭建后，使用Markdown语法书写博客，完成后保存在<code>content</code>目录下。
-</p>
-<pre>
-Title: My super title
-Date: 2010-12-03 10:20
-Category: Python
-Tags: pelican, publishing
-Slug: my-super-post
-Author: Alexis Metaireau
-Summary: Short version for index and feeds
-This is the content of my super blog post.
-</pre>
-<p>完成之后，在<code>blog</code>目录下，执行如下命令：
-</p>
-<pre>
-$ make html
-$ ./develop_server.sh
-</pre>
-<p>之后，在浏览器中输入<a href="http://localhost:8000">http://localhost:8000</a> 即可看到博客效果。
-</p>
-<h3>发布博客</h3>
-<p>之前我们已经在Github上创建了仓库，现在我们就将本地文件搬到远程仓库中，进入<code>output</code>目录下，具体指令如下：
-</p>
-<pre>
-$ git init
-$ git add .
-$ git remote add origin https://github.com/username/username.github.io
-$ git pull origin master
-$ git commit -m "First update"
-$ git push origin master
-</pre>
-<p>完成博客发布后，访问<a href="http://username.github.io">http://username.github.io</a> 即可。
-</p>
-<h3>附：Git简易教程</h3>
-<pre>
-$ git init                   #把当前目录变成git可管理的repository
-$ git add &lt;files&gt;            #添加文件至缓存区
-$ git commit -m "信息说明"   #提交文件
-$ git remote add origin &lt;server&gt;   #添加远程服务器
-$ git remote set-url origin &lt;server&gt;   #修改远程服务器地址
-$ git push origin master     #推送到远程服务器
-$ git status    #查看当前各文件状态
-</pre>
+
+
+        <a class="btn btn-info xsmall" href="./pages/2016/04/pelican-github-chuang-jian-bo-ke2.html">read more</a>
 
         </div>
 
-        <div><p>This is the content of my super tech blog post.</p></div>
+
         <hr />
     </div>
 
@@ -195,6 +141,7 @@ $ git status    #查看当前各文件状态
 
                 <li><a href="/category/life.html">Life</a></li>
                 <li><a href="/category/tech.html">Tech</a></li>
+                <li><a href="/category/note.html">Note</a></li>
 
             </ul>
             </div>

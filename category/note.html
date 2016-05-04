@@ -57,38 +57,33 @@
 
 <!--缩写部分开始-->
     <div class='article'>
-        <a href="/pages/2016/04/pelican-github-chuang-jian-bo-ke2.html"><h1>利用Pelican+Github&nbsp;pages搭建个人博客</h1></a>
+        <a href="./pages/2016/04/git-xue-xi-shou-ji.html"><h1>Git学习手记</h1></a>
           <div class="well small">2016-04-26
 
 by <a class="url fn" href="/author/subond.html">subond</a>
           </div>
       <div class="summary">
-<p>说明：本教程使用的系统平台为ubuntu系统14.04。
-</p>
-<h3>Github pages</h3>
-<p>注册Github，并创建一个名为<i>username</i>.github.io的版本库。注意<i>username</i>为自己的用户名。
-</p>
-<h3>配置本地环境</h3>
-<ul>
-<li><p>安装Pelican和Markdown</p>
-<p>Pelican是一套开源的使用Python编写的博客静态生成，可以添加文章和创建页面，可使用Markdown，reStructuredText和AsiiDoc的格式来书写，同时使用Disqus评论系统，支持
-RSS和Atom输出，插件，主题，代码高亮等功能。</p>
-<p>安装Pelican有很多方法，一般采用python的包管理器pip进行安装。</p>
+<h2>一、基础篇</h2>
+<h3>1 指令介绍</h3>
 <pre>
-$ sudo apt-get install python-pip
-$ sudo pip install pelican
-$ sudo pip install markdown
-</pre>
-</li>
-<li><p>创建博客</p>
-<p>创建博客目录，然后使用快速生成，具体如下：</p>
-<pre>
-$ mkdir blog
-$ cd blog
-$ pelican-quickstart</pre>
+git config --global user.name "username"   	#配置仓库参数，作为一个标志
+git config --global user.email "useremail"	#配置仓库参数，作为一个标志
+git init                      #把当前目录变成git可管理的仓库
+git add <i>files</i>          #添加文件到暂存区
+git diff <i>file</i>          #查看文件的修改内容
+git commit -m "提交说明信息”    #提交文件到仓库
+git status                    #获取当前仓库中文档的状态
+git log                       #查看历史记录
+git log -pretty=oneline       #单行显示历史信息
+git reflog                    #显示版本号
+git checkout -- file          #取出文件
+git remote add origin <仓库地址>    #添加远程仓库地址
+git push origin <分支名1>          #推送本地内容到远程仓库分支1
+git clone <仓库地址>               #克隆远程仓库到本地仓库
+git remote            #查看远程仓库信息
+git remote -v         #查看远程仓库详细信息</pre>
 
-
-        <a class="btn btn-info xsmall" href="./pages/2016/04/pelican-github-chuang-jian-bo-ke2.html">read more</a>
+        <a class="btn btn-info xsmall" href="./pages/2016/04/git-xue-xi-shou-ji.html">read more</a>
       </div>
         <hr />
     </div>
