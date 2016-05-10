@@ -70,13 +70,13 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           <p><center><img alt="LTE系统功能实体划分、协议架构示意图" src="/images/lte-xitong-gongneng-xieyi.jpg"></center></p>
           <p><center>图1-2&nbsp;LTE系统功能实体划分、协议架构示意图</center></p>
           <ol type="1">
-            <li><b>接入网</b></li>
+            <li><h3>接入网</h3></li>
               <p>LTE接入网E-UTRAN仅由eNodeB组成，网络架构中节点数量减少，网络架构更加趋于扁平化，这种扁平化的网络架构可以有效地降低呼叫时延以及用户数据传输时延。E-UTRAN系统提供用户平面和控制平面的协议，用户平面用户平面包括分组数据汇聚协议（PDCP,Packet Data Convergence Protocol）层、
                 无线链路层控制（RLC,Radio Link Control）层、媒体接入层（MAC,Medium Access Control）层；控制平面包括无线资源控制（RRC,Radio Resource Control）层。eNodeB之间通过X2接口进行连接，通过S1接口与EPC连接，具体来说就是，通过S1-MME接口连接到MME，通过S1-U接口连接到S-GW。eNodeB与UE间的协议为接入层（AS）协议。</p>
               <p>eNodeB具有如下功能：</p>
               <p>（1）无线资源管理相关的功能，如无线资源承载控制、接纳控制、连接移动性管理、上/下行动态资源分配/调度等；<br/>（2）IP头压缩与用户数据流的加密；<br/>（3）UE附着时的MME选择。由于eNodeB可以与
                 多个MME/S-GW之间存在S1接口相连，因此，UE初始接入到网络时，需要选择一个MME进行附着;<br/>（4）寻呼信息的调度和传输；<br/>（5）广播信息的调度和传输；<br/>（6）用于移动和调度的测量和测量报告的配置。</p>
-            <li><b>核心网</b></li>
+            <li><h3>核心网</h3></li>
               <p>核心网负责对用户终端的全面控制和有关承载的建立。EPC的主要逻辑节点有：</p>
               <ul>
                 <li>分组数据网关（P-GW,Packet Data Network Gateway）</li>
@@ -102,7 +102,16 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               MME完成对UE的鉴权即安全功能。</p>
               <p><b>(5)&nbsp;PCRF：策略及计费规则功能</b><br/>PCRF网元是SAE架构中提供集中策略和计费控制的网元。PCRF主要完成策略控制的决定功能及基于不同IP流的计费控制功能。因此，PCRF要结合PCEE（Policy and Charging Enforcement Function）网元
               检测后上报的不同业务类型来进行QoS及计费策略方面的决策，并通过Ｇx接口将策略下发给PCEF网元去执行。</p>
-          <li><b>主要业务接口</b><li>
+          <li><h4>主要业务接口</h4><li>
+            <p>S1接口是MME/S-G网关和eNodeB之间的接口。S1接口又可以分为两个接口，一个用于用户平面S1-U，一个用于控制平面S1-MME。</p>
+            <ul>
+              <li>用户平面</li>
+              <p>S1-U接口用于提供eNodeB与S-GW网元之间用户数据传输功能，其协议栈如图3-1所示。S1-U的传输网络层基于IP传输，UDP/IP协议之上采用GTP-U（GPRS Tunnelling Protocol for User Plane：GPRS用户平面隧道协议）来传输S-GW与eNodeB之间的用户平面PDU。</p>
+              <p><center><img alt="S1-U接口协议栈" src="/images/s1-u-xie-yi-zhan.jpg"></center></p>
+              <p><center>图3-1&nbsp;S1-U接口协议栈</center></p>
+              <li>控制平面</li>
+              <p>S1-MME也是基于IP传输的，不同的是控制平面在IP层的上面采用SCTP（Stream Control Transmission Protocol：流控制传输协议），为无线网络层信令消息提供可靠的传输，其协议栈如图3-2所示。</p>
+            </ul>
         </ol>
 
 
