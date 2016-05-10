@@ -71,7 +71,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           <p><center>图1-2&nbsp;LTE系统功能实体划分、协议架构示意图</center></p>
           <ol type="1">
             <li><b>接入网</b></li>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;LTE接入网E-UTRAN仅由eNodeB组成，网络架构中节点数量减少，网络架构更加趋于扁平化，这种扁平化的网络架构可以有效地降低呼叫时延以及用户数据传输时延。E-UTRAN系统提供用户平面和控制平面的协议，用户平面用户平面包括分组数据汇聚协议（PDCP,Packet Data Convergence Protocol）层、
+              <p>LTE接入网E-UTRAN仅由eNodeB组成，网络架构中节点数量减少，网络架构更加趋于扁平化，这种扁平化的网络架构可以有效地降低呼叫时延以及用户数据传输时延。E-UTRAN系统提供用户平面和控制平面的协议，用户平面用户平面包括分组数据汇聚协议（PDCP,Packet Data Convergence Protocol）层、
                 无线链路层控制（RLC,Radio Link Control）层、媒体接入层（MAC,Medium Access Control）层；控制平面包括无线资源控制（RRC,Radio Resource Control）层。eNodeB之间通过X2接口进行连接，通过S1接口与EPC连接，具体来说就是，通过S1-MME接口连接到MME，通过S1-U接口连接到S-GW。eNodeB与UE间的协议为接入层（AS）协议。</p>
               <p>eNodeB具有如下功能：</p>
               <p>（1）无线资源管理相关的功能，如无线资源承载控制、接纳控制、连接移动性管理、上/下行动态资源分配/调度等；<br/>（2）IP头压缩与用户数据流的加密；<br/>（3）UE附着时的MME选择。由于eNodeB可以与
@@ -85,7 +85,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                 <li>归属签约用户服务器（HSS,Home Subscriber Server）</li>
                 <li>策略及计费规则功能（RCPF,Policy and Charging Rules Function）</li>
               </ul>
-              <p>&nbsp;&nbsp;&nbsp;&nbsp;EPC逻辑主要节点的功能，下面详细介绍。</p>
+              <p>EPC逻辑主要节点的功能，下面详细介绍。</p>
               <p><b>(1)&nbsp;P-GW：分组数据网关</b><br/>P-GW提供与外部分组数据网络的连接，是主要的移动性处理节点。P-GW负责<b>用户IP地址分配</b>和<b>QoS保证</b>，并根据PCRF规则进行基于流量的计费。一个UE可能和多个P-GW相连
               ，P-GW同时负责UE IP地址的分配。P-GW为保证比特率承载提供QoS保证。另外，P-GW可以通过一系列不同的接口，成为其他3GPP网络或非3GPP网络。</p>
               <p><b>(2)&nbsp;S-GW：服务网关</b><br/>S-GW通过S1-U接口来实现用户数据包的路由和转发。实现的功能主要有<b>数据通道、IP头压缩处理、用户数据流加密、针对移动性的用户面的切换、寻呼时用户面数据包的终止</b>。<u>当用户在eNodeB之间移动时，S-GW作为数据承载的本地移动性管理实体。</u>当用户处于空闲状态时，
@@ -93,7 +93,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               <p><b>(3)&nbsp;MME：移动性管理实体</b><br/>MME是处理UE和核心网络信令交互的控制节点。在UE和核心网络间所执行的协议栈成为非接入层协议（NAS）。MME具有如下功能：</p>
               <ul>
                 <li>寻呼信息分发。MME负责将寻呼信息按照一定的原则分发到相关的eNodeB。</li>
-                <li>安全控制</li>
+                <li>安全控制。</li>
                 <li>空闲状态的移动性管理。</li>
                 <li>SAE（系统架构演进）承载控制。</li>
                 <li>非接入层信令的加密和完整性保护。</li>
@@ -102,7 +102,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               MME完成对UE的鉴权即安全功能。</p>
               <p><b>(5)&nbsp;PCRF：策略及计费规则功能</b><br/>PCRF网元是SAE架构中提供集中策略和计费控制的网元。PCRF主要完成策略控制的决定功能及基于不同IP流的计费控制功能。因此，PCRF要结合PCEE（Policy and Charging Enforcement Function）网元
               检测后上报的不同业务类型来进行QoS及计费策略方面的决策，并通过Ｇx接口将策略下发给PCEF网元去执行。</p>
-          <p></p>
+          <li><b>主要业务接口</b><li>
         </ol>
 
 
