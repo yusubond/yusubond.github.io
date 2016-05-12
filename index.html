@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="./pages/2016/04/git-xue-xi-shou-ji.html"><h1>Git学习手记</h1></a>
-2016-04-29
+            <a href="./pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html"><h1>LTE系统网络架构</h1></a>
+2016-05-10
 
 by <a class="url fn" href="./author/subond.html">subond</a>
 
@@ -70,78 +70,103 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         </div>
 <!--我的第一篇博客开始-->
         <div>
-          <h2>一、基础篇</h2>
-              <h3>1 指令介绍</h3>
-              <pre>
-  git config --global user.name "username"   	#配置仓库参数，作为一个标志
-  git config --global user.email "useremail"	#配置仓库参数，作为一个标志
-  git init                      #把当前目录变成git可管理的仓库
-  git add <i>files</i>          #添加文件到暂存区
-  git diff <i>file</i>          #查看文件的修改内容
-  git commit -m "提交说明信息”    #提交文件到仓库
-  git status                    #获取当前仓库中文档的状态
-  git log                       #查看历史记录
-  git log -pretty=oneline       #单行显示历史信息
-  git reflog                    #显示版本号
-  git checkout -- file          #取出文件
-  git remote add origin <仓库地址>    #添加远程仓库地址
-  git push origin <分支名1>          #推送本地内容到远程仓库分支1
-  git pull origin <远程主机名> <远程分支名>:<本地分支名>
-                                    #取回远程主机某个分支，并与本地指定分支合并
-  git clone <仓库地址>               #克隆远程仓库到本地仓库
-  git remote            #查看远程仓库信息
-  git remote -v         #查看远程仓库详细信息</pre>
-      <h3>2 版本回退</h3>
-      <p>git&nbsp;reset&nbsp;--hard&nbsp;版本号</p>
-      <pre>
-  git reset --hard HEAD^    #回退至上一版本
-  git reset --hard HEAD^^   #回退至上上版本
-  git reset --hard HEAD~10  #回退至前10个版本
-  git reset --hard <版本号>  #结合git&nbsp;reflog使用</pre>
-      <h3>3 分支操作</h3>
-      <pre>
-  git branch                #查看分支
-  git branch <分支名1>       #切换至分支名1
-  git checkout -b <分支名1>  #创建并切换至分支名1
-  git merge <分支名1>        #合并分支名1至当前分支</pre>
-      <h3>4 提交文件步骤</h3>
-  <p>第一步：<code>git add 文件</code>,提交文件到暂存区；
-  <br/>第二步：<code>git commit -m "提交信息"</code>，提交文件到仓库（本地仓库），即repository；
-  <br/>接下来，<b>提交文件到远程仓库</b>
-  <br/>第三步：<code>git push origin master</code>，提交文件到远程仓库master分支；
-  <b>注意</b>：第一次推送至master分支，需要使用<code>-u</code>参数，即<code>git push -u origin master</code>。</p>
-  <p><center><img alt="git" src="../../../images/gitcaozuo.jpg" /></center></p>
-  <p><center>图1&nbsp;Git基本操作示意图</center></p>
-  <p>几个名词解释：
-  <br/>Workspace:工作区<br/>Index:暂存区<br/>Repository:仓库区（本地仓库）<br/>Remote:远程仓库</p>
-     <h2>二、进阶篇</h2>
-     <h3>5 分支管理</h3>
-  <p>一般而言，主分支master分支是非常稳定的版本，可以用来直接发布，一般情况下不允许直接在上面进行修改。一般都是新建一个dev分支，在dev分支上进行修改操作，工作完成后可合并到主分支master上。其流程一般如下：
-  <br/>1.创建一个dev分支；<br/>2.修改文件内容；<br/>3.添加到暂存区；<br/>4.切换至主分支(msater)；
-  <br/>5.合并dev分支；</br>6.查看历史记录。</p>
-  <p><b>注意</b>:合并分支时，git一般使用“Fast Forward”模式，在这种模式下，删除分支后，会丢掉分支信息。为了保证可以随时查看分支信息，合并时可使用命令git&nbsp;merge&nbsp;-no-ff&nbsp;-m&nbsp;"注释信息"&nbsp;dev</p>
-      <h3>6 stash功能介绍</h3>
-        <ul>
-          <li><p>使用场景</p>
-              <p>工作过程中，我们一般在自己的分支上修改和调试代码，如果临时接到通知需要修改某个BUG问题，而且自己的工作还需要一段时间才能完成，
-              而修复BUG问题可能只需要一点时间，此时我们就需要使stash功能。”git&nbsp;stash“通俗地讲就是把当前的工作现场”隐藏起来“，待现场回复后可继续
-              工作。具体来说就是先使用’git&nbsp;stash'将当前未提交到本地（或服务器）的代码推入git的栈中，这时我们的工作区和上一次提交的内容是一样，所以可以放心的修复BUG问题，等到
-              修复完成并提交到服务器之后，再使用'git&nbsp;stash&nbsp;apply'将以前的工作应用回来。</p>
-            </li>
-            <li><p>指令介绍</p>
-  <p><pre>
-  git stash       #备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中
-  git pop         #从git栈中读取最近一次保存的内容，恢复工作区的相关内容
-  git stash list  #显示git栈中所有备份，可以利用列表选择从哪恢复内容
-  git stash apply <版本号>   #将制定版本号的内容恢复至当前工作区，配合git&nbsp;stash&nbsp;list使用
-  git stash clear           #清空git栈</pre></P>
-             </li>
-        </ul>
+          <h2>网络架构概述</h2>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。</p>
+          <p><center><img alt="LTE系统架构示意图" src="/images/lte-xitong.jpg"></center></p>
+          <p><center>图1-1&nbsp;LTE系统网络架构示意图</center></p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;与3G系统相比，LTE系统重新定义了系统网络架构，核心网和接入网之间的功能划分也随之有所变化，针对LTE系统架构，网络功能划分如图1-2所示。</p>
+          <p><center><img alt="LTE系统功能实体划分、协议架构示意图" src="/images/lte-xitong-gongneng-xieyi.jpg"></center></p>
+          <p><center>图1-2&nbsp;LTE系统功能实体划分、协议架构示意图</center></p>
+          <ol type="1">
+            <li><h3>接入网</h3></li>
+              <p>LTE接入网E-UTRAN仅由eNodeB组成，网络架构中节点数量减少，网络架构更加趋于扁平化，这种扁平化的网络架构可以有效地降低呼叫时延以及用户数据传输时延。E-UTRAN系统提供用户平面和控制平面的协议，用户平面用户平面包括分组数据汇聚协议（PDCP,Packet Data Convergence Protocol）层、
+                无线链路层控制（RLC,Radio Link Control）层、媒体接入层（MAC,Medium Access Control）层；控制平面包括无线资源控制（RRC,Radio Resource Control）层。eNodeB之间通过X2接口进行连接，通过S1接口与EPC连接，具体来说就是，通过S1-MME接口连接到MME，通过S1-U接口连接到S-GW。eNodeB与UE间的协议为接入层（AS）协议。</p>
+              <p>eNodeB具有如下功能：</p>
+              <p>（1）无线资源管理相关的功能，如无线资源承载控制、接纳控制、连接移动性管理、上/下行动态资源分配/调度等；<br/>（2）IP头压缩与用户数据流的加密；<br/>（3）UE附着时的MME选择。由于eNodeB可以与
+                多个MME/S-GW之间存在S1接口相连，因此，UE初始接入到网络时，需要选择一个MME进行附着;<br/>（4）寻呼信息的调度和传输；<br/>（5）广播信息的调度和传输；<br/>（6）用于移动和调度的测量和测量报告的配置。</p>
+            <li><h3>核心网</h3></li>
+              <p>核心网负责对用户终端的全面控制和有关承载的建立。EPC的主要逻辑节点有：</p>
+              <ul>
+                <li>分组数据网关（P-GW,Packet Data Network Gateway）</li>
+                <li>服务网关（S-GW,Serving Gateway）</li>
+                <li>移动性管理实体（MME, Mobility Management Entity）</li>
+                <li>归属签约用户服务器（HSS,Home Subscriber Server）</li>
+                <li>策略及计费规则功能（RCPF,Policy and Charging Rules Function）</li>
+              </ul>
+              <p>EPC逻辑主要节点的功能，下面详细介绍。</p>
+              <p><b>(1)&nbsp;P-GW：分组数据网关</b><br/>P-GW提供与外部分组数据网络的连接，是主要的移动性处理节点。P-GW负责<b>用户IP地址分配</b>和<b>QoS保证</b>，并根据PCRF规则进行基于流量的计费。一个UE可能和多个P-GW相连
+              ，P-GW同时负责UE IP地址的分配。P-GW为保证比特率承载提供QoS保证。另外，P-GW可以通过一系列不同的接口，成为其他3GPP网络或非3GPP网络。</p>
+              <p><b>(2)&nbsp;S-GW：服务网关</b><br/>S-GW通过S1-U接口来实现用户数据包的路由和转发。实现的功能主要有<b>数据通道、IP头压缩处理、用户数据流加密、针对移动性的用户面的切换、寻呼时用户面数据包的终止</b>。<u>当用户在eNodeB之间移动时，S-GW作为数据承载的本地移动性管理实体。</u>当用户处于空闲状态时，
+              S-GW将保留承载信息并临时把下行数据存储在缓存区里，以便当MME开始寻呼UE时重新建立承载。同时，在与其他3GPP技术如GPRS和UMTS等交互工作时，它可以作为“<font color="#FF0000">移动性管理锚点</font>”。</p>
+              <p><b>(3)&nbsp;MME：移动性管理实体</b><br/>MME是处理UE和核心网络信令交互的控制节点。在UE和核心网络间所执行的协议栈成为非接入层协议（NAS）。MME具有如下功能：</p>
+              <ul>
+                <li>寻呼信息分发。MME负责将寻呼信息按照一定的原则分发到相关的eNodeB。</li>
+                <li>安全控制。</li>
+                <li>空闲状态的移动性管理。</li>
+                <li>SAE（系统架构演进）承载控制。</li>
+                <li>非接入层信令的加密和完整性保护。</li>
+              </ul>
+              <p><b>(4)&nbsp;HSS：归属签约用户服务器</b><br/>HSS作为用户的集中签约管理数据库，存放了用户的EPS网络签约信息，并完成对UE的位置登记管理，以及结合AUC（鉴权中心）网元完成用户鉴权参数管理，并通过S6a接口下发给
+              MME完成对UE的鉴权即安全功能。</p>
+              <p><b>(5)&nbsp;PCRF：策略及计费规则功能</b><br/>PCRF网元是SAE架构中提供集中策略和计费控制的网元。PCRF主要完成策略控制的决定功能及基于不同IP流的计费控制功能。因此，PCRF要结合PCEE（Policy and Charging Enforcement Function）网元
+              检测后上报的不同业务类型来进行QoS及计费策略方面的决策，并通过Ｇx接口将策略下发给PCEF网元去执行。</p>
+          <li><h3>主要业务接口</h3></li>
+            <h4>S1接口</h4>
+            <p>S1接口是MME/S-G网关和eNodeB之间的接口。S1接口又可以分为两个接口，一个用于用户平面S1-U，一个用于控制平面S1-MME。</p>
+            <ul>
+              <li>用户平面</li>
+              <p>S1-U接口用于提供eNodeB与S-GW网元之间用户数据传输功能，其协议栈如图3-1所示。S1-U的传输网络层基于IP传输，UDP/IP协议之上采用GTP-U（GPRS Tunnelling Protocol for User Plane：GPRS用户平面隧道协议）来传输S-GW与eNodeB之间的用户平面PDU。</p>
+              <p><center><img alt="S1-U接口协议栈" src="/images/s1-u-xie-yi-zhan.jpg"></center></p>
+              <p><center>图3-1&nbsp;S1-U接口协议栈</center></p>
+              <li>控制平面</li>
+              <p>S1-MME也是基于IP传输的，不同的是控制平面在IP层的上面采用SCTP（Stream Control Transmission Protocol：流控制传输协议），为无线网络层信令消息提供可靠的传输，其协议栈如图3-2所示。</p>
+              <p><center><img alt="S1-MME接口协议栈" src="/images/s1-mme-xie-yi-zhan.jpg"></center></p>
+              <p><center>图3-2&nbsp;S1-MME接口协议栈</center></p>
+            </ul>
+            <h3>X2接口</h3>
+            <p>X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。</p>
+            <ul>
+              <li>用户平面&nbsp;X2-U</li>
+              <p>X2用户平面接口X2-U提供eNodeB之间的用户数据传输功能，其协议栈如图3-3所示。X2-U的传送网络层基于IP传输，UDP/IP协议之上采用GTP-U来传输eNodeB之间的用户面PDU。<br/></p>
+              <li>控制平面</li>
+            </ul>
+          </ol>
 
         </div>
 <!--我的第一篇博客结束-->
 <!--添加水平横线-->
         <hr /><hr/>
+    </div>
+<!--缩写部分开始-->
+    <div>
+      <a href="./pages/2016/04/git-xue-xi-shou-ji.html"><h2>Git学习手记</h2></a>
+      <div class="well small">2016-04-29
+by <a class="url fn" href="./author/subond.html">subond</a>
+      </div>
+      <div class="sunmary">
+        git config --global user.name "username"   	#配置仓库参数，作为一个标志
+        git config --global user.email "useremail"	#配置仓库参数，作为一个标志
+        git init                      #把当前目录变成git可管理的仓库
+        git add <i>files</i>          #添加文件到暂存区
+        git diff <i>file</i>          #查看文件的修改内容
+        git commit -m "提交说明信息”    #提交文件到仓库
+        git status                    #获取当前仓库中文档的状态
+        git log                       #查看历史记录
+        git log -pretty=oneline       #单行显示历史信息
+        git reflog                    #显示版本号
+        git checkout -- file          #取出文件
+        git remote add origin <仓库地址>    #添加远程仓库地址
+        git push origin <分支名1>          #推送本地内容到远程仓库分支1
+        git pull origin <远程主机名> <远程分支名>:<本地分支名>
+                                          #取回远程主机某个分支，并与本地指定分支合并
+        git clone <仓库地址>               #克隆远程仓库到本地仓库
+        git remote            #查看远程仓库信息
+        git remote -v         #查看远程仓库详细信息</pre>
+        <h3>2 版本回退</h3>
+        <p>git&nbsp;reset&nbsp;--hard&nbsp;版本号</p>
+        <p>...</p>
+        <a class="btn btn-info xsmall" href="./pages/2016/04/git-xue-xi-shou-ji.html">read more</a>
+      </div>
     </div>
 <!--缩写部分开始-->
     <div>
