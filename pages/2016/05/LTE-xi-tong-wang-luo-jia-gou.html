@@ -102,7 +102,8 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               MME完成对UE的鉴权即安全功能。</p>
               <p><b>(5)&nbsp;PCRF：策略及计费规则功能</b><br/>PCRF网元是SAE架构中提供集中策略和计费控制的网元。PCRF主要完成策略控制的决定功能及基于不同IP流的计费控制功能。因此，PCRF要结合PCEE（Policy and Charging Enforcement Function）网元
               检测后上报的不同业务类型来进行QoS及计费策略方面的决策，并通过Ｇx接口将策略下发给PCEF网元去执行。</p>
-          <li><h4>主要业务接口</h4></li>
+          <li><h3>主要业务接口</h3></li>
+            <h4>S1接口</h4>
             <p>S1接口是MME/S-G网关和eNodeB之间的接口。S1接口又可以分为两个接口，一个用于用户平面S1-U，一个用于控制平面S1-MME。</p>
             <ul>
               <li>用户平面</li>
@@ -111,6 +112,15 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               <p><center>图3-1&nbsp;S1-U接口协议栈</center></p>
               <li>控制平面</li>
               <p>S1-MME也是基于IP传输的，不同的是控制平面在IP层的上面采用SCTP（Stream Control Transmission Protocol：流控制传输协议），为无线网络层信令消息提供可靠的传输，其协议栈如图3-2所示。</p>
+              <p><center><img alt="S1-MME接口协议栈" src="/images/s1-mme-xie-yi-zhan.jpg"></center></p>
+              <p><center>图3-2&nbsp;S1-MME接口协议栈</center></p>
+            </ul>
+            <h4>X2接口</h4>
+            <p>X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。</p>
+            <ul>
+              <li>用户平面&nbsp;X2-U</li>
+              <p>X2用户平面接口X2-U提供eNodeB之间的用户数据传输功能，其协议栈如图3-3所示。X2-U的传送网络层基于IP传输，UDP/IP协议之上采用GTP-U来传输eNodeB之间的用户面PDU。<br/></p>
+              <li>控制平面</li>
             </ul>
         </ol>
 
@@ -198,7 +208,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
     </div>     </div>
 <footer>
 <br />
-<p><a href="">Milestone</a> &copy; Yu Bangchao 2016</p>
+<p><a href=".">Milestone</a> &copy; Yu Bangchao 2016</p>
 </footer>
 
 </div> <!-- /container -->
