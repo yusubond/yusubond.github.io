@@ -78,7 +78,20 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                 <li><b>type</b>:指定socket类型</li>
                 <p>常见的socket类型有SOCK_STREAM,SOCK_DGRAM,SOCK_RAW,SOCK_PACKET,SOCK_SEQPACKET等等。</p>
                 <li><b>protocol</b>:指定通信协议</li>
-                <p>常见的通信协议有IPPROTO_TCP,IPPROTO_UDP,IPPROTO_SCTP,IPPROTO_TIPC等等
+                <p>常见的通信协议有IPPROTO_TCP,IPPROTO_UDP,IPPROTO_SCTP,IPPROTO_TIPC等等</p>
+              </ul>
+              <p><b>注意：</b>type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
+              <li>bind()函数</li>
+              <pre>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)</pre>
+              <p>bind()函数负责把特定的地址赋给socket描述符，即sockfd，</p>
+              <ul>
+                <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。</li>
+                <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
+                <pre>struct sockaddr_in{
+                  sa_family_t sin_family;
+                  in_port_t sin_port;
+                  struct in_addr sin_addr;
+                }</pre>
               </ul>
 
             </ul>
