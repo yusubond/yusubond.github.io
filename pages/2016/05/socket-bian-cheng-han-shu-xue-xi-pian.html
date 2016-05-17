@@ -62,15 +62,24 @@ by <a class="url fn" href="/author/subond.html">subond</a>
 
         </div>
         <div>
-          <h2>Socket编程之函数学习篇</h2>
+
           <p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
           <ol type="1">
-            <li><h3>基本API函数</h3></li>
+            <li><h2>基本API函数</h2></li>
             <ul>
               <li>socket()——创建套接字</li>
               <pre>int socket(int domain, int type, int protocol);成功返回sockfd;出错返回-1.</pre>
-              
-              <p></p>
+
+              <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
+              <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
+              <ul>
+                <li><b>domain</b>：协议域</li>
+                <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPV4),AF_INET6(IPV6),AF_LOCAL(或称AF_UNIX),AF_ROUTE.</p>
+                <li><b>type</b>:指定socket类型</li>
+                <p>常见的socket类型有SOCK_STREAM,SOCK_DGRAM,SOCK_RAW,SOCK_PACKET,SOCK_SEQPACKET等等。</p>
+                <li><b>protocol</b>:指定通信协议</li>
+                <p>常见的通信协议有IPPROTO_TCP,IPPROTO_UDP,IPPROTO_SCTP,IPPROTO_TIPC等等
+              </ul>
 
             </ul>
 
