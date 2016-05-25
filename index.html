@@ -130,8 +130,9 @@ by <a class="url fn" href="./author/subond.html">subond</a>
             <p>X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。</p>
             <ul>
               <li>用户平面&nbsp;X2-U</li>
-              <p>X2用户平面接口X2-U提供eNodeB之间的用户数据传输功能，其协议栈如图3-3所示。X2-U的传送网络层基于IP传输，UDP/IP协议之上采用GTP-U来传输eNodeB之间的用户面PDU。<br/></p>
+              <p>X2用户平面接口X2-U提供eNodeB之间的用户数据传输功能，其协议栈与图3-1一致。X2-U的传送网络层基于IP传输，UDP/IP协议之上采用GTP-U来传输eNodeB之间的用户面PDU。<br/></p>
               <li>控制平面</li>
+              <p>X2控制平面接口的定义采用与S1接口一致的原则，其传输网络层控制平面IP层上面采用SCTP，为信令消息提供可靠传输。应用层信令协议表示为X2-AP。</p>
             </ul>
           </ol>
 
