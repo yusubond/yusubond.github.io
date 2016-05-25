@@ -67,7 +67,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           <ol type="1">
             <li><h2>基本API函数</h2></li>
             <ul>
-              <li>socket()——创建套接字</li>
+              <li><h3>socket()函数——创建套接字</h3></li>
               <pre>int socket(int domain, int type, int protocol);成功返回sockfd;出错返回-1.</pre>
 
               <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
@@ -81,7 +81,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                 <p>常见的通信协议有IPPROTO_TCP,IPPROTO_UDP,IPPROTO_SCTP,IPPROTO_TIPC等等</p>
               </ul>
               <p><b>注意：</b>type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
-              <li>bind()函数</li>
+              <li><h3>bind()函数</h3></li>
               <pre>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)</pre>
               <p>bind()函数负责把特定的地址赋给socket描述符，即sockfd，</p>
               <ul>
@@ -97,22 +97,30 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                 }</pre>
                 <li><b>addrlen</b>:对应的是地址的长度。</li>
               </ul>
-              <li>listen()函数</li>
+              <li><h3>listen()函数</h3></li>
               <pre>int listen(int sockfd, int backlog)</pre>
               <p>listen()函数用于<font color="red">服务器端</font>，服务器通过调用listen()函数来监听某个socket。其两个参数如下：</p>
                 <ul>
                   <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。</li>
                   <li><b>backlog</b>:该sockfd可以允许的最大连接数。</li>
                 </ul>
-              <li>connect()函数</li>
+              <li><h3>connect()函数</h3></li>
               <pre>int connect(int sockfd, const struct sockaddr *addr, socklen addrlen)</pre>
-              <p>connect()函数用在客户端，客户端通过这个函数连接服务器端。其各参数如下：</p>
+              <p>connect()函数用在<font color="red">客户端</font>，客户端通过这个函数连接服务器端。其各参数如下：</p>
                 <ul>
                   <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
                   <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
                   <li><b>addrlen</b>:对应的是地址的长度。</li>
                 </ul>
-              <li>accept()函数</li>
+              <li><h3>accept()函数</h3></li>
+              <pre>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
+              <p>TCP服务器端依次调用<font color="red">socket(),bind(),listen()</font>之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端
+              监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>addr</b>:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。</li>
+                  <li><b>addrlen</b>:一个结果参数，用来接受上addr的结构的大小，可以设置为NULL。</li>
+                </ul>
 
 
 
