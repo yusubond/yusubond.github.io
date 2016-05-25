@@ -101,7 +101,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               <pre>int listen(int sockfd, int backlog)</pre>
               <p>listen()函数用于<font color="red">服务器端</font>，服务器通过调用listen()函数来监听某个socket。其两个参数如下：</p>
                 <ul>
-                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。</li>
                   <li><b>backlog</b>:该sockfd可以允许的最大连接数。</li>
                 </ul>
               <li>connect()函数</li>
@@ -109,7 +109,6 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               <p>connect()函数用在客户端，客户端通过这个函数连接服务器端。其各参数如下：</p>
                 <ul>
                   <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
-                  <li>addr</li>
                   <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
                   <li><b>addrlen</b>:对应的是地址的长度。</li>
                 </ul>
