@@ -97,6 +97,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                 }</pre>
                 <li><b>addrlen</b>:对应的是地址的长度。</li>
               </ul>
+              <p><b>函数示例</b><br/><pre>struct sockaddr_in serv;<br/>bind(sockfd, (struct sockaddr *)&serv, sizeof(serv));</pre></p>
               <li><h3>listen()函数</h3></li>
               <pre>int listen(int sockfd, int backlog)</pre>
               <p>listen()函数用于<font color="red">服务器端</font>，服务器通过调用listen()函数来监听某个socket。其两个参数如下：</p>
