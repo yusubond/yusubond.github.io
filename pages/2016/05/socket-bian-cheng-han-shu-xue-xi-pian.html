@@ -68,22 +68,22 @@ by <a class="url fn" href="/author/subond.html">subond</a>
             <li><h2>基本API函数</h2></li>
             <ul>
               <li><h3>socket()函数——创建套接字</h3></li>
-              <pre>int socket(int domain, int type, int protocol);成功返回sockfd;出错返回-1.</pre>
+              <pre>#include <sys/socket.h><br/>int socket(int domain, int type, int protocol);成功返回sockfd;出错返回-1.</pre>
 
               <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
               <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
               <ul>
                 <li><b>domain</b>：协议域</li>
-                <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPV4),AF_INET6(IPV6),AF_LOCAL(或称AF_UNIX),AF_ROUTE.</p>
+                <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。</p>
                 <li><b>type</b>:指定socket类型</li>
-                <p>常见的socket类型有SOCK_STREAM,SOCK_DGRAM,SOCK_RAW,SOCK_PACKET,SOCK_SEQPACKET等等。</p>
+                <p>常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。</p>
                 <li><b>protocol</b>:指定通信协议</li>
-                <p>常见的通信协议有IPPROTO_TCP,IPPROTO_UDP,IPPROTO_SCTP,IPPROTO_TIPC等等</p>
+                <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
               </ul>
               <p><b>注意：</b>type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
               <li><h3>bind()函数</h3></li>
               <pre>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen)</pre>
-              <p>bind()函数负责把特定的地址赋给socket描述符，即sockfd，</p>
+              <p>bind()函数负责把特定的地址赋给socket描述符，即sockfd，是从进程到内核传递套接口地址结构的函数。</p>
               <ul>
                 <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。</li>
                 <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。其中ipv4地址对应如下：</li>
@@ -105,18 +105,19 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                   <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。</li>
                   <li><b>backlog</b>:该sockfd可以允许的最大连接数。</li>
                 </ul>
+<!--connet()函数-->
               <li><h3>connect()函数</h3></li>
-              <pre>int connect(int sockfd, const struct sockaddr *addr, socklen addrlen)</pre>
-              <p>connect()函数用在<font color="red">客户端</font>，客户端通过这个函数连接服务器端。其各参数如下：</p>
+              <pre>＃include<sys/socket.h><br/>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);<br/>返回:0-成功，-1-出错</pre>
+              <p>connect()函数用在<font color="red">客户端</font>，客户端通过这个函数连接服务器端，是从进程到内核传递套接口地址结构的函数。其各参数如下：</p>
                 <ul>
-                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。<li>
                   <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
                   <li><b>addrlen</b>:对应的是地址的长度。</li>
                 </ul>
               <li><h3>accept()函数</h3></li>
               <pre>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
               <p>TCP服务器端依次调用<font color="red">socket(),bind(),listen()</font>之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端
-              监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。</p>
+              监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。accept()函数是从内核到进程传递套接口地址结构的函数。</p>
                 <ul>
                   <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
                   <li><b>addr</b>:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。</li>
