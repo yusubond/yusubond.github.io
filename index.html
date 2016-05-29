@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="./pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html"><h1>LTE系统网络架构</h1></a>
-2016-05-10
+            <a href="./pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html"><h1>Socket编程之函数学习篇</h1></a>
+2016-05-17
 
 by <a class="url fn" href="./author/subond.html">subond</a>
 
@@ -70,71 +70,88 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         </div>
 <!--我的第一篇博客开始-->
         <div>
-          <h2>网络架构概述</h2>
-          <p>&nbsp;&nbsp;&nbsp;&nbsp;整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。</p>
-          <p><center><img alt="LTE系统架构示意图" src="/images/lte-xitong.jpg"></center></p>
-          <p><center>图1-1&nbsp;LTE系统网络架构示意图</center></p>
-          <p>&nbsp;&nbsp;&nbsp;&nbsp;与3G系统相比，LTE系统重新定义了系统网络架构，核心网和接入网之间的功能划分也随之有所变化，针对LTE系统架构，网络功能划分如图1-2所示。</p>
-          <p><center><img alt="LTE系统功能实体划分、协议架构示意图" src="/images/lte-xitong-gongneng-xieyi.jpg"></center></p>
-          <p><center>图1-2&nbsp;LTE系统功能实体划分、协议架构示意图</center></p>
-          <ol type="1">
-            <li><h3>接入网</h3></li>
-              <p>LTE接入网E-UTRAN仅由eNodeB组成，网络架构中节点数量减少，网络架构更加趋于扁平化，这种扁平化的网络架构可以有效地降低呼叫时延以及用户数据传输时延。E-UTRAN系统提供用户平面和控制平面的协议，用户平面用户平面包括分组数据汇聚协议（PDCP,Packet Data Convergence Protocol）层、
-                无线链路层控制（RLC,Radio Link Control）层、媒体接入层（MAC,Medium Access Control）层；控制平面包括无线资源控制（RRC,Radio Resource Control）层。eNodeB之间通过X2接口进行连接，通过S1接口与EPC连接，具体来说就是，通过S1-MME接口连接到MME，通过S1-U接口连接到S-GW。eNodeB与UE间的协议为接入层（AS）协议。</p>
-              <p>eNodeB具有如下功能：</p>
-              <p>（1）无线资源管理相关的功能，如无线资源承载控制、接纳控制、连接移动性管理、上/下行动态资源分配/调度等；<br/>（2）IP头压缩与用户数据流的加密；<br/>（3）UE附着时的MME选择。由于eNodeB可以与
-                多个MME/S-GW之间存在S1接口相连，因此，UE初始接入到网络时，需要选择一个MME进行附着;<br/>（4）寻呼信息的调度和传输；<br/>（5）广播信息的调度和传输；<br/>（6）用于移动和调度的测量和测量报告的配置。</p>
-            <li><h3>核心网</h3></li>
-              <p>核心网负责对用户终端的全面控制和有关承载的建立。EPC的主要逻辑节点有：</p>
+          <p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
+
+          <ul>
+            <li><h2>基本API函数</h2></li>
+            <ol type="1">
+              <li><h3>socket()函数——创建套接字</h3></li>
+
+              <pre>#include &ltsys/socket.h&mt<br/>int socket(int domain, int type, int protocol);成功返回sockfd;出错返回-1.</pre>
+
+          <ul >
+            <li><h2>基本API函数</h2></li>
+            <ol type="1">
+              <li><h3>socket()函数——创建套接字</h3></li>
+
+              <pre>#include &ltsys/socket.h&gt<br/>int socket(int domain, int type, int protocol);<br/>成功返回sockfd;出错返回-1.</pre>
+
+              <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
+              <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
               <ul>
-                <li>分组数据网关（P-GW,Packet Data Network Gateway）</li>
-                <li>服务网关（S-GW,Serving Gateway）</li>
-                <li>移动性管理实体（MME, Mobility Management Entity）</li>
-                <li>归属签约用户服务器（HSS,Home Subscriber Server）</li>
-                <li>策略及计费规则功能（RCPF,Policy and Charging Rules Function）</li>
+                <li><b>domain</b>：协议域</li>
+                <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。</p>
+                <li><b>type</b>:指定socket类型</li>
+                <p>常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。</p>
+                <li><b>protocol</b>:指定通信协议</li>
+                <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
               </ul>
-              <p>EPC逻辑主要节点的功能，下面详细介绍。</p>
-              <p><b>(1)&nbsp;P-GW：分组数据网关</b><br/>P-GW提供与外部分组数据网络的连接，是主要的移动性处理节点。P-GW负责<b>用户IP地址分配</b>和<b>QoS保证</b>，并根据PCRF规则进行基于流量的计费。一个UE可能和多个P-GW相连
-              ，P-GW同时负责UE IP地址的分配。P-GW为保证比特率承载提供QoS保证。另外，P-GW可以通过一系列不同的接口，成为其他3GPP网络或非3GPP网络。</p>
-              <p><b>(2)&nbsp;S-GW：服务网关</b><br/>S-GW通过S1-U接口来实现用户数据包的路由和转发。实现的功能主要有<b>数据通道、IP头压缩处理、用户数据流加密、针对移动性的用户面的切换、寻呼时用户面数据包的终止</b>。<u>当用户在eNodeB之间移动时，S-GW作为数据承载的本地移动性管理实体。</u>当用户处于空闲状态时，
-              S-GW将保留承载信息并临时把下行数据存储在缓存区里，以便当MME开始寻呼UE时重新建立承载。同时，在与其他3GPP技术如GPRS和UMTS等交互工作时，它可以作为“<font color="#FF0000">移动性管理锚点</font>”。</p>
-              <p><b>(3)&nbsp;MME：移动性管理实体</b><br/>MME是处理UE和核心网络信令交互的控制节点。在UE和核心网络间所执行的协议栈成为非接入层协议（NAS）。MME具有如下功能：</p>
+              <p><b>注意：</b>type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
+<!--bind()函数-->
+              <li><h3>bind()函数</h3></li>
+
+
+              <pre>#include &ltsys/socket.h&gt<br/>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);返回:0-成功，-1-出错</pre>
+
+              <p>bind()函数涉及三个对象：套接口，地址和端口，负责把特定的地址和端口赋给socket描述符，即sockfd，是从进程到内核传递套接口地址结构的函数。</p>
               <ul>
-                <li>寻呼信息分发。MME负责将寻呼信息按照一定的原则分发到相关的eNodeB。</li>
-                <li>安全控制。</li>
-                <li>空闲状态的移动性管理。</li>
-                <li>SAE（系统架构演进）承载控制。</li>
-                <li>非接入层信令的加密和完整性保护。</li>
+                <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。</li>
+                <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。其中ipv4地址对应如下：</li>
+                <pre>struct sockaddr_in{
+                  sa_family_t sin_family;
+                  in_port_t sin_port;       //<font color="red">port in network byte order</font>
+                  struct in_addr sin_addr;
+                }
+                struct in_addr{
+                              uint32_t s_addr;  //<font color="red">address in network byte order</font>
+                }</pre>
+                <li><b>addrlen</b>:对应的是地址的长度。</li>
               </ul>
-              <p><b>(4)&nbsp;HSS：归属签约用户服务器</b><br/>HSS作为用户的集中签约管理数据库，存放了用户的EPS网络签约信息，并完成对UE的位置登记管理，以及结合AUC（鉴权中心）网元完成用户鉴权参数管理，并通过S6a接口下发给
-              MME完成对UE的鉴权即安全功能。</p>
-              <p><b>(5)&nbsp;PCRF：策略及计费规则功能</b><br/>PCRF网元是SAE架构中提供集中策略和计费控制的网元。PCRF主要完成策略控制的决定功能及基于不同IP流的计费控制功能。因此，PCRF要结合PCEE（Policy and Charging Enforcement Function）网元
-              检测后上报的不同业务类型来进行QoS及计费策略方面的决策，并通过Ｇx接口将策略下发给PCEF网元去执行。</p>
-          <li><h3>主要业务接口</h3></li>
-            <h3>S1接口</h3>
-            <p>S1接口是MME/S-G网关和eNodeB之间的接口。S1接口又可以分为两个接口，一个用于用户平面S1-U，一个用于控制平面S1-MME。</p>
-            <ul>
-              <li>用户平面</li>
-              <p>S1-U接口用于提供eNodeB与S-GW网元之间用户数据传输功能，其协议栈如图3-1所示。S1-U的传输网络层基于IP传输，UDP/IP协议之上采用GTP-U（GPRS Tunnelling Protocol for User Plane：GPRS用户平面隧道协议）来传输S-GW与eNodeB之间的用户平面PDU。</p>
-              <p><center><img alt="S1-U接口协议栈" src="/images/s1-u-xie-yi-zhan.jpg"></center></p>
-              <p><center>图3-1&nbsp;S1-U接口协议栈</center></p>
-              <li>控制平面</li>
-              <p>S1-MME也是基于IP传输的，不同的是控制平面在IP层的上面采用SCTP（Stream Control Transmission Protocol：流控制传输协议），为无线网络层信令消息提供可靠的传输，其协议栈如图3-2所示。</p>
-              <p><center><img alt="S1-MME接口协议栈" src="/images/s1-mme-xie-yi-zhan.jpg"></center></p>
-              <p><center>图3-2&nbsp;S1-MME接口协议栈</center></p>
-            </ul>
-            <p><b>说明</b><br/>无线接口可分为三个协议层：物理层（L1）、数据链路层（L2）和网络层（L3）。<br/>1、物理层主要为高层业务提供传输的无线物理通道；<br/>2、数据链路层包括MAC(Medium Access Control)、RLC(Radio Link Control)、
-            BMC(Broadcast/Multicast Control)和PDCP(Packet Data Convergence Protocol)四个子层。<br/>3、网络层包括接入层中的子层RRC子层和非接入层的MM(Mobility Management)和CC(Call Control)。</p>
-            <p><center><img alt="无线接口协议"　src="/images/Uu-jie-kou-xie-yi.jpg"></center></p>
-            <h3>X2接口</h3>
-            <p>X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。</p>
-            <ul>
-              <li>用户平面&nbsp;X2-U</li>
-              <p>X2用户平面接口X2-U提供eNodeB之间的用户数据传输功能，其协议栈与图3-1一致。X2-U的传送网络层基于IP传输，UDP/IP协议之上采用GTP-U来传输eNodeB之间的用户面PDU。<br/></p>
-              <li>控制平面</li>
-              <p>X2控制平面接口的定义采用与S1接口一致的原则，其传输网络层控制平面IP层上面采用SCTP，为信令消息提供可靠传输。应用层信令协议表示为X2-AP。</p>
-            </ul>
-          </ol>
+              <p><b>函数示例</b><br/><pre>struct sockaddr_in serv;<br/>bind(sockfd, (struct sockaddr *)&serv, sizeof(serv));</pre></p>
+<!--listen()函数-->
+              <li><h3>listen()函数</h3></li>
+              <pre>#include &ltsys/socket.h&gt<br/>int listen(int sockfd, int backlog)</pre>
+              <p>listen()函数用于<font color="red">服务器端</font>，服务器通过调用listen()函数来监听某个socket。其两个参数如下：</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。</li>
+                  <li><b>backlog</b>:该sockfd可以允许的最大连接数。</li>
+                </ul>
+<!--connet()函数-->
+              <li><h3>connect()函数</h3></li>
+
+
+              <pre>#include &ltsys/socket.h&gt<br/>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);<br/>返回:0-成功，-1-出错</pre>
+
+              <p>connect()函数用在<font color="red">客户端</font>，客户端通过这个函数连接服务器端，是从进程到内核传递套接口地址结构的函数。其各参数如下：</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
+                  <li><b>addrlen</b>:对应的是地址的长度。</li>
+                </ul>
+<!--accept()函数-->
+              <li><h3>accept()函数</h3></li>
+              <pre>#include &ltsys/socket.h&gt<br/>sint accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
+              <p>TCP服务器端依次调用<font color="red">socket(),bind(),listen()</font>之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端
+              监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。accept()函数是从内核到进程传递套接口地址结构的函数。</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>addr</b>:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。</li>
+                  <li><b>addrlen</b>:一个结果参数，用来接受上addr的结构的大小，可以设置为NULL。</li>
+                </ul>
+            </ol>
+          </ul>
+
+
 
         </div>
 <!--我的第一篇博客结束-->
@@ -143,11 +160,45 @@ by <a class="url fn" href="./author/subond.html">subond</a>
     </div>
 <!--缩写部分开始-->
     <div>
+      <a href="/pages/2016/05/socket-bian-cheng-jie-shao-pian.html"><h2>Socket编程之介绍篇</h2></a>
+      <div class="well small">2016-05-14
+        by <a class="url fn" href="/author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <p>Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式，
+        即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。</p>
+        <p><center><img alt="Socket与各协议的关系" src="/image/2016/05/socket-yu-xie-yi-ge-ceng.jpg"</center></p>
+        <a class="btn btn-info xsmall" href="./pages/2016/05/socket-bian-cheng-jie-shao-pian.html">read more</a>
+      </div>
+      <br/><br/>
+    </div>
+    <hr/>
+
+    <div>
+      <a href="/pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html"><h2>LTE系统网络架构</h2></a>
+      <div class="well small">2016-05-10
+        by <a class="url fn" href="/author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <h2>网络架构概述</h2>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。</p>
+        <p><center><img alt="LTE系统架构示意图" src="/images/lte-xitong.jpg"></center></p>
+        <p><center>图1-1&nbsp;LTE系统网络架构示意图</center></p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;与3G系统相比，LTE系统重新定义了系统网络架构，核心网和接入网之间的功能划分也随之有所变化，针对LTE系统架构，网络功能划分如图1-2所示。</p>
+        <p><center><img alt="LTE系统功能实体划分、协议架构示意图" src="/images/lte-xitong-gongneng-xieyi.jpg"></center></p>
+        <p><center>图1-2&nbsp;LTE系统功能实体划分、协议架构示意图</center></p>
+      </div>
+      <a class="btn btn-info xsmall" href="./pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html">read more</a>
+    </div>
+    <br/><br/>
+    <hr/>
+
+    <div>
       <a href="./pages/2016/04/git-xue-xi-shou-ji.html"><h2>Git学习手记</h2></a>
       <div class="well small">2016-04-29
 by <a class="url fn" href="./author/subond.html">subond</a>
       </div>
-      <div class="sunmary">
+      <div class="summary">
         <h2>一、基础篇</h2>
             <h3>1&nbsp;指令介绍</h3>
             <pre>
@@ -182,7 +233,7 @@ git remote -v         #查看远程仓库详细信息</pre>
       <div class="well small">2016-04-26
 by <a class="url fn" href="./author/subond.html">subond</a>
       </div>
-      <div class="sunmary">
+      <div class="summary">
         <p>说明：本教程使用的系统平台为ubuntu系统14.04。
         </p>
         <h3>Github pages</h3>
