@@ -104,7 +104,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           <pre>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</pre>
           <p>(2)从内核到进程传递套接字地址结构的函数有4个：accept(),recvfrom(),getsockname()和getpeername()。这4个函数其中的两个参数是指向某个套接字地址结构的指针和指向该地址结构大小的整数变量指针，如下所示。</p>
           <pre>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</pre>
-          <li>字节排序函数</li>
+          <li><h3>字节排序函数</h3></li>
           <p>简单来说，主机和网络存储整形数据的字节顺序一般是不一样的，我们将他们称之为主机字节序和网络字节序，分别对应内核处理和进程处理。两种字节序之间的互转使用以下4个函数，其对应套接字地址结构（IP地址＋端口号）的字节序的转换。</p>
           <pre>#include &ltnetinet.h&gt
           uint16_t htons(uint16_t host16bitvalue);
