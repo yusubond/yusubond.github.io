@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone</title>
+    <meta name="description" content="">
+    <meta name="author" content="Yu Bangchao">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+          <li><a href="./author/subond.html">About me</a></li>
+        </ul>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Socket编程之函数学习篇</h1>
+2016-05-17
+
+by <a class="url fn" href="/author/subond.html">subond</a>
+
+
+
+        </div>
+        <div>
+
+          <p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
+<<<<<<< HEAD
+          <ul>
+            <li><h2>基本API函数</h2></li>
+            <ol type="1">
+              <li><h3>socket()函数——创建套接字</h3></li>
+              <p>头文件：sys/socket.h</p>
+              <pre>int socket(int domain, int type, int protocol);成功返回sockfd;出错返回-1.</pre>
+=======
+          <ul >
+            <li><h2>基本API函数</h2></li>
+            <ol type="1">
+              <li><h3>socket()函数——创建套接字</h3></li>
+
+              <pre>#include &ltsys/socket.h&gt<br/>int socket(int domain, int type, int protocol);<br/>成功返回sockfd;出错返回-1.</pre>
+>>>>>>> 385cd151c5c466cde2b2b2fdfc9fb32a41bd3564
+              <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
+              <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
+              <ul>
+                <li><b>domain</b>：协议域</li>
+                <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。</p>
+                <li><b>type</b>:指定socket类型</li>
+                <p>常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。</p>
+                <li><b>protocol</b>:指定通信协议</li>
+                <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
+              </ul>
+              <p><b>注意：</b>type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
+<!--bind()函数-->
+              <li><h3>bind()函数</h3></li>
+<<<<<<< HEAD
+              <p>头文件：sys/socket.h</p>
+              <pre>#include <sys/socket.h><br/>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);返回:0-成功，-1-出错</pre>
+=======
+              <pre>#include &ltsys/socket.h&gt<br/>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);返回:0-成功，-1-出错</pre>
+>>>>>>> 385cd151c5c466cde2b2b2fdfc9fb32a41bd3564
+              <p>bind()函数涉及三个对象：套接口，地址和端口，负责把特定的地址和端口赋给socket描述符，即sockfd，是从进程到内核传递套接口地址结构的函数。</p>
+              <ul>
+                <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。</li>
+                <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。其中ipv4地址对应如下：</li>
+                <pre>struct sockaddr_in{
+                  sa_family_t sin_family;
+                  in_port_t sin_port;       //<font color="red">port in network byte order</font>
+                  struct in_addr sin_addr;
+                }
+                struct in_addr{
+                              uint32_t s_addr;  //<font color="red">address in network byte order</font>
+                }</pre>
+                <li><b>addrlen</b>:对应的是地址的长度。</li>
+              </ul>
+              <p><b>函数示例</b><br/><pre>struct sockaddr_in serv;<br/>bind(sockfd, (struct sockaddr *)&serv, sizeof(serv));</pre></p>
+<!--listen()函数-->
+              <li><h3>listen()函数</h3></li>
+              <pre>#include &ltsys/socket.h&gt<br/>int listen(int sockfd, int backlog)</pre>
+              <p>listen()函数用于<font color="red">服务器端</font>，服务器通过调用listen()函数来监听某个socket。其两个参数如下：</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。</li>
+                  <li><b>backlog</b>:该sockfd可以允许的最大连接数。</li>
+                </ul>
+<!--connet()函数-->
+              <li><h3>connect()函数</h3></li>
+<<<<<<< HEAD
+              <p>头文件：sys/socket.h</p>
+              <pre>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);返回:0-成功，-1-出错</pre>
+=======
+              <pre>#include &ltsys/socket.h&gt<br/>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);<br/>返回:0-成功，-1-出错</pre>
+>>>>>>> 385cd151c5c466cde2b2b2fdfc9fb32a41bd3564
+              <p>connect()函数用在<font color="red">客户端</font>，客户端通过这个函数连接服务器端，是从进程到内核传递套接口地址结构的函数。其各参数如下：</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
+                  <li><b>addrlen</b>:对应的是地址的长度。</li>
+                </ul>
+<!--accept()函数-->
+              <li><h3>accept()函数</h3></li>
+              <pre>#include &ltsys/socket.h&gt<br/>sint accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
+              <p>TCP服务器端依次调用<font color="red">socket(),bind(),listen()</font>之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端
+              监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。accept()函数是从内核到进程传递套接口地址结构的函数。</p>
+                <ul>
+                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
+                  <li><b>addr</b>:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。</li>
+                  <li><b>addrlen</b>:一个结果参数，用来接受上addr的结构的大小，可以设置为NULL。</li>
+                </ul>
+
+
+
+            </ol>
+          </ul>
+
+
+
+        </div>
+
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'subond';
+    var disqus_title = 'My super title';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="/category/life.html">Life</a></li>
+                <li><a href="/category/tech.html">Tech</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://www.bootcss.com/p/git-guide">Git</a></li>
+                <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OAI5g</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="http://www.sdnap.com/">SDNAP</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>
+    </div>     </div>
+<footer>
+<br />
+<p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+
+</body>
+</html>
