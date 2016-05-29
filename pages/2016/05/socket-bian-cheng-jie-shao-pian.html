@@ -66,16 +66,43 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           <p>Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式，
           即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。</p>
           <p><center><img alt="Socket与各协议的关系" src="/images/2016/05/socket-yu-xie-yi-ge-ceng.jpg"></center></p>
+          <ol type="1">
+            <li><h2>套接字地址结构</h2></li>
+          <p>学习套接字编程，首先要知道套接字的地址结构，大多数套接字函数都需要一个指向套接字的地址结构的指针作为参数。每个协议族都有自己的套接字地址结构，
+            均以sockaddr_开头，并以对应的每个协议族的唯一后缀结尾。</p>
+            <ul>
+              <li><h3>IPv4套接字地址结构</h3></li>
+              <p>IPv4套接字地址结构以sockaddr_in命名，定义在&ltnetinet/in.h&mt头文件中，如下所示。</p>
+              <pre>struct in_addr{
+                in_addr_t s_addr;       /*32-bit IPv4 address;network byte ordered*/
+              }
+            struct sockaddr_in{
+              uint8_t            sin_len;
+              sa_family_t        sin_family;        /*AF_INET*/
+              in_port_t          sin_port;          /16-bit TCP or UDP port number;network byte ordered*/
+              struct in_addr     in_addr sin_addr;  /*32-bit IPv4 address;network byte ordered*/
+              char               sin_zero[8];       /*unused*/
+            }</pre>
+            <p><b>说明</b>：一般情况下，我们只使用这个结构中的3个字段：sin_family,sin_addr和sin_port，其分别对应套接字地址结构的协议族、IP地址和端口号。套接字地址结构仅在给定主机上使用
+            其结构中的某些字段用在不同主机间的通信，但结构本身不在主机之间传递。</p>
+            <li><h3>IPv6套接字地址结构</h3></li>
+            <p>IPv4套接字地址结构以sockaddr_in6命名，定义在&ltnetinet/in.h&mt头文件中，如下所示。</p>
+            <pre>struct in6_addr{
+              uninet8_t s6_addr[16];       /*128-bit IPv4 address;network byte ordered*/
+            }
+          struct sockaddr_in{
+            uint8_t          sin6_len;
+            sa_family_t      sin6_family;        /*AF_INET6*/
+            in_port_t        sin6_port;          /*transport layer port;network byte ordered*/
+            uint32_t         sin6_flowinfo       /*flow information,undefined*/
+            struct in6_addr  sin6_addr;          /*128-bit IPv6 address;network byte ordered*/
+            uint32_t         sin6_zero[8];       /*unused*/
+          }</pre>
+            </ul>
+          <p></p>
 
-          <ul>
-            <li><h2>基本API函数</h2></li>
-            <ol type="1">
+          </ol>
 
-
-
-
-            </ol>
-          </ul>
 
 
 
