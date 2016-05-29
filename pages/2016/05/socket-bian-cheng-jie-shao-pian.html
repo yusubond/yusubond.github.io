@@ -98,6 +98,22 @@ by <a class="url fn" href="/author/subond.html">subond</a>
             struct in6_addr  sin6_addr;          /*128-bit IPv6 address;network byte ordered*/
             uint32_t         sin6_zero[8];       /*unused*/
           }</pre>
+          <li><h3>值-结果参数</h3></li>
+          <p>当往一个套接字函数传递一个套接字地址结构时，结构以引用形式来传递，也就是说传递的是指向该结构的一个指针，该结构的长度作为一个参数来传递，其传递方向取决于传递方向：是内核到进程，还是进程到内核。</p>
+          <p>(1)从进程到内核传递套接字地址结构的函数有3个：bind(),connet()和sendto()。这些函数的一个参数是指向某个套接字地址结构的指针，一个参数是该结构的整数大小，如下所示。</p>
+          <pre>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</pre>
+          <p>(2)从内核到进程传递套接字地址结构的函数有4个：accept(),recvfrom(),getsockname()和getpeername()。这4个函数其中的两个参数是指向某个套接字地址结构的指针和指向该地址结构大小的整数变量指针，如下所示。</p>
+          <pre>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</pre>
+          <li>字节排序函数</li>
+          <p>简单来说，主机和网络存储整形数据的字节顺序一般是不一样的，我们将他们称之为主机字节序和网络字节序，分别对应内核处理和进程处理。两种字节序之间的互转使用以下4个函数，其对应套接字地址结构（IP地址＋端口号）的字节序的转换。</p>
+          <pre>#include &ltnetinet.h&gt
+          uint16_t htons(uint16_t host16bitvalue);
+          uint32_t htonl(uint32_t host32bitvalue);  返回：网络字节序的值
+          uint16_t ntohs(uint16_t host16bitvalue);
+          uint32_t ntohs(uint32_t host32bitvalue);  返回：主机字节序的值</pre>
+          <li><h3>地址转换函数</h3></li>
+          <p>地址转换函数可以在ASCII字符串与网络字节序的二进制值之间转换网际地址。</p>
+          <li><h3>字节操作函数</h3></li>
             </ul>
           <p></p>
 

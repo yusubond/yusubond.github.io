@@ -127,7 +127,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                 </ul>
 <!--accept()函数-->
               <li><h3>accept()函数</h3></li>
-              <pre>#include &ltsys/socket.h&gt<br/>sint accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
+              <pre>#include &ltsys/socket.h&gt<br/>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
               <p>TCP服务器端依次调用<font color="red">socket(),bind(),listen()</font>之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端
               监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。accept()函数是从内核到进程传递套接口地址结构的函数。</p>
                 <ul>
