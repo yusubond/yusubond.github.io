@@ -135,6 +135,20 @@ by <a class="url fn" href="/author/subond.html">subond</a>
                   <li><b>addr</b>:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。</li>
                   <li><b>addrlen</b>:一个结果参数，用来接受上addr的结构的大小，可以设置为NULL。</li>
                 </ul>
+              <li><h3>网络I/O函数</h3></li>
+              <p>常见的网络I/O函数有read()/write(),recv()/send(),readv()/writev(),recvmsg()/sendmsg()和recvfrom()/sendto()。</p>
+              <pre>#include &ltsys/socket.h&gt<br/>ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);<br/>ssize_t sendmsg(int sockfd, struct msghdr *msg, int flags);<br/>
+              返回：成功返回读入/写出的字节数，出错为-1</pre>
+              <p>其中函数的大部分参数封装到一个msghdr结构中，如下所示。</p>
+              <pre>struct msghdr{
+                void          *msg_name;       /*protocol address*/
+                socklen_t     msg_namelen;     /*size of protocol address*/
+                struct iovec  *msg_iovlen;     /*scatter/gather array*/
+                int           msg_iovlen;      /*  elements in msg_iov*/
+                void          *msg_control;    /*ancillary data*/
+                socklen_t     msg_controllen;  /*length of ancillary data*/
+                int           msg_flags;       /*flags returned by recvmsg*/
+              }</pre>
 
 
 
