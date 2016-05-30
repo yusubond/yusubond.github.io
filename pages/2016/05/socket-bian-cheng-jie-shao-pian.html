@@ -112,8 +112,13 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           uint16_t ntohs(uint16_t host16bitvalue);
           uint32_t ntohs(uint32_t host32bitvalue);  返回：主机字节序的值</pre>
           <li><h3>地址转换函数</h3></li>
-          <p>地址转换函数可以在ASCII字符串与网络字节序的二进制值之间转换网际地址。</p>
+          <p>地址转换函数可以在ASCII字符串与网络字节序的二进制值之间转换网际地址。常用的地址转换函数有inet_pton()和inet_ntop()，其中p代表表达（presentation），n代表数值（numeric）。地址的表达格式通常是ASCII字符串，数值格式是存放到
+          套接字地址结构中的二进制值。</p>
+          <pre>#include &ltarpa/inet.h&gt<br/>int inet_pton(int family, const char *strptr, void *addrptr);<br/>返回：1-成功；0-输入不是有效表达式；-1-出错。<br/>
+          const char *inet_ntop(int family, const void *addrptr, char *strptr, size_t len);<br/>返回：成功则为指向结果的指针，出错为NULL。</pre>
           <li><h3>字节操作函数</h3></li>
+          <p>字节操作函数用于处理多字节字段，例如bzero()函数。</p>
+          <pre>#include &ltstrings.h＆gt<br/>void bzero(void *dest, size_t nbytes);</pre>
             </ul>
           <p></p>
 
