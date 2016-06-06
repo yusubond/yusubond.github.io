@@ -78,6 +78,106 @@ ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const stru
             而在该套接字地址结构中填写的字节数则放在<i>addrlen</i>参数所所指的整数中返回给调用者。<b>注意</b>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
             <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
             调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
+            <li><h3>消息回传程序示例</h3></li>
+            <h4>服务器端程序</h4>
+<pre>
+int main(int argc, char *argv[])
+{
+  int listenfd, sockfd;
+  struct sockaddr_in server, client;
+  char buf[MAX_BUFFER_SIZE], read_buf[MAX_BUFFER_SIZE];
+  socklen_t lenserv,lencli;
+  char str[20];
+  bzero(&server, sizeof(server));
+  bzero(&str, sizeof(str));
+  memset(buf, 0x00, MAX_BUFFER_SIZE);
+  memset(read_buf, 0x00, MAX_BUFFER_SIZE);
+  lenserv = sizeof(server);
+  lencli = sizeof(client);
+  //创建套接字
+  //listenfd = socket(AF_INET,SOCK_DGRAM, 0);
+  if((listenfd = socket(AF_INET, SOCK_DGRAM, 0))< 0)
+  {
+    perror("Create socket fail!");
+    return -1;
+  }
+  //绑定套接字
+  server.sin_family = AF_INET;
+  server.sin_port = htons(8888);                //主机字节序转网络字节序
+  server.sin_addr.s_addr = htonl(INADDR_ANY);   //绑定主机的所有网卡
+  if(bind(listenfd, (struct sockaddr*)&server, lenserv) < 0)
+  {
+    perror("bind socket error.");
+    return -1;
+  }
+  ssize_t rv;
+  while (1)
+  {
+    rv = recvfrom(listenfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client, &lencli);
+    if(rv < 0)
+    {
+      printf("recvfrom error.\n");
+      close(sockfd);
+      return -1;
+    }
+    inet_ntop(AF_INET, &client.sin_addr.s_addr, str, sizeof(str));
+    printf("size of buf_client: %ld\n", rv);
+    printf("client buf:%s\n", read_buf);
+    printf("client IP: %s, Port: %d\n", str, ntohs(client.sin_port));
+    sendto(listenfd, read_buf, sizeof(read_buf), 0, (struct sockaddr *)&client, lencli);
+    bzero(&client, lencli);
+    memset(buf, 0x00, MAX_BUFFER_SIZE);
+    memset(read_buf, 0x00, MAX_BUFFER_SIZE);
+  }
+  close(sockfd);
+  return 0;
+}
+</pre>
+            <p><h4>客户端程序</h4></p>
+<pre>
+int main(int argc, char const *argv[])
+{
+  int sockfd;
+  char buf[MAX_BUFFER_SIZE] = "Hello UDP!";
+  char read_buf[MAX_BUFFER_SIZE];
+  struct sockaddr_in server, ser;
+  int rv;
+  socklen_t length,len;
+
+  bzero(read_buf, MAX_BUFFER_SIZE);
+  bzero(&server, sizeof(server));
+  len = sizeof(ser);
+  length = sizeof(server);
+
+  //sockfd = socket(AF_INET,SOCK_DGRAM, 0);
+  if((sockfd = socket(AF_INET,SOCK_DGRAM, 0)) < 0)
+  {
+    perror("Create socket fail!\n");
+    return -1;
+  }
+
+
+  server.sin_family = AF_INET;
+  server.sin_port = htons(8888);
+  inet_pton(AF_INET, "10.103.14.28", &server.sin_addr.s_addr);
+
+
+  sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&server, length);
+
+
+  rv = recvfrom(sockfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&ser, &len);
+  if(rv < 0)
+  {
+    printf("recvfr0m error!\n");
+    close(sockfd);
+    return -1;
+  }
+  printf("server buf_back:%s\n", read_buf);
+  close(sockfd);
+
+  return 0;
+}
+</pre>
 
 
 
