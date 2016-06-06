@@ -79,8 +79,9 @@ ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const stru
             <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
             调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
             <li><h3>消息回传程序示例</h3></li>
-            <h4>服务器端程序</h4>
+            <p><h4>服务器端程序</h4></p>
 <pre>
+#include "socket_includes.h"
 int main(int argc, char *argv[])
 {
   int listenfd, sockfd;
@@ -131,10 +132,10 @@ int main(int argc, char *argv[])
   }
   close(sockfd);
   return 0;
-}
-</pre>
+}</pre>
             <p><h4>客户端程序</h4></p>
 <pre>
+#include "socket_includes.h"
 int main(int argc, char const *argv[])
 {
   int sockfd;
@@ -143,28 +144,20 @@ int main(int argc, char const *argv[])
   struct sockaddr_in server, ser;
   int rv;
   socklen_t length,len;
-
   bzero(read_buf, MAX_BUFFER_SIZE);
   bzero(&server, sizeof(server));
   len = sizeof(ser);
   length = sizeof(server);
-
   //sockfd = socket(AF_INET,SOCK_DGRAM, 0);
   if((sockfd = socket(AF_INET,SOCK_DGRAM, 0)) < 0)
   {
     perror("Create socket fail!\n");
     return -1;
   }
-
-
   server.sin_family = AF_INET;
   server.sin_port = htons(8888);
   inet_pton(AF_INET, "10.103.14.28", &server.sin_addr.s_addr);
-
-
   sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&server, length);
-
-
   rv = recvfrom(sockfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&ser, &len);
   if(rv < 0)
   {
@@ -174,9 +167,27 @@ int main(int argc, char const *argv[])
   }
   printf("server buf_back:%s\n", read_buf);
   close(sockfd);
-
   return 0;
-}
+}</pre>
+        <p>其中头文件均为socket_includes.h</p>
+<pre>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/shm.h>
+#include <arpa/inet.h>
+
+#include <unistd.h>
+#include <fcntl.h>
+
+
+#define MAX_LISTEN_QUE 5
+#define SERV_PORT 8888
+#define MAX_BUFFER_SIZE 100
 </pre>
 
 
