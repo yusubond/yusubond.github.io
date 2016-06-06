@@ -59,8 +59,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="./pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html"><h1>Socket编程之函数学习篇</h1></a>
-2016-05-17
+            <a href="./pages/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html"><h1>基本UDP套接字编程</h1></a>
+2016-05-24
 
 by <a class="url fn" href="./author/subond.html">subond</a>
 
@@ -70,80 +70,137 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         </div>
 <!--我的第一篇博客开始-->
         <div>
-          <p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
+          <ol type="1">
+            <li><h3>UDP套接字编程模型</h3></li>
+            <p>TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)，
+              NFS(网络文件系统)和SNMP(简单网络管理协议)。<br/>典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p>
+            <p><center><img alt="UDP客户/服务器程序所用的套接字函数" src="/images/2016/05/udp-bian-cheng-mo-xing.jpg"></center></p>
+            <p><center>图1-1&nbsp;UDP客户/服务器程序所用的套接字函数</center></p>
+            <li><h3>recvfrom和sendto函数</h3></li>
+<pre>#include&ltsys/socket.h&gt
+ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
+ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
+均返回：若成功返回读或写的字节数，出错返回-1</pre>
+            <p>前三个参数<i>sockfd</i>,<i>buff</i>和<i>nbytes</i>为：描述符、指向读入或写出的缓冲区的指针和读写字节数。<br/><i>flags</i>一般置为0。</p>
+            <p>sendto的<i>to</i>参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由<i>addrlen</i>参数指定。recvfrom的<i>from</i>参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构，
+            而在该套接字地址结构中填写的字节数则放在<i>addrlen</i>参数所所指的整数中返回给调用者。<b>注意</b>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
+            <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
+            调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
+            <li><h3>消息回传程序示例</h3></li>
+            <p><h4>服务器端程序</h4></p>
+<pre>
+#include "socket_includes.h"
+int main(int argc, char *argv[])
+{
+  int listenfd, sockfd;
+  struct sockaddr_in server, client;
+  char buf[MAX_BUFFER_SIZE], read_buf[MAX_BUFFER_SIZE];
+  socklen_t lenserv,lencli;
+  char str[20];
+  bzero(&server, sizeof(server));
+  bzero(&str, sizeof(str));
+  memset(buf, 0x00, MAX_BUFFER_SIZE);
+  memset(read_buf, 0x00, MAX_BUFFER_SIZE);
+  lenserv = sizeof(server);
+  lencli = sizeof(client);
+  //创建套接字
+  //listenfd = socket(AF_INET,SOCK_DGRAM, 0);
+  if((listenfd = socket(AF_INET, SOCK_DGRAM, 0))< 0)
+  {
+    perror("Create socket fail!");
+    return -1;
+  }
+  //绑定套接字
+  server.sin_family = AF_INET;
+  server.sin_port = htons(8888);                //主机字节序转网络字节序
+  server.sin_addr.s_addr = htonl(INADDR_ANY);   //绑定主机的所有网卡
+  if(bind(listenfd, (struct sockaddr*)&server, lenserv) < 0)
+  {
+    perror("bind socket error.");
+    return -1;
+  }
+  ssize_t rv;
+  while (1)
+  {
+    rv = recvfrom(listenfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client, &lencli);
+    if(rv < 0)
+    {
+      printf("recvfrom error.\n");
+      close(sockfd);
+      return -1;
+    }
+    inet_ntop(AF_INET, &client.sin_addr.s_addr, str, sizeof(str));
+    printf("size of buf_client: %ld\n", rv);
+    printf("client buf:%s\n", read_buf);
+    printf("client IP: %s, Port: %d\n", str, ntohs(client.sin_port));
+    sendto(listenfd, read_buf, sizeof(read_buf), 0, (struct sockaddr *)&client, lencli);
+    bzero(&client, lencli);
+    memset(buf, 0x00, MAX_BUFFER_SIZE);
+    memset(read_buf, 0x00, MAX_BUFFER_SIZE);
+  }
+  close(sockfd);
+  return 0;
+}</pre>
+            <p><h4>客户端程序</h4></p>
+<pre>
+#include "socket_includes.h"
+int main(int argc, char const *argv[])
+{
+  int sockfd;
+  char buf[MAX_BUFFER_SIZE] = "Hello UDP!";
+  char read_buf[MAX_BUFFER_SIZE];
+  struct sockaddr_in server, ser;
+  int rv;
+  socklen_t length,len;
+  bzero(read_buf, MAX_BUFFER_SIZE);
+  bzero(&server, sizeof(server));
+  len = sizeof(ser);
+  length = sizeof(server);
+  //sockfd = socket(AF_INET,SOCK_DGRAM, 0);
+  if((sockfd = socket(AF_INET,SOCK_DGRAM, 0)) < 0)
+  {
+    perror("Create socket fail!\n");
+    return -1;
+  }
+  server.sin_family = AF_INET;
+  server.sin_port = htons(8888);
+  inet_pton(AF_INET, "10.103.14.28", &server.sin_addr.s_addr);
+  sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&server, length);
+  rv = recvfrom(sockfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&ser, &len);
+  if(rv < 0)
+  {
+    printf("recvfr0m error!\n");
+    close(sockfd);
+    return -1;
+  }
+  printf("server buf_back:%s\n", read_buf);
+  close(sockfd);
+  return 0;
+}</pre>
+        <p>其中头文件均为socket_includes.h</p>
+<pre>
+#include &ltstdio.h&gt
+#include &ltstring.h&gt
+#include &ltstdlib.h&gt
+
+#include &ltsys/types.h&gt
+#include &ltsys/socket.h&gt
+#include &ltnetinet/in.h&gt
+#include &ltsys/shm.h&gt
+#include &ltarpa/inet.h&gt
+
+#include &ltunistd.h&gt
+#include &ltfcntl.h&gt
 
 
-          <ul >
-            <li><h2>基本API函数</h2></li>
-            <ol type="1">
-              <li><h3>socket()函数——创建套接字</h3></li>
-
-              <pre>#include &ltsys/socket.h&gt<br/>int socket(int domain, int type, int protocol);<br/>成功返回sockfd;出错返回-1.</pre>
-
-              <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
-              <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
-              <ul>
-                <li><b>domain</b>：协议域</li>
-                <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。</p>
-                <li><b>type</b>:指定socket类型</li>
-                <p>常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。</p>
-                <li><b>protocol</b>:指定通信协议</li>
-                <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
-              </ul>
-              <p><b>注意：</b>type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
-<!--bind()函数-->
-              <li><h3>bind()函数</h3></li>
+#define MAX_LISTEN_QUE 5
+#define SERV_PORT 8888
+#define MAX_BUFFER_SIZE 100
+</pre>
 
 
-              <pre>#include &ltsys/socket.h&gt<br/>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);返回:0-成功，-1-出错</pre>
 
-              <p>bind()函数涉及三个对象：套接口，地址和端口，负责把特定的地址和端口赋给socket描述符，即sockfd，是从进程到内核传递套接口地址结构的函数。</p>
-              <ul>
-                <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。</li>
-                <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。其中ipv4地址对应如下：</li>
-                <pre>struct sockaddr_in{
-                  sa_family_t sin_family;
-                  in_port_t sin_port;       //<font color="red">port in network byte order</font>
-                  struct in_addr sin_addr;
-                }
-                struct in_addr{
-                              uint32_t s_addr;  //<font color="red">address in network byte order</font>
-                }</pre>
-                <li><b>addrlen</b>:对应的是地址的长度。</li>
-              </ul>
-              <p><b>函数示例</b><br/><pre>struct sockaddr_in serv;<br/>bind(sockfd, (struct sockaddr *)&serv, sizeof(serv));</pre></p>
-<!--listen()函数-->
-              <li><h3>listen()函数</h3></li>
-              <pre>#include &ltsys/socket.h&gt<br/>int listen(int sockfd, int backlog)</pre>
-              <p>listen()函数用于<font color="red">服务器端</font>，服务器通过调用listen()函数来监听某个socket。其两个参数如下：</p>
-                <ul>
-                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。</li>
-                  <li><b>backlog</b>:该sockfd可以允许的最大连接数。</li>
-                </ul>
-<!--connet()函数-->
-              <li><h3>connect()函数</h3></li>
-
-
-              <pre>#include &ltsys/socket.h&gt<br/>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);<br/>返回:0-成功，-1-出错</pre>
-
-              <p>connect()函数用在<font color="red">客户端</font>，客户端通过这个函数连接服务器端，是从进程到内核传递套接口地址结构的函数。其各参数如下：</p>
-                <ul>
-                  <li><b>sockfd</b>:socket描述符，即socket()函数创建的唯一标识一个socket。<li>
-                  <li><b>addr</b>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</li>
-                  <li><b>addrlen</b>:对应的是地址的长度。</li>
-                </ul>
-<!--accept()函数-->
-              <li><h3>accept()函数</h3></li>
-              <pre>#include &ltsys/socket.h&gt<br/>sint accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);//返回连接connect_fd</pre>
-              <p>TCP服务器端依次调用<font color="red">socket(),bind(),listen()</font>之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端
-              监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。accept()函数是从内核到进程传递套接口地址结构的函数。</p>
-                <ul>
-                  <li><b>sockfd</b>:socket描述符，及socket()函数创建的唯一标识一个socket。<li>
-                  <li><b>addr</b>:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。</li>
-                  <li><b>addrlen</b>:一个结果参数，用来接受上addr的结构的大小，可以设置为NULL。</li>
-                </ul>
-            </ol>
-          </ul>
+        </ol>
 
 
 
@@ -153,6 +210,40 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <hr/><hr/>
     </div>
 <!--缩写部分开始-->
+    <div>
+      <a href="/pages/2016/05/socket-bian-cheng=han-shu-xue-xi-pian.html"><h2>Socket编程之函数学习篇</h2></a>
+      <div class="well small">2016-05-17
+        by <a class="url fn" href="/author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
+
+
+        <ul >
+          <li><h2>基本API函数</h2></li>
+          <ol type="1">
+            <li><h3>socket()函数——创建套接字</h3></li>
+
+            <pre>#include &ltsys/socket.h&gt<br/>int socket(int domain, int type, int protocol);<br/>成功返回sockfd;出错返回-1.</pre>
+
+            <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
+            <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
+            <ul>
+              <li><b>domain</b>：协议域</li>
+              <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。</p>
+              <li><b>type</b>:指定socket类型</li>
+              <p>常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。</p>
+              <li><b>protocol</b>:指定通信协议</li>
+              <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
+            </ul>
+          </ol>
+        </ul>
+        <a class="btn btn-info xsmall" href="/pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html">read more</a>
+      </div>
+      <br/><br/>
+    </div>
+    <hr/>
+
     <div>
       <a href="/pages/2016/05/socket-bian-cheng-jie-shao-pian.html"><h2>Socket编程之介绍篇</h2></a>
       <div class="well small">2016-05-14
