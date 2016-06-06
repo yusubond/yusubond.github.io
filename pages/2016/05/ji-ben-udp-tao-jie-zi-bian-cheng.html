@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - Archives</title>
+    <title>Milestone</title>
     <meta name="description" content="">
     <meta name="author" content="Yu Bangchao">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +34,7 @@
              <span class="icon-bar"></span>
          </a>
 
-        <a class="brand" href=".">Milestone</a>
+        <a class="brand" href="../../../..">Milestone</a>
 
         <div class="nav-collapse">
         <ul class="nav">
@@ -51,39 +51,59 @@
     <div class="row">
 
         <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>基本UDP套接字编程</h1>
+2016-05-24
 
-<h1>Archives</h1>
-
-<table class="table">
-    <tbody>
-        <tr><td>24th May 2016</td>
-        <td><a href='../papes/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html'>基本UDP套接字编程</a></td>
-        </tr>
-    　 　<tr><td>17th May 2016</td>
-　     　<td><a href='../pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html'>Socket编程之函数学习篇</a></td>
-　     　</tr>
-　　　　　<tr><td>14th May 2016</td>
-　　　　　<td><a href='../pages/2016/05/socket-bian-cheng-jie-shao-pian.html'>Socket编程之介绍篇</a></td>
-　　　　　</tr>
-　　　　　<tr><td>10th May 2016</td>
-　　　　　<td><a href='../pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html'>LTE系统网络架构</a></td>
-　　　　　</tr>
-　　　　　<tr><td>29th Apr 2016</td>
-　　　　　<td><a href='../pages/2016/04/git-xue-xi-shou-ji.html'>Git学习手记</a></td>
-　　　　　</tr>
-        <tr><td>26th Apr 2016</td>
-        <td><a href='../pages/2016/04/pelican-github-chuang-jian-bo-ke2.html'>利用Pelican+Github&nbsp;pages搭建个人博客</a></td>
-        </tr>
+by <a class="url fn" href="/author/subond.html">subond</a>
 
 
 
+        </div>
+        <div>
+          <ol type="1">
+            <li><h3>UDP套接字编程模型</h3></li>
+            <p>TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)，
+              NFS(网络文件系统)和SNMP(简单网络管理协议)。<br/>典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p>
+            <p><center><img alt="UDP客户/服务器程序所用的套接字函数" src="/images/2016/05/udp-bian-cheng-mo-xing.jpg"></center></p>
+            <p><center>图1-1&nbsp;UDP客户/服务器程序所用的套接字函数</center></p>
+            <li><h3>recvfrom和sendto函数</h3></li>
+<pre>#include&ltsys/socket.h&gt
+ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
+ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
+均返回：若成功返回读或写的字节数，出错返回-1</pre>
+            <p>前三个参数<i>sockfd</i>,<i>buff</i>和<i>nbytes</i>为：描述符、指向读入或写出的缓冲区的指针和读写字节数。<br/><i>flags</i>一般置为0。</p>
+            <p>sendto的<i>to</i>参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由<i>addrlen</i>参数指定。recvfrom的<i>from</i>参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构，
+            而在该套接字地址结构中填写的字节数则放在<i>addrlen</i>参数所所指的整数中返回给调用者。<b>注意</b>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
+            <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
+            调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
 
 
 
-    </tbody>
-</table>
+        </ol>
 
 
+
+
+        </div>
+
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'subond';
+    var disqus_title = 'My super title';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
         </div>
 
         <div class="span3">
@@ -112,7 +132,6 @@
 
                 <li><a href="/category/life.html">Life</a></li>
                 <li><a href="/category/tech.html">Tech</a></li>
-                <li><a href="/category/note.html">Note</a></li>
 
             </ul>
             </div>
@@ -123,6 +142,7 @@
                 <li class="nav-header">
                 Links
                 </li>
+
                 <li><a href="http://www.bootcss.com/p/git-guide">Git</a></li>
                 <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OAI5g</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
