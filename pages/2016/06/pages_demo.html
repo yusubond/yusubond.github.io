@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - My super title</title>
+    <title>Milestone</title>
     <meta name="description" content="">
     <meta name="author" content="Yu Bangchao">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+          <li><a href="./author/subond.html">About me</a></li>
         </ul>
         </div>
 
@@ -53,16 +53,20 @@
         <div class="span9">
     <div class='article'>
         <div class="content-title">
-            <h1>My super title</h1>
-五 03 十二月 2010
+            <h1>线程</h1>
+2016-06-02
 
-by <a class="url fn" href="/author/alexis-metaireau.html">subond</a>
-
-
-
+by <a class="url fn" href="/author/subond.html">subond</a>
         </div>
-
-        <div><p>This is the content of my super blog post.</p></div>
+        <div>
+          <h2>基本线程函数</h2>
+          <p>以下主要介绍5个基本线程函数</p>
+          <ol type="1">
+            <li><h3>pthread_create函数</h3></li>
+            <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
+<pre>#include &ltpthread.h&gt<br/>int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg);<br/>返回：成功为0，出错为正的Exxx值</pre>
+            
+        </div>
 
         <hr>
 
@@ -108,6 +112,7 @@ by <a class="url fn" href="/author/alexis-metaireau.html">subond</a>
 
                 <li><a href="/category/life.html">Life</a></li>
                 <li><a href="/category/tech.html">Tech</a></li>
+                <li><a href="/category/note.html">Note</a></li>
 
             </ul>
             </div>
@@ -119,7 +124,7 @@ by <a class="url fn" href="/author/alexis-metaireau.html">subond</a>
                 Links
                 </li>
 
-                <li><a href="http://www.bootcss.com/p/git-guide">Git</a></li>
+                <li><a href="http://www.opensource5g.org">OpenSource5G</a></li>
                 <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OAI5g</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
                 <li><a href="http://www.sdnap.com/">SDNAP</a></li>
@@ -144,7 +149,7 @@ by <a class="url fn" href="/author/alexis-metaireau.html">subond</a>
     </div>     </div>
 <footer>
 <br />
-<p><a href="">Milestone</a> &copy; Yu Bangchao 2016</p>
+<p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
 </footer>
 
 </div> <!-- /container -->
