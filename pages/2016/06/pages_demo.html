@@ -69,6 +69,13 @@ by <a class="url fn" href="/author/subond.html">subond</a>
             <p><b><i>attr</i></b>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
             <P>创建一个线程时最后指定的参数就是由该线程执行的函数<b><i>func</i></b>及其参数<b><i>arg</i></b>。注意<b><i>func</i></b>和<b><i>arg</i></b>的声明。<b><i>func</i></b>所指函数作为参数接受一个通用指针
             (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</P>
+            <li><h3>pthread_join函数</h3></li>
+<pre>#include &ltpthread.h&gt<br/>int pthread_join(pthread_t *tid, void **status);<br/>返回：成功为0，出错为正的Exxx值。</pre>
+            <p>该函数的功能是等待一个给定线程终止</p>
+            <li><h3>pthread_self函数</h3></li>
+<pre>#include &ltpthread.h&gt<br/>int pthread_self(void)<br/>返回：调用线程的线程ID。</pre>
+            <li><h3>pthread_detach函数</h3></li>
+            <li><h3>pthread_exit函数</h3></li>
 
         </div>
 
