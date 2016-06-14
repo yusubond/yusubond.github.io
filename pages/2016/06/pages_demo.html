@@ -65,6 +65,10 @@ by <a class="url fn" href="/author/subond.html">subond</a>
             <li><h3>pthread_create函数</h3></li>
             <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
 <pre>#include &ltpthread.h&gt<br/>int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg);<br/>返回：成功为0，出错为正的Exxx值</pre>
+            <p><b><i>tid</i></b>:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。</p>
+            <p><b><i>attr</i></b>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
+            <P>创建一个线程时最后指定的参数就是由该线程执行的函数<b><i>func</i></b>及其参数<b><i>arg</i></b>。注意<b><i>func</i></b>和<b><i>arg</i></b>的声明。<b><i>func</i></b>所指函数作为参数接受一个通用指针
+            (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</P>
 
         </div>
 
