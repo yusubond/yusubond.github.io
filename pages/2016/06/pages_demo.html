@@ -75,8 +75,18 @@ by <a class="url fn" href="/author/subond.html">subond</a>
             <li><h3>pthread_self函数</h3></li>
 <pre>#include &ltpthread.h&gt<br/>int pthread_self(void)<br/>返回：调用线程的线程ID。</pre>
             <li><h3>pthread_detach函数</h3></li>
+<pre>#include &ltpthread.h&gt<br/>int pthread_detach(pthread_t tid)<br/>返回：成功返回0，出错为正的Exxx值。</pre>
+            <p>一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源
+            都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。</p>
             <li><h3>pthread_exit函数</h3></li>
-
+<pre>#include &ltpthread.h&gt<br/>int pthread_exit(void *status)<br/>不返回</pre>
+            <p>调用pthread_exit函数可使线程终止。</p>
+          </ol>
+          <h2>一个实例</h2>
+          <p>利用线程的方法，重新编写<a href='../pages/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html'>基本UDP套接字编程</a></p>
+          <p>其服务端源码地址：https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c</p>
+          <p>结果如下图所示：</p>
+          <p><center><img alt="UDP服务端结果" src="/images/2016/06/pthread_udp.jpg"></center></p>
         </div>
 
         <hr>
