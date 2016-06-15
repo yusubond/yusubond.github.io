@@ -73,146 +73,70 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         </div>
 <!--我的第一篇博客开始-->
         <div>
+          <h2>基本线程函数</h2>
+          <p>以下主要介绍5个基本线程函数</p>
           <ol type="1">
-            <li><h3>UDP套接字编程模型</h3></li>
-            <p>TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)，
-              NFS(网络文件系统)和SNMP(简单网络管理协议)。<br/>典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p>
-            <p><center><img alt="UDP客户/服务器程序所用的套接字函数" src="/images/2016/05/udp-bian-cheng-mo-xing.jpg"></center></p>
-            <p><center>图1-1&nbsp;UDP客户/服务器程序所用的套接字函数</center></p>
-            <li><h3>recvfrom和sendto函数</h3></li>
-<pre>#include&ltsys/socket.h&gt
-ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
-ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
-均返回：若成功返回读或写的字节数，出错返回-1</pre>
-            <p>前三个参数<i>sockfd</i>,<i>buff</i>和<i>nbytes</i>为：描述符、指向读入或写出的缓冲区的指针和读写字节数。<br/><i>flags</i>一般置为0。</p>
-            <p>sendto的<i>to</i>参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由<i>addrlen</i>参数指定。recvfrom的<i>from</i>参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构，
-            而在该套接字地址结构中填写的字节数则放在<i>addrlen</i>参数所所指的整数中返回给调用者。<b>注意</b>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
-            <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
-            调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
-            <li><h3>消息回传程序示例</h3></li>
-            <p><h4>服务器端程序</h4></p>
-<pre>
-#include "socket_includes.h"
-int main(int argc, char *argv[])
-{
-  int listenfd, sockfd;
-  struct sockaddr_in server, client;
-  char buf[MAX_BUFFER_SIZE], read_buf[MAX_BUFFER_SIZE];
-  socklen_t lenserv,lencli;
-  char str[20];
-  bzero(&server, sizeof(server));
-  bzero(&str, sizeof(str));
-  memset(buf, 0x00, MAX_BUFFER_SIZE);
-  memset(read_buf, 0x00, MAX_BUFFER_SIZE);
-  lenserv = sizeof(server);
-  lencli = sizeof(client);
-  //创建套接字
-  //listenfd = socket(AF_INET,SOCK_DGRAM, 0);
-  if((listenfd = socket(AF_INET, SOCK_DGRAM, 0))< 0)
-  {
-    perror("Create socket fail!");
-    return -1;
-  }
-  //绑定套接字
-  server.sin_family = AF_INET;
-  server.sin_port = htons(8888);                //主机字节序转网络字节序
-  server.sin_addr.s_addr = htonl(INADDR_ANY);   //绑定主机的所有网卡
-  if(bind(listenfd, (struct sockaddr*)&server, lenserv) < 0)
-  {
-    perror("bind socket error.");
-    return -1;
-  }
-  ssize_t rv;
-  while (1)
-  {
-    rv = recvfrom(listenfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&client, &lencli);
-    if(rv < 0)
-    {
-      printf("recvfrom error.\n");
-      close(sockfd);
-      return -1;
-    }
-    inet_ntop(AF_INET, &client.sin_addr.s_addr, str, sizeof(str));
-    printf("size of buf_client: %ld\n", rv);
-    printf("client buf:%s\n", read_buf);
-    printf("client IP: %s, Port: %d\n", str, ntohs(client.sin_port));
-    sendto(listenfd, read_buf, sizeof(read_buf), 0, (struct sockaddr *)&client, lencli);
-    bzero(&client, lencli);
-    memset(buf, 0x00, MAX_BUFFER_SIZE);
-    memset(read_buf, 0x00, MAX_BUFFER_SIZE);
-  }
-  close(sockfd);
-  return 0;
-}</pre>
-            <p><h4>客户端程序</h4></p>
-<pre>
-#include "socket_includes.h"
-int main(int argc, char const *argv[])
-{
-  int sockfd;
-  char buf[MAX_BUFFER_SIZE] = "Hello UDP!";
-  char read_buf[MAX_BUFFER_SIZE];
-  struct sockaddr_in server, ser;
-  int rv;
-  socklen_t length,len;
-  bzero(read_buf, MAX_BUFFER_SIZE);
-  bzero(&server, sizeof(server));
-  len = sizeof(ser);
-  length = sizeof(server);
-  //sockfd = socket(AF_INET,SOCK_DGRAM, 0);
-  if((sockfd = socket(AF_INET,SOCK_DGRAM, 0)) < 0)
-  {
-    perror("Create socket fail!\n");
-    return -1;
-  }
-  server.sin_family = AF_INET;
-  server.sin_port = htons(8888);
-  inet_pton(AF_INET, "10.103.14.28", &server.sin_addr.s_addr);
-  sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&server, length);
-  rv = recvfrom(sockfd, read_buf, MAX_BUFFER_SIZE, 0, (struct sockaddr *)&ser, &len);
-  if(rv < 0)
-  {
-    printf("recvfr0m error!\n");
-    close(sockfd);
-    return -1;
-  }
-  printf("server buf_back:%s\n", read_buf);
-  close(sockfd);
-  return 0;
-}</pre>
-        <p>其中头文件均为socket_includes.h</p>
-<pre>
-#include &ltstdio.h&gt
-#include &ltstring.h&gt
-#include &ltstdlib.h&gt
-
-#include &ltsys/types.h&gt
-#include &ltsys/socket.h&gt
-#include &ltnetinet/in.h&gt
-#include &ltsys/shm.h&gt
-#include &ltarpa/inet.h&gt
-
-#include &ltunistd.h&gt
-#include &ltfcntl.h&gt
-
-
-#define MAX_LISTEN_QUE 5
-#define SERV_PORT 8888
-#define MAX_BUFFER_SIZE 100
-</pre>
-
-
-
-        </ol>
-
-
-
+            <li><h3>pthread_create函数</h3></li>
+              <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
+              <pre>#include &ltpthread.h&gt<br/>int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg);<br/>返回：成功为0，出错为正的Exxx值</pre>
+              <p><b><i>tid</i></b>:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。</p>
+              <p><b><i>attr</i></b>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
+              <P>创建一个线程时最后指定的参数就是由该线程执行的函数<b><i>func</i></b>及其参数<b><i>arg</i></b>。注意<b><i>func</i></b>和<b><i>arg</i></b>的声明。<b><i>func</i></b>所指函数作为参数接受一个通用指针
+        (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</P>
+            <li><h3>pthread_join函数</h3></li>
+              <pre>#include &ltpthread.h&gt<br/>int pthread_join(pthread_t *tid, void **status);<br/>返回：成功为0，出错为正的Exxx值。</pre>
+              <p>该函数的功能是等待一个给定线程终止</p>
+            <li><h3>pthread_self函数</h3></li>
+              <pre>#include &ltpthread.h&gt<br/>int pthread_self(void)<br/>返回：调用线程的线程ID。</pre>
+            <li><h3>pthread_detach函数</h3></li>
+              <pre>#include &ltpthread.h&gt<br/>int pthread_detach(pthread_t tid)<br/>返回：成功返回0，出错为正的Exxx值。</pre>
+              <p>一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源
+        都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。</p>
+            <li><h3>pthread_exit函数</h3></li>
+              <pre>#include &ltpthread.h&gt<br/>int pthread_exit(void *status)<br/>不返回</pre>
+              <p>调用pthread_exit函数可使线程终止。</p>
+          </ol>
+        <h2>一个实例</h2>
+        <p>利用线程的方法，重新编写<a href='/pages/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html'>基本UDP套接字编程</a></p>
+        <p>其服务端源码地址：<a href="https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c">https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c</a></p>
+        <p>结果如下图所示：</p>
+        <p><left><img alt="UDP服务端结果" src="/images/2016/06/pthread_udp.png"></left></p>
         </div>
+
+
 <!--我的第一篇博客结束-->
 <!--添加水平横线-->
         <hr/><hr/>
     </div>
 <!--缩写部分开始-->
+    <div>
+      <a href="/pages/2016/05/chu-shi-xian-cheng.html"><h2>基本UDP套接字编程</h2></a>
+      <div class="well small">2016-05-24
+        by <a class="url fn" href="/author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <ol type="1">
+          <li><h3>UDP套接字编程模型</h3></li>
+          <p>TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)，
+            NFS(网络文件系统)和SNMP(简单网络管理协议)。<br/>典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p>
+          <p><center><img alt="UDP客户/服务器程序所用的套接字函数" src="/images/2016/05/udp-bian-cheng-mo-xing.jpg"></center></p>
+          <p><center>图1-1&nbsp;UDP客户/服务器程序所用的套接字函数</center></p>
+          <li><h3>recvfrom和sendto函数</h3></li>
+<pre>#include&ltsys/socket.h&gt
+ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
+ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
+均返回：若成功返回读或写的字节数，出错返回-1</pre>
+          <p>前三个参数<i>sockfd</i>,<i>buff</i>和<i>nbytes</i>为：描述符、指向读入或写出的缓冲区的指针和读写字节数。<br/><i>flags</i>一般置为0。</p>
+          <p>sendto的<i>to</i>参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由<i>addrlen</i>参数指定。recvfrom的<i>from</i>参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构，
+          而在该套接字地址结构中填写的字节数则放在<i>addrlen</i>参数所所指的整数中返回给调用者。<b>注意</b>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
+          <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
+          调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
+        </ol>
+          <a class="btn btn-info xsmall" href="/pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html">read more</a>
+        </div>
+        <br/><br/>
+    </div>
+
     <div>
       <a href="/pages/2016/05/socket-bian-cheng=han-shu-xue-xi-pian.html"><h2>Socket编程之函数学习篇</h2></a>
       <div class="well small">2016-05-17
