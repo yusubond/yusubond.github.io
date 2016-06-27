@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - Python</title>
+    <title>Milestone</title>
     <meta name="description" content="">
     <meta name="author" content="Yu Bangchao">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,11 +34,11 @@
              <span class="icon-bar"></span>
          </a>
 
-        <a class="brand" href=".">Milestone</a>
+        <a class="brand" href="../../../..">Milestone</a>
 
         <div class="nav-collapse">
         <ul class="nav">
-
+          <li><a href="./author/subond.html">About me</a></li>
         </ul>
         </div>
 
@@ -51,39 +51,47 @@
     <div class="row">
 
         <div class="span9">
-
-
-
-
-
     <div class='article'>
         <div class="content-title">
-            <a href="/my-super-post.html"><h1>My super title</h1></a>
-2016-04-26
+            <h1>Tips</h1>
+2016-06-15
 
-by <a class="url fn" href="/author/alexis-metaireau.html">subond</a>
-
+by <a class="url fn" href="/author/subond.html">subond</a>
 
 
 
         </div>
+        <div>
+          <ol type="1">
+            <li><h3>C编程</h3></li>
+            <p><b>问题</b>:头文件中全局函数多次引用出现重定义问题</p>
+            <p><b>解决方法：</b><br/>方法1：不要在头文件中定义函数，而将声明和实现分别写在.h和.cpp中<br/>方法2：.h中实现的函数加上static</p>
 
-        <div><p>This is the content of my super life blog post.</p></div>
-        <hr />
+            <li><h3>Java语法：import</h3></li>
+            <p>import:导入包中的类，语法如下：</p>
+            <pre>import package1.package2.classname;</pre>
+            <p>package为包名，classname为类名。例如：</p>
+            <pre>import java.util.Date;     //导入java.util包下的Date类<br/>import java.swing.*;       //导入java.swing包下的所有类</pre>
+            <p><b>注意</b>:import只能导入包所包含的类，而不能导入包。</p>
+          </ol>
+        </div>
+
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'subond';
+    var disqus_title = 'My super title';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </div>
-
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="/category/python.html">1</a></li>
-
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
-
-</ul>
-</div>
-
-
         </div>
 
         <div class="span3">
