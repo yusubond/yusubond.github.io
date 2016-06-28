@@ -89,11 +89,14 @@ public class SimpleCluster {
       /*
       *读入训练数据
       */
-			File file = new File("/home/subond/subond/weka-3-8-0/data/weather.numeric.arff");
+      File file = new File("/home/subond/subond/weka-3-8-0/data/weather.numeric.arff");
 			ArffLoader loader = new ArffLoader();
 			loader.setFile(file);
 			ins = loader.getDataSet();
-
+      /*
+      *设置数据集的分类类别，即指定哪一列作为类别
+      *注意：本例中设置最后一列作为类别
+      */
 			ins.setClassIndex(ins.numAttributes()-1);
 
       /*
@@ -130,7 +133,7 @@ public class SimpleCluster {
 	}
 
 }</pre>
-          <p></p>
+
         </div>
 
         <hr>
