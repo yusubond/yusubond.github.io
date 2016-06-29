@@ -69,7 +69,8 @@ implemensts java.io.Serializable, RevisionHandler
           <p>也就是说Instances类是继承AbstractList类而来，并实现了Serializable,RevisionHandler接口。</p>
 
           <h2>构造函数</h2>
-          <img src="pages/2016/06/29/instances-gouzao.jpg" align="left">
+          <img src="instances-gouzao.jpg" align="left">
+          <p>其构造函数可以实现实例的完整或部分拷贝，也可以创建新的实例，值得注意的是，其读入的数据格式为arff。关于arff的数据格式后续会有介绍。</p>
 
           <h2>主要成员变量</h2>
           <ul>
@@ -82,16 +83,18 @@ implemensts java.io.Serializable, RevisionHandler
           <h2>应用实例</h2>
           <ol type="1">
             <li>导入数据，设置分类属性，输出实例</li>
-            <pre>
-              import weka.core.converters.ConverterUtils.DataSource;
+<pre>
+import weka.core.converters.ConverterUtils.DataSource;
 
-              DataSource source = new DataSource("filename");
-              Instances ins = source.getDataSet();
+DataSource source = new DataSource("filename");
+Instances ins = source.getDataSet();
 
-              System.out.println(ins)
-            </pre>
+System.out.println(ins)
+</pre>
 
           </ol>
+          <h3>参考资料</h3>
+          <p>官方资料：<a href="Instances.html">Instances类</a></p>
 
         </div>
 
