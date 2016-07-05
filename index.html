@@ -62,8 +62,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="./pages/2016/06/chu-shi-xian-cheng.html"><h1>初识线程</h1></a>
-2016-06-14
+            <a href="/pages/2016/07/03/weka-xue-xi-zhi-evaluation.html"><h2>机器学习之Weka学习(03)-Evaluation类介绍</h2></a>
+2016-07-03
 
 by <a class="url fn" href="./author/subond.html">subond</a>
 
@@ -73,34 +73,40 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         </div>
 <!--我的第一篇博客开始-->
         <div>
-          <h2>基本线程函数</h2>
-          <p>以下主要介绍5个基本线程函数</p>
-          <ol type="1">
-            <li><h3>pthread_create函数</h3></li>
-              <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
-              <pre>#include &ltpthread.h&gt<br/>int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg);<br/>返回：成功为0，出错为正的Exxx值</pre>
-              <p><b><i>tid</i></b>:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。</p>
-              <p><b><i>attr</i></b>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
-              <P>创建一个线程时最后指定的参数就是由该线程执行的函数<b><i>func</i></b>及其参数<b><i>arg</i></b>。注意<b><i>func</i></b>和<b><i>arg</i></b>的声明。<b><i>func</i></b>所指函数作为参数接受一个通用指针
-        (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</P>
-            <li><h3>pthread_join函数</h3></li>
-              <pre>#include &ltpthread.h&gt<br/>int pthread_join(pthread_t *tid, void **status);<br/>返回：成功为0，出错为正的Exxx值。</pre>
-              <p>该函数的功能是等待一个给定线程终止</p>
-            <li><h3>pthread_self函数</h3></li>
-              <pre>#include &ltpthread.h&gt<br/>int pthread_self(void)<br/>返回：调用线程的线程ID。</pre>
-            <li><h3>pthread_detach函数</h3></li>
-              <pre>#include &ltpthread.h&gt<br/>int pthread_detach(pthread_t tid)<br/>返回：成功返回0，出错为正的Exxx值。</pre>
-              <p>一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源
-        都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。</p>
-            <li><h3>pthread_exit函数</h3></li>
-              <pre>#include &ltpthread.h&gt<br/>int pthread_exit(void *status)<br/>不返回</pre>
-              <p>调用pthread_exit函数可使线程终止。</p>
-          </ol>
-        <h2>一个实例</h2>
-        <p>利用线程的方法，重新编写<a href='/pages/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html'>基本UDP套接字编程</a></p>
-        <p>其服务端源码地址：<a href="https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c">https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c</a></p>
-        <p>结果如下图所示：</p>
-        <p><left><img alt="UDP服务端结果" src="/images/2016/06/pthread_udp.png"></left></p>
+          <div>
+            <h2>Evaluation类介绍</h2>
+            <p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation
+              而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的
+              Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
+  <pre>
+  public class　Evaluation
+  extends java.lang.Object
+  implemensts java.io.Serializable, Summarizable, RevisionHandler
+  </pre>
+            <h2>构造函数</h2>
+
+            <p>Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：<pre>Evaluation eval = new Evaluation(data)</pre>data是训练集的数据，用来获取一些信息，并不用来评价分类器。</p>
+            <p><img src="Evaluation.jpg"></p>
+            <h2>主要成员变量</h2>
+            <ul>
+              <li>evaluationModel(Classifier classifier, Instances data)</li>
+                <p>如果训练集和测试集是分开的，可以使用evaluationModel方法，方法中的参数为：第一个参数是训练过的分类器，第二个参数是测试集的数据。</p>
+              <li>crossValidationModel()</li>
+                <p>crossValidationModel方法的四个参数为：第一个参数是分类器，第二个参数是测试集的数据，第三个参数是交叉检验的次数（比较常见的是10），第四个参数是一个随机数对象。</p>
+            </ul>
+
+            <h2>应用实例</h2>
+            <p>下面这个小程序用同一数据测试了两类方法的评价结果，源码地址如下<a href="https://github.com/yusubond/Machine-Learning/blob/master/Evaluation/Demo_evaluation.java">Demo_evaluation</a></p>
+            <p>结果展示:</p>
+              <img src="evaluationModel.jpg" algin="left">
+              <img src="crossvalidateModel.jpg" algin="left">
+
+            </ol>
+            <h3>参考资料</h3>
+            <p>官方资料：<br/>
+              <a href="http://10.103.14.28/weka-3-8-0/doc/">Instances类</a></p>
+            <p>Weka开发［3］－Evaluation类<br/>
+              <a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/">http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/</a></p>
         </div>
 
 
@@ -109,6 +115,91 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <hr/><hr/>
     </div>
 <!--缩写部分开始-->
+    <div>
+      <a href="/pages/2016/06/29/weka-xue-xi-zhi-instances.html">机器学习之Weka学习(02)-Instances类介绍</a>
+      <div class="well small">2016-06-29
+        by <a class="url fn" href="author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <h2>Instances类介绍</h2>
+        <p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。</p>
+<pre>
+public class Instances
+extends java.util.AbstractList&lt;Instace&gt;
+implemensts java.io.Serializable, RevisionHandler
+</pre>
+        <p>也就是说Instances类是继承AbstractList类而来，并实现了Serializable,RevisionHandler接口。</p>
+
+        <h2>构造函数</h2>
+        <img src="instances-gouzao.jpg" align="left">
+        <p>其构造函数可以实现实例的完整或部分拷贝，也可以创建新的实例，值得注意的是，其读入的数据格式为arff。关于arff的数据格式后续会有介绍。</p>
+
+        <h2>主要成员变量</h2>
+        <ul>
+          <li>numAttributes():返回属性总量</li>
+          <li>setClassIndex(int):设置用于分类的属性</li>
+          <li>instance(int):返回具体的实例</li>
+          <li>firstInstance():返回第一个实例</li>
+        </ul>
+        <a class="btn btn-info xsmall" href="/pages/2016/06/29/weka-xue-xi-zhi-instances.html">read more</a>
+      </div>
+      <br/><br/>
+    </div>
+
+    <div>
+      <a href="/pages/2016/06/weka-xue-xi-zhi-fen-lei-qi.html"><h2>机器学习之Weka学习(01)-简单分类器</h2></a>
+      <div class="well small">2016-06-28
+        by <a class="url fn" href="author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <h2>Weka介绍</h2>
+        <p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。
+          它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。<br/>WEKA作为一个公开的数据挖掘工作平台，集合了大量能承担数据挖掘任务的机器学习算法，包括对数据进行预处理，
+          分类，回归、聚类、关联规则以及在新的交互式界面上的可视化。</p>
+        <p>机器学习可以概括为“为使用正确的特征来构建正确的模型，以完成既定的任务”。任务，模型及特征是机器学习的三大”原料“。其工作流程一般如下：<br/>1.学习问题，即由训练数据结合学习算法构建正确的模型<br/>
+        2.构建特征，即将原始数据根据所需构建特征，形成模型所识别的数据格式<br/>3.完成任务，即借助正确的模型，对数据进行处理，得到输出。</p>
+        <h2>简单的分类器实例</h2>
+        <p>该分类器的数据处理过程如下：<br/>1)读入训练数据<br/>2)初始化分类器<br/>3)使用训练数据训练分类器<br/>4)使用测试样本测试分类器的学习效果<br/>5)打印分类结果</p>
+        <a class="btn btn-info xsmall" href="/pages/2016/06/weka-xue-xi-zhi-fen-lei-qi.html">read more</a>
+      </div>
+      <br/><br/>
+    </div>
+
+    <div>
+      <a href="http://www.opensource5g.org/forum.php?mod=viewthread&tid=8"><h2>[转]基于OpenAirInterface5g开源工程的核心网环境搭建及部署</h2></a>
+      <div class="well small">2016-06-24
+        by <a class="url fn" href="author/subond.html">subond</a>
+      </div>
+      <div>
+        <a class="btn btn-info xsmall" href="http://www.opensource5g.org/forum.php?mod=viewthread&tid=8">read more</a>
+      </div>
+      <br/><br/>
+    </div>
+
+    <div>
+      <a href="/pages/2016/06/chu-shi-xian-cheng.html"><h2>初识线程</h2></a>
+      <div class="well small">2016-06-14
+        by <a class="url fn" href="author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <h2>基本线程函数</h2>
+        <p>以下主要介绍5个基本线程函数</p>
+        <ol type="1">
+          <li><h3>pthread_create函数</h3></li>
+          <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
+<pre>#include &ltpthread.h&gt<br/>int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg);<br/>返回：成功为0，出错为正的Exxx值</pre>
+          <p><b><i>tid</i></b>:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。</p>
+          <p><b><i>attr</i></b>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
+          <P>创建一个线程时最后指定的参数就是由该线程执行的函数<b><i>func</i></b>及其参数<b><i>arg</i></b>。注意<b><i>func</i></b>和<b><i>arg</i></b>的声明。<b><i>func</i></b>所指函数作为参数接受一个通用指针
+          (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</P>
+          <li><h3>pthread_join函数</h3></li>
+<pre>#include &ltpthread.h&gt<br/>int pthread_join(pthread_t *tid, void **status);<br/>返回：成功为0，出错为正的Exxx值。</pre>
+          <p>该函数的功能是等待一个给定线程终止</p>
+        <a class="btn btn-info xsmall" href="/pages/2016/06/chu-shi-xian-cheng.html">read more</a>
+      </div>
+      <br/><br/>
+    </div>
+
     <div>
       <a href="/pages/2016/05/chu-shi-xian-cheng.html"><h2>基本UDP套接字编程</h2></a>
       <div class="well small">2016-05-24
