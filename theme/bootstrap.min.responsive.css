@@ -29,7 +29,7 @@
       .row{margin-left:-20px;*zoom:1;}
       .row:before,.row:after{display:table;content:"";}
       .row:after{clear:both;}
-      [class*="span"]{float:left;margin-left:20px;}
+      [class*="span"]{float:left;margin-left:50px;}
       .span1{width:42px;}
       .span2{width:104px;}
       .span3{width:166px;}
