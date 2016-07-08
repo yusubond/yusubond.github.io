@@ -23,7 +23,7 @@ a:hover{color:#005580;text-decoration:underline;}
 [class*="span"]{float:left;margin-left:20px;}
 .span1{width:60px;}
 .span2{width:140px;}
-.span3{width:200px;}
+.span3{width:220px;}
 .span4{width:300px;}
 .span5{width:380px;}
 .span6{width:460px;}
@@ -137,7 +137,7 @@ input[type="file"]:focus,input[type="checkbox"]:focus,select:focus{-webkit-box-s
 input[class*="span"],select[class*="span"],textarea[class*="span"],.uneditable-input{float:none;margin-left:0;}
 input.span1,textarea.span1,.uneditable-input.span1{width:50px;}
 input.span2,textarea.span2,.uneditable-input.span2{width:130px;}
-input.span3,textarea.span3,.uneditable-input.span3{width:210px;}
+input.span3,textarea.span3,.uneditable-input.span3{width:180px;}
 input.span4,textarea.span4,.uneditable-input.span4{width:290px;}
 input.span5,textarea.span5,.uneditable-input.span5{width:370px;}
 input.span6,textarea.span6,.uneditable-input.span6{width:450px;}
