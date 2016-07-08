@@ -134,7 +134,7 @@
   .nav-collapse.collapse{height:auto !important;}
   }
 @media (min-width:1200px){
-  .row{margin-left:-30px;*zoom:1;}
+  .row{margin-left:-40px;*zoom:1;}
   .row:before,.row:after{display:table;content:"";}
   .row:after{clear:both;} [class*="span"]{float:left;margin-left:40px;}
   .span1{width:70px;}
