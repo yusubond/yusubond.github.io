@@ -1,5 +1,8 @@
 
 .hidden{display:none;visibility:hidden;}
+/*
+*超小屏幕布局
+*/
 @media (max-width:480px){
   .nav-collapse{-webkit-transform:translate3d(0, 0, 0);}
   .page-header h1 small{display:block;line-height:18px;}
@@ -19,6 +22,9 @@
   .modal-header .close{padding:10px;margin:-10px;}
   .carousel-caption{position:static;}
 }
+/*
+*小屏幕布局
+*/
 @media (max-width:768px){
     .container{width:auto;padding:0 20px;}
     .row-fluid{width:100%;}
@@ -136,10 +142,11 @@
 @media (min-width:1200px){
   .row{margin-left:-30px;*zoom:1;}
   .row:before,.row:after{display:table;content:"";}
-  .row:after{clear:both;} [class*="span"]{float:left;margin-left:45px;}
+  .row:after{clear:both;}
+  [class*="span"]{float:left;margin-left:45px;}
   .span1{width:70px;}
   .span2{width:170px;}
-  .span3{width:240px;}
+  .span3{width:270px;}
   .span4{width:370px;}
   .span5{width:470px;}
   .span6{width:570px;}
