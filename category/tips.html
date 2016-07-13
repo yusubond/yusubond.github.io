@@ -84,6 +84,23 @@ by <a class="url fn" href="/author/subond.html">subond</a>
             <p>作者<a href="http://kodango.com/">@团子的小窝</a>开发了一个可以快速目录切换工具mark-directory。工具很好用，容易上手，值得推荐。</p>
             <p>文章原文地址：<a href="http://kodango.com/quick-way-to-change-directory-from-the-cmdline" target="_blank">mark-directory:快速目录切换工具</a></p>
             <p><a href="../index_demo.html">你好</a></p>
+
+            <li><h3>Atom添加Git Plus插件</h3></li>
+            <p>Git Plus插件可实现在Atom编辑器里做git things，而不用切换至terminal。<br/><b>注意</b>：本文基于ubuntu环境系统。安装步骤如下：</p>
+            <ul>
+              <li>配置<pre>user.name</pre>和<pre>user.email</pre>比较简单不做介绍。</li>
+              <li>生成新的SSH Key，并添加到ssh-agent。可参考<a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/">Git Help</a>
+              <br>验证是否添加成功可以在终端执行<pre>ssh -T git@github.com</pre>进行查看。</li>
+              <li>安装Git Plus package。在Atom->Settings,install项里面，搜索git-plus，安装即可。</li>
+              <li>安装完成后，即可在Packages->Git Plus里面使用相应的git指令，亦或使用Ctrl-Shift-H快捷键，做一些git things。</li>
+            </ul>
+            <p>在这个过程中可能遇到的问题及解决方法，如下所示：</p>
+            <p><h4>问题１：执行git push后，报错：fatal: could not read Username for 'https://github.com': Device not configured</h4></p>
+            <p>原因就是不能识别远端的用户名，解决方法就是重新设置远程地址即可。<pre>git remote set-url origin git@github.com:{yourname}/{your_repo_name}.git</pre></p>
+            <p>另外在Git 2.0中push有两种模式可选matching和simple。matching模式是提交名字一样的分支，所以可能的结果就是把其他分支的代码一起提交了，而这可能不是你想要的。而simple是push当前分支的代码。<br/>
+              其设置命令如下:<br/><pre>git config --global push.default simple</pre>or<pre>git config --global push.default matching</pre></p>
+
+
           </ol>
         </div>
 
