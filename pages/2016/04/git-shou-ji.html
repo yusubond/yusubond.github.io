@@ -98,9 +98,15 @@ git reset --hard <版本号>  #结合git&nbsp;reflog使用</pre>
           <h3>分支操作</h3>
           <pre>
 git branch                #查看分支
-git branch <分支名1>       #切换至分支名1
+git branch branch_name    #创建分支
+git checkout branch_name  #切换至分支branch_name
 git checkout -b <分支名1>  #创建并切换至分支名1
-git merge <分支名1>        #合并分支名1至当前分支</pre>
+git merge branch_name     #合并分支名1至当前分支
+git branch -d branch_name #删除分支</pre>
+          <h3>远程操作</h3>
+<pre>git remote -v         #查看远程路径(origin)
+git fetch origin master    #获取远程最新版本到本地，不自动merge
+git pull origin master     #获取远程最新版本并merge到本地</pre>
           <h3>提交文件步骤</h3>
 <p>第一步：<code>git add 文件</code>,提交文件到暂存区；
   <br/>第二步：<code>git commit -m "提交信息"</code>，提交文件到仓库（本地仓库），即repository；
