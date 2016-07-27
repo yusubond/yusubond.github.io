@@ -69,39 +69,43 @@ by <a class="url fn" href="/author/subond.html">subond</a>
           <p>linux指令学习手记<a href="/category/linux-zhi-ling.html">linux命令</a></p>
           <ol type="1">
             <li><h3>C编程</h3></li>
-            <p><b>问题</b>:头文件中全局函数多次引用出现重定义问题</p>
-            <p><b>解决方法：</b><br/>方法1：不要在头文件中定义函数，而将声明和实现分别写在.h和.cpp中<br/>方法2：.h中实现的函数加上static</p>
+              <p><b>问题</b>:头文件中全局函数多次引用出现重定义问题</p>
+              <p><b>解决方法：</b><br/>方法1：不要在头文件中定义函数，而将声明和实现分别写在.h和.cpp中<br/>方法2：.h中实现的函数加上static</p>
 
             <li><h3>Java语法：import</h3></li>
-            <p>import:导入包中的类，语法如下：</p>
-            <pre>import package1.package2.classname;</pre>
-            <p>package为包名，classname为类名。例如：</p>
-            <pre>import java.util.Date;     //导入java.util包下的Date类<br/>import java.swing.*;       //导入java.swing包下的所有类</pre>
-            <p><b>注意</b>:import只能导入包所包含的类，而不能导入包。</p>
+              <p>import:导入包中的类，语法如下：</p>
+              <pre>import package1.package2.classname;</pre>
+              <p>package为包名，classname为类名。例如：</p>
+              <pre>import java.util.Date;     //导入java.util包下的Date类<br/>import java.swing.*;       //导入java.swing包下的所有类</pre>
+              <p><b>注意</b>:import只能导入包所包含的类，而不能导入包。</p>
 
             <li><h3>oai-hss配置</h3></li>
-            <p>修改hss.conf的配置文件中的用户名及密码：(hssadmin+admin)or(root+linux);<br/>首次运行，需执行<pre>./run_hss --install-hss-files --import-db oai_db.sql</pre></p>
+              <p>修改hss.conf的配置文件中的用户名及密码：(hssadmin+admin)or(root+linux);<br/>首次运行，需执行<pre>./run_hss --install-hss-files --import-db oai_db.sql</pre></p>
 
-            <li><h3>linux系统下快速切换目录</h3></li>
-            <p>作者<a href="http://kodango.com/">@团子的小窝</a>开发了一个可以快速目录切换工具mark-directory。工具很好用，容易上手，值得推荐。</p>
-            <p>文章原文地址：<a href="http://kodango.com/quick-way-to-change-directory-from-the-cmdline" target="_blank">mark-directory:快速目录切换工具</a></p>
-            <p><a href="../index_demo.html">你好</a></p>
+              <li><h3>linux系统下快速切换目录</h3></li>
+              <p>作者<a href="http://kodango.com/">@团子的小窝</a>开发了一个可以快速目录切换工具mark-directory。工具很好用，容易上手，值得推荐。</p>
+              <p>文章原文地址：<a href="http://kodango.com/quick-way-to-change-directory-from-the-cmdline" target="_blank">mark-directory:快速目录切换工具</a></p>
+              <p><a href="../index_demo.html">你好</a></p>
 
             <li><h3>Atom添加Git Plus插件</h3></li>
-            <p>Git Plus插件可实现在Atom编辑器里做git things，而不用切换至terminal。<br/><b>注意</b>：本文基于ubuntu环境系统。安装步骤如下：</p>
-            <ul>
-              <li>配置<code>user.name</code>和<code>user.email</code>比较简单不做介绍。</li>
-              <li>生成新的SSH Key，并添加到ssh-agent。可参考<a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/">Git Help</a></li>
-              <br>验证是否添加成功可以在终端执行<code>ssh -T git@github.com</code>进行查看。</li>
-              <li>安装Git Plus package。在Atom->Settings,install项里面，搜索git-plus，安装即可。</li>
-              <li>安装完成后，即可在Packages->Git Plus里面使用相应的git指令，亦或使用Ctrl-Shift-H快捷键，做一些git things。</li>
-            </ul>
-            <p>原文地址：<a href="https://atom.io/packages/git-plus">git-plus</a></p>
-            <p>在这个过程中可能遇到的问题及解决方法，如下所示：</p>
-            <p><h4>问题１：执行git push后，报错：fatal: could not read Username for 'https://github.com': Device not configured</h4></p>
-            <p>原因就是不能识别远端的用户名，解决方法就是重新设置远程地址即可。<code>git remote set-url origin git@github.com:{yourname}/{your_repo_name}.git</code></p>
-            <p>另外在Git 2.0中push有两种模式可选matching和simple。matching模式是提交名字一样的分支，所以可能的结果就是把其他分支的代码一起提交了，而这可能不是你想要的。而simple是push当前分支的代码。<br/>
+              <p>Git Plus插件可实现在Atom编辑器里做git things，而不用切换至terminal。<br/><b>注意</b>：本文基于ubuntu环境系统。安装步骤如下：</p>
+              <ul>
+                <li>配置<code>user.name</code>和<code>user.email</code>比较简单不做介绍。</li>
+                <li>生成新的SSH Key，并添加到ssh-agent。可参考<a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/">Git Help</a></li>
+                <br>验证是否添加成功可以在终端执行<code>ssh -T git@github.com</code>进行查看。</li>
+                <li>安装Git Plus package。在Atom->Settings,install项里面，搜索git-plus，安装即可。</li>
+                <li>安装完成后，即可在Packages->Git Plus里面使用相应的git指令，亦或使用Ctrl-Shift-H快捷键，做一些git things。</li>
+              </ul>
+              <p>原文地址：<a href="https://atom.io/packages/git-plus">git-plus</a></p>
+              <p>在这个过程中可能遇到的问题及解决方法，如下所示：</p>
+              <p><h4>问题１：执行git push后，报错：fatal: could not read Username for 'https://github.com': Device not configured</h4></p>
+              <p>原因就是不能识别远端的用户名，解决方法就是重新设置远程地址即可。<code>git remote set-url origin git@github.com:{yourname}/{your_repo_name}.git</code></p>
+              <p>另外在Git 2.0中push有两种模式可选matching和simple。matching模式是提交名字一样的分支，所以可能的结果就是把其他分支的代码一起提交了，而这可能不是你想要的。而simple是push当前分支的代码。<br/>
               其设置命令如下:<br/><code>git config --global push.default simple</code>or<code>git config --global push.default matching</code></p>
+            <li><h3>Linux系统下通过修改内核设置usbserial模式</h3></li>
+            <pre>
+sudo insmod /lib/modules/$(uname -r)/kernel/drivers/usb/serial/usbserial.ko
+            </pre>
 
 
           </ol>
