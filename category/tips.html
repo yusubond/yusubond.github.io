@@ -102,10 +102,16 @@ by <a class="url fn" href="/author/subond.html">subond</a>
               <p>原因就是不能识别远端的用户名，解决方法就是重新设置远程地址即可。<code>git remote set-url origin git@github.com:{yourname}/{your_repo_name}.git</code></p>
               <p>另外在Git 2.0中push有两种模式可选matching和simple。matching模式是提交名字一样的分支，所以可能的结果就是把其他分支的代码一起提交了，而这可能不是你想要的。而simple是push当前分支的代码。<br/>
               其设置命令如下:<br/><code>git config --global push.default simple</code>or<code>git config --global push.default matching</code></p>
-            <li><h3>Linux系统下通过修改内核设置usbserial模式</h3></li>
-            <pre>
+            <li><h3>Linux系统4G上网卡的使用配置</h3></li>
+              <p>1、Linux系统下通过修改内核设置usbserial模式</p>
+              <p>2、利用usb_modeswitch工具切换usb工作模式</p>
+              <p>3、利用wvdial工具配置上网卡参数</p>
+              <p>4、启用上网卡</p>
+<pre>
 sudo insmod /lib/modules/$(uname -r)/kernel/drivers/usb/serial/usbserial.ko
-            </pre>
+sudo usb_modeswitch -W -c /etc/usb_modeswitch.conf
+sudo wvdialconf /etc/wvdial.conf
+sudo wvdial</pre>
 
 
           </ol>
