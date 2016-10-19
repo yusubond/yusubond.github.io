@@ -84,12 +84,15 @@ git clone <仓库地址>               #克隆远程仓库到本地仓库
 git remote            #查看远程仓库信息
 git remote -v         #查看远程仓库详细信息</pre>
     <h3>版本回退</h3>
-    <p>git&nbsp;reset&nbsp;--hard&nbsp;版本号</p>
+    <p>git&nbsp;reset&nbsp;--hard&nbsp;版本号,版本号即commit_id</p>
     <pre>
-git reset --hard HEAD^    #回退至上一版本
-git reset --hard HEAD^^   #回退至上上版本
-git reset --hard HEAD~10  #回退至前10个版本
-git reset --hard <版本号>  #结合git&nbsp;reflog使用</pre>
+git reset --hard HEAD^      #回退至上一版本
+git reset --hard HEAD^^     #回退至上上版本
+git reset --hard HEAD~10    #回退至前10个版本
+git reset --hard commit_id  #结合git&nbsp;reflog;git&nbsp;log使用
+# git log可以查看提交历史，以便确定回退到哪个版本;
+# git reflog可以查看命令历史，以便确定回到未来的哪个版本</pre>
+
     <h3>分支操作</h3>
     <pre>
 git branch                #查看分支
