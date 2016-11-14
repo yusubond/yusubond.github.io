@@ -77,20 +77,16 @@ kvm:
     type: local
     container: kvm</pre>
             <p>执行，<pre>juju bootstrap</pre>即可生成本地环境。可使用<pre>juju status --format tabular</pre>查看状态信息。如下图所示。<br/><imag src="image/2016/juju_status.png"></p>
-              <h4>Reference:<h4/>
-                <p>Juju官网：<a href="https://jujucharms.com/docs/1.25/config-local.html">Using the local provider<a/><br/>
-                  <a href="https://jujucharms.com/docs/1.25/config-KVM.html">Installing and configuring Juju for KVM(Linux)</a></p>
 
           <li><h2>Charm的使用</h2/></li>
-            <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store"Charm Store<a/>上，一个
+            <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store">Charm Store<a/>上，一个
               简单的命令`juju deploy mysql`，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到charm Store供别人下载使用。<p/>
             <p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括以下文件：</p>
 
-          <h3>参考资料</h3>
-          <p>官方资料：<br/>
-            <a href="http://10.103.14.28/weka-3-8-0/doc/">Instances类</a></p>
-          <p>Weka开发［3］－Evaluation类<br/>
-            <a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/">http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/</a></p>
+          <h3>Reference:</h3>
+          <p>Juju官网：<br/>
+            <a href="https://jujucharms.com/docs/1.25/config-local.html">Using the local provider<a/><br/>
+            <a href="https://jujucharms.com/docs/1.25/config-KVM.html">Installing and configuring Juju for KVM(Linux)</a></p>
 
 
 
