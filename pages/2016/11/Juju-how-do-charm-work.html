@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone</title>
+    <meta name="description" content="">
+    <meta name="author" content="Yu Bangchao">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="/theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/theme/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="/theme/local.css" rel="stylesheet">
+    <link href="/theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+          <li><a href="/author/subond.html">About me</a></li>
+        </ul>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>云端服务管理工具：Juju</h1>
+2016-11-10
+
+by <a class="url fn" href="/author/subond.html">subond</a>
+        </div>
+        <div>
+          <ol type="1">
+          <li><h2>Juju介绍</h2></li>
+            <p><a href="https://jujucharms.com/">Juju</a>是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。Juju可以对
+              云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单，
+              可以参考<a href="https://jujucharms.com/docs/stable/getting-stared">官网教程</a></p>
+            <p>Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统)。</p>
+
+          <li><h2>Juju本地环境配置</h2/></li>
+            <p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。<br/>安装Juju<pre>sudo apt-add-repository ppa:juju/stable<br/>sudo apt-get update</pre>
+              <br/>安装本地支持文件以及KVM/libvrt软件：<br/><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool<pre/>
+                <br/>生成配置文件：其路径为~/.juju/environment.yaml<pre>juju generate-config<br/>juju switch local</pre>
+              <br/>修改配置：在environment.yaml中找到local，进行如下修改：<p/>
+<pre>local:
+    type: local
+kvm:
+    type: local
+    container: kvm</pre>
+            <p>执行，<pre>juju bootstrap</pre>即可生成本地环境。可使用<pre>juju status --format tabular<pre/>查看状态信息。如下图所示。<br/><imag src="image/2016/juju_status.png"</p>
+              <h4>Reference:<h4/>
+                <p>Juju官网：<a href="https://jujucharms.com/docs/1.25/config-local.html">Using the local provider<a/><br/>
+                  <a href="https://jujucharms.com/docs/1.25/config-KVM.html">Installing and configuring Juju for KVM(Linux)</a></p>
+
+          <li><h2>Charm的使用</h2/></li>
+            <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store"Charm Store<a/>上，一个
+              简单的命令`juju deploy mysql`，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到charm Store供别人下载使用。<p/>
+            <p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括以下文件：</p>
+
+          <h3>参考资料</h3>
+          <p>官方资料：<br/>
+            <a href="http://10.103.14.28/weka-3-8-0/doc/">Instances类</a></p>
+          <p>Weka开发［3］－Evaluation类<br/>
+            <a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/">http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/</a></p>
+
+
+
+          <ol/>
+        </div>
+
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'subond';
+    var disqus_title = 'My super title';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="/archives.html">Archives</a>
+                <li><a href="/tags.html">Tags</a>
+
+
+
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="/category/life.html">Life</a></li>
+                <li><a href="/category/tech.html">Tech</a></li>
+                <li><a href="/category/note.html">Note</a></li>
+                <li><a href="/pages/tips.html">Tips</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://www.opensource5g.org">OpenSource5G</a></li>
+                <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OpenAirInterface5g</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="http://www.sdnap.com/">SDNAP</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>
+    </div>     </div>
+<footer>
+<br />
+<p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="/theme/bootstrap-collapse.js"></script>
+
+</body>
+</html>
