@@ -68,7 +68,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
 
           <li><h2>Juju本地环境配置</h2/></li>
             <p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。<br/>安装Juju<pre>sudo apt-add-repository ppa:juju/stable<br/>sudo apt-get update</pre>
-              <br/>安装本地支持文件以及KVM/libvrt软件：<br/><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool<pre/>
+              <br/>安装本地支持文件以及KVM/libvrt软件：<br/><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool</pre>
                 <br/>生成配置文件：其路径为~/.juju/environment.yaml<pre>juju generate-config<br/>juju switch local</pre>
               <br/>修改配置：在environment.yaml中找到local，进行如下修改：<p/>
 <pre>local:
