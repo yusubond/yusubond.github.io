@@ -83,21 +83,26 @@ kvm:
             <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store">Charm Store</a>上，一个
               简单的命令<code>juju deploy mysql</code>，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到<a href="https://jujucharms.com/store">charm Store</a>供别人下载使用。</p>
             <p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括文件：元数据(metadata.yaml),配置数据(config.yaml)以及与hooks相关的支持文件，如下图所示。</p>
-            <img src="charm_tree.png" algin="left">
-            <ul>
-              <li>/hooks</li>
-              <p>hooks是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与metadata.yaml文件相关，后续介绍)。</p>
-              <li>/actions</li>
-              <p>actions是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与juju系统调用相关)。</p>
-              <li>actions.yaml</li>
-              <p>actions.yaml是一个配置文件，当使用目录actions中的脚本时，需要配置actions.yaml文件。</p>
-              <li>config.yaml</li>
-              <p>config.yaml是一个配置文件，与服务配置相关(service/unit)。</p>
-              <li>icon.svg</li>
-              <p>icon.svg是GUI界面中用来识别charm的文件。</p>
-              <li>README</li>
-              <p>README文件主要介绍charm的主要功能，操作，用例等等。</p>
-            </ul>
+            <table>
+              <tr><td><img src="charm_tree.png" algin="left"></td>
+                <td>
+                  <ul>
+                    <li>/hooks</li>
+                    <p>hooks是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与metadata.yaml文件相关，后续介绍)。</p>
+                    <li>/actions</li>
+                    <p>actions是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与juju系统调用相关)。</p>
+                    <li>actions.yaml</li>
+                    <p>actions.yaml是一个配置文件，当使用目录actions中的脚本时，需要配置actions.yaml文件。</p>
+                    <li>config.yaml</li>
+                    <p>config.yaml是一个配置文件，与服务配置相关(service/unit)。</p>
+                    <li>icon.svg</li>
+                    <p>icon.svg是GUI界面中用来识别charm的文件。</p>
+                    <li>README</li>
+                    <p>README文件主要介绍charm的主要功能，操作，用例等等。</p>
+                  </ul>
+                </td>
+              </tr>
+            </table>
           <li><h2>Charm文件详解</h2></li>
             <ul>
               <li>metadata.yaml</li>
