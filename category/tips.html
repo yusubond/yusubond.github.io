@@ -184,7 +184,39 @@ deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main mult
 deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main multiverse restricted universe
 deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-security main multiverse restricted universe
 deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main multiverse restricted universe</pre>
-           <p>References:<a href="http://chenrongya.blog.163.com/blog/static/8747419620143185103297/">http://chenrongya.blog.163.com/blog/static/8747419620143185103297/</p>
+          <p>References:<a href="http://chenrongya.blog.163.com/blog/static/8747419620143185103297/">http://chenrongya.blog.163.com/blog/static/8747419620143185103297/</p>
+          <hr/>
+
+            <li><h3>安装libgtpnl packe</h3></li>
+            <img src="category/images/tips/mme_error.png" align="left">
+            <p>在编程oai-mme和oai-spgw时，因为没有libgtpnl头文件而导致编译失败，可自行安装libgtpnl包，如下所示：<br/>从这个地方下载:<br/><pre>git clone git://git.osmocom.org/libgtpnl</pre><br/>
+            创建编译目录：<br/><pre>cd libgtpnl<br/>mkdir build-aux</pre><br/>之后就是安装<br/></p>
+            <pre>
+sudo apt-get install libmnl-dev  #this will be needed when make
+aclocal
+autoreconf --install
+automake --add-missing
+./configure
+make
+sudo make install</pre>
+        <hr/>
+
+        <li><h3>Ubuntu彻底删除Mysql,重装Mysql</h3></li>
+        <p>删除mysql</p>
+<pre>
+sudo apt-get autoremove --purge mysql-server-5.0
+sudo apt-get remove mysql-server
+sudo apt-get autoremove mysql-server
+sudo apt-get remove mysql-common  #很重要</pre>
+        <p>清理残留数据</p>
+        <pre>dpkg -l | grep ^rc | awk '{print $2}' | sudo xargs dpkg -P</pre>
+        <p>安装mysql</p>
+        <pre>sudo apt-get install mysql-server mysql-client php5-mysql</pre>
+        <p>启动mysql</p>
+        <pre>sudo /etc/init.d/mysql restart</pre>
+        <hr/>
+
+
           </ol>
         </div>
 

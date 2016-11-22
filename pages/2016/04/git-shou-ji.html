@@ -146,8 +146,23 @@ git stash clear           #清空git栈
   </li>
 </ul>
 
-
-
+        <h2>gitbook使用指南</h2>
+        <p>gitbook的使用方法和git基本类似，其修改记录，发布版本等相关操作均可参考上面的git指令，略有不同，下面详细介绍：</p>
+        <pre>
+# 初始化书记目录
+gitbook init
+# 编译图书，可在本地查看
+gitbook serve
+# 克隆远程图书到本地
+git clone https://git.gitbook.com/user_name/book_name.git
+# 添加文件
+git add file_name
+# 提交修改记录
+git commit -m "sth about your changes"
+# 添加图书的远程地址
+git remote add gitbook https://git.gitbook.com/user_name/book_name.git
+# 发布图书至远程仓库
+git push -u gitbook master  #第一次使用-u参数，之后可以不用加-u参数</pre>
 
 
         </div>
