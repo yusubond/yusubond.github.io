@@ -244,6 +244,22 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <hr/><hr/>
     </div>
 <!--缩写部分开始-->
+<!--缩写部分结构示意
+<div>
+# 整个缩写部分
+  <div>
+  # 单篇blog整体
+  # 题目控件
+    <div>
+    # 单篇blog title
+    </div>
+    <div class="summary">
+    # blog主体
+    # readmore控件
+    </div>
+  </div>
+</div>
+-->
     <div>
       <div>
         <a href="/pages/2016/11/Juju-how-do-charm-work.html"><h2>机器学习之Weka学习(03)-Evaluation类介绍</h2></a>
@@ -252,7 +268,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
       </div>
 
       <div class="summary">
-        
+
       <p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation
         而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的
         Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
@@ -297,7 +313,7 @@ implemensts java.io.Serializable, RevisionHandler
         </ul>
         <a class="btn btn-info xsmall" href="/pages/2016/06/29/weka-xue-xi-zhi-instances.html">read more</a>
       </div>
-      <br/><br/>
+
     </div>
 
     <div>
