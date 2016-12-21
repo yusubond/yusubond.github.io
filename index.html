@@ -98,7 +98,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
       type: local
       container: kvm</pre>
               <p>执行，<pre>juju bootstrap</pre>即可生成本地环境。可使用<pre>juju status --format tabular</pre>查看状态信息。如下图所示。</p>
-              <img src="juju_status.png" algin="left">
+              <img src="pages/2016/11/juju_status.png" algin="left">
 
               <h3>*关于Juju环境的其他操作</h3>
               <pre>
@@ -178,7 +178,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
                 简单的命令<code>juju deploy mysql</code>，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到<a href="https://jujucharms.com/store">charm Store</a>供别人下载使用。</p>
               <p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括文件：元数据(metadata.yaml),配置数据(config.yaml)以及与hooks相关的支持文件，如下图所示。</p><hr/>
               <table>
-                <tr><td><img src="charm_tree.png" algin="left"></td>
+                <tr><td><img src="pages/2016/11/charm_tree.png" algin="left"></td>
                   <td>
                     <ul>
                       <li>/hooks</li>
@@ -211,7 +211,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
                 <code>summary</code>:即概要，用一句话描述自己的charm功能。<br/>
                 <code>description</code>:用来描述charm的功能，特性等，可在Juju GUI中显示。<br/>
                 <code>tags</code>:charm的标签，方便在charm store中搜索。</p>
-                <img src="metadata_yaml.png">
+                <img src="pages/2016/11/metadata_yaml.png">
               </ul>
 
               <li><h2>常用功能</h2></li>
@@ -244,11 +244,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <hr/><hr/>
     </div>
 <!--缩写部分开始-->
-    <div>
-      <a href="/pages/2016/07/03/weka-xue-xi-zhi-evaluation.html"><h2>机器学习之Weka学习(03)-Evaluation类介绍</h2></a>
-      <div class="well small">2016-07-03
-        by <a class="url fn" href="author/subond.html">subond</a>
-      </div>
+
       <div class="summary">
         <h2>机器学习之Weka学习(03)-Evaluation类介绍</h2>
       <p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation
