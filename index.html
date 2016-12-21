@@ -65,8 +65,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="/pages/2016/07/03/weka-xue-xi-zhi-evaluation.html"><h2>机器学习之Weka学习(03)-Evaluation类介绍</h2></a>
-2016-07-03
+            <a href="/pages/2016/11/Juju-how-do-charm-work.html"><h2>云端服务管理工具:Juju</h2></a>
+2016-11-10
 
 by <a class="url fn" href="./author/subond.html">subond</a>
 
@@ -76,40 +76,166 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         </div>
 <!--我的第一篇博客开始-->
         <div>
-          <div>
-            <h2>Evaluation类介绍</h2>
-            <p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation
-              而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的
-              Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
+            <ol type="1">
+            <li><h2>Juju介绍</h2></li>
+              <p><a href="https://jujucharms.com/">Juju</a>是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是
+                开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单，
+                可以参考<a href="https://jujucharms.com/docs/stable/getting-stared">官网教程</a></p>
+              <p>Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,<code>juju deploy juju-gui</code>)。</p>
+
+            <li><h2>Juju的运作方式</h2></li>
+              <p>Juju进行运作要具备以下三个因素：<br/>1) <b>Juju Client</b><br/>Juju Client端在不同的平台都有(Ubuntu/OXS/Windows)，以Ubuntu为例，Juju Client套件名为juju-core。<br/>2) <b>Ubuntu Image环境(也成为Ubuntu Server,可根据需求设定)</b><br/>一般的公有云都可以提供这样的环境，例如OpenStack,Amazon EC2,Microsoft Azure。当然，也可以搭配Ubuntu MAAS环境进行搭建。<br/>3) <b>SSH key pair</b><br/>SSH key pair是用来控制Ubuntu Server，可利用一对SSH key pair登入至Ubuntu Server环境，并进行Service Orchestration操作。</p>
+
+
+            <li><h2>Juju本地环境配置</h2/></li>
+              <p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。<br/><b>安装Juju</b><pre>sudo apt-add-repository ppa:juju/stable<br/>sudo apt-get update && sudo apt-get -y install juju-core</pre>
+                <br/><b>安装本地支持文件以及KVM/libvrt软件</b><br/><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool</pre>
+                  <br/>生成配置文件：其路径为:<code>~/.juju/environment.yaml</code><pre>juju generate-config<br/>juju switch kvm</pre>
+                <br/>修改配置：在environment.yaml中找到local，进行如下修改：<p/>
+  <pre>local:
+      type: local
+  kvm:
+      type: local
+      container: kvm</pre>
+              <p>执行，<pre>juju bootstrap</pre>即可生成本地环境。可使用<pre>juju status --format tabular</pre>查看状态信息。如下图所示。</p>
+              <img src="juju_status.png" algin="left">
+
+              <h3>*关于Juju环境的其他操作</h3>
+              <pre>
+  # 查看环境列表
+  juju env --list
+  juju env  // 可查看当前环境名称
+  # 销毁环境
+  juju destory-environment [env_name]
+  # 设定environment中的VM版本
+  juju set-env "default-series=trusty"</pre>
+              <p><b>设定bootstrap环境</b><br/><code>juju bootstrap</code>用来生成可运行charm的juju环境，可利用<code>-e</code>指定环境名称，例如：<br/><pre>juju bootstrap -e my_env</pre>接下来，简单说明juju client/juju bootstrap node/cloud provider三者之间的关系。<br/>1) juju client通过<code>bootstrap</code>指令，在cloud provider上产生一个可用来部署juju charms的bootstrap实例，即juju环境。<br/>2) juju client通过<code>juju deploy</code>指令，在bootstrap实例上安装指定的charms到cloud provider的VM中。<br/>3) cloud provider中，既有bootstrap实例，也有charms的实例。<br/>因此，三者的交互过程具有如下关系：<br/><b>juju client < ---- > juju bootstrap instance < ---- > cloud provider</b>
+
+            <li><h2>Juju服务编排</h2></li>
+              <p>Juju利用部署服务(Deploy Services)的方式进行服务编排(Service Orchestration)。接下来，说明如何利用juju进行服务部署工作。</p>
+              <p>1) <b>利用charm Store进行部署</b></p>
   <pre>
-  public class　Evaluation
-  extends java.lang.Object
-  implemensts java.io.Serializable, Summarizable, RevisionHandler
-  </pre>
-            <h2>构造函数</h2>
+  # 利用charm store部署服务，以mysql为例
+  juju deploy mysql
+  # 指定serveice版本,格式为<repository>:<series>/<service>
+  juju deploy cs:precise/mysql</pre>
+              <p>2) <b>利用本地charm(Local Charm Repository)部署</b></p>
+  <pre>
+  # repository 指定本地charm路径，如/usr/mycharms
+  # repository name: local
+  # series: trusty
+  # service: mysql
+  juju deploy --repository=/usr/mycharms local:trusty/mysql
 
-            <p>Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：<pre>Evaluation eval = new Evaluation(data)</pre>data是训练集的数据，用来获取一些信息，并不用来评价分类器。</p>
-            <p><img src="pages/2016/07/03/Evaluation.jpg"></p>
-            <h2>主要成员变量</h2>
-            <ul>
-              <li>evaluationModel(Classifier classifier, Instances data)</li>
-                <p>如果训练集和测试集是分开的，可以使用evaluationModel方法，方法中的参数为：第一个参数是训练过的分类器，第二个参数是测试集的数据。</p>
-              <li>crossValidationModel()</li>
-                <p>crossValidationModel方法的四个参数为：第一个参数是分类器，第二个参数是测试集的数据，第三个参数是交叉检验的次数（比较常见的是10），第四个参数是一个随机数对象。</p>
-            </ul>
+  # 如果预设juju repository的路径
+  export JUJU_REPOSITORY=/usr/mycharms/
+  juju deploy local:trusty/mysql</pre>
+              <p>3) <b>利用配置文件进行多个service设定</b><br/>Juju的配置文件以YAML格式进行撰写，可以在预先设定的配置文件中将charm的相关设定写好，再利用指定配置文件的方式，完成service的部署，从而避免部署指令过长。<br/>例如，部署一个名称mywiki的服务，可预先进行如下设定(myconfig.yaml):</p>
+  <pre>
+  mywiki:
+    name: jujuwiki
+    skin: monobook
+    admin: amdin:admin</pre>
+              <p>然后，使用如下指令进行部署：<pre>juju deploy --config myconfig.yaml mywiki</pre></p>
+              <p>3) <b>利用constraints个性化部署</b><br/>在Juju指令中使用<code>--constraints</code>可在service部署时指定特定的VM规格(cpu, mem, etc)架构。</p>
+  <pre>
+  juju deploy --constraints "cpu-cores=2 mem=4G" mysql
+  juju bootstrap --constraints "cpu-power=0 mem=512M"
+  juju bootstrap --constraints "arch=amd64"
+  juju set-constraints --service mysql mem=2G cpu-cores=4
+  # 获取constraints内容
+  juju get-constraints
+  juju get-constraints mysql</pre>
+              <p><b>注意</b>:每个由juju管理的node(无论实体，还是容器(container))都被视为unit。Unit之间的数据交互，可使用juju相关命令，常用的指令由如下几种：</p>
+              <p>登入至某个特定的unit，可使用<code>juju ssh</code></p>
+  <pre>
+  # 通过unit id或者machine id进行登入
+  juju ssh mysql/2
+  # 直接查询某些信息或者执行某些脚本
+  juju ssh mysql/2 ifconfig
+  juju ssh mysql/2 bash /tmp/echo_ip.sh</pre>
+              <p>文件拷贝，可使用<code>juju scp</code><br/><code>juju scp</code>可以将文件从service宿主的machine或者container中拷贝出来，也可以拷贝进去。</p>
+  <pre>
+  # juju scp中可使用service id，也可以使用machine id
+  # 将iptables.sh放到mysql服务中的/tmp路径下
+  juju scp iptables.sh mysql/2:/tmp
+  # 将mysql服务中的log拷贝至本机
+  juju scp -r mysql/2:/var/log/mysql/ mysql_log/
+  # 拷贝两个service中的文件，使用-v
+  juju scp -v ubuntu/0:/path/file1 ubuntu/1:/path/file2 backup/</pre>
+              <p>执行shell命令，可使用<code>juju run</code><br/><code>juju run</code>是以ssh的方式登入至service宿主中执行shell命令，但两者又有不同之处：</p>
+              <p><b>juju run</b>:可以同时操控多台机器，可以通过指定machine/service/unit的方式指定机器，也可以使用<code>--all</code>参数指定所有机器或者container进行操作。</p>
+              <p><b>juju ssh</b>:可以通过指定machine/service的方式进行操作，但一次只能操作一台机器。</p>
+  <pre>
+  # 获取所有machine的kernel version
+  juju run "uname -a" --all
+  # 指定特定machine or service
+  juju run "uname -a" --machine=3
+  juju run "uname -a" --service=mysql</pre>
 
-            <h2>应用实例</h2>
-            <p>下面这个小程序用同一数据测试了两类方法的评价结果，源码地址如下<a href="https://github.com/yusubond/Machine-Learning/blob/master/Evaluation/Demo_evaluation.java">Demo_evaluation</a></p>
-            <p>结果展示:</p>
-              <img src="pages/2016/07/03/evaluationModel.jpg" algin="left">
-              <img src="pages/2016/07/03/crossvalidateModel.jpg" algin="left">
+            <li><h2>Juju Charm的使用</h2/></li>
+              <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store">Charm Store</a>上，一个
+                简单的命令<code>juju deploy mysql</code>，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到<a href="https://jujucharms.com/store">charm Store</a>供别人下载使用。</p>
+              <p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括文件：元数据(metadata.yaml),配置数据(config.yaml)以及与hooks相关的支持文件，如下图所示。</p><hr/>
+              <table>
+                <tr><td><img src="charm_tree.png" algin="left"></td>
+                  <td>
+                    <ul>
+                      <li>/hooks</li>
+                      <p>hooks是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与metadata.yaml文件相关，后续介绍)。</p>
+                      <li>/actions</li>
+                      <p>actions是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与juju系统调用相关)。</p>
+                      <li>actions.yaml</li>
+                      <p>actions.yaml是一个配置文件，当使用目录actions中的脚本时，需要配置actions.yaml文件。</p>
+                      <li>config.yaml</li>
+                      <p>config.yaml是一个配置文件，与服务配置相关(service/unit)。</p>
+                      <li>icon.svg</li>
+                      <p>icon.svg是GUI界面中用来识别charm的文件。</p>
+                      <li>README</li>
+                      <p>README文件主要介绍charm的主要功能，操作，用例等等。</p>
+                    </ul>
+                  </td>
+                </tr>
+              </table><hr/>
 
-            </ol>
-            <h3>参考资料</h3>
-            <p>官方资料：<br/>
-              <a href="http://10.103.14.28/weka-3-8-0/doc/">Instances类</a></p>
-            <p>Weka开发［3］－Evaluation类<br/>
-              <a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/">http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/</a></p>
+            <li><h2>charm之间的关联性</h2></li>
+            <p>每个利用charm部署之后就是一个服务，而服务几乎没有独立运行的，需要不同服务之间的相互协作，建立联系。因此，charm之间的关联性尤为重要。</p>
+            <p>juju使用<code>juju add-relation</code>建立服务之间的联系。</p><pre>juju add-relation mysql epc-hss</pre>
+            <p>至于，为何两个服务之间为何可以添加连接或者不可以添加连接，其实在charm中有所规定，详情可以参见下面的<b>Charm文件详解</b></p>
+
+            <li><h2>Charm文件详解</h2></li>
+              <ul>
+                <li>metadata.yaml</li>
+                <p>metadata.yaml中定义了许多charm本身的元信息，位于charm的根目录，必须是有效的yaml文件，且至少要包含以下信息：<br/>
+                <code>name</code>:即charm的名字，用来标识一个特定的charm,方便从charm store中下载。name的命名只接受'a-z','0-9'以及'-',必须以'a-z'开头，不能以'-'结尾。<br/>
+                <code>summary</code>:即概要，用一句话描述自己的charm功能。<br/>
+                <code>description</code>:用来描述charm的功能，特性等，可在Juju GUI中显示。<br/>
+                <code>tags</code>:charm的标签，方便在charm store中搜索。</p>
+                <img src="metadata_yaml.png">
+              </ul>
+
+              <li><h2>常用功能</h2></li>
+              <p>Juju具有服务扩展(Scaling Service)功能，尤其是在云端环境中，显得更加重要。</p><pre>juju add-unit -n 3 mysql</pre>
+              <p>移除功能:不但可以移除servie，还可以移除machine，甚至是整个environment。</p>
+  <pre>
+  # 移除service
+  juju remove-service <service_name>
+  # 移除unit
+  juju remove-unit <unit_id>
+  # 移除machine
+  juju remove-machine <machine_number></pre>
+
+            <h3>Reference:</h3>
+            <p>Juju官网：<br/>
+              <a href="https://jujucharms.com/docs/1.25/config-local.html">Using the local provider</a><br/>
+              <a href="https://jujucharms.com/docs/1.25/config-KVM.html">Installing and configuring Juju for KVM(Linux)</a><br/>
+              <a href="https://jujucharms.com/docs/1.25/authors-charm-components">What makes a charm?</a><br/>
+              <a href="https://jujucharms.com/mysql/">mysql in charm store</a><br/>
+              <a href="https://github.com/juju/cheatsheet">juju指令集</a></p>
+
+
+
+            <ol/>
         </div>
 
 
@@ -118,6 +244,27 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <hr/><hr/>
     </div>
 <!--缩写部分开始-->
+    <div>
+      <a href="/pages/2016/07/03/weka-xue-xi-zhi-evaluation.html"><h2>机器学习之Weka学习(03)-Evaluation类介绍</h2></a>
+      <div class="well small">2016-07-03
+        by <a class="url fn" href="author/subond.html">subond</a>
+      </div>
+      <div class="summary">
+        <h2>机器学习之Weka学习(03)-Evaluation类介绍</h2>
+      <p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation
+        而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的
+        Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
+<pre>
+public class　Evaluation
+extends java.lang.Object
+implemensts java.io.Serializable, Summarizable, RevisionHandler
+</pre>
+      <h2>构造函数</h2>
+
+      <p>Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：<pre>Evaluation eval = new Evaluation(data)</pre>data是训练集的数据，用来获取一些信息，并不用来评价分类器。</p>
+      <a class="btn btn-info xsmall" href="/pages/2016/11/Juju-how-do-charm-work.html">read more</a>
+    </div>
+
     <div>
       <a href="/pages/2016/06/29/weka-xue-xi-zhi-instances.html"><h2>机器学习之Weka学习(02)-Instances类介绍</h2></a>
       <div class="well small">2016-06-29
