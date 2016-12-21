@@ -71,7 +71,7 @@ by <a class="url fn" href="/author/subond.html">subond</a>
 
 
           <li><h2>Juju本地环境配置</h2/></li>
-            <p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。<br/><b>安装Juju</b><pre>sudo apt-add-repository ppa:juju/stable<br/>sudo apt-get update \&\& sudo apt-get -y install juju-core</pre>
+            <p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。<br/><b>安装Juju</b><pre>sudo apt-add-repository ppa:juju/stable<br/>sudo apt-get update && sudo apt-get -y install juju-core</pre>
               <br/><b>安装本地支持文件以及KVM/libvrt软件</b><br/><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool</pre>
                 <br/>生成配置文件：其路径为:<code>~/.juju/environment.yaml</code><pre>juju generate-config<br/>juju switch kvm</pre>
               <br/>修改配置：在environment.yaml中找到local，进行如下修改：<p/>
@@ -83,7 +83,7 @@ kvm:
             <p>执行，<pre>juju bootstrap</pre>即可生成本地环境。可使用<pre>juju status --format tabular</pre>查看状态信息。如下图所示。</p>
             <img src="juju_status.png" algin="left">
 
-            <h3>关于Juju环境的其他操作</h3>
+            <h3>*关于Juju环境的其他操作</h3>
             <pre>
 # 查看环境列表
 juju env --list
@@ -114,6 +114,47 @@ juju deploy --repository=/usr/mycharms local:trusty/mysql
 export JUJU_REPOSITORY=/usr/mycharms/
 juju deploy local:trusty/mysql</pre>
             <p>3) <b>利用配置文件进行多个service设定</b><br/>Juju的配置文件以YAML格式进行撰写，可以在预先设定的配置文件中将charm的相关设定写好，再利用指定配置文件的方式，完成service的部署，从而避免部署指令过长。<br/>例如，部署一个名称mywiki的服务，可预先进行如下设定(myconfig.yaml):</p>
+<pre>
+mywiki:
+  name: jujuwiki
+  skin: monobook
+  admin: amdin:admin</pre>
+            <p>然后，使用如下指令进行部署：<pre>juju deploy --config myconfig.yaml mywiki</pre></p>
+            <p>3) <b>利用constraints个性化部署</b><br/>在Juju指令中使用<code>--constraints</code>可在service部署时指定特定的VM规格(cpu, mem, etc)架构。</p>
+<pre>
+juju deploy --constraints "cpu-cores=2 mem=4G" mysql
+juju bootstrap --constraints "cpu-power=0 mem=512M"
+juju bootstrap --constraints "arch=amd64"
+juju set-constraints --service mysql mem=2G cpu-cores=4
+# 获取constraints内容
+juju get-constraints
+juju get-constraints mysql</pre>
+            <p><b>注意</b>:每个由juju管理的node(无论实体，还是容器(container))都被视为unit。Unit之间的数据交互，可使用juju相关命令，常用的指令由如下几种：</p>
+            <p>登入至某个特定的unit，可使用<code>juju ssh</code></p>
+<pre>
+# 通过unit id或者machine id进行登入
+juju ssh mysql/2
+# 直接查询某些信息或者执行某些脚本
+juju ssh mysql/2 ifconfig
+juju ssh mysql/2 bash /tmp/echo_ip.sh</pre>
+            <p>文件拷贝，可使用<code>juju scp</code><br/><code>juju scp</code>可以将文件从service宿主的machine或者container中拷贝出来，也可以拷贝进去。</p>
+<pre>
+# juju scp中可使用service id，也可以使用machine id
+# 将iptables.sh放到mysql服务中的/tmp路径下
+juju scp iptables.sh mysql/2:/tmp
+# 将mysql服务中的log拷贝至本机
+juju scp -r mysql/2:/var/log/mysql/ mysql_log/
+# 拷贝两个service中的文件，使用-v
+juju scp -v ubuntu/0:/path/file1 ubuntu/1:/path/file2 backup/</pre>
+            <p>执行shell命令，可使用<code>juju run</code><br/><code>juju run</code>是以ssh的方式登入至service宿主中执行shell命令，但两者又有不同之处：</p>
+            <p><b>juju run</b>:可以同时操控多台机器，可以通过指定machine/service/unit的方式指定机器，也可以使用<code>--all</code>参数指定所有机器或者container进行操作。</p>
+            <p><b>juju ssh</b>:可以通过指定machine/service的方式进行操作，但一次只能操作一台机器。</p>
+<pre>
+# 获取所有machine的kernel version
+juju run "uname -a" --all
+# 指定特定machine or service
+juju run "uname -a" --machine=3
+juju run "uname -a" --service=mysql</pre>
 
           <li><h2>Juju Charm的使用</h2/></li>
             <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store">Charm Store</a>上，一个
@@ -139,6 +180,12 @@ juju deploy local:trusty/mysql</pre>
                 </td>
               </tr>
             </table><hr/>
+
+          <li><h2>charm之间的关联性</h2></li>
+          <p>每个利用charm部署之后就是一个服务，而服务几乎没有独立运行的，需要不同服务之间的相互协作，建立联系。因此，charm之间的关联性尤为重要。</p>
+          <p>juju使用<code>juju add-relation</code>建立服务之间的联系。</p><pre>juju add-relation mysql epc-hss</pre>
+          <p>至于，为何两个服务之间为何可以添加连接或者不可以添加连接，其实在charm中有所规定，详情可以参见下面的<b>Charm文件详解</b></p>
+
           <li><h2>Charm文件详解</h2></li>
             <ul>
               <li>metadata.yaml</li>
@@ -150,6 +197,16 @@ juju deploy local:trusty/mysql</pre>
               <img src="metadata_yaml.png">
             </ul>
 
+            <li><h2>常用功能</h2></li>
+            <p>Juju具有服务扩展(Scaling Service)功能，尤其是在云端环境中，显得更加重要。</p><pre>juju add-unit -n 3 mysql</pre>
+            <p>移除功能:不但可以移除servie，还可以移除machine，甚至是整个environment。</p>
+<pre>
+# 移除service
+juju remove-service <service_name>
+# 移除unit
+juju remove-unit <unit_id>
+# 移除machine
+juju remove-machine <machine_number></pre>
 
           <h3>Reference:</h3>
           <p>Juju官网：<br/>
