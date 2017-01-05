@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - Tech</title>
+    <title>Milestone</title>
     <meta name="description" content="">
     <meta name="author" content="Yu Bangchao">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,15 +34,12 @@
              <span class="icon-bar"></span>
          </a>
 
-        <a class="brand" href="..">Milestone</a>
+        <a class="brand" href="http://www.subond.com/">Milestone</a>
 
         <div class="nav-collapse">
         <ul class="nav">
           <li><a href="/author/subond.html">About me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input  type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
 
     </div>
@@ -54,47 +51,57 @@
     <div class="row">
 
         <div class="span9">
-          <div>
-            <h2>Learn Map</h2>
-            <p>开源世界旅行手册&nbsp;&nbsp;<a href="http://i.linuxtoy.org/docs/guide">开源世界旅行手册</a></p>
-            <p>VIM编辑&nbsp;&nbsp;<a href="http://i.linuxtoy.org/docs/guide/ch24.html">第24章 VIM编辑器</a></p>
-          </div>
-          <div>
-            <h2>技术博客日志</h2>
-          <table class="table">
-              <tbody>
-                <tr><td>5th Jan 2017</td>
-                  <td><a href="pages/2017/1/5/LXD-manual.html">LXD使用手册</a></td>
-                </tr>
-                <tr><td>10th Nov 2016</td>
-                  <td><a href="../pages/2016/11/Juju-how-do-charm-work.html">云端服务管理工具:Juju</a></td>
-                </tr>
-                <tr><td>29th Jun 2016</td>
-                  <td><a href="../pages/2016/06/29/weka-xue-xi-zhi-instances.html">机器学习之Weka学习(02)-Instances类介绍</a></td>
-                </tr>
-                <tr><td>28th Jun 2016</td>
-                  <td><a href="../pages/2016/06/weka-xue-xi-zhi-fen-lei-qi.html">机器学习之Weka学习(01)-简单分类器</a></td>
-                </tr>
-                <tr><td>14th Jun 2016</td>
-                  <td><a href="../pages/2016/06/chu-shi-xian-cheng.html">初识线程</a></td>
-                </tr>
-                <tr><td>24th May 2016</td>
-                  <td><a href='../pages/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html'>基本UDP套接字编程</a></td>
-                </tr>
-                <tr><td>17th May 2016</td>
-          　     　<td><a href='../pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html'>Socket编程之函数学习篇</a></td>
-          　    </tr>
-          　　　 <tr><td>14th May 2016</td>
-          　　　　　<td><a href='../pages/2016/05/socket-bian-cheng-jie-shao-pian.html'>Socket编程之介绍篇</a></td>
-          　　　 </tr>
-                <tr><td>26th Apr 2016</td>
-                  <td><a href='../pages/2016/04/pelican-github-chuang-jian-bo-ke2.html'>利用Pelican+Github&nbsp;pages搭建个人博客</a></td>
-                </tr>
+    <div class='article'>
+        <div class="content-title">
+            <h1>LXD使用手册</h1>
+2017-1-5
 
-              </tbody>
-
-          </table>
+by <a class="url fn" href="/author/subond.html">subond</a>
         </div>
+        <div>
+          <h2>LXD介绍</h2>
+          <h2>Getting Started with LXD</h2>
+          <ol>
+            <li>创建第一个容器</li>
+            <p>假设使用ubuntu作为Ubuntu云镜像的别称，可以使用下面的命令创建你的第一个容器；</p>
+<pre>
+lxc launch ubuntu my_container  # my_container is the name of container
+lxc launch ubuntu # creat a container with a random name
+lxc list  # show all containsers</pre>
+            <p>现在，你的第一个容器已经运行起来了，接下来我们可以使用容器里面的SHELL做一些事情；</p>
+<pre>
+# 进入my_container的bash shell
+lxc exec my_container -- /bin/bash
+# 不进入my_container，直接运行一条命令
+lxc exec my_container --apt-get update
+# 获取/修改容器内的文件使用pull/push
+lxc file pull my_container/etc/hosts .
+lxc file push my_file my_container/tmp/
+# 停止/删除容器
+lxc stop my_container
+lxc delete my_container</pre>
+
+
+          </ol>
+<!--正文部分-->
+        </div>
+
+        <hr>
+
+        <h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'subond';
+    var disqus_title = 'My super title';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
         </div>
 
         <div class="span3">
@@ -124,7 +131,7 @@
                 <li><a href="/category/life.html">Life</a></li>
                 <li><a href="/category/tech.html">Tech</a></li>
                 <li><a href="/category/note.html">Note</a></li>
-                <li><a href="/category/tips.html">Tips</a></li>
+                <li><a href="/pages/tips.html">Tips</a></li>
 
             </ul>
             </div>
@@ -159,8 +166,7 @@
             </div>
 
         </div>
-    </div>
-  </div>
+    </div>     </div>
 <footer>
 <br />
 <p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
