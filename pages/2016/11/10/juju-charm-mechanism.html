@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - 云端服务管理工具:Juju</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>云端服务管理工具:Juju</h1>
+2016-11-10
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><h3>1.Juju介绍</h3>
+<p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程</p>
+<p>Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p>
+<h3>2.Juju的运作方式</h3>
+<p>Juju进行运作要具备以下三个因素：
+1) <strong>Juju Client</strong>
+Juju Client端在不同的平台都有(Ubuntu/OXS/Windows)，以Ubuntu为例，Juju Client套件名为juju-core。
+2) <strong>Ubuntu Image环境(也成为Ubuntu Server,可根据需求设定)</strong>
+一般的公有云都可以提供这样的环境，例如OpenStack,Amazon EC2,Microsoft Azure。当然，也可以搭配Ubuntu MAAS环境进行搭建。
+3) <strong>SSH key pair</strong>
+SSH key pair是用来控制Ubuntu Server，可利用一对SSH key pair登入至Ubuntu Server环境，并进行Service Orchestration操作。</p>
+<h3>3.Juju本地环境配置</h3>
+<p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。</p>
+<p><strong>安装Juju</strong></p>
+<div class="highlight"><pre>sudo apt-add-repository ppa:juju/stable
+sudo apt-get update <span class="o">&amp;&amp;</span> sudo apt-get -y install juju-core
+</pre></div>
+
+
+<p><strong>安装本地支持文件以及KVM/libvrt软件</strong></p>
+<div class="highlight"><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool
+</pre></div>
+
+
+<p><strong>生成配置文件：其路径为:~/.juju/environment.yaml</strong></p>
+<div class="highlight"><pre>juju generate-config
+juju switch kvm
+</pre></div>
+
+
+<p><strong>修改配置：在environment.yaml中找到local，进行如下修改：</strong></p>
+<div class="highlight"><pre>local:
+      type: <span class="nb">local</span>
+  kvm:
+      type: <span class="nb">local</span>
+      container: kvm
+</pre></div>
+
+
+<p><strong>执行，</strong></p>
+<div class="highlight"><pre>juju bootstrap
+</pre></div>
+
+
+<p>即可生成本地环境。可使用</p>
+<div class="highlight"><pre>juju status --format tabular
+</pre></div>
+
+
+<p>查看状态信息。如下图所示。</p>
+<p><img alt="juju_status" src="http://on64c9tla.bkt.clouddn.com/20161110juju_status.png"></p>
+<p><strong>关于Juju环境的其他操作</strong></p>
+<div class="highlight"><pre>  <span class="c1"># 查看环境列表</span>
+  juju env --list
+  juju env  // 可查看当前环境名称
+  <span class="c1"># 销毁环境</span>
+  juju destory-environment <span class="o">[</span>env_name<span class="o">]</span>
+  <span class="c1"># 设定environment中的VM版本</span>
+  juju set-env <span class="s2">&quot;default-series=trusty&quot;</span>
+</pre></div>
+
+
+<p>设定bootstrap环境</p>
+<p>juju bootstrap用来生成可运行charm的juju环境，可利用-e指定环境名称，例如：</p>
+<div class="highlight"><pre>juju bootstrap -e my_env
+</pre></div>
+
+
+<p>接下来，简单说明juju client/juju bootstrap node/cloud provider三者之间的关系。</p>
+<p>1) juju client通过bootstrap指令，在cloud provider上产生一个可用来部署juju charms的bootstrap实例，即juju环境。</p>
+<p>2) juju client通过juju deploy指令，在bootstrap实例上安装指定的charms到cloud provider的VM中。</p>
+<p>3) cloud provider中，既有bootstrap实例，也有charms的实例。</p>
+<p>因此，三者的交互过程具有如下关系：</p>
+<p><strong>juju client &lt; ---- &gt; juju bootstrap instance &lt; ---- &gt; cloud provider</strong></p>
+<h3>4.Juju服务编排</h3>
+<p>Juju利用部署服务(Deploy Services)的方式进行服务编排(Service Orchestration)。接下来，说明如何利用juju进行服务部署工作。</p>
+<p><strong>1) 利用charm Store进行部署</strong></p>
+<div class="highlight"><pre><span class="c1"># 利用charm store部署服务，以mysql为例</span>
+juju deploy mysql
+<span class="c1"># 指定serveice版本,格式为:/</span>
+juju deploy cs:precise/mysql
+</pre></div>
+
+
+<p><strong>2) 利用本地charm(Local Charm Repository)部署</strong></p>
+<div class="highlight"><pre><span class="c1"># repository 指定本地charm路径，如/usr/mycharms</span>
+<span class="c1"># repository name: local</span>
+<span class="c1"># series: trusty</span>
+<span class="c1"># service: mysql</span>
+juju deploy --repository<span class="o">=</span>/usr/mycharms local:trusty/mysql
+
+<span class="c1"># 如果预设juju repository的路径</span>
+<span class="nb">export</span> <span class="nv">JUJU_REPOSITORY</span><span class="o">=</span>/usr/mycharms/
+juju deploy local:trusty/mysql
+</pre></div>
+
+
+<p><strong>3) 利用配置文件进行多个service设定</strong></p>
+<p>Juju的配置文件以YAML格式进行撰写，可以在预先设定的配置文件中将charm的相关设定写好，再利用指定配置文件的方式，完成service的部署，从而避免部署指令过长。
+例如，部署一个名称mywiki的服务，可预先进行如下设定(myconfig.yaml):</p>
+<div class="highlight"><pre>mywiki:
+  name: jujuwiki
+  skin: monobook
+  admin: amdin:admin
+</pre></div>
+
+
+<p>然后，使用如下指令进行部署：</p>
+<div class="highlight"><pre>juju deploy --config myconfig.yaml mywiki
+</pre></div>
+
+
+<p><strong>3) 利用constraints个性化部署</strong></p>
+<p>在Juju指令中使用--constraints可在service部署时指定特定的VM规格(cpu, mem, etc)架构。</p>
+<div class="highlight"><pre>juju deploy --constraints <span class="s2">&quot;cpu-cores=2 mem=4G&quot;</span> mysql
+juju bootstrap --constraints <span class="s2">&quot;cpu-power=0 mem=512M&quot;</span>
+juju bootstrap --constraints <span class="s2">&quot;arch=amd64&quot;</span>
+juju set-constraints --service mysql <span class="nv">mem</span><span class="o">=</span>2G cpu-cores<span class="o">=</span>4
+<span class="c1"># 获取constraints内容</span>
+juju get-constraints
+juju get-constraints mysql
+</pre></div>
+
+
+<p><strong>注意</strong>:每个由juju管理的node(无论实体，还是容器(container))都被视为unit。Unit之间的数据交互，可使用juju相关命令，常用的指令由如下几种：</p>
+<p>登录至某个特定的unit，可使用<code>juju ssh</code></p>
+<div class="highlight"><pre><span class="c1"># 通过unit id或者machine id进行登入</span>
+juju ssh mysql/2
+<span class="c1"># 直接查询某些信息或者执行某些脚本</span>
+juju ssh mysql/2 ifconfig
+juju ssh mysql/2 bash /tmp/echo_ip.sh
+</pre></div>
+
+
+<p>文件拷贝，可使用<code>juju scp</code></p>
+<p><code>juju scp</code>可以将文件从service宿主的machine或者container中拷贝出来，也可以拷贝进去。</p>
+<div class="highlight"><pre><span class="c1"># juju scp中可使用service id，也可以使用machine id</span>
+<span class="c1"># 将iptables.sh放到mysql服务中的/tmp路径下</span>
+juju scp iptables.sh mysql/2:/tmp
+<span class="c1"># 将mysql服务中的log拷贝至本机</span>
+juju scp -r mysql/2:/var/log/mysql/ mysql_log/
+<span class="c1"># 拷贝两个service中的文件，使用-v</span>
+juju scp -v ubuntu/0:/path/file1 ubuntu/1:/path/file2 backup/
+</pre></div>
+
+
+<p>执行shell命令，可使用<code>juju run</code></p>
+<p><code>juju run</code>是以ssh的方式登入至service宿主中执行shell命令，但两者又有不同之处：</p>
+<p><strong>juju run</strong>:可以同时操控多台机器，可以通过指定machine/service/unit的方式指定机器，也可以使用--all参数指定所有机器或者container进行操作。</p>
+<p><strong>juju ssh</strong>:可以通过指定machine/service的方式进行操作，但一次只能操作一台机器。</p>
+<div class="highlight"><pre><span class="c1"># 获取所有machine的kernel version</span>
+juju run <span class="s2">&quot;uname -a&quot;</span> --all
+<span class="c1"># 指定特定machine or service</span>
+juju run <span class="s2">&quot;uname -a&quot;</span> --machine<span class="o">=</span>3
+juju run <span class="s2">&quot;uname -a&quot;</span> --service<span class="o">=</span>mysql
+</pre></div>
+
+
+<h3>5.Juju Charm的使用</h3>
+<p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在Charm Store上，一个 简单的命令<code>juju deploy mysql</code>，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到charm Store供别人下载使用。</p>
+<p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括文件：元数据(metadata.yaml),配置数据(config.yaml)以及与hooks相关的支持文件，如下图所示。</p>
+<table>
+  <tr><td><img src="http://on64c9tla.bkt.clouddn.com/20161110charm_tree.png" algin="left"></td>
+    <td>
+      <ul>
+        <li>/hooks</li>
+        <p>hooks是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与metadata.yaml文件相关，后续介绍)。</p>
+        <li>/actions</li>
+        <p>actions是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与juju系统调用相关)。</p>
+        <li>actions.yaml</li>
+        <p>actions.yaml是一个配置文件，当使用目录actions中的脚本时，需要配置actions.yaml文件。</p>
+        <li>config.yaml</li>
+        <p>config.yaml是一个配置文件，与服务配置相关(service/unit)。</p>
+        <li>icon.svg</li>
+        <p>icon.svg是GUI界面中用来识别charm的文件。</p>
+        <li>README</li>
+        <p>README文件主要介绍charm的主要功能，操作，用例等等。</p>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<h3>6.Charm之间的关联性</h3>
+<p>每个利用charm部署之后就是一个服务，而服务几乎没有独立运行的，需要不同服务之间的相互协作，建立联系。因此，charm之间的关联性尤为重要。</p>
+<p>juju使用juju add-relation建立服务之间的联系。</p>
+<div class="highlight"><pre>juju add-relation mysql epc-hss
+</pre></div>
+
+
+<p>至于，为何两个服务之间为何可以添加连接或者不可以添加连接，其实在charm中有所规定，详情可以参见下面的 <em>Charm文件详解</em>。</p>
+<h3>7.Charm文件详解</h3>
+<ul>
+<li>metadata.yaml</li>
+</ul>
+<p>metadata.yaml中定义了许多charm本身的元信息，位于charm的根目录，必须是有效的yaml文件，且至少要包含以下信息：</p>
+<p><font color="#ff000000">name</font>:即charm的名字，用来标识一个特定的charm,方便从charm store中下载。name的命名只接受'a-z','0-9'以及'-',必须以'a-z'开头，不能以'-'结尾。</p>
+<p><font color="#ff000000">summary</font>:即概要，用一句话描述自己的charm功能。</p>
+<p><font color="#ff000000">description</font>:用来描述charm的功能，特性等，可在Juju GUI中显示。</p>
+<p><font color="#ff000000">tags</font>:charm的标签，方便在charm store中搜索。</p>
+<p><img alt="metadata_yaml" src="http://on64c9tla.bkt.clouddn.com/20161110metadata_yaml.png"></p>
+<h3>8.常用功能</h3>
+<p>Juju具有服务扩展(Scaling Service)功能，尤其是在云端环境中，显得更加重要。</p>
+<div class="highlight"><pre>juju add-unit -n <span class="m">3</span> mysql
+</pre></div>
+
+
+<p>移除功能:不但可以移除servie，还可以移除machine，甚至是整个environment。</p>
+<div class="highlight"><pre><span class="c1"># 移除service</span>
+juju remove-service
+<span class="c1"># 移除unit</span>
+juju remove-unit
+<span class="c1"># 移除machine</span>
+juju remove-machine
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

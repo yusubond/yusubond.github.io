@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - 机器学习之Weka学习-简单分类器</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>机器学习之Weka学习-简单分类器</h1>
+2016-06-28
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><p>WEKA作为一个公开的数据挖掘工作平台，集合了大量能承担数据挖掘任务的机器学习算法，包括对数据进行预处理， 分类，回归、聚类、关联规则以及在新的交互式界面上的可视化。</p>
+<h2>1.Weka介绍</h2>
+<p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。
+WEKA作为一个公开的数据挖掘工作平台，集合了大量能承担数据挖掘任务的机器学习算法，包括对数据进行预处理， 分类，回归、聚类、关联规则以及在新的交互式界面上的可视化。</p>
+<p>机器学习可以概括为“为使用正确的特征来构建正确的模型，以完成既定的任务”。任务，模型及特征是机器学习的三大”原料“。其工作流程一般如下：</p>
+<p>1.学习问题，即由训练数据结合学习算法构建正确的模型<br>
+2.构建特征，即将原始数据根据所需构建特征，形成模型所识别的数据格式<br>
+3.完成任务，即借助正确的模型，对数据进行处理，得到输出。  </p>
+<h2>2.简单分类器实例</h2>
+<p>该分类器的数据处理过程如下：
+1)读入训练数据<br>
+2)初始化分类器<br>
+3)使用训练数据训练分类器<br>
+4)使用测试样本测试分类器的学习效果<br>
+5)打印分类结果  </p>
+<div class="highlight"><pre><span class="kn">package</span> <span class="nn">weka01</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">weka.classifiers.Classifier</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.classifiers.Evaluation</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.Instance</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.Instances</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.converters.ArffLoader</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleCluster</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">Instances</span> <span class="n">ins</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">Classifier</span> <span class="n">cfs</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="k">try</span><span class="o">{</span>
+      <span class="cm">/*</span>
+<span class="cm">      *读入训练数据</span>
+<span class="cm">      */</span>
+      <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;/home/subond/subond/weka-3-8-0/data/weather.numeric.arff&quot;</span><span class="o">);</span>
+            <span class="n">ArffLoader</span> <span class="n">loader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArffLoader</span><span class="o">();</span>
+            <span class="n">loader</span><span class="o">.</span><span class="na">setFile</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+            <span class="n">ins</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="na">getDataSet</span><span class="o">();</span>
+      <span class="cm">/*</span>
+<span class="cm">      *设置数据集的分类类别，即指定哪一列作为类别</span>
+<span class="cm">      *注意：本例中设置最后一列作为类别</span>
+<span class="cm">      */</span>
+            <span class="n">ins</span><span class="o">.</span><span class="na">setClassIndex</span><span class="o">(</span><span class="n">ins</span><span class="o">.</span><span class="na">numAttributes</span><span class="o">()-</span><span class="mi">1</span><span class="o">);</span>
+
+      <span class="cm">/*</span>
+<span class="cm">      *初始化分类器</span>
+<span class="cm">      *具体使用哪一种特定的分类器可以在forName函数中指定</span>
+<span class="cm">      */</span>
+            <span class="n">cfs</span> <span class="o">=</span> <span class="o">(</span><span class="n">Classifier</span><span class="o">)</span><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&quot;weka.classifiers.bayes.NaiveBayes&quot;</span><span class="o">).</span><span class="na">newInstance</span><span class="o">();</span>
+      <span class="cm">/*</span>
+<span class="cm">      *使用训练数据训练分类器</span>
+<span class="cm">      */</span>
+            <span class="n">cfs</span><span class="o">.</span><span class="na">buildClassifier</span><span class="o">(</span><span class="n">ins</span><span class="o">);</span>
+      <span class="cm">/*</span>
+<span class="cm">      *使用测试样本测试分类器的学习效果</span>
+<span class="cm">      *注意：本实例中，为了方便将训练数据和测试数据置为同一个</span>
+<span class="cm">      */</span>
+            <span class="n">Instance</span> <span class="n">testInst</span><span class="o">;</span>
+            <span class="n">Evaluation</span> <span class="n">testingEvaluation</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Evaluation</span><span class="o">(</span><span class="n">ins</span><span class="o">);</span>
+            <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">ins</span><span class="o">.</span><span class="na">numInstances</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+            <span class="o">{</span>
+        <span class="cm">/*</span>
+<span class="cm">        *将每个测试样本都用来测试分类器的效果</span>
+<span class="cm">        */</span>
+                <span class="n">testInst</span> <span class="o">=</span> <span class="n">ins</span><span class="o">.</span><span class="na">instance</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+                <span class="n">testingEvaluation</span><span class="o">.</span><span class="na">evaluateModelOnceAndRecordPrediction</span><span class="o">(</span><span class="n">cfs</span><span class="o">,</span> <span class="n">testInst</span><span class="o">);</span>
+            <span class="o">}</span>
+      <span class="cm">/*</span>
+<span class="cm">      *输出结果</span>
+<span class="cm">      */</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;分类器的正确率：&quot;</span> <span class="o">+</span> <span class="o">(</span><span class="mi">1</span><span class="o">-</span><span class="n">testingEvaluation</span><span class="o">.</span><span class="na">errorRate</span><span class="o">()));</span>
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

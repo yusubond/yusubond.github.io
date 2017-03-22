@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Linux中的进程管理</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Linux中的进程管理</h1>
+2016-06-17
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><h3>1.进程</h3>
+<p>进程是执行中的程序，是大多数系统的工作单元，是 <strong>活动实体</strong>。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。</p>
+<p><strong>进程调度</strong></p>
+<p>进程调度是指选择一个可用的进程到CPU上执行的过程，由相应的 <strong>调度程序</strong> 来执行。进程进入系统后，进入 <strong>作业队列</strong> (包含系统中的所有队列)；驻留在内存中就绪，等待执行的进程位于 <strong>就绪队列</strong>。就绪队列通常用链表实现，其头节点指向链表的第一个和最后一个PCB块的指针；每个PCB包括一个指向就绪队列的下一个的PCB的指针域。</p>
+<p><img alt="三种进程调度的区别" src="http://on64c9tla.bkt.clouddn.com/20160617process2.jpg"></p>
+<p>调度程序分为 <strong>长期调度程序</strong>, <strong>中期调度程序</strong> 和 <strong>短期调度程序</strong>。长期调度(高级调度)，又称为 <strong>作业调度</strong>，是指从池中选择进程，并装入内存准备执行，其使用频率比较低，主要用来控制内存中进程的数量；中期调度(中级调度)，又称为 <strong>交换调度</strong>，是指将进程中内存或CPU竞争中移出，从而降低多道程序设计的程度，之后进程被重新装入内存；短期调度(低级调度)，又称为 <strong>进程调度</strong>，是指按照一定的策略和算法，将CPU分配给一个处于就绪的进程，分为 <strong>抢占式</strong> 和 <strong>非抢占式</strong>。</p>
+<p><img alt="三种进程调度的区别" src="http://on64c9tla.bkt.clouddn.com/20160617process.jpg"></p>
+<p><strong>上下文切换</strong></p>
+<p>将CPU切换找另一个进程需要保存当前进程的状态，并恢复另一个进程的状态，这个过程称为上下文切换。</p>
+<h3>2.进程操作</h3>
+<p><strong>进程创建</strong> 和 <strong>进程终止</strong></p>
+<p>进程创建新进程时，有两种执行可能：</p>
+<p>1）父进程与子进程并发执行；2）父进程等待，直到某个子进程或全部子进程执行完毕。</p>
+<p>同样，新进程的地址空间也有两种可能：</p>
+<p>1）子进程是父进程的复制品（具有父进程相同的程序和数据）；2）子进程装入一个新程序。</p>
+<p>在linux系统，使用fork()函数可以创建一个新进程，相关内容参考fork()函数。</p>
+<p>当进程完成执行最后的语句病使用系统调用exit()请求操作系统删除自身时，进程终止。进程终止时，可以返回状态值(整数)到父进程(通过系统调用wait())，所有进程资源将会被操作系统回收。</p>
+<h3>3.进程间通信</h3>
+<p>进程间通信(IPC)有两种基本模式：<strong>共享内存</strong> 和 <strong>消息传递</strong>。进程间通信可以调用send()和receive()来进行，其可分为 <strong>阻塞</strong> 或 <strong>非阻塞</strong>——也称为 <strong>同步</strong> 和 <strong>异步</strong>。</p>
+<p>阻塞send: 发送进程阻塞，直到消息被进程或邮箱所接收；<br>
+非阻塞send: 发送进程发送消息并继续操作；<br>
+阻塞receive: 接收进程阻塞，直到有消息可用；<br>
+非阻塞receive: 接收进程接收到一个有用消息或空消息；</p>
+<p>值得注意的是，无论是直接通信还是间接通信，通信进程的消息的驻留在临时队列中。队列的实现有三种方式：零容量，有限容量，无限容量。</p>
+<p><strong>共享内存实例</strong></p>
+<p>创建共享内存段shmget()</p>
+<div class="highlight"><pre><span class="c1">//三个参数：标识符，字节数，读写模式</span>
+<span class="c1">//函数返回整数标识值</span>
+<span class="n">segment_id</span> <span class="o">=</span> <span class="n">shmget</span><span class="p">(</span><span class="n">IPC_PRIVATE</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">S_IRUSR</span> <span class="o">|</span> <span class="n">S_IWURS</span><span class="p">);</span>
+<span class="c1">//三个参数：共享内存段的ID，指针，读写模式</span>
+<span class="c1">//返回初始位置的指针</span>
+<span class="n">share_memory</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">shmat</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="c1">//删除共享内存段，释放指针</span>
+<span class="n">shmdt</span><span class="p">(</span><span class="n">share_memory</span><span class="p">);</span>
+<span class="n">shmctl</span><span class="p">();</span>
+</pre></div>
+
+
+<p><strong>消息传递</strong>: Mach</p>
+<p>Mach系统主要为分布式系统设计。在Mach系统中，每个任务创建时，同时创建了两个特别的邮箱：<strong>内核邮箱</strong> 和 <strong>通报邮箱</strong>。内核使用内核邮箱与任务通信，使用通报邮箱发送事件发生的通知。</p>
+<p>消息传递使用三个系统调用：</p>
+<p>1）msg_send():发送数据；<br>
+2）msg_receive():接收数据；<br>
+3）msg_rpc():发送远程消息，并只等待来自发送者的一个返回消息；  </p>
+<p>值得注意的是，Mach可以确保来自同一个发送者额多个消息满足FIFO顺序排队，但不是绝对顺序。即两个发送者的消息可以任意排队。其次，Mach使用的是双重复制机制(发送者&lt;--复制--&gt;邮箱&lt;--复制--&gt;接收者)。若使用虚拟内存管理技术(即将发送者的地址空间映射到接收者的地址空间，但只适用与系统内部)，可以避免这种双重复制。</p>
+<h2>4.进程小结</h2>
+<p>进程是执行中的程序。随着程序的执行，它改变状态。进程状态由进程当前活动所定义。每个进程可处于：新的，就绪，执行，等待或终止状态。每个进程在操作系统内通过自己的进程控制块PCB来表示。当前不执行的进程放在某个等待队列中。操作系统有两种主要队列：<strong>I/O请求队列</strong> 和 <strong>就绪队列</strong>。就绪队列包括所有准备执行或等待CPU的进程。每个都有PCB，PCB链接起来就形成了就绪队列。长期调度通过选择进程来争用CPU。短期调度从就绪队列中选择进程。</p>
+<p>操作系统的执行进程可以是独立进程，也可以是协作进程。协作进程需要进程间有互相通信机制，主要有两种形式：共享内存和消息传递。<strong>共享内存</strong> 方法通过要求通信进程共享一些变量，进程通过使用共享变量来交换信息；而 <strong>消息系统</strong> 方法允许进程交换信息。</p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

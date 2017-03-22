@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - 利用Pelican+Github pages搭建个人博客</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>利用Pelican+Github pages搭建个人博客</h1>
+2016-04-24
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><p>说明：本教程使用的系统平台为ubuntu16.04。</p>
+<h2>Github pages</h2>
+<p>注册Github，并创建一个名为username.github.io的版本库。注意username为自己的用户名。</p>
+<h2>配置本地环境</h2>
+<ul>
+<li>安装Pelican和Markdown</li>
+</ul>
+<p>Pelican是一套开源的使用Python编写的博客静态生成，可以添加文章和创建页面，可使用Markdown，reStructuredText和AsiiDoc的格式来书写，同时使用Disqus评论系统，支持 RSS和Atom输出，插件，主题，代码高亮等功能。</p>
+<p>安装Pelican有很多方法，一般采用python的包管理器pip进行安装。</p>
+<div class="highlight"><pre>$ sudo apt-get install python-pip
+$ sudo pip install pelican
+$ sudo pip install markdow
+</pre></div>
+
+
+<ul>
+<li>创建博客</li>
+</ul>
+<p>创建博客目录，然后使用快速生成，具体如下：</p>
+<div class="highlight"><pre>$ mkdir blog
+$ <span class="nb">cd</span> blog
+$ pelican-quickstart
+</pre></div>
+
+
+<p>执行pelican-quicstart命令后，会提示博客的配置选项，根据提示操作即可，除必填项之外，其他选择默认即可。如果有需要 可以在之后的pelicanconf.py文件进行修改。完成之后，会出现Pelican框架，如下</p>
+<div class="highlight"><pre>bolg
+<span class="p">|</span>__content             <span class="c1">#存放输入的Markdown文件</span>
+<span class="p">|</span>__output              <span class="c1">#存放最终生成的静态博客网页文件</span>
+<span class="p">|</span>__develop_server.sh   <span class="c1">#本地测试服务器文件</span>
+<span class="p">|</span>__Makefile            <span class="c1">#管理博客的Makefile</span>
+<span class="p">|</span>__pelicanconf.py      <span class="c1">#博客配置文件</span>
+<span class="p">|</span>__publishconf.py      <span class="c1">#发布文件，可删除</span>
+</pre></div>
+
+
+<ul>
+<li>撰写博客</li>
+</ul>
+<p>完成博客主题搭建后，使用Markdown语法书写博客，完成后保存在content目录下。</p>
+<div class="highlight"><pre><span class="n">Title</span><span class="o">:</span> <span class="n">My</span> <span class="kd">super</span> <span class="n">title</span>     <span class="c1">//文章名字</span>
+<span class="n">Date</span><span class="o">:</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">21</span>
+<span class="n">Category</span><span class="o">:</span> <span class="n">Python</span>          <span class="c1">//文章分类</span>
+<span class="n">Tags</span><span class="o">:</span> <span class="n">pelican</span><span class="o">,</span> <span class="n">publishing</span> <span class="c1">//文章标签</span>
+<span class="n">Slug</span><span class="o">:</span> <span class="n">my</span><span class="o">-</span><span class="kd">super</span><span class="o">-</span><span class="n">post</span>       <span class="c1">//html文件名</span>
+<span class="n">Author</span><span class="o">:</span> <span class="n">Alexis</span> <span class="n">Metaireau</span>  <span class="c1">//作者信息</span>
+<span class="n">Summary</span><span class="o">:</span> <span class="n">Short</span> <span class="n">version</span> <span class="k">for</span> <span class="n">index</span> <span class="n">and</span> <span class="n">feeds</span>  <span class="c1">//文章摘要</span>
+
+<span class="c1">//文章正文</span>
+
+<span class="n">This</span> <span class="k">is</span> <span class="n">the</span> <span class="n">content</span> <span class="n">of</span> <span class="n">my</span> <span class="kd">super</span> <span class="n">blog</span> <span class="n">post</span><span class="o">.</span>
+</pre></div>
+
+
+<p>完成之后，在blog目录下，执行如下命令：</p>
+<div class="highlight"><pre>$ make html
+$ ./develop_server.sh start 8000
+</pre></div>
+
+
+<p>之后，在浏览器中输入http://localhost:8000 即可看到博客效果。</p>
+<ul>
+<li>发布博客</li>
+</ul>
+<p>之前我们已经在Github上创建了仓库，现在我们就将本地文件搬到远程仓库中，进入output目录下，具体指令如下：</p>
+<div class="highlight"><pre>$ git init
+$ git add .
+$ git remote add origin https://github.com/username/username.github.io
+$ git pull origin master
+$ git commit -m <span class="s2">&quot;First update&quot;</span>
+$ git push origin master
+</pre></div>
+
+
+<p>完成博客发布后，访问http://username.github.io 即可。</p>
+<h2>附：Git简易教程</h2>
+<div class="highlight"><pre>$ git init                    <span class="c1">#把当前目录变成git可管理的repository</span>
+$ git add &lt;files&gt;             <span class="c1">#添加文件至缓存区</span>
+$ git commit -m <span class="s2">&quot;message&quot;</span>     <span class="c1">#提交文件</span>
+$ git remote add origin &lt;server&gt;       <span class="c1">#添加远程服务器</span>
+$ git remote set-url origin &lt;server&gt;   <span class="c1">#修改远程服务器地址</span>
+$ git push origin master      <span class="c1">#推送到远程服务器</span>
+$ git status    <span class="c1">#查看当前各文件状态</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

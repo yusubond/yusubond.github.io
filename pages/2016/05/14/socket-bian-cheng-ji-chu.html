@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Socket编程之基础篇</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Socket编程之基础篇</h1>
+2016-05-14
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><p>Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式， 即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。</p>
+<p><img alt="tcp-ip-stack" src="http://on64c9tla.bkt.clouddn.com/20160514socket-yu-xie-yi-ge-ceng.jpg"></p>
+<h2>套接字地址结构</h2>
+<p>学习套接字编程，首先要知道套接字的地址结构，大多数套接字函数都需要一个指向套接字的地址结构的指针作为参数。每个协议族都有自己的套接字地址结构， 均以sockaddr_开头，并以对应的每个协议族的唯一后缀结尾。</p>
+<h3>1.IPv4套接字地址结构</h3>
+<p>IPv4套接字地址结构以sockaddr_in命名，定义在&lt;netinet/in.h&amp;mt头文件中，如下所示。</p>
+<div class="highlight"><pre><span class="k">struct</span> <span class="n">in_addr</span><span class="p">{</span>
+    <span class="n">in_addr_t</span> <span class="n">s_addr</span><span class="p">;</span>       <span class="cm">/*32-bit IPv4 address;network byte ordered*/</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="p">{</span>
+        <span class="kt">uint8_t</span>            <span class="n">sin_len</span><span class="p">;</span>
+        <span class="n">sa_family_t</span>        <span class="n">sin_family</span><span class="p">;</span>        <span class="cm">/*AF_INET*/</span>
+        <span class="n">in_port_t</span>          <span class="n">sin_port</span><span class="p">;</span>          <span class="o">/</span><span class="mi">16</span><span class="o">-</span><span class="n">bit</span> <span class="n">TCP</span> <span class="n">or</span> <span class="n">UDP</span> <span class="n">port</span> <span class="n">number</span><span class="p">;</span><span class="n">network</span> <span class="n">byte</span> <span class="n">ordered</span><span class="err">*/</span>
+        <span class="k">struct</span> <span class="n">in_addr</span>     <span class="n">in_addr</span> <span class="n">sin_addr</span><span class="p">;</span>  <span class="cm">/*32-bit IPv4 address;network byte ordered*/</span>
+        <span class="kt">char</span>               <span class="n">sin_zero</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>       <span class="cm">/*unused*/</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><strong>说明</strong>: 一般情况下，我们只使用这个结构中的3个字段：sin_family,sin_addr和sin_port，其分别对应套接字地址结构的协议族、IP地址和端口号。套接字地址结构仅在给定主机上使用 其结构中的某些字段用在不同主机间的通信，但结构本身不在主机之间传递。</p>
+<h3>2.IPv6套接字地址结构</h3>
+<p>IPv4套接字地址结构以sockaddr_in6命名，定义在&lt;netinet/in.h&amp;mt头文件中，如下所示。</p>
+<div class="highlight"><pre><span class="k">struct</span> <span class="n">in6_addr</span><span class="p">{</span>
+    <span class="n">uninet8_t</span> <span class="n">s6_addr</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>       <span class="cm">/*128-bit IPv4 address;network byte ordered*/</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="p">{</span>
+      <span class="kt">uint8_t</span>          <span class="n">sin6_len</span><span class="p">;</span>
+      <span class="n">sa_family_t</span>      <span class="n">sin6_family</span><span class="p">;</span>        <span class="cm">/*AF_INET6*/</span>
+      <span class="n">in_port_t</span>        <span class="n">sin6_port</span><span class="p">;</span>          <span class="cm">/*transport layer port;network byte ordered*/</span>
+      <span class="kt">uint32_t</span>         <span class="n">sin6_flowinfo</span>       <span class="cm">/*flow information,undefined*/</span>
+      <span class="k">struct</span> <span class="n">in6_addr</span>  <span class="n">sin6_addr</span><span class="p">;</span>          <span class="cm">/*128-bit IPv6 address;network byte ordered*/</span>
+      <span class="kt">uint32_t</span>         <span class="n">sin6_zero</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>       <span class="cm">/*unused*/</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3>3.值-结果参数</h3>
+<p>当往一个套接字函数传递一个套接字地址结构时，结构以引用形式来传递，也就是说传递的是指向该结构的一个指针，该结构的长度作为一个参数来传递，其传递方向取决于传递方向：是内核到进程，还是进程到内核。</p>
+<p>(1)从进程到内核传递套接字地址结构的函数有3个：bind(),connet()和sendto()。这些函数的一个参数是指向某个套接字地址结构的指针，一个参数是该结构的整数大小，如下所示。</p>
+<div class="highlight"><pre>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+</pre></div>
+
+
+<p>(2)从内核到进程传递套接字地址结构的函数有4个：accept(),recvfrom(),getsockname()和getpeername()。这4个函数其中的两个参数是指向某个套接字地址结构的指针和指向该地址结构大小的整数变量指针，如下所示。</p>
+<div class="highlight"><pre>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+</pre></div>
+
+
+<h3>4.字节排序函数</h3>
+<p>简单来说，主机和网络存储整形数据的字节顺序一般是不一样的，我们将他们称之为主机字节序和网络字节序，分别对应内核处理和进程处理。两种字节序之间的互转使用以下4个函数，其对应套接字地址结构（IP地址＋端口号）的字节序的转换。</p>
+<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;netinet.h&gt;</span><span class="cp"></span>
+    <span class="kt">uint16_t</span> <span class="nf">htons</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">host16bitvalue</span><span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="nf">htonl</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">host32bitvalue</span><span class="p">);</span>  <span class="c1">//返回：网络字节序的值</span>
+    <span class="kt">uint16_t</span> <span class="nf">ntohs</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">host16bitvalue</span><span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="nf">ntohs</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">host32bitvalue</span><span class="p">);</span>  <span class="c1">//返回：主机字节序的值</span>
+</pre></div>
+
+
+<h3>5.地址转换函数</h3>
+<p>地址转换函数可以在ASCII字符串与网络字节序的二进制值之间转换网际地址。常用的地址转换函数有inet_pton()和inet_ntop()，其中p代表表达（presentation），n代表数值（numeric）。地址的表达格式通常是ASCII字符串，数值格式是存放到 套接字地址结构中的二进制值。</p>
+<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">inet_pton</span><span class="p">(</span><span class="kt">int</span> <span class="n">family</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">strptr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">addrptr</span><span class="p">);</span>
+<span class="c1">//返回：1-成功；0-输入不是有效表达式；-1-出错。</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="nf">inet_ntop</span><span class="p">(</span><span class="kt">int</span> <span class="n">family</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">addrptr</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">strptr</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">);</span>
+<span class="c1">//返回：成功则为指向结果的指针，出错为NULL。</span>
+</pre></div>
+
+
+<h3>6.字节操作函数</h3>
+<p>字节操作函数用于处理多字节字段，例如bzero()函数。</p>
+<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;strings.h&gt;</span><span class="cp"></span>
+<span class="kt">void</span> <span class="nf">bzero</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">dest</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbytes</span><span class="p">);</span>
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

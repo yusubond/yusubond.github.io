@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - 机器学习之Weka学习-Instances类介绍</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>机器学习之Weka学习-Instances类介绍</h1>
+2016-06-29
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><h2>1.Intances类介绍</h2>
+<p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。</p>
+<div class="highlight"><pre>public class Instances
+extends java.util.AbstractList&lt;Instace&gt;
+implemensts java.io.Serializable, RevisionHandler
+</pre></div>
+
+
+<p>也就是说Instances类是继承AbstractList类而来，并实现了Serializable,RevisionHandler接口。</p>
+<h2>2.构造函数</h2>
+<p><img alt="weka-instances" src="http://on64c9tla.bkt.clouddn.com/2016B/20160629instances-gouzao.jpg"></p>
+<p>其构造函数可以实现实例的完整或部分拷贝，也可以创建新的实例，值得注意的是，其读入的数据格式为arff。关于arff的数据格式后续会有介绍。</p>
+<p><strong>主要成员变量</strong></p>
+<ul>
+<li>
+<p>numAttributes():返回属性总量</p>
+</li>
+<li>
+<p>setClassIndex(int):设置用于分类的属性</p>
+</li>
+<li>
+<p>instance(int):返回具体的实例</p>
+</li>
+<li>
+<p>firstInstance():返回第一个实例</p>
+</li>
+</ul>
+<h2>3.应用实例</h2>
+<p>1.导入数据，设置分类属性，输出实例</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">java.lang.String</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.converters.ConverterUtils.DataSource</span><span class="p">;</span>
+
+<span class="n">DataSource</span> <span class="n">source</span> <span class="o">=</span> <span class="n">new</span> <span class="n">DataSource</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">);</span>
+<span class="n">Instances</span> <span class="n">ins</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">getDataSet</span><span class="p">();</span>
+
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">ins</span><span class="p">)</span>
+</pre></div>
+
+
+<p>2.示例程序 程序源码地址：<a href="https://github.com/yusubond/Machine-Learning/blob/master/Instances/Demo_Instances.java">Instances小实例</a></p>
+<div class="highlight"><pre><span class="kn">package</span> <span class="nn">weka01</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.String</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.converters.ConverterUtils.DataSource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.Instances</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Demo_Instances</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testInstances</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">DataSource</span> <span class="n">source</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataSource</span><span class="o">(</span><span class="s">&quot;/home/subond/subond/weka-3-8-0/data/weather.numeric.arff&quot;</span><span class="o">);</span>
+            <span class="n">Instances</span> <span class="n">ins</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="na">getDataSet</span><span class="o">();</span>
+
+            <span class="n">ins</span><span class="o">.</span><span class="na">setClassIndex</span><span class="o">(</span><span class="n">ins</span><span class="o">.</span><span class="na">numAttributes</span><span class="o">()-</span><span class="mi">1</span><span class="o">);</span>
+
+            <span class="c1">//System.out.println(ins);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;the number of attributes:&quot;</span> <span class="o">+</span> <span class="n">ins</span><span class="o">.</span><span class="na">numAttributes</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;the number of instances:&quot;</span> <span class="o">+</span> <span class="n">ins</span><span class="o">.</span><span class="na">numInstances</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;the first instance:&quot;</span> <span class="o">+</span> <span class="n">ins</span><span class="o">.</span><span class="na">firstInstance</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;the 3rd instance:&quot;</span> <span class="o">+</span> <span class="n">ins</span><span class="o">.</span><span class="na">instance</span><span class="o">(</span><span class="mi">3</span><span class="o">));</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;the last instances:&quot;</span> <span class="o">+</span> <span class="n">ins</span><span class="o">.</span><span class="na">lastInstance</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;the name of relation:&quot;</span> <span class="o">+</span> <span class="n">ins</span><span class="o">.</span><span class="na">relationName</span><span class="o">());</span>
+            <span class="c1">//将第一个实例加入到总实例的最后</span>
+            <span class="n">ins</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">ins</span><span class="o">.</span><span class="na">firstInstance</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">ins</span><span class="o">);</span>
+
+
+
+        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">Demo_Instances</span> <span class="n">testIns</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Demo_Instances</span><span class="o">();</span>
+        <span class="n">testIns</span><span class="o">.</span><span class="na">testInstances</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p><strong>参考资料</strong></p>
+<p>官网资料：<a href="http://10.103.14.28/weka-3-8-0/doc/">Intances类</a></p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>
