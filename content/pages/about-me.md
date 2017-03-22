@@ -1,74 +1,15 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="utf-8">
-    <title>Milestone - About Me</title>
-    <meta name="description" content="">
-    <meta name="author" content="subond">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+Title: About Me
+Date: 2017-03-21
+Category: Life
+Tags: about me
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-    <script src="../theme/html5.js"></script>
-    <![endif]-->
+## 于邦超
 
-    <!-- Le styles -->
-    <link href="../theme/bootstrap.min.css" rel="stylesheet">
-    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
-    <link href="../theme/local.css" rel="stylesheet">
-    <link href="../theme/pygments.css" rel="stylesheet">
-
-    <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
-
-</head>
-
-<body>
-
-<div class="navbar">
-    <div class="navbar-inner">
-    <div class="container">
-
-         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-         </a>
-
-        <a class="brand" href="..">Milestone</a>
-
-        <div class="nav-collapse">
-        <ul class="nav">
-
-            <li><a href="../pages/about-me.html">About Me</a></li>
-        </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
-        </div>
-
-    </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="content">
-    <div class="row">
-
-        <div class="span9">
-        
-<section id="content" class="body">    
-    <h2 class="content-title">
-        About Me
-    </h2>
-    <h2>于邦超</h2>
 <table width="600" algin="left">
     <tr height="30"><td>Email:&nbsp;yubc0321@gmail.com</td><td>Github:<a href="https://github.com/yusubond">&nbsp;github.com/yusubond</a></td></tr>
     <tr height="30"><td>Addr:&nbsp;北京市海淀区西土城路10号北京邮电大学</td><td>Blog:<a href="http://www.subond.com">&nbsp;www.subond.com</a></td></tr>
 </table>
-
-<p><hr size="3px" color="#00BFF"/>
+<hr size="3px" color="#00BFF"/>
 <p><font size="4"><b>教育背景</b></font></p>
 <hr size="3px" color="#000000"/>
 <table width="800" algin="left">
@@ -145,78 +86,4 @@
 <hr size="3px" color="#000000"/>
 <ul>
   <li>徒步，爬山，读书等</li>
-</ul></p>
-</section>
-        </div>
-
-        <div class="span3">
-
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header">
-                Site
-                </li>
-
-                <li><a href="../archives.html">Archives</a>
-                <li><a href="../tags.html">Tags</a>
-
-
-
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
-
-            </ul>
-            </div>
-
-
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header">
-                Categories
-                </li>
-
-                <li><a href="../category/note.html">Note</a></li>
-                <li><a href="../category/tech.html">Tech</a></li>
-            </ul>
-            </div>
-
-
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header">
-                Links
-                </li>
-
-                <li><a href="http://nsq.io/">NSQ</a></li>
-                <li><a href="http://www.infoq.com/cn/">Info</a></li>
-                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
-                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
-            </ul>
-            </div>
-
-
-            <div class="social">
-            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
-            <ul class="nav nav-list">
-                <li class="nav-header">
-                Social
-                </li>
-
-                <li><a href="https://github.com/yusubond">Github</a></li>
-                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
-            </ul>
-            </div>
-            </div>
-
-        </div>     </div>     </div> 
-<footer>
-<br />
-<p><a href="..">Milestone</a> &copy; subond 2016</p>
-</footer>
-
-</div> <!-- /container -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="../theme/bootstrap-collapse.js"></script>
-<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
-</body>
-</html>
+</ul>
