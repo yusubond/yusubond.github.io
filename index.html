@@ -3,23 +3,24 @@
 <head>
     <meta charset="utf-8">
     <title>Milestone</title>
-    <meta name="description" content="subond, github">
-    <meta name="author" content="Yu Bangchao">
+    <meta name="description" content="">
+    <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="/theme/html5.js"></script>
+    <script src="./theme/html5.js"></script>
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="/theme/bootstrap.min.css" rel="stylesheet">
-    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
-    <link href="/theme/local.css" rel="stylesheet">
-    <link href="/theme/pygments.css" rel="stylesheet">
+    <link href="./theme/bootstrap.min.css" rel="stylesheet">
+    <link href="./theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -39,13 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-          <li><a href="./author/subond.html">About me</a></li>
+
+            <li><a href="./pages/about-me.html">About Me</a></li>
         </ul>
-<!---        <ul class="nav">
-          <li><a href="https://github.com/yusubond/Linux-Shell-Script-Program/blob/master/README.md">Shell编程</a></li>
-        </ul>  -->
         <form class="navbar-search pull-right" action="/search.html">
-          <input  type="text" class="search-query" placeholder="Search" name="q" id="s">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
         </form>
         </div>
 
@@ -58,494 +57,248 @@
     <div class="row">
 
         <div class="span9">
+        
 
-
-
+        
 
 
     <div class='article'>
         <div class="content-title">
-            <a href="/pages/2016/11/Juju-how-do-charm-work.html"><h2>云端服务管理工具:Juju</h2></a>
-2016-11-10
+            <a href="./pages/2016/12/03/introduction-about-osm.html"><h1>初识Open Source MANO</h1></a>
+2016-12-03
 
 by <a class="url fn" href="./author/subond.html">subond</a>
+ 
 
 
-
-
+ 
         </div>
-<!--我的第一篇博客开始-->
-        <div>
-            <ol type="1">
-            <li><h2>Juju介绍</h2></li>
-              <p><a href="https://jujucharms.com/">Juju</a>是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是
-                开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单，
-                可以参考<a href="https://jujucharms.com/docs/stable/getting-stared">官网教程</a></p>
-              <p>Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,<code>juju deploy juju-gui</code>)。</p>
+        
+        <div><h2>1.Open Source MANO</h2>
+<p><img src="http://on64c9tla.bkt.clouddn.com/2016D/OSM-logo.png" align="left">Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。</p>
+<p>MANO致力于“管理和编排”，是ETSI NFV定义的架构框架的功能模块的一部分。如图1-1所示。</p>
+<p><img alt="nfv-architecture" src="http://on64c9tla.bkt.clouddn.com/2016D/etsi_nfv_architecture.png"></p>
+<p><center>图1-1 ETSI NFV系统架构</center></p>
 
-            <li><h2>Juju的运作方式</h2></li>
-              <p>Juju进行运作要具备以下三个因素：<br/>1) <b>Juju Client</b><br/>Juju Client端在不同的平台都有(Ubuntu/OXS/Windows)，以Ubuntu为例，Juju Client套件名为juju-core。<br/>2) <b>Ubuntu Image环境(也成为Ubuntu Server,可根据需求设定)</b><br/>一般的公有云都可以提供这样的环境，例如OpenStack,Amazon EC2,Microsoft Azure。当然，也可以搭配Ubuntu MAAS环境进行搭建。<br/>3) <b>SSH key pair</b><br/>SSH key pair是用来控制Ubuntu Server，可利用一对SSH key pair登入至Ubuntu Server环境，并进行Service Orchestration操作。</p>
-
-
-            <li><h2>Juju本地环境配置</h2/></li>
-              <p>Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。<br/><b>安装Juju</b><pre>sudo apt-add-repository ppa:juju/stable<br/>sudo apt-get update && sudo apt-get -y install juju-core</pre>
-                <br/><b>安装本地支持文件以及KVM/libvrt软件</b><br/><pre>sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool</pre>
-                  <br/>生成配置文件：其路径为:<code>~/.juju/environment.yaml</code><pre>juju generate-config<br/>juju switch kvm</pre>
-                <br/>修改配置：在environment.yaml中找到local，进行如下修改：<p/>
-  <pre>local:
-      type: local
-  kvm:
-      type: local
-      container: kvm</pre>
-              <p>执行，<pre>juju bootstrap</pre>即可生成本地环境。可使用<pre>juju status --format tabular</pre>查看状态信息。如下图所示。</p>
-              <img src="pages/2016/11/juju_status.png" algin="left">
-
-              <h3>*关于Juju环境的其他操作</h3>
-              <pre>
-  # 查看环境列表
-  juju env --list
-  juju env  // 可查看当前环境名称
-  # 销毁环境
-  juju destory-environment [env_name]
-  # 设定environment中的VM版本
-  juju set-env "default-series=trusty"</pre>
-              <p><b>设定bootstrap环境</b><br/><code>juju bootstrap</code>用来生成可运行charm的juju环境，可利用<code>-e</code>指定环境名称，例如：<br/><pre>juju bootstrap -e my_env</pre>接下来，简单说明juju client/juju bootstrap node/cloud provider三者之间的关系。<br/>1) juju client通过<code>bootstrap</code>指令，在cloud provider上产生一个可用来部署juju charms的bootstrap实例，即juju环境。<br/>2) juju client通过<code>juju deploy</code>指令，在bootstrap实例上安装指定的charms到cloud provider的VM中。<br/>3) cloud provider中，既有bootstrap实例，也有charms的实例。<br/>因此，三者的交互过程具有如下关系：<br/><b>juju client < ---- > juju bootstrap instance < ---- > cloud provider</b>
-
-            <li><h2>Juju服务编排</h2></li>
-              <p>Juju利用部署服务(Deploy Services)的方式进行服务编排(Service Orchestration)。接下来，说明如何利用juju进行服务部署工作。</p>
-              <p>1) <b>利用charm Store进行部署</b></p>
-  <pre>
-  # 利用charm store部署服务，以mysql为例
-  juju deploy mysql
-  # 指定serveice版本,格式为<repository>:<series>/<service>
-  juju deploy cs:precise/mysql</pre>
-              <p>2) <b>利用本地charm(Local Charm Repository)部署</b></p>
-  <pre>
-  # repository 指定本地charm路径，如/usr/mycharms
-  # repository name: local
-  # series: trusty
-  # service: mysql
-  juju deploy --repository=/usr/mycharms local:trusty/mysql
-
-  # 如果预设juju repository的路径
-  export JUJU_REPOSITORY=/usr/mycharms/
-  juju deploy local:trusty/mysql</pre>
-              <p>3) <b>利用配置文件进行多个service设定</b><br/>Juju的配置文件以YAML格式进行撰写，可以在预先设定的配置文件中将charm的相关设定写好，再利用指定配置文件的方式，完成service的部署，从而避免部署指令过长。<br/>例如，部署一个名称mywiki的服务，可预先进行如下设定(myconfig.yaml):</p>
-  <pre>
-  mywiki:
-    name: jujuwiki
-    skin: monobook
-    admin: amdin:admin</pre>
-              <p>然后，使用如下指令进行部署：<pre>juju deploy --config myconfig.yaml mywiki</pre></p>
-              <p>3) <b>利用constraints个性化部署</b><br/>在Juju指令中使用<code>--constraints</code>可在service部署时指定特定的VM规格(cpu, mem, etc)架构。</p>
-  <pre>
-  juju deploy --constraints "cpu-cores=2 mem=4G" mysql
-  juju bootstrap --constraints "cpu-power=0 mem=512M"
-  juju bootstrap --constraints "arch=amd64"
-  juju set-constraints --service mysql mem=2G cpu-cores=4
-  # 获取constraints内容
-  juju get-constraints
-  juju get-constraints mysql</pre>
-              <p><b>注意</b>:每个由juju管理的node(无论实体，还是容器(container))都被视为unit。Unit之间的数据交互，可使用juju相关命令，常用的指令由如下几种：</p>
-              <p>登入至某个特定的unit，可使用<code>juju ssh</code></p>
-  <pre>
-  # 通过unit id或者machine id进行登入
-  juju ssh mysql/2
-  # 直接查询某些信息或者执行某些脚本
-  juju ssh mysql/2 ifconfig
-  juju ssh mysql/2 bash /tmp/echo_ip.sh</pre>
-              <p>文件拷贝，可使用<code>juju scp</code><br/><code>juju scp</code>可以将文件从service宿主的machine或者container中拷贝出来，也可以拷贝进去。</p>
-  <pre>
-  # juju scp中可使用service id，也可以使用machine id
-  # 将iptables.sh放到mysql服务中的/tmp路径下
-  juju scp iptables.sh mysql/2:/tmp
-  # 将mysql服务中的log拷贝至本机
-  juju scp -r mysql/2:/var/log/mysql/ mysql_log/
-  # 拷贝两个service中的文件，使用-v
-  juju scp -v ubuntu/0:/path/file1 ubuntu/1:/path/file2 backup/</pre>
-              <p>执行shell命令，可使用<code>juju run</code><br/><code>juju run</code>是以ssh的方式登入至service宿主中执行shell命令，但两者又有不同之处：</p>
-              <p><b>juju run</b>:可以同时操控多台机器，可以通过指定machine/service/unit的方式指定机器，也可以使用<code>--all</code>参数指定所有机器或者container进行操作。</p>
-              <p><b>juju ssh</b>:可以通过指定machine/service的方式进行操作，但一次只能操作一台机器。</p>
-  <pre>
-  # 获取所有machine的kernel version
-  juju run "uname -a" --all
-  # 指定特定machine or service
-  juju run "uname -a" --machine=3
-  juju run "uname -a" --service=mysql</pre>
-
-            <li><h2>Juju Charm的使用</h2/></li>
-              <p>Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在<a href="https://jujucharms.com/store">Charm Store</a>上，一个
-                简单的命令<code>juju deploy mysql</code>，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到<a href="https://jujucharms.com/store">charm Store</a>供别人下载使用。</p>
-              <p>Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括文件：元数据(metadata.yaml),配置数据(config.yaml)以及与hooks相关的支持文件，如下图所示。</p><hr/>
-              <table>
-                <tr><td><img src="pages/2016/11/charm_tree.png" algin="left"></td>
-                  <td>
-                    <ul>
-                      <li>/hooks</li>
-                      <p>hooks是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与metadata.yaml文件相关，后续介绍)。</p>
-                      <li>/actions</li>
-                      <p>actions是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与juju系统调用相关)。</p>
-                      <li>actions.yaml</li>
-                      <p>actions.yaml是一个配置文件，当使用目录actions中的脚本时，需要配置actions.yaml文件。</p>
-                      <li>config.yaml</li>
-                      <p>config.yaml是一个配置文件，与服务配置相关(service/unit)。</p>
-                      <li>icon.svg</li>
-                      <p>icon.svg是GUI界面中用来识别charm的文件。</p>
-                      <li>README</li>
-                      <p>README文件主要介绍charm的主要功能，操作，用例等等。</p>
-                    </ul>
-                  </td>
-                </tr>
-              </table><hr/>
-
-            <li><h2>charm之间的关联性</h2></li>
-            <p>每个利用charm部署之后就是一个服务，而服务几乎没有独立运行的，需要不同服务之间的相互协作，建立联系。因此，charm之间的关联性尤为重要。</p>
-            <p>juju使用<code>juju add-relation</code>建立服务之间的联系。</p><pre>juju add-relation mysql epc-hss</pre>
-            <p>至于，为何两个服务之间为何可以添加连接或者不可以添加连接，其实在charm中有所规定，详情可以参见下面的<b>Charm文件详解</b></p>
-
-            <li><h2>Charm文件详解</h2></li>
-              <ul>
-                <li>metadata.yaml</li>
-                <p>metadata.yaml中定义了许多charm本身的元信息，位于charm的根目录，必须是有效的yaml文件，且至少要包含以下信息：<br/>
-                <code>name</code>:即charm的名字，用来标识一个特定的charm,方便从charm store中下载。name的命名只接受'a-z','0-9'以及'-',必须以'a-z'开头，不能以'-'结尾。<br/>
-                <code>summary</code>:即概要，用一句话描述自己的charm功能。<br/>
-                <code>description</code>:用来描述charm的功能，特性等，可在Juju GUI中显示。<br/>
-                <code>tags</code>:charm的标签，方便在charm store中搜索。</p>
-                <img src="pages/2016/11/metadata_yaml.png">
-              </ul>
-
-              <li><h2>常用功能</h2></li>
-              <p>Juju具有服务扩展(Scaling Service)功能，尤其是在云端环境中，显得更加重要。</p><pre>juju add-unit -n 3 mysql</pre>
-              <p>移除功能:不但可以移除servie，还可以移除machine，甚至是整个environment。</p>
-  <pre>
-  # 移除service
-  juju remove-service <service_name>
-  # 移除unit
-  juju remove-unit <unit_id>
-  # 移除machine
-  juju remove-machine <machine_number></pre>
-
-            <h3>Reference:</h3>
-            <p>Juju官网：<br/>
-              <a href="https://jujucharms.com/docs/1.25/config-local.html">Using the local provider</a><br/>
-              <a href="https://jujucharms.com/docs/1.25/config-KVM.html">Installing and configuring Juju for KVM(Linux)</a><br/>
-              <a href="https://jujucharms.com/docs/1.25/authors-charm-components">What makes a charm?</a><br/>
-              <a href="https://jujucharms.com/mysql/">mysql in charm store</a><br/>
-              <a href="https://github.com/juju/cheatsheet">juju指令集</a></p>
+<p>如前所述，ETSI NFV架构框架的两个关键组件就是NFV Orchestrator和VNF Manager,称为NFV MANO。另外，对于管理人员来说，还需要其他层(比如服务编排)，才能够启动真正的NFV服务。开源软件可以促进ETSI对NFV架构的实现，向ETSI ISG NFV提供实用和基本的反馈，并增加NFV实现之间的互操作性和可能性。</p>
+<p>OSM Release ONE已经经过设计、测试和记录，可以实现快速安装，并创建一个可扩展和互操作的开放MANO环境。它极大地增强了与其他组件(VNFs,VIMs,SDN控制器)的互操作性，可以创建一个(plug-in)框架来进行平台维护和扩展，使得技术的提供和支持更加容易。此外，Release ONE提高了管理员和开发人员的在可用性和安装过程中体验，以及增强了NFV和网络服务的建模能力。为了符合OSI开源工程的目标，这种建模输出工作将会贡献到ETSI NFV中。Release ONE也提供了极其灵活的虚拟化网络功能(VNF)配置和高级网络管理，以及改进的故障排除功能和高级日志记录。白皮书中概括了OSM的主要框架，开发的新功能以及Release ONE部分开放内容。</p>
+<p>Open Source MANO白皮书地址<a href="https://osm.etsi.org/images/OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf">OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf</a></p>
+<h2>安装OSM</h2>
+<h3>1.前期准备/系统要求</h3>
+<p>1) 8 CPUs, 16G RAM, 100GB硬盘以及可用的网络接口；<br>
+2) Ubuntu 16.04系统，并配置LXD容器  </p>
+<p>LXD配置如下：</p>
+<div class="highlight"><pre>sudo apt update
+sudo apt install zfs lxd
+sudo newgrp lxd
+</pre></div>
 
 
+<p>接下来进行lxc初始化设置，使用命令<code>sudo lxd init</code>,并进行如下设置：</p>
+<p><img alt="lxd_install" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_install.png"></p>
+<p>成功后，会出现以下信息。</p>
+<p><img alt="lxd_success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
+<h3>2.从源安装OSM</h3>
+<p>安装之前，系统需要安装版本控制管理工具git，sudo apt install -y git；接下来，获取安装脚本，进行安装即可。</p>
+<div class="highlight"><pre>wget https://osm-download.etsi.org/ftp/osm-1.0-one/install_from_source.sh
+chmod +x install_from_source.sh
+./install_from_source.sh
+</pre></div>
 
-            <ol/>
-        </div>
 
-
-<!--我的第一篇博客结束-->
-<!--添加水平横线-->
-        <hr/><hr/>
+<p>安装过程中，需要进行LXD的相关配置，比较简单，可自行设置。我的部分设置如下：</p>
+<p><img alt="step3" src="http://on64c9tla.bkt.clouddn.com/2016D/step3.png"></p>
+<p><img alt="step4" src="http://on64c9tla.bkt.clouddn.com/2016D/step4.png"></p>
+<p><img alt="step5" src="http://on64c9tla.bkt.clouddn.com/2016D/step5.png"></p>
+<p><img alt="step6" src="http://on64c9tla.bkt.clouddn.com/2016D/step6.png"></p>
+<p><img alt="step7" src="http://on64c9tla.bkt.clouddn.com/2016D/step7.png"></p>
+<p><img alt="step8" src="http://on64c9tla.bkt.clouddn.com/2016D/step8.png"></p>
+<p><img alt="step9" src="http://on64c9tla.bkt.clouddn.com/2016D/step9.png"></p>
+<p>安装成功后，会出现如下信息：</p>
+<p><img alt="osm-success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
+<p><strong>参考资料</strong></p>
+<p><a href="https://osm.etsi.org/wikipub/index.php/LXD_configuration_for_OSM_release_1">LXD configuration for OSM release 1</a></p>
+<p><a href="https://osm.etsi.org/wikipub/index.php/OSM_Release_ONE">OSM Release ONE</a></p>
+<p><img alt="OSM架构框图" src="http://on64c9tla.bkt.clouddn.com/2016D/OSMconnectivity1.png"></p></div>
+        <hr />
     </div>
-<!--缩写部分开始-->
-<!--缩写部分结构示意
-<div>
-# 整个缩写部分
-  <div>
-  # 单篇blog整体
-  # 题目控件
-    <div>
-    # 单篇blog title
-    </div>
-    <div class="summary">
-    # blog主体
-    # readmore控件
-    </div>
-  </div>
-</div>
--->
-    <div>
-      <div>
-        <a href="/pages/2016/11/Juju-how-do-charm-work.html"><h2>机器学习之Weka学习(03)-Evaluation类介绍</h2></a>
-      <div class="well small">2016-06-28
-          by <a class="url fn" href="author/subond.html">subond</a>
-      </div>
+		
 
-      <div class="summary">
+ 
+        
 
-      <p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation
-        而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的
-        Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
-<pre>
-public class　Evaluation
-extends java.lang.Object
-implemensts java.io.Serializable, Summarizable, RevisionHandler
-</pre>
-      <h2>构造函数</h2>
+ 
 
-      <p>Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：<pre>Evaluation eval = new Evaluation(data)</pre>data是训练集的数据，用来获取一些信息，并不用来评价分类器。</p>
-      <a class="btn btn-info xsmall" href="/pages/2016/11/Juju-how-do-charm-work.html">read more</a>
-    </div>
-  </div><hr/>
+    <div class='article'>
+        <a href="./pages/2016/11/10/juju-charm-mechanism.html"><h2>云端服务管理工具:Juju</h2></a>
+        <div class= "well small"> 2016-11-10
 
-    <div>
-      <a href="/pages/2016/06/29/weka-xue-xi-zhi-instances.html"><h2>机器学习之Weka学习(02)-Instances类介绍</h2></a>
-      <div class="well small">2016-06-29
-        by <a class="url fn" href="author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <h2>Instances类介绍</h2>
-        <p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。</p>
-<pre>
-public class Instances
-extends java.util.AbstractList&lt;Instace&gt;
-implemensts java.io.Serializable, RevisionHandler
-</pre>
-        <p>也就是说Instances类是继承AbstractList类而来，并实现了Serializable,RevisionHandler接口。</p>
-
-        <h2>构造函数</h2>
-        <img src="pages/2016/06/29/instances-gouzao.jpg" align="left">
-        <p>其构造函数可以实现实例的完整或部分拷贝，也可以创建新的实例，值得注意的是，其读入的数据格式为arff。关于arff的数据格式后续会有介绍。</p>
-
-        <h2>主要成员变量</h2>
-        <ul>
-          <li>numAttributes():返回属性总量</li>
-          <li>setClassIndex(int):设置用于分类的属性</li>
-          <li>instance(int):返回具体的实例</li>
-          <li>firstInstance():返回第一个实例</li>
-        </ul>
-        <a class="btn btn-info xsmall" href="/pages/2016/06/29/weka-xue-xi-zhi-instances.html">read more</a>
-      </div>
-
-    </div><hr/>
-
-    <div>
-      <a href="/pages/2016/06/weka-xue-xi-zhi-fen-lei-qi.html"><h2>机器学习之Weka学习(01)-简单分类器</h2></a>
-      <div class="well small">2016-06-28
-        by <a class="url fn" href="author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <h2>Weka介绍</h2>
-        <p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。
-          它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。<br/>WEKA作为一个公开的数据挖掘工作平台，集合了大量能承担数据挖掘任务的机器学习算法，包括对数据进行预处理，
-          分类，回归、聚类、关联规则以及在新的交互式界面上的可视化。</p>
-        <p>机器学习可以概括为“为使用正确的特征来构建正确的模型，以完成既定的任务”。任务，模型及特征是机器学习的三大”原料“。其工作流程一般如下：<br/>1.学习问题，即由训练数据结合学习算法构建正确的模型<br/>
-        2.构建特征，即将原始数据根据所需构建特征，形成模型所识别的数据格式<br/>3.完成任务，即借助正确的模型，对数据进行处理，得到输出。</p>
-        <h2>简单的分类器实例</h2>
-        <p>该分类器的数据处理过程如下：<br/>1)读入训练数据<br/>2)初始化分类器<br/>3)使用训练数据训练分类器<br/>4)使用测试样本测试分类器的学习效果<br/>5)打印分类结果</p>
-        <a class="btn btn-info xsmall" href="/pages/2016/06/weka-xue-xi-zhi-fen-lei-qi.html">read more</a>
-      </div>
-
-    </div><hr/>
-
-    <div>
-      <a href="http://www.opensource5g.org/forum.php?mod=viewthread&tid=8"><h2>[转]基于OpenAirInterface5g开源工程的核心网环境搭建及部署</h2></a>
-      <div class="well small">2016-06-24
-        by <a class="url fn" href="author/subond.html">subond</a>
-      </div>
-      <div>
-        <a class="btn btn-info xsmall" href="http://www.opensource5g.org/forum.php?mod=viewthread&tid=8">read more</a>
-      </div>
-
-    </div><hr/>
-
-    <div>
-      <a href="/pages/2016/06/chu-shi-xian-cheng.html"><h2>初识线程</h2></a>
-      <div class="well small">2016-06-14
-        by <a class="url fn" href="author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <h2>基本线程函数</h2>
-        <p>以下主要介绍5个基本线程函数</p>
-        <ol type="1">
-          <li><h3>pthread_create函数</h3></li>
-          <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
-<pre>#include &ltpthread.h&gt<br/>int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg);<br/>返回：成功为0，出错为正的Exxx值</pre>
-          <p><b><i>tid</i></b>:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。</p>
-          <p><b><i>attr</i></b>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
-          <P>创建一个线程时最后指定的参数就是由该线程执行的函数<b><i>func</i></b>及其参数<b><i>arg</i></b>。注意<b><i>func</i></b>和<b><i>arg</i></b>的声明。<b><i>func</i></b>所指函数作为参数接受一个通用指针
-          (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</P>
-          <li><h3>pthread_join函数</h3></li>
-<pre>#include &ltpthread.h&gt<br/>int pthread_join(pthread_t *tid, void **status);<br/>返回：成功为0，出错为正的Exxx值。</pre>
-          <p>该函数的功能是等待一个给定线程终止</p>
-        <a class="btn btn-info xsmall" href="/pages/2016/06/chu-shi-xian-cheng.html">read more</a>
-      </div>
-
-    </div><hr/>
-
-    <div>
-      <a href="/pages/2016/05/chu-shi-xian-cheng.html"><h2>基本UDP套接字编程</h2></a>
-      <div class="well small">2016-05-24
-        by <a class="url fn" href="/author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <ol type="1">
-          <li><h3>UDP套接字编程模型</h3></li>
-          <p>TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)，
-            NFS(网络文件系统)和SNMP(简单网络管理协议)。<br/>典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p>
-          <p><center><img alt="UDP客户/服务器程序所用的套接字函数" src="/images/2016/05/udp-bian-cheng-mo-xing.jpg"></center></p>
-          <p><center>图1-1&nbsp;UDP客户/服务器程序所用的套接字函数</center></p>
-          <li><h3>recvfrom和sendto函数</h3></li>
-<pre>#include&ltsys/socket.h&gt
-ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
-ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
-均返回：若成功返回读或写的字节数，出错返回-1</pre>
-          <p>前三个参数<i>sockfd</i>,<i>buff</i>和<i>nbytes</i>为：描述符、指向读入或写出的缓冲区的指针和读写字节数。<br/><i>flags</i>一般置为0。</p>
-          <p>sendto的<i>to</i>参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由<i>addrlen</i>参数指定。recvfrom的<i>from</i>参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构，
-          而在该套接字地址结构中填写的字节数则放在<i>addrlen</i>参数所所指的整数中返回给调用者。<b>注意</b>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
-          <p><font color="red">注意</font>recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数：
-          调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
-        </ol>
-          <a class="btn btn-info xsmall" href="/pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html">read more</a>
-        </div>
-
-    </div><hr/>
-
-    <div>
-      <a href="/pages/2016/05/socket-bian-cheng=han-shu-xue-xi-pian.html"><h2>Socket编程之函数学习篇</h2></a>
-      <div class="well small">2016-05-17
-        by <a class="url fn" href="/author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
-
-
-        <ul >
-          <li><h2>基本API函数</h2></li>
-          <ol type="1">
-            <li><h3>socket()函数——创建套接字</h3></li>
-
-            <pre>#include &ltsys/socket.h&gt<br/>int socket(int domain, int type, int protocol);<br/>成功返回sockfd;出错返回-1.</pre>
-
-            <p>sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。</p>
-            <p>创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：</p>
-            <ul>
-              <li><b>domain</b>：协议域</li>
-              <p>协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。</p>
-              <li><b>type</b>:指定socket类型</li>
-              <p>常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。</p>
-              <li><b>protocol</b>:指定通信协议</li>
-              <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
-            </ul>
-          </ol>
-        </ul>
-        <a class="btn btn-info xsmall" href="/pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html">read more</a>
-      </div>
-
-    </div>
-    <hr/>
-
-    <div>
-      <a href="/pages/2016/05/socket-bian-cheng-jie-shao-pian.html"><h2>Socket编程之介绍篇</h2></a>
-      <div class="well small">2016-05-14
-        by <a class="url fn" href="/author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <p>Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式，
-        即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。</p>
-        <p><center><img alt="Socket与各协议的关系" src="/images/2016/05/socket-yu-xie-yi-ge-ceng.jpg"></center></p>
-        <a class="btn btn-info xsmall" href="./pages/2016/05/socket-bian-cheng-jie-shao-pian.html">read more</a>
-      </div>
-
-    </div>
-    <hr/>
-
-    <div>
-      <a href="/pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html"><h2>LTE系统网络架构</h2></a>
-      <div class="well small">2016-05-10
-        by <a class="url fn" href="/author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <h2>网络架构概述</h2>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。</p>
-        <p><center><img alt="LTE系统架构示意图" src="/images/lte-xitong.jpg"></center></p>
-        <p><center>图1-1&nbsp;LTE系统网络架构示意图</center></p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;与3G系统相比，LTE系统重新定义了系统网络架构，核心网和接入网之间的功能划分也随之有所变化，针对LTE系统架构，网络功能划分如图1-2所示。</p>
-        <p><center><img alt="LTE系统功能实体划分、协议架构示意图" src="/images/lte-xitong-gongneng-xieyi.jpg"></center></p>
-        <p><center>图1-2&nbsp;LTE系统功能实体划分、协议架构示意图</center></p>
-        <a class="btn btn-info xsmall" href="./pages/2016/05/LTE-xi-tong-wang-luo-jia-gou.html">read more</a>
-      </div>
-
-    </div><hr/>
-
-    <div>
-      <a href="./pages/2016/04/git-xue-xi-shou-ji.html"><h2>Git学习手记</h2></a>
-      <div class="well small">2016-04-29
 by <a class="url fn" href="./author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <h2>一、基础篇</h2>
-            <h3>1&nbsp;指令介绍</h3>
-            <pre>
-git config --global user.name "username"   	#配置仓库参数，作为一个标志
-git config --global user.email "useremail"	#配置仓库参数，作为一个标志
-git init                      #把当前目录变成git可管理的仓库
-git add <i>files</i>          #添加文件到暂存区
-git diff <i>file</i>          #查看文件的修改内容
-git commit -m "提交说明信息”    #提交文件到仓库
-git status                    #获取当前仓库中文档的状态
-git log                       #查看历史记录
-git log -pretty=oneline       #单行显示历史信息
-git reflog                    #显示版本号
-git checkout -- file          #取出文件
-git remote add origin <仓库地址>    #添加远程仓库地址
-git push origin <分支名1>          #推送本地内容到远程仓库分支1
-git pull origin <远程主机名> <远程分支名>:<本地分支名>
-                                          #取回远程主机某个分支，并与本地指定分支合并
-git clone <仓库地址>               #克隆远程仓库到本地仓库
-git remote            #查看远程仓库信息
-git remote -v         #查看远程仓库详细信息</pre>
-        <h3>2&nbsp;版本回退</h3>
-        <p>git&nbsp;reset&nbsp;--hard&nbsp;版本号...</p>
-        <a class="btn btn-info xsmall" href="./pages/2016/04/git-xue-xi-shou-ji.html">read more</a>
-      </div>
-    </div><hr/>
+ 
 
-    <div>
-      <a href="./pages/2016/04/pelican-github-chuang-jian-bo-ke2.html"><h2>利用Pelican+Github&nbsp;pages搭建个人博客</h2></a>
-      <div class="well small">2016-04-26
+
+ </div>
+        <div class="summary"><p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p> <a class="btn btn-info xsmall" href="./pages/2016/11/10/juju-charm-mechanism.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/07/03/machinelearning-about-weka-evaluation.html"><h2>机器学习之Weka学习-Evaluation类介绍</h2></a>
+        <div class= "well small"> 2016-07-03
+
 by <a class="url fn" href="./author/subond.html">subond</a>
-      </div>
-      <div class="summary">
-        <p>说明：本教程使用的系统平台为ubuntu系统14.04。
-        </p>
-        <h3>Github pages</h3>
-        <p>注册Github，并创建一个名为<i>username</i>.github.io的版本库。注意<i>username</i>为自己的用户名。
-        </p>
-        <h3>配置本地环境</h3>
-        <ul>
-          <li>安装Pelican和Markdown</li>
-          <p>Pelican是一套开源的使用Python编写的博客静态生成，可以添加文章和创建页面，可使用Markdown，reStructuredText和AsiiDoc的格式来书写，同时使用Disqus评论系统，支持
-            RSS和Atom输出，插件，主题，代码高亮等功能。</p>
-            <p>安装Pelican有很多方法，一般采用python的包管理器pip进行安装。</p>
-            <pre>
-$ sudo apt-get install python-pip
-$ sudo pip install pelican
-$ sudo pip install markdown</pre>
-          <li>创建博客</li>
-          <p>创建博客目录，然后使用快速生成，具体如下：</p>
-            <pre>
-$ mkdir blog
-$ cd blog
-$ pelican-quickstart</pre><p>...</p>
-        </ul>
-        <a class="btn btn-info xsmall" href="./pages/2016/04/pelican-github-chuang-jian-bo-ke2.html">read more</a>
+ 
 
-      </div>
 
-    </div><hr/>
+ </div>
+        <div class="summary"><p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p> <a class="btn btn-info xsmall" href="./pages/2016/07/03/machinelearning-about-weka-evaluation.html">read more</a></div>
+    </div>	
+				
 
-<!--缩写部分结束-->
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
+        <div class= "well small"> 2016-06-29
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/06/28/machinelearning-about-weka-classifier.html"><h2>机器学习之Weka学习-简单分类器</h2></a>
+        <div class= "well small"> 2016-06-28
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/06/19/pthread2-management-in-linux.html"><h2>Linux中的线程管理</h2></a>
+        <div class= "well small"> 2016-06-19
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/19/pthread2-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/06/17/process-management-in-linux.html"><h2>Linux中的进程管理</h2></a>
+        <div class= "well small"> 2016-06-17
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>进程是执行中的程序，是大多数系统的工作单元，是 <strong>活动实体</strong>。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/17/process-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/06/14/pthread-management-in-linux.html"><h2>Linux中的线程函数</h2></a>
+        <div class= "well small"> 2016-06-14
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。本节主要介绍5个基本线程函数。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/14/pthread-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/05/24/socket-bian-cheng-udp.html"><h2>Socket编程之基本UDP编程</h2></a>
+        <div class= "well small"> 2016-05-24
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>UDP套接字编程模型。TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)， NFS(网络文件系统)和SNMP(简单网络管理协议)。典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p> <a class="btn btn-info xsmall" href="./pages/2016/05/24/socket-bian-cheng-udp.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/05/17/socket-bian-cheng-xue-xi.html"><h2>Socket编程之函数学习篇</h2></a>
+        <div class= "well small"> 2016-05-17
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p> <a class="btn btn-info xsmall" href="./pages/2016/05/17/socket-bian-cheng-xue-xi.html">read more</a></div>
+    </div>	
+				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="/index.html">1</a></li>
+    <li class="active"><a href="./index.html">1</a></li>
+    <li class=""><a href="./index2.html">2</a></li>
 
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+    <li class="next"><a href="./index2.html">Next &rarr;</a></li>
 
 </ul>
 </div>
-
-
+ 
+  
         </div>
-      </div>
 
         <div class="span3">
 
@@ -555,11 +308,13 @@ $ pelican-quickstart</pre><p>...</p>
                 Site
                 </li>
 
-                <li><a href="/archives.html">Archives</a>
-                <li><a href="/tags.html">Tags</a>
+                <li><a href="./archives.html">Archives</a>
+                <li><a href="./tags.html">Tags</a>
 
 
 
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -571,10 +326,8 @@ $ pelican-quickstart</pre><p>...</p>
                 Categories
                 </li>
 
-                <li><a href="/category/life.html">Life</a></li>
-                <li><a href="/category/tech.html">Tech</a></li>
-                <li><a href="/category/note.html">Note</a></li>
-                <li><a href="/category/tips.html">Tips</a></li>
+                <li><a href="./category/note.html">Note</a></li>
+                <li><a href="./category/tech.html">Tech</a></li>
             </ul>
             </div>
 
@@ -585,10 +338,9 @@ $ pelican-quickstart</pre><p>...</p>
                 Links
                 </li>
 
-                <li><a href="http://www.opensource5g.org">OpenSource5G</a></li>
-                <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OpenAirInterface5g</a></li>
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
-                <li><a href="http://www.sdnap.com/">SDNAP</a></li>
                 <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
             </ul>
             </div>
@@ -601,25 +353,21 @@ $ pelican-quickstart</pre><p>...</p>
                 Social
                 </li>
 
-                <li><a href="https://github.com/yusubond" target="_blank">Github</a></li>
-                <li><a href="http://weibo.com/ybconly" target="_blank">Weibo</a></li>
-
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>
-    </div>     </div>
+        </div>     </div>     </div> 
 <footer>
 <br />
-<p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
+<p><a href=".">Milestone</a> &copy; subond 2016</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-collapse.js"></script>
+<script src="./theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
-<script src="/theme/bootstrap-collapse.js"></script>
-
 </body>
 </html>
