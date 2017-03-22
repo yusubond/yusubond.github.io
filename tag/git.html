@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - git</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="../pages/2016/04/29/git-xue-xi-shou-ji.html"><h1>Git学习手记</h1></a>
+2016-04-29
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h2>一、基础篇</h2>
+<h3>指令介绍</h3>
+<div class="highlight"><pre>git config --global user.name <span class="s2">&quot;username&quot;</span>    <span class="c1">#配置仓库参数，作为一个标志</span>
+git config --global user.email <span class="s2">&quot;useremail&quot;</span>  <span class="c1">#配置仓库参数，作为一个标志</span>
+git init                      <span class="c1">#把当前目录变成git可管理的仓库</span>
+git add files          <span class="c1">#添加文件到暂存区</span>
+git diff file          <span class="c1">#查看文件的修改内容</span>
+git commit -m <span class="s2">&quot;提交说明信息&quot;</span>   <span class="c1">#提交文件到仓库</span>
+git status                    <span class="c1">#获取当前仓库中文档的状态</span>
+git log                       <span class="c1">#查看历史记录</span>
+git log -pretty<span class="o">=</span>oneline       <span class="c1">#单行显示历史信息</span>
+git reflog                    <span class="c1">#显示版本号</span>
+git checkout -- file          <span class="c1">#取出文件</span>
+git remote add origin &lt;仓库地址&gt;    <span class="c1">#添加远程仓库地址</span>
+git push origin &lt;分支名1&gt;          <span class="c1">#推送本地内容到远程仓库分支1</span>
+git pull origin &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;
+                                  <span class="c1">#取回远程主机某个分支，并与本地指定分支合并</span>
+git clone &lt;仓库地址&gt;               <span class="c1">#克隆远程仓库到本地仓库</span>
+git remote            <span class="c1">#查看远程仓库信息</span>
+git remote -v         <span class="c1">#查看远程仓库详细信息</span>
+</pre></div>
+
+
+<h3>版本回退</h3>
+<p>git reset --hard 版本号(即commit_id)</p>
+<div class="highlight"><pre>git reset --hard HEAD^      <span class="c1">#回退至上一版本</span>
+git reset --hard HEAD^^     <span class="c1">#回退至上上版本</span>
+git reset --hard HEAD~10    <span class="c1">#回退至前10个版本</span>
+git reset --hard commit_id  <span class="c1">#结合git reflog;git log使用</span>
+                            <span class="c1">#git log可以查看提交历史，以便确定回退到哪个版本;</span>
+                            <span class="c1">#git reflog可以查看命令历史，以便确定回到未来的哪个版本</span>
+</pre></div>
+
+
+<h3>分支操作</h3>
+<div class="highlight"><pre>git branch                <span class="c1">#查看分支</span>
+git checkout &lt;分支名1&gt;       <span class="c1">#切换至分支名1</span>
+git checkout -b &lt;分支名1&gt;  <span class="c1">#创建并切换至分支名1</span>
+git merge &lt;分支名1&gt;        <span class="c1">#合并分支名1至当前分支</span>
+</pre></div>
+
+
+<h3>提交文件步骤</h3>
+<p>第一步：<code>git add file_name</code>,提交文件到暂存区(Index)</p>
+<p>第二步：<code>git commit -m "message about file"</code>,提交文件到本地仓库(Repository)</p>
+<p>第三步：<code>git push origin master</code>,提交文件到远程仓库master分支(Remote)</p>
+<p><strong>注意：</strong> 第一次推送至master分支，需要使用-u参数，即<code>git push -u origin master</code>。</p>
+<p><img alt="git-mechism" src="http://on64c9tla.bkt.clouddn.com/20160429gitcaozuo.jpg"></p>
+<p>图1 Git基本操作示意图</p>
+<p>几个名词解释：</p>
+<p>Workspace:工作区<br>
+Index：暂存区<br>
+Repository：仓库区(本地仓库)<br>
+Remote：远程仓库  </p>
+<h2>二、进阶篇</h2>
+<h3>分支管理</h3>
+<p>一般而言，主分支master分支是非常稳定的版本，可以用来直接发布，一般情况下不允许直接在上面进行修改。一般都是新建一个dev分支，在dev分支上进行修改操作，工作完成后可合并到主分支master上。其流程一般如下：
+1.创建一个dev分支；<br>
+2.修改文件内容；<br>
+3.添加到暂存区；<br>
+4.切换至主分支(msater)； <br>
+5.合并dev分支；<br>
+6.查看历史记录。  </p>
+<p>注意:合并分支时，git一般使用“Fast Forward”模式，在这种模式下，删除分支后，会丢掉分支信息。为了保证可以随时查看分支信息，合并时可使用命令git merge -no-ff -m "注释信息" dev</p>
+<h3>Stach功能介绍</h3>
+<ul>
+<li>使用场景</li>
+</ul>
+<p>工作过程中，我们一般在自己的分支上修改和调试代码，如果临时接到通知需要修改某个BUG问题，而且自己的工作还需要一段时间才能完成， 而修复BUG问题可能只需要一点时间，此时我们就需要使stash功能。”git stash“通俗地讲就是把当前的工作现场”隐藏起来“，待现场回复后可继续 工作。具体来说就是先使用’git stash'将当前未提交到本地（或服务器）的代码推入git的栈中，这时我们的工作区和上一次提交的内容是一样，所以可以放心的修复BUG问题，等到 修复完成并提交到服务器之后，再使用'git stash apply'将以前的工作应用回来</p>
+<ul>
+<li>指令介绍</li>
+</ul>
+<div class="highlight"><pre>git stash       <span class="c1">#备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中</span>
+git pop         <span class="c1">#从git栈中读取最近一次保存的内容，恢复工作区的相关内容</span>
+git stash list  <span class="c1">#显示git栈中所有备份，可以利用列表选择从哪恢复内容</span>
+git stash apply &lt;版本号&gt;   <span class="c1">#将制定版本号的内容恢复至当前工作区，配合git stash list使用</span>
+git stash clear           <span class="c1">#清空git栈</span>
+</pre></div>
+
+
+<h2>三、gitbook使用指南</h2>
+<p>gitbook的使用方法和git基本类似，其修改记录，发布版本等相关操作均可参考上面的git指令，略有不同，下面详细介绍：</p>
+<div class="highlight"><pre><span class="c1"># 初始化书记目录</span>
+gitbook init
+<span class="c1"># 编译图书，可在本地查看</span>
+gitbook serve
+<span class="c1"># 克隆远程图书到本地</span>
+git clone https://git.gitbook.com/user_name/book_name.git
+<span class="c1"># 添加文件</span>
+git add file_name
+<span class="c1"># 提交修改记录</span>
+git commit -m <span class="s2">&quot;sth about your changes&quot;</span>
+<span class="c1"># 添加图书的远程地址</span>
+git remote add gitbook https://git.gitbook.com/user_name/book_name.git
+<span class="c1"># 发布图书至远程仓库</span>
+git push -u gitbook master  <span class="c1">#第一次使用-u参数，之后可以不用加-u参数</span>
+</pre></div></div>
+        <hr />
+    </div>
+		
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/git.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../archives.html">Archives</a>
+                <li><a href="../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../category/note.html">Note</a></li>
+                <li><a href="../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

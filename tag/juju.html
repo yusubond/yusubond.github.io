@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - juju</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="../pages/2016/12/03/introduction-about-osm.html"><h1>初识Open Source MANO</h1></a>
+2016-12-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h2>1.Open Source MANO</h2>
+<p><img src="http://on64c9tla.bkt.clouddn.com/2016D/OSM-logo.png" align="left">Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。</p>
+<p>MANO致力于“管理和编排”，是ETSI NFV定义的架构框架的功能模块的一部分。如图1-1所示。</p>
+<p><img alt="nfv-architecture" src="http://on64c9tla.bkt.clouddn.com/2016D/etsi_nfv_architecture.png"></p>
+<p><center>图1-1 ETSI NFV系统架构</center></p>
+
+<p>如前所述，ETSI NFV架构框架的两个关键组件就是NFV Orchestrator和VNF Manager,称为NFV MANO。另外，对于管理人员来说，还需要其他层(比如服务编排)，才能够启动真正的NFV服务。开源软件可以促进ETSI对NFV架构的实现，向ETSI ISG NFV提供实用和基本的反馈，并增加NFV实现之间的互操作性和可能性。</p>
+<p>OSM Release ONE已经经过设计、测试和记录，可以实现快速安装，并创建一个可扩展和互操作的开放MANO环境。它极大地增强了与其他组件(VNFs,VIMs,SDN控制器)的互操作性，可以创建一个(plug-in)框架来进行平台维护和扩展，使得技术的提供和支持更加容易。此外，Release ONE提高了管理员和开发人员的在可用性和安装过程中体验，以及增强了NFV和网络服务的建模能力。为了符合OSI开源工程的目标，这种建模输出工作将会贡献到ETSI NFV中。Release ONE也提供了极其灵活的虚拟化网络功能(VNF)配置和高级网络管理，以及改进的故障排除功能和高级日志记录。白皮书中概括了OSM的主要框架，开发的新功能以及Release ONE部分开放内容。</p>
+<p>Open Source MANO白皮书地址<a href="https://osm.etsi.org/images/OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf">OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf</a></p>
+<h2>安装OSM</h2>
+<h3>1.前期准备/系统要求</h3>
+<p>1) 8 CPUs, 16G RAM, 100GB硬盘以及可用的网络接口；<br>
+2) Ubuntu 16.04系统，并配置LXD容器  </p>
+<p>LXD配置如下：</p>
+<div class="highlight"><pre>sudo apt update
+sudo apt install zfs lxd
+sudo newgrp lxd
+</pre></div>
+
+
+<p>接下来进行lxc初始化设置，使用命令<code>sudo lxd init</code>,并进行如下设置：</p>
+<p><img alt="lxd_install" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_install.png"></p>
+<p>成功后，会出现以下信息。</p>
+<p><img alt="lxd_success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
+<h3>2.从源安装OSM</h3>
+<p>安装之前，系统需要安装版本控制管理工具git，sudo apt install -y git；接下来，获取安装脚本，进行安装即可。</p>
+<div class="highlight"><pre>wget https://osm-download.etsi.org/ftp/osm-1.0-one/install_from_source.sh
+chmod +x install_from_source.sh
+./install_from_source.sh
+</pre></div>
+
+
+<p>安装过程中，需要进行LXD的相关配置，比较简单，可自行设置。我的部分设置如下：</p>
+<p><img alt="step3" src="http://on64c9tla.bkt.clouddn.com/2016D/step3.png"></p>
+<p><img alt="step4" src="http://on64c9tla.bkt.clouddn.com/2016D/step4.png"></p>
+<p><img alt="step5" src="http://on64c9tla.bkt.clouddn.com/2016D/step5.png"></p>
+<p><img alt="step6" src="http://on64c9tla.bkt.clouddn.com/2016D/step6.png"></p>
+<p><img alt="step7" src="http://on64c9tla.bkt.clouddn.com/2016D/step7.png"></p>
+<p><img alt="step8" src="http://on64c9tla.bkt.clouddn.com/2016D/step8.png"></p>
+<p><img alt="step9" src="http://on64c9tla.bkt.clouddn.com/2016D/step9.png"></p>
+<p>安装成功后，会出现如下信息：</p>
+<p><img alt="osm-success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
+<p><strong>参考资料</strong></p>
+<p><a href="https://osm.etsi.org/wikipub/index.php/LXD_configuration_for_OSM_release_1">LXD configuration for OSM release 1</a></p>
+<p><a href="https://osm.etsi.org/wikipub/index.php/OSM_Release_ONE">OSM Release ONE</a></p>
+<p><img alt="OSM架构框图" src="http://on64c9tla.bkt.clouddn.com/2016D/OSMconnectivity1.png"></p></div>
+        <hr />
+    </div>
+		
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/juju.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../archives.html">Archives</a>
+                <li><a href="../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../category/note.html">Note</a></li>
+                <li><a href="../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>

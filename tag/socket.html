@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - socket</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+
+            <li><a href="../pages/about-me.html">About Me</a></li>
+        </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
+        </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="../pages/2016/05/24/socket-bian-cheng-udp.html"><h1>Socket编程之基本UDP编程</h1></a>
+2016-05-24
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h2>1.UDP套接字编程模型</h2>
+<p>TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)， NFS(网络文件系统)和SNMP(简单网络管理协议)。典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p>
+<p><img alt="udp-socket" src="http://on64c9tla.bkt.clouddn.com/20160514udp-bian-cheng-mo-xing.jpg"></p>
+<p>图1-1 UDP客户/服务器程序所用的套接字函数</p>
+<h2>2.recvfrom()和sendto()函数</h2>
+<div class="highlight"><pre>#include&lt;sys/socket.h&gt;
+ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
+ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
+//均返回：若成功返回读或写的字节数，出错返回-1
+</pre></div>
+
+
+<p>前三个参数sockfd,buff和nbytes为：描述符、指向读入或写出的缓冲区的指针和读写字节数。
+flags一般置为0。</p>
+<p>sendto的to参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由addrlen参数指定。recvfrom的from参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构， 而在该套接字地址结构中填写的字节数则放在addrlen参数所所指的整数中返回给调用者。</p>
+<p><strong>注意</strong>:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。</p>
+<p><strong>注意</strong>:recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数： 调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
+<h2>3.消息回传程序示例</h2>
+<p><strong>服务端程序</strong></p>
+<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;socket_includes.h&quot;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">sockfd</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">server</span><span class="p">,</span> <span class="n">client</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">MAX_BUFFER_SIZE</span><span class="p">],</span> <span class="n">read_buf</span><span class="p">[</span><span class="n">MAX_BUFFER_SIZE</span><span class="p">];</span>
+  <span class="kt">socklen_t</span> <span class="n">lenserv</span><span class="p">,</span><span class="n">lencli</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">str</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span>
+  <span class="n">bzero</span><span class="p">(</span><span class="o">&amp;</span><span class="n">server</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">server</span><span class="p">));</span>
+  <span class="n">bzero</span><span class="p">(</span><span class="o">&amp;</span><span class="n">str</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">str</span><span class="p">));</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">);</span>
+  <span class="n">memset</span><span class="p">(</span><span class="n">read_buf</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">);</span>
+  <span class="n">lenserv</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">server</span><span class="p">);</span>
+  <span class="n">lencli</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+  <span class="c1">//创建套接字</span>
+  <span class="c1">//listenfd = socket(AF_INET,SOCK_DGRAM, 0);</span>
+  <span class="k">if</span><span class="p">((</span><span class="n">listenfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">perror</span><span class="p">(</span><span class="s">&quot;Create socket fail!&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="c1">//绑定套接字</span>
+  <span class="n">server</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+  <span class="n">server</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">8888</span><span class="p">);</span>                <span class="c1">//主机字节序转网络字节序</span>
+  <span class="n">server</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">INADDR_ANY</span><span class="p">);</span>   <span class="c1">//绑定主机的所有网卡</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">bind</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">server</span><span class="p">,</span> <span class="n">lenserv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">perror</span><span class="p">(</span><span class="s">&quot;bind socket error.&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kt">ssize_t</span> <span class="n">rv</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">rv</span> <span class="o">=</span> <span class="n">recvfrom</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="n">read_buf</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">client</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lencli</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">rv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;recvfrom error.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+      <span class="n">close</span><span class="p">(</span><span class="n">sockfd</span><span class="p">);</span>
+      <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">client</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="p">,</span> <span class="n">str</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">str</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;size of buf_client: %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;client buf:%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">read_buf</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;client IP: %s, Port: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">str</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">client</span><span class="p">.</span><span class="n">sin_port</span><span class="p">));</span>
+    <span class="n">sendto</span><span class="p">(</span><span class="n">listenfd</span><span class="p">,</span> <span class="n">read_buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">read_buf</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">client</span><span class="p">,</span> <span class="n">lencli</span><span class="p">);</span>
+    <span class="n">bzero</span><span class="p">(</span><span class="o">&amp;</span><span class="n">client</span><span class="p">,</span> <span class="n">lencli</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">read_buf</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">close</span><span class="p">(</span><span class="n">sockfd</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><strong>客户端程序</strong></p>
+<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;socket_includes.h&quot;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">sockfd</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">MAX_BUFFER_SIZE</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Hello UDP!&quot;</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">read_buf</span><span class="p">[</span><span class="n">MAX_BUFFER_SIZE</span><span class="p">];</span>
+  <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">server</span><span class="p">,</span> <span class="n">ser</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">rv</span><span class="p">;</span>
+  <span class="kt">socklen_t</span> <span class="n">length</span><span class="p">,</span><span class="n">len</span><span class="p">;</span>
+  <span class="n">bzero</span><span class="p">(</span><span class="n">read_buf</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">);</span>
+  <span class="n">bzero</span><span class="p">(</span><span class="o">&amp;</span><span class="n">server</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">server</span><span class="p">));</span>
+  <span class="n">len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ser</span><span class="p">);</span>
+  <span class="n">length</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">server</span><span class="p">);</span>
+  <span class="c1">//sockfd = socket(AF_INET,SOCK_DGRAM, 0);</span>
+  <span class="k">if</span><span class="p">((</span><span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span><span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">perror</span><span class="p">(</span><span class="s">&quot;Create socket fail!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">server</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+  <span class="n">server</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">8888</span><span class="p">);</span>
+  <span class="n">inet_pton</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="s">&quot;10.103.14.28&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">server</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="p">);</span>
+  <span class="n">sendto</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">server</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+  <span class="n">rv</span> <span class="o">=</span> <span class="n">recvfrom</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">read_buf</span><span class="p">,</span> <span class="n">MAX_BUFFER_SIZE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ser</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">len</span><span class="p">);</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">rv</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;recvfr0m error!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">close</span><span class="p">(</span><span class="n">sockfd</span><span class="p">);</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;server buf_back:%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">read_buf</span><span class="p">);</span>
+  <span class="n">close</span><span class="p">(</span><span class="n">sockfd</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>其中头文件均为socket_includes.h</p>
+<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/shm.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
+
+
+<span class="cp">#define MAX_LISTEN_QUE 5</span>
+<span class="cp">#define SERV_PORT 8888</span>
+<span class="cp">#define MAX_BUFFER_SIZE 100</span>
+</pre></div></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/05/17/socket-bian-cheng-xue-xi.html"><h2>Socket编程之函数学习篇</h2></a>
+        <div class= "well small"> 2016-05-17
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p> <a class="btn btn-info xsmall" href="../pages/2016/05/17/socket-bian-cheng-xue-xi.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/05/14/socket-bian-cheng-ji-chu.html"><h2>Socket编程之基础篇</h2></a>
+        <div class= "well small"> 2016-05-14
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式， 即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。</p> <a class="btn btn-info xsmall" href="../pages/2016/05/14/socket-bian-cheng-ji-chu.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/socket.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Site
+                </li>
+
+                <li><a href="../archives.html">Archives</a>
+                <li><a href="../tags.html">Tags</a>
+
+
+
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Categories
+                </li>
+
+                <li><a href="../category/note.html">Note</a></li>
+                <li><a href="../category/tech.html">Tech</a></li>
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Links
+                </li>
+
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header">
+                Social
+                </li>
+
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>     </div>     </div> 
+<footer>
+<br />
+<p><a href="..">Milestone</a> &copy; subond 2016</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+</body>
+</html>
