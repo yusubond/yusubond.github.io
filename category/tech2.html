@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - Life</title>
+    <title>Milestone - Tech</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,8 @@
     <link href="../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -39,7 +41,11 @@
         <div class="nav-collapse">
         <ul class="nav">
 
+            <li><a href="../pages/about-me.html">About Me</a></li>
         </ul>
+        <form class="navbar-search pull-right" action="/search.html">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
+        </form>
         </div>
 
     </div>
@@ -55,46 +61,62 @@
 
         
 
+ 
 
     <div class='article'>
-        <div class="content-title">
-            <a href="../page/2017/03/21/about-me.html"><h1>About Me</h1></a>
-2017-03-21
+        <a href="../pages/2016/05/14/socket-bian-cheng-ji-chu.html"><h2>Socket编程之基础篇</h2></a>
+        <div class= "well small"> 2016-05-14
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
 
 
+ </div>
+        <div class="summary"><p>Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式， 即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。</p> <a class="btn btn-info xsmall" href="../pages/2016/05/14/socket-bian-cheng-ji-chu.html">read more</a></div>
+    </div>	
+				
+
  
-        </div>
         
-        <div><p>于邦超
-Email: yubc0321@gmail.com   Github: github.com/yusubond
-Addr: 北京市海淀区西土城路10号北京邮电大学   Blog: www.subond.com
-教育背景</p>
-<p>2015.09-2018.04(预计) 北京邮电大学  电子与通信工程 硕士研究生
-2011.09-2015.06 北京化工大学  通信工程    本科
-科研项目经历</p>
-<p>2016.09-2017.09 基于NFV/SDN的核心网网络服务与业务编排
-负责对核心网网元进行虚拟化部署和业务编排，包括基于Juju Charm编写网元生命周期管理，功能服务链管理与预处理脚本
-利用hooks脚本文件定义网元交互接口及端口设定，实现虚拟网元的快速部署，批量处理
-完成基于Juju的核心网业务编排管理，实现终端设备的网络访问演示
-2016.03-2016.09 基于SDN的OAI-LTE与WLAN网络融合平台设计
-负责实现LTE侧基站与SDN控制器的网络通信(Socket编程)，主要包括UE附着请求，网络切换命令的接收与转发
-负责核心网PGW网元的数据分发策略设计，利用Iptables实现LTE流量与WLAN流量数据分流
-UE终端(上网卡与PC机)双网桥结构设计，保证外部IP地址的一致性，从而实现业务不中断
-2015.09-2016.03 基于SDN的核心网系统搭建与验证
-搭建OAI-LTE核心网，验证UE附着请求，数据转发等
-完成专利《一种基于SDN的核心网系统及使用方法》
-学术成果</p></div>
-        <hr />
-    </div>
-		
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/05/10/lte-xi-tong-wang-luo-jia-gou.html"><h2>LTE系统网络架构</h2></a>
+        <div class= "well small"> 2016-05-10
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。</p> <a class="btn btn-info xsmall" href="../pages/2016/05/10/lte-xi-tong-wang-luo-jia-gou.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/04/24/pelican-github-chuang-jian-blog.html"><h2>利用Pelican+Github pages搭建个人博客</h2></a>
+        <div class= "well small"> 2016-04-24
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>本教程基于pelican博客引擎和github page的功能，实现个人博客搭建。</p> <a class="btn btn-info xsmall" href="../pages/2016/04/24/pelican-github-chuang-jian-blog.html">read more</a></div>
+    </div>	
+				
 <div class="pagination">
 <ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+    <li class="prev"><a href="../category/tech.html">&larr; Previous</a></li>
 
-    <li class="active"><a href="../category/life.html">1</a></li>
+    <li class=""><a href="../category/tech.html">1</a></li>
+    <li class="active"><a href="../category/tech2.html">2</a></li>
 
     <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
@@ -117,6 +139,8 @@ UE终端(上网卡与PC机)双网桥结构设计，保证外部IP地址的一致
 
 
 
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -128,7 +152,6 @@ UE终端(上网卡与PC机)双网桥结构设计，保证外部IP地址的一致
                 Categories
                 </li>
 
-                <li><a href="../category/life.html">Life</a></li>
                 <li><a href="../category/note.html">Note</a></li>
                 <li><a href="../category/tech.html">Tech</a></li>
             </ul>
@@ -165,7 +188,7 @@ UE终端(上网卡与PC机)双网桥结构设计，保证外部IP地址的一致
         </div>     </div>     </div> 
 <footer>
 <br />
-<p><a href="..">Milestone</a> &copy; subond 2017</p>
+<p><a href="..">Milestone</a> &copy; subond 2016</p>
 </footer>
 
 </div> <!-- /container -->

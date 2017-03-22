@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="utf-8">
     <title>Milestone - Tech</title>
     <meta name="description" content="">
-    <meta name="author" content="Yu Bangchao">
+    <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="/theme/html5.js"></script>
+    <script src="../theme/html5.js"></script>
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="/theme/bootstrap.min.css" rel="stylesheet">
-    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
-    <link href="/theme/local.css" rel="stylesheet">
-    <link href="/theme/pygments.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -38,10 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-          <li><a href="/author/subond.html">About me</a></li>
+
+            <li><a href="../pages/about-me.html">About Me</a></li>
         </ul>
         <form class="navbar-search pull-right" action="/search.html">
-          <input  type="text" class="search-query" placeholder="Search" name="q" id="s">
+          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
         </form>
         </div>
 
@@ -54,47 +57,247 @@
     <div class="row">
 
         <div class="span9">
-          <div>
-            <h2>Learn Map</h2>
-            <p>开源世界旅行手册&nbsp;&nbsp;<a href="http://i.linuxtoy.org/docs/guide">开源世界旅行手册</a></p>
-            <p>VIM编辑&nbsp;&nbsp;<a href="http://i.linuxtoy.org/docs/guide/ch24.html">第24章 VIM编辑器</a></p>
-          </div>
-          <div>
-            <h2>技术博客日志</h2>
-          <table class="table">
-              <tbody>
-                <tr><td>5th Jan 2017</td>
-                  <td><a href="../pages/2017/1/5/LXD-manual.html">LXD使用手册</a></td>
-                </tr>
-                <tr><td>10th Nov 2016</td>
-                  <td><a href="../pages/2016/11/Juju-how-do-charm-work.html">云端服务管理工具:Juju</a></td>
-                </tr>
-                <tr><td>29th Jun 2016</td>
-                  <td><a href="../pages/2016/06/29/weka-xue-xi-zhi-instances.html">机器学习之Weka学习(02)-Instances类介绍</a></td>
-                </tr>
-                <tr><td>28th Jun 2016</td>
-                  <td><a href="../pages/2016/06/weka-xue-xi-zhi-fen-lei-qi.html">机器学习之Weka学习(01)-简单分类器</a></td>
-                </tr>
-                <tr><td>14th Jun 2016</td>
-                  <td><a href="../pages/2016/06/chu-shi-xian-cheng.html">初识线程</a></td>
-                </tr>
-                <tr><td>24th May 2016</td>
-                  <td><a href='../pages/2016/05/ji-ben-udp-tao-jie-zi-bian-cheng.html'>基本UDP套接字编程</a></td>
-                </tr>
-                <tr><td>17th May 2016</td>
-          　     　<td><a href='../pages/2016/05/socket-bian-cheng-han-shu-xue-xi-pian.html'>Socket编程之函数学习篇</a></td>
-          　    </tr>
-          　　　 <tr><td>14th May 2016</td>
-          　　　　　<td><a href='../pages/2016/05/socket-bian-cheng-jie-shao-pian.html'>Socket编程之介绍篇</a></td>
-          　　　 </tr>
-                <tr><td>26th Apr 2016</td>
-                  <td><a href='../pages/2016/04/pelican-github-chuang-jian-bo-ke2.html'>利用Pelican+Github&nbsp;pages搭建个人博客</a></td>
-                </tr>
+        
 
-              </tbody>
+        
 
-          </table>
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="../pages/2016/12/03/introduction-about-osm.html"><h1>初识Open Source MANO</h1></a>
+2016-12-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ 
         </div>
+        
+        <div><h2>1.Open Source MANO</h2>
+<p><img src="http://on64c9tla.bkt.clouddn.com/2016D/OSM-logo.png" align="left">Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。</p>
+<p>MANO致力于“管理和编排”，是ETSI NFV定义的架构框架的功能模块的一部分。如图1-1所示。</p>
+<p><img alt="nfv-architecture" src="http://on64c9tla.bkt.clouddn.com/2016D/etsi_nfv_architecture.png"></p>
+<p><center>图1-1 ETSI NFV系统架构</center></p>
+
+<p>如前所述，ETSI NFV架构框架的两个关键组件就是NFV Orchestrator和VNF Manager,称为NFV MANO。另外，对于管理人员来说，还需要其他层(比如服务编排)，才能够启动真正的NFV服务。开源软件可以促进ETSI对NFV架构的实现，向ETSI ISG NFV提供实用和基本的反馈，并增加NFV实现之间的互操作性和可能性。</p>
+<p>OSM Release ONE已经经过设计、测试和记录，可以实现快速安装，并创建一个可扩展和互操作的开放MANO环境。它极大地增强了与其他组件(VNFs,VIMs,SDN控制器)的互操作性，可以创建一个(plug-in)框架来进行平台维护和扩展，使得技术的提供和支持更加容易。此外，Release ONE提高了管理员和开发人员的在可用性和安装过程中体验，以及增强了NFV和网络服务的建模能力。为了符合OSI开源工程的目标，这种建模输出工作将会贡献到ETSI NFV中。Release ONE也提供了极其灵活的虚拟化网络功能(VNF)配置和高级网络管理，以及改进的故障排除功能和高级日志记录。白皮书中概括了OSM的主要框架，开发的新功能以及Release ONE部分开放内容。</p>
+<p>Open Source MANO白皮书地址<a href="https://osm.etsi.org/images/OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf">OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf</a></p>
+<h2>安装OSM</h2>
+<h3>1.前期准备/系统要求</h3>
+<p>1) 8 CPUs, 16G RAM, 100GB硬盘以及可用的网络接口；<br>
+2) Ubuntu 16.04系统，并配置LXD容器  </p>
+<p>LXD配置如下：</p>
+<div class="highlight"><pre>sudo apt update
+sudo apt install zfs lxd
+sudo newgrp lxd
+</pre></div>
+
+
+<p>接下来进行lxc初始化设置，使用命令<code>sudo lxd init</code>,并进行如下设置：</p>
+<p><img alt="lxd_install" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_install.png"></p>
+<p>成功后，会出现以下信息。</p>
+<p><img alt="lxd_success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
+<h3>2.从源安装OSM</h3>
+<p>安装之前，系统需要安装版本控制管理工具git，sudo apt install -y git；接下来，获取安装脚本，进行安装即可。</p>
+<div class="highlight"><pre>wget https://osm-download.etsi.org/ftp/osm-1.0-one/install_from_source.sh
+chmod +x install_from_source.sh
+./install_from_source.sh
+</pre></div>
+
+
+<p>安装过程中，需要进行LXD的相关配置，比较简单，可自行设置。我的部分设置如下：</p>
+<p><img alt="step3" src="http://on64c9tla.bkt.clouddn.com/2016D/step3.png"></p>
+<p><img alt="step4" src="http://on64c9tla.bkt.clouddn.com/2016D/step4.png"></p>
+<p><img alt="step5" src="http://on64c9tla.bkt.clouddn.com/2016D/step5.png"></p>
+<p><img alt="step6" src="http://on64c9tla.bkt.clouddn.com/2016D/step6.png"></p>
+<p><img alt="step7" src="http://on64c9tla.bkt.clouddn.com/2016D/step7.png"></p>
+<p><img alt="step8" src="http://on64c9tla.bkt.clouddn.com/2016D/step8.png"></p>
+<p><img alt="step9" src="http://on64c9tla.bkt.clouddn.com/2016D/step9.png"></p>
+<p>安装成功后，会出现如下信息：</p>
+<p><img alt="osm-success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
+<p><strong>参考资料</strong></p>
+<p><a href="https://osm.etsi.org/wikipub/index.php/LXD_configuration_for_OSM_release_1">LXD configuration for OSM release 1</a></p>
+<p><a href="https://osm.etsi.org/wikipub/index.php/OSM_Release_ONE">OSM Release ONE</a></p>
+<p><img alt="OSM架构框图" src="http://on64c9tla.bkt.clouddn.com/2016D/OSMconnectivity1.png"></p></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/11/10/juju-charm-mechanism.html"><h2>云端服务管理工具:Juju</h2></a>
+        <div class= "well small"> 2016-11-10
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p> <a class="btn btn-info xsmall" href="../pages/2016/11/10/juju-charm-mechanism.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html"><h2>机器学习之Weka学习-Evaluation类介绍</h2></a>
+        <div class= "well small"> 2016-07-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p> <a class="btn btn-info xsmall" href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
+        <div class= "well small"> 2016-06-29
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/28/machinelearning-about-weka-classifier.html"><h2>机器学习之Weka学习-简单分类器</h2></a>
+        <div class= "well small"> 2016-06-28
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/19/pthread2-management-in-linux.html"><h2>Linux中的线程管理</h2></a>
+        <div class= "well small"> 2016-06-19
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/19/pthread2-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/17/process-management-in-linux.html"><h2>Linux中的进程管理</h2></a>
+        <div class= "well small"> 2016-06-17
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>进程是执行中的程序，是大多数系统的工作单元，是 <strong>活动实体</strong>。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/17/process-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/14/pthread-management-in-linux.html"><h2>Linux中的线程函数</h2></a>
+        <div class= "well small"> 2016-06-14
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。本节主要介绍5个基本线程函数。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/14/pthread-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/05/24/socket-bian-cheng-udp.html"><h2>Socket编程之基本UDP编程</h2></a>
+        <div class= "well small"> 2016-05-24
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>UDP套接字编程模型。TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)， NFS(网络文件系统)和SNMP(简单网络管理协议)。典型的UDP客户/服务器程序的函数调用如下图1-1所示。</p> <a class="btn btn-info xsmall" href="../pages/2016/05/24/socket-bian-cheng-udp.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/05/17/socket-bian-cheng-xue-xi.html"><h2>Socket编程之函数学习篇</h2></a>
+        <div class= "well small"> 2016-05-17
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p> <a class="btn btn-info xsmall" href="../pages/2016/05/17/socket-bian-cheng-xue-xi.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../category/tech.html">1</a></li>
+    <li class=""><a href="../category/tech2.html">2</a></li>
+
+    <li class="next"><a href="../category/tech2.html">Next &rarr;</a></li>
+
+</ul>
+</div>
+ 
+  
         </div>
 
         <div class="span3">
@@ -105,11 +308,13 @@
                 Site
                 </li>
 
-                <li><a href="/archives.html">Archives</a>
-                <li><a href="/tags.html">Tags</a>
+                <li><a href="../archives.html">Archives</a>
+                <li><a href="../tags.html">Tags</a>
 
 
 
+                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -121,11 +326,8 @@
                 Categories
                 </li>
 
-                <li><a href="/category/life.html">Life</a></li>
-                <li><a href="/category/tech.html">Tech</a></li>
-                <li><a href="/category/note.html">Note</a></li>
-                <li><a href="/category/tips.html">Tips</a></li>
-
+                <li><a href="../category/note.html">Note</a></li>
+                <li><a href="../category/tech.html">Tech</a></li>
             </ul>
             </div>
 
@@ -136,10 +338,9 @@
                 Links
                 </li>
 
-                <li><a href="http://www.opensource5g.org">OpenSource5G</a></li>
-                <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OpenAirInterface5g</a></li>
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
-                <li><a href="http://www.sdnap.com/">SDNAP</a></li>
                 <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
             </ul>
             </div>
@@ -158,17 +359,15 @@
             </div>
             </div>
 
-        </div>
-    </div>
-  </div>
+        </div>     </div>     </div> 
 <footer>
 <br />
-<p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
+<p><a href="..">Milestone</a> &copy; subond 2016</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="/theme/bootstrap-collapse.js"></script>
-
+<script src="../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
 </body>
 </html>
