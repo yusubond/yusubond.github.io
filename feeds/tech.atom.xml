@@ -1,0 +1,1155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Milestone - Tech</title><link href="http://localhost:8005/" rel="alternate"></link><link href="http://localhost:8005/feeds/tech.atom.xml" rel="self"></link><id>http://localhost:8005/</id><updated>2017-03-21T00:00:00+08:00</updated><entry><title>深入理解Paxos算法</title><link href="http://localhost:8005/pages/2017/03/21/learn-paxos-in-distributed-system.html" rel="alternate"></link><published>2017-03-21T00:00:00+08:00</published><updated>2017-03-21T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2017-03-21:/pages/2017/03/21/learn-paxos-in-distributed-system.html</id><summary type="html">&lt;p&gt;Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为:一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了&lt;a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf"&gt;Paxos Made Simple&lt;/a&gt;，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.Paxos算法&lt;/h2&gt;
+&lt;p&gt;Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为:一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了&lt;a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf"&gt;Paxos Made Simple&lt;/a&gt;，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。&lt;/p&gt;
+&lt;p&gt;Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。&lt;/p&gt;
+&lt;h2&gt;2.基本概念&lt;/h2&gt;
+&lt;p&gt;Paxos算法中有三种角色：&lt;em&gt;Proposer&lt;/em&gt;, &lt;em&gt;Acceptor&lt;/em&gt;, &lt;em&gt;Learner&lt;/em&gt;。每个节点需要同时扮演 &lt;strong&gt;两种或两种以上的角色&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Proposal Value: 提议的值　　&lt;/li&gt;
+&lt;li&gt;Proposal Number: 提议编号，并且要求提议编号不能冲突　　&lt;/li&gt;
+&lt;li&gt;Proposal: 提议　=　提议编号 + 提议的值　　&lt;/li&gt;
+&lt;li&gt;Proposer: 提议发起者　　&lt;/li&gt;
+&lt;li&gt;Acceptors: 提议接受者　　&lt;/li&gt;
+&lt;li&gt;Learners: 提议学习者　　&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。&lt;/p&gt;
+&lt;h2&gt;3.两个原则&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1安全原则&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;只能(而且必须)允许一个值被选定；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个节点只能学习已经被选定的值；&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;2存活原则&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;只要多数节点存活，并且彼此可以通信，则会达成以下两件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;最终会选定某个提议的值　　&lt;/li&gt;
+&lt;li&gt;一个被选定的值，其他节点最终会学习到这个值　　&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;4.算法过程&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;第一阶段A&lt;/strong&gt;，即Prepare阶段&lt;/p&gt;
+&lt;p&gt;Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一阶段B&lt;/strong&gt;，即Prepare阶段&lt;/p&gt;
+&lt;p&gt;Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二阶段A&lt;/strong&gt;，即Accept阶段&lt;/p&gt;
+&lt;p&gt;Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第二阶段B&lt;/strong&gt;，即Accept阶段&lt;/p&gt;
+&lt;p&gt;Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="paxos-protocolflow" src="http://on64c9tla.bkt.clouddn.com/2017A/paxos.png"&gt;&lt;/p&gt;
+&lt;p&gt;需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。&lt;/p&gt;
+&lt;p&gt;当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。&lt;/p&gt;
+&lt;h2&gt;5.算法证明&lt;/h2&gt;
+&lt;p&gt;其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Paxso算法原命题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &amp;lt; n1,v1 != v0。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Paxso算法原命题加强&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &amp;lt; n1, v1 != v0。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Paxso算法原命题进一步加强&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &amp;lt; n1, v1 != v0。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;归纳法证明&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &amp;gt;= m)，对应的值也是v。对n进行归纳假设。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;n = m时，显然结论成立。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;当n = k + 1时，若提议k+1不存在，则结论成立。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;接下来，证明提议提议k+1不存问题。&lt;/p&gt;
+&lt;p&gt;假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。&lt;strong&gt;两个多数派必有交集&lt;/strong&gt;，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&amp;gt;=m。又因为第一阶段A，t&amp;lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。&lt;/p&gt;
+&lt;h2&gt;6.示例演示&lt;/h2&gt;
+&lt;p&gt;为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="simple-paxos" src="http://on64c9tla.bkt.clouddn.com/2017A/simple-paxos.png"&gt;&lt;/p&gt;
+&lt;h2&gt;7.小结&lt;/h2&gt;
+&lt;p&gt;通过前面的讨论和学习，我们可以回顾一下协议的细节：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;"与其预测未来，不如限制未来"&lt;/strong&gt;,应该是Paxos协议的核心思想。——郑建军(微信工程师)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;参考资料&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Leslie Lanmport:&lt;a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf"&gt;Paxos Made Simple&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Info架构师2017年1月刊:&lt;a href="http://www.infoq.com/cn/minibooks/architect-201701"&gt;微信PaxsoStore:深入浅出Paxos算法协议&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.cnblogs.com/zhengran/p/4212502.html"&gt;一步一步理解Paxos算法&lt;/a&gt;&lt;/p&gt;</content><category term="Algorithm"></category><category term="Distributed Systems"></category></entry><entry><title>初识Open Source MANO</title><link href="http://localhost:8005/pages/2016/12/03/introduction-about-osm.html" rel="alternate"></link><published>2016-12-03T00:00:00+08:00</published><updated>2016-12-03T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-12-03:/pages/2016/12/03/introduction-about-osm.html</id><summary type="html">&lt;p&gt;Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.Open Source MANO&lt;/h2&gt;
+&lt;p&gt;&lt;img src="http://on64c9tla.bkt.clouddn.com/2016D/OSM-logo.png" align="left"&gt;Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。&lt;/p&gt;
+&lt;p&gt;MANO致力于“管理和编排”，是ETSI NFV定义的架构框架的功能模块的一部分。如图1-1所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="nfv-architecture" src="http://on64c9tla.bkt.clouddn.com/2016D/etsi_nfv_architecture.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;图1-1 ETSI NFV系统架构&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;如前所述，ETSI NFV架构框架的两个关键组件就是NFV Orchestrator和VNF Manager,称为NFV MANO。另外，对于管理人员来说，还需要其他层(比如服务编排)，才能够启动真正的NFV服务。开源软件可以促进ETSI对NFV架构的实现，向ETSI ISG NFV提供实用和基本的反馈，并增加NFV实现之间的互操作性和可能性。&lt;/p&gt;
+&lt;p&gt;OSM Release ONE已经经过设计、测试和记录，可以实现快速安装，并创建一个可扩展和互操作的开放MANO环境。它极大地增强了与其他组件(VNFs,VIMs,SDN控制器)的互操作性，可以创建一个(plug-in)框架来进行平台维护和扩展，使得技术的提供和支持更加容易。此外，Release ONE提高了管理员和开发人员的在可用性和安装过程中体验，以及增强了NFV和网络服务的建模能力。为了符合OSI开源工程的目标，这种建模输出工作将会贡献到ETSI NFV中。Release ONE也提供了极其灵活的虚拟化网络功能(VNF)配置和高级网络管理，以及改进的故障排除功能和高级日志记录。白皮书中概括了OSM的主要框架，开发的新功能以及Release ONE部分开放内容。&lt;/p&gt;
+&lt;p&gt;Open Source MANO白皮书地址&lt;a href="https://osm.etsi.org/images/OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf"&gt;OSM-Whitepaper-TechContent-ReleaseONE-FINAL.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;安装OSM&lt;/h2&gt;
+&lt;h3&gt;1.前期准备/系统要求&lt;/h3&gt;
+&lt;p&gt;1) 8 CPUs, 16G RAM, 100GB硬盘以及可用的网络接口；&lt;br&gt;
+2) Ubuntu 16.04系统，并配置LXD容器  &lt;/p&gt;
+&lt;p&gt;LXD配置如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt update
+sudo apt install zfs lxd
+sudo newgrp lxd
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;接下来进行lxc初始化设置，使用命令&lt;code&gt;sudo lxd init&lt;/code&gt;,并进行如下设置：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="lxd_install" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_install.png"&gt;&lt;/p&gt;
+&lt;p&gt;成功后，会出现以下信息。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="lxd_success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"&gt;&lt;/p&gt;
+&lt;h3&gt;2.从源安装OSM&lt;/h3&gt;
+&lt;p&gt;安装之前，系统需要安装版本控制管理工具git，sudo apt install -y git；接下来，获取安装脚本，进行安装即可。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;wget https://osm-download.etsi.org/ftp/osm-1.0-one/install_from_source.sh
+chmod +x install_from_source.sh
+./install_from_source.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;安装过程中，需要进行LXD的相关配置，比较简单，可自行设置。我的部分设置如下：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step3" src="http://on64c9tla.bkt.clouddn.com/2016D/step3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step4" src="http://on64c9tla.bkt.clouddn.com/2016D/step4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step5" src="http://on64c9tla.bkt.clouddn.com/2016D/step5.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step6" src="http://on64c9tla.bkt.clouddn.com/2016D/step6.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step7" src="http://on64c9tla.bkt.clouddn.com/2016D/step7.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step8" src="http://on64c9tla.bkt.clouddn.com/2016D/step8.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="step9" src="http://on64c9tla.bkt.clouddn.com/2016D/step9.png"&gt;&lt;/p&gt;
+&lt;p&gt;安装成功后，会出现如下信息：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="osm-success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;参考资料&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://osm.etsi.org/wikipub/index.php/LXD_configuration_for_OSM_release_1"&gt;LXD configuration for OSM release 1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://osm.etsi.org/wikipub/index.php/OSM_Release_ONE"&gt;OSM Release ONE&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="OSM架构框图" src="http://on64c9tla.bkt.clouddn.com/2016D/OSMconnectivity1.png"&gt;&lt;/p&gt;</content><category term="NFV"></category><category term="Orchestration"></category><category term="juju"></category></entry><entry><title>云端服务管理工具:Juju</title><link href="http://localhost:8005/pages/2016/11/10/juju-charm-mechanism.html" rel="alternate"></link><published>2016-11-10T00:00:00+08:00</published><updated>2016-11-10T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-11-10:/pages/2016/11/10/juju-charm-mechanism.html</id><summary type="html">&lt;p&gt;Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;1.Juju介绍&lt;/h3&gt;
+&lt;p&gt;Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程&lt;/p&gt;
+&lt;p&gt;Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。&lt;/p&gt;
+&lt;h3&gt;2.Juju的运作方式&lt;/h3&gt;
+&lt;p&gt;Juju进行运作要具备以下三个因素：
+1) &lt;strong&gt;Juju Client&lt;/strong&gt;
+Juju Client端在不同的平台都有(Ubuntu/OXS/Windows)，以Ubuntu为例，Juju Client套件名为juju-core。
+2) &lt;strong&gt;Ubuntu Image环境(也成为Ubuntu Server,可根据需求设定)&lt;/strong&gt;
+一般的公有云都可以提供这样的环境，例如OpenStack,Amazon EC2,Microsoft Azure。当然，也可以搭配Ubuntu MAAS环境进行搭建。
+3) &lt;strong&gt;SSH key pair&lt;/strong&gt;
+SSH key pair是用来控制Ubuntu Server，可利用一对SSH key pair登入至Ubuntu Server环境，并进行Service Orchestration操作。&lt;/p&gt;
+&lt;h3&gt;3.Juju本地环境配置&lt;/h3&gt;
+&lt;p&gt;Juju是为云端服务提供管理工具，但是作为初学者我们更多是使用自己的本地环境来学习Juju的相关操作和Charm的编写。下面介绍如何搭建自己的Juju本地环境，以kvm虚拟机为例。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安装Juju&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-add-repository ppa:juju/stable
+sudo apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt-get -y install juju-core
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;安装本地支持文件以及KVM/libvrt软件&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sudo apt-get install juju-local qemu-kvm libvirt-bin bridge-utils virt-manager qemu-system uvtool-libvirt uvtool
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;生成配置文件：其路径为:~/.juju/environment.yaml&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju generate-config
+juju switch kvm
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;修改配置：在environment.yaml中找到local，进行如下修改：&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;local:
+      type: &lt;span class="nb"&gt;local&lt;/span&gt;
+  kvm:
+      type: &lt;span class="nb"&gt;local&lt;/span&gt;
+      container: kvm
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;执行，&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju bootstrap
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;即可生成本地环境。可使用&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju status --format tabular
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看状态信息。如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="juju_status" src="http://on64c9tla.bkt.clouddn.com/20161110juju_status.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关于Juju环境的其他操作&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;  &lt;span class="c1"&gt;# 查看环境列表&lt;/span&gt;
+  juju env --list
+  juju env  // 可查看当前环境名称
+  &lt;span class="c1"&gt;# 销毁环境&lt;/span&gt;
+  juju destory-environment &lt;span class="o"&gt;[&lt;/span&gt;env_name&lt;span class="o"&gt;]&lt;/span&gt;
+  &lt;span class="c1"&gt;# 设定environment中的VM版本&lt;/span&gt;
+  juju set-env &lt;span class="s2"&gt;&amp;quot;default-series=trusty&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;设定bootstrap环境&lt;/p&gt;
+&lt;p&gt;juju bootstrap用来生成可运行charm的juju环境，可利用-e指定环境名称，例如：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju bootstrap -e my_env
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;接下来，简单说明juju client/juju bootstrap node/cloud provider三者之间的关系。&lt;/p&gt;
+&lt;p&gt;1) juju client通过bootstrap指令，在cloud provider上产生一个可用来部署juju charms的bootstrap实例，即juju环境。&lt;/p&gt;
+&lt;p&gt;2) juju client通过juju deploy指令，在bootstrap实例上安装指定的charms到cloud provider的VM中。&lt;/p&gt;
+&lt;p&gt;3) cloud provider中，既有bootstrap实例，也有charms的实例。&lt;/p&gt;
+&lt;p&gt;因此，三者的交互过程具有如下关系：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;juju client &amp;lt; ---- &amp;gt; juju bootstrap instance &amp;lt; ---- &amp;gt; cloud provider&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;4.Juju服务编排&lt;/h3&gt;
+&lt;p&gt;Juju利用部署服务(Deploy Services)的方式进行服务编排(Service Orchestration)。接下来，说明如何利用juju进行服务部署工作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1) 利用charm Store进行部署&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 利用charm store部署服务，以mysql为例&lt;/span&gt;
+juju deploy mysql
+&lt;span class="c1"&gt;# 指定serveice版本,格式为:/&lt;/span&gt;
+juju deploy cs:precise/mysql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;2) 利用本地charm(Local Charm Repository)部署&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# repository 指定本地charm路径，如/usr/mycharms&lt;/span&gt;
+&lt;span class="c1"&gt;# repository name: local&lt;/span&gt;
+&lt;span class="c1"&gt;# series: trusty&lt;/span&gt;
+&lt;span class="c1"&gt;# service: mysql&lt;/span&gt;
+juju deploy --repository&lt;span class="o"&gt;=&lt;/span&gt;/usr/mycharms local:trusty/mysql
+
+&lt;span class="c1"&gt;# 如果预设juju repository的路径&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;JUJU_REPOSITORY&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/mycharms/
+juju deploy local:trusty/mysql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;3) 利用配置文件进行多个service设定&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Juju的配置文件以YAML格式进行撰写，可以在预先设定的配置文件中将charm的相关设定写好，再利用指定配置文件的方式，完成service的部署，从而避免部署指令过长。
+例如，部署一个名称mywiki的服务，可预先进行如下设定(myconfig.yaml):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;mywiki:
+  name: jujuwiki
+  skin: monobook
+  admin: amdin:admin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;然后，使用如下指令进行部署：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju deploy --config myconfig.yaml mywiki
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;3) 利用constraints个性化部署&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在Juju指令中使用--constraints可在service部署时指定特定的VM规格(cpu, mem, etc)架构。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju deploy --constraints &lt;span class="s2"&gt;&amp;quot;cpu-cores=2 mem=4G&amp;quot;&lt;/span&gt; mysql
+juju bootstrap --constraints &lt;span class="s2"&gt;&amp;quot;cpu-power=0 mem=512M&amp;quot;&lt;/span&gt;
+juju bootstrap --constraints &lt;span class="s2"&gt;&amp;quot;arch=amd64&amp;quot;&lt;/span&gt;
+juju set-constraints --service mysql &lt;span class="nv"&gt;mem&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;2G cpu-cores&lt;span class="o"&gt;=&lt;/span&gt;4
+&lt;span class="c1"&gt;# 获取constraints内容&lt;/span&gt;
+juju get-constraints
+juju get-constraints mysql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;:每个由juju管理的node(无论实体，还是容器(container))都被视为unit。Unit之间的数据交互，可使用juju相关命令，常用的指令由如下几种：&lt;/p&gt;
+&lt;p&gt;登录至某个特定的unit，可使用&lt;code&gt;juju ssh&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 通过unit id或者machine id进行登入&lt;/span&gt;
+juju ssh mysql/2
+&lt;span class="c1"&gt;# 直接查询某些信息或者执行某些脚本&lt;/span&gt;
+juju ssh mysql/2 ifconfig
+juju ssh mysql/2 bash /tmp/echo_ip.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;文件拷贝，可使用&lt;code&gt;juju scp&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;juju scp&lt;/code&gt;可以将文件从service宿主的machine或者container中拷贝出来，也可以拷贝进去。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# juju scp中可使用service id，也可以使用machine id&lt;/span&gt;
+&lt;span class="c1"&gt;# 将iptables.sh放到mysql服务中的/tmp路径下&lt;/span&gt;
+juju scp iptables.sh mysql/2:/tmp
+&lt;span class="c1"&gt;# 将mysql服务中的log拷贝至本机&lt;/span&gt;
+juju scp -r mysql/2:/var/log/mysql/ mysql_log/
+&lt;span class="c1"&gt;# 拷贝两个service中的文件，使用-v&lt;/span&gt;
+juju scp -v ubuntu/0:/path/file1 ubuntu/1:/path/file2 backup/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;执行shell命令，可使用&lt;code&gt;juju run&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;juju run&lt;/code&gt;是以ssh的方式登入至service宿主中执行shell命令，但两者又有不同之处：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;juju run&lt;/strong&gt;:可以同时操控多台机器，可以通过指定machine/service/unit的方式指定机器，也可以使用--all参数指定所有机器或者container进行操作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;juju ssh&lt;/strong&gt;:可以通过指定machine/service的方式进行操作，但一次只能操作一台机器。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 获取所有machine的kernel version&lt;/span&gt;
+juju run &lt;span class="s2"&gt;&amp;quot;uname -a&amp;quot;&lt;/span&gt; --all
+&lt;span class="c1"&gt;# 指定特定machine or service&lt;/span&gt;
+juju run &lt;span class="s2"&gt;&amp;quot;uname -a&amp;quot;&lt;/span&gt; --machine&lt;span class="o"&gt;=&lt;/span&gt;3
+juju run &lt;span class="s2"&gt;&amp;quot;uname -a&amp;quot;&lt;/span&gt; --service&lt;span class="o"&gt;=&lt;/span&gt;mysql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;5.Juju Charm的使用&lt;/h3&gt;
+&lt;p&gt;Charm是Juju在部署服务/业务时所使用的工具，由一系列的脚本文件组成，用于部署服务单元以及建立服务单元之间的联系。对于用户而言，Charm是开源的，好多优秀的Charm都放在Charm Store上，一个 简单的命令&lt;code&gt;juju deploy mysql&lt;/code&gt;，就可以部署一个简单的数据库服务单元。当然，若是某些Charm不能够满足用户的特殊需求，用户也可以写自己的charm，写好后还可以放到charm Store供别人下载使用。&lt;/p&gt;
+&lt;p&gt;Charm是事件驱动(event-driven)型脚本，通过读取/解析juju命令实现服务单元的建立，删除，关系建立等。一个完整的charm文件，包括文件：元数据(metadata.yaml),配置数据(config.yaml)以及与hooks相关的支持文件，如下图所示。&lt;/p&gt;
+&lt;table&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;img src="http://on64c9tla.bkt.clouddn.com/20161110charm_tree.png" algin="left"&gt;&lt;/td&gt;
+    &lt;td&gt;
+      &lt;ul&gt;
+        &lt;li&gt;/hooks&lt;/li&gt;
+        &lt;p&gt;hooks是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与metadata.yaml文件相关，后续介绍)。&lt;/p&gt;
+        &lt;li&gt;/actions&lt;/li&gt;
+        &lt;p&gt;actions是一个目录，里面包含可执行文件(脚本)，一般具有特定的名字(与juju系统调用相关)。&lt;/p&gt;
+        &lt;li&gt;actions.yaml&lt;/li&gt;
+        &lt;p&gt;actions.yaml是一个配置文件，当使用目录actions中的脚本时，需要配置actions.yaml文件。&lt;/p&gt;
+        &lt;li&gt;config.yaml&lt;/li&gt;
+        &lt;p&gt;config.yaml是一个配置文件，与服务配置相关(service/unit)。&lt;/p&gt;
+        &lt;li&gt;icon.svg&lt;/li&gt;
+        &lt;p&gt;icon.svg是GUI界面中用来识别charm的文件。&lt;/p&gt;
+        &lt;li&gt;README&lt;/li&gt;
+        &lt;p&gt;README文件主要介绍charm的主要功能，操作，用例等等。&lt;/p&gt;
+      &lt;/ul&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;h3&gt;6.Charm之间的关联性&lt;/h3&gt;
+&lt;p&gt;每个利用charm部署之后就是一个服务，而服务几乎没有独立运行的，需要不同服务之间的相互协作，建立联系。因此，charm之间的关联性尤为重要。&lt;/p&gt;
+&lt;p&gt;juju使用juju add-relation建立服务之间的联系。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju add-relation mysql epc-hss
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;至于，为何两个服务之间为何可以添加连接或者不可以添加连接，其实在charm中有所规定，详情可以参见下面的 &lt;em&gt;Charm文件详解&lt;/em&gt;。&lt;/p&gt;
+&lt;h3&gt;7.Charm文件详解&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;metadata.yaml&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;metadata.yaml中定义了许多charm本身的元信息，位于charm的根目录，必须是有效的yaml文件，且至少要包含以下信息：&lt;/p&gt;
+&lt;p&gt;&lt;font color="#ff000000"&gt;name&lt;/font&gt;:即charm的名字，用来标识一个特定的charm,方便从charm store中下载。name的命名只接受'a-z','0-9'以及'-',必须以'a-z'开头，不能以'-'结尾。&lt;/p&gt;
+&lt;p&gt;&lt;font color="#ff000000"&gt;summary&lt;/font&gt;:即概要，用一句话描述自己的charm功能。&lt;/p&gt;
+&lt;p&gt;&lt;font color="#ff000000"&gt;description&lt;/font&gt;:用来描述charm的功能，特性等，可在Juju GUI中显示。&lt;/p&gt;
+&lt;p&gt;&lt;font color="#ff000000"&gt;tags&lt;/font&gt;:charm的标签，方便在charm store中搜索。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="metadata_yaml" src="http://on64c9tla.bkt.clouddn.com/20161110metadata_yaml.png"&gt;&lt;/p&gt;
+&lt;h3&gt;8.常用功能&lt;/h3&gt;
+&lt;p&gt;Juju具有服务扩展(Scaling Service)功能，尤其是在云端环境中，显得更加重要。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;juju add-unit -n &lt;span class="m"&gt;3&lt;/span&gt; mysql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;移除功能:不但可以移除servie，还可以移除machine，甚至是整个environment。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 移除service&lt;/span&gt;
+juju remove-service
+&lt;span class="c1"&gt;# 移除unit&lt;/span&gt;
+juju remove-unit
+&lt;span class="c1"&gt;# 移除machine&lt;/span&gt;
+juju remove-machine
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Orchestration"></category></entry><entry><title>机器学习之Weka学习-Evaluation类介绍</title><link href="http://localhost:8005/pages/2016/07/03/machinelearning-about-weka-evaluation.html" rel="alternate"></link><published>2016-07-03T00:00:00+08:00</published><updated>2016-07-03T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-07-03:/pages/2016/07/03/machinelearning-about-weka-evaluation.html</id><summary type="html">&lt;p&gt;Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.Evalution类介绍&lt;/h2&gt;
+&lt;p&gt;Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;public class　Evaluation
+extends java.lang.Object
+implemensts java.io.Serializable, Summarizable, RevisionHandler
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;2.构造函数&lt;/h2&gt;
+&lt;p&gt;Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Evaluation eval = new Evaluation(data)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;data是训练集的数据，用来获取一些信息，并不用来评价分类器。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="evaluation-weka" src="http://on64c9tla.bkt.clouddn.com/2016C/Evaluation.jpg"&gt;&lt;/p&gt;
+&lt;h2&gt;3.主要成员变量&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;evaluationModel(Classifier classifier, Instances data)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果训练集和测试集是分开的，可以使用evaluationModel方法，方法中的参数为：第一个参数是训练过的分类器，第二个参数是测试集的数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;crossValidationModel()&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;crossValidationModel方法的四个参数为：第一个参数是分类器，第二个参数是测试集的数据，第三个参数是交叉检验的次数（比较常见的是10），第四个参数是一个随机数对象。&lt;/p&gt;
+&lt;h2&gt;4.应用示例&lt;/h2&gt;
+&lt;p&gt;下面这个小程序用同一数据测试了两类方法的评价结果，源码地址如下&lt;a href="https://github.com/yusubond/Machine-Learning/blob/master/Evaluation/Demo_evaluation.java"&gt;Demo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;结果如下：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="result-evaluationModel" src="http://on64c9tla.bkt.clouddn.com/2016C/evaluationModel.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="result-crossvalidateModel" src="http://on64c9tla.bkt.clouddn.com/2016C/crossvalidateModel.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;参考资料&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;官网资料：&lt;a href="http://10.103.14.28/weka-3-8-0/doc/"&gt;Instances类&lt;/a&gt;&lt;br&gt;
+Weka开发[3]-Evaluation类：&lt;a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/"&gt;http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/&lt;/a&gt;&lt;/p&gt;</content><category term="MachineLearning"></category><category term="AI"></category></entry><entry><title>机器学习之Weka学习-Instances类介绍</title><link href="http://localhost:8005/pages/2016/06/29/machinelearning-about-weka-instances.html" rel="alternate"></link><published>2016-06-29T00:00:00+08:00</published><updated>2016-06-29T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-06-29:/pages/2016/06/29/machinelearning-about-weka-instances.html</id><summary type="html">&lt;p&gt;Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.Intances类介绍&lt;/h2&gt;
+&lt;p&gt;Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;public class Instances
+extends java.util.AbstractList&amp;lt;Instace&amp;gt;
+implemensts java.io.Serializable, RevisionHandler
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;也就是说Instances类是继承AbstractList类而来，并实现了Serializable,RevisionHandler接口。&lt;/p&gt;
+&lt;h2&gt;2.构造函数&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="weka-instances" src="http://on64c9tla.bkt.clouddn.com/2016B/20160629instances-gouzao.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;其构造函数可以实现实例的完整或部分拷贝，也可以创建新的实例，值得注意的是，其读入的数据格式为arff。关于arff的数据格式后续会有介绍。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;主要成员变量&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;numAttributes():返回属性总量&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;setClassIndex(int):设置用于分类的属性&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;instance(int):返回具体的实例&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;firstInstance():返回第一个实例&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;3.应用实例&lt;/h2&gt;
+&lt;p&gt;1.导入数据，设置分类属性，输出实例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.lang.String&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.core.converters.ConverterUtils.DataSource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;DataSource&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;new&lt;/span&gt; &lt;span class="n"&gt;DataSource&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;filename&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;Instances&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getDataSet&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+&lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;2.示例程序 程序源码地址：&lt;a href="https://github.com/yusubond/Machine-Learning/blob/master/Instances/Demo_Instances.java"&gt;Instances小实例&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;weka01&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.lang.String&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.core.converters.ConverterUtils.DataSource&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.core.Instances&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Demo_Instances&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;testInstances&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+    &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;DataSource&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;DataSource&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/home/subond/subond/weka-3-8-0/data/weather.numeric.arff&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;Instances&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getDataSet&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+
+            &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setClassIndex&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;numAttributes&lt;/span&gt;&lt;span class="o"&gt;()-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+            &lt;span class="c1"&gt;//System.out.println(ins);&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;the number of attributes:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;numAttributes&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;the number of instances:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;numInstances&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;the first instance:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;firstInstance&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;the 3rd instance:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;instance&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;the last instances:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lastInstance&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;the name of relation:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;relationName&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="c1"&gt;//将第一个实例加入到总实例的最后&lt;/span&gt;
+            &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;firstInstance&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+
+
+        &lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="k"&gt;catch&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;printStackTrace&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;Demo_Instances&lt;/span&gt; &lt;span class="n"&gt;testIns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Demo_Instances&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;testIns&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;testInstances&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;参考资料&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;官网资料：&lt;a href="http://10.103.14.28/weka-3-8-0/doc/"&gt;Intances类&lt;/a&gt;&lt;/p&gt;</content><category term="MachineLearning"></category><category term="AI"></category></entry><entry><title>机器学习之Weka学习-简单分类器</title><link href="http://localhost:8005/pages/2016/06/28/machinelearning-about-weka-classifier.html" rel="alternate"></link><published>2016-06-28T00:00:00+08:00</published><updated>2016-06-28T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-06-28:/pages/2016/06/28/machinelearning-about-weka-classifier.html</id><summary type="html">&lt;p&gt;Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其&lt;a href="http://www.cs.waikato.ac.nz/ml/weka/"&gt;官方网站&lt;/a&gt;下载。&lt;/p&gt;</summary><content type="html">&lt;p&gt;WEKA作为一个公开的数据挖掘工作平台，集合了大量能承担数据挖掘任务的机器学习算法，包括对数据进行预处理， 分类，回归、聚类、关联规则以及在新的交互式界面上的可视化。&lt;/p&gt;
+&lt;h2&gt;1.Weka介绍&lt;/h2&gt;
+&lt;p&gt;Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其&lt;a href="http://www.cs.waikato.ac.nz/ml/weka/"&gt;官方网站&lt;/a&gt;下载。
+WEKA作为一个公开的数据挖掘工作平台，集合了大量能承担数据挖掘任务的机器学习算法，包括对数据进行预处理， 分类，回归、聚类、关联规则以及在新的交互式界面上的可视化。&lt;/p&gt;
+&lt;p&gt;机器学习可以概括为“为使用正确的特征来构建正确的模型，以完成既定的任务”。任务，模型及特征是机器学习的三大”原料“。其工作流程一般如下：&lt;/p&gt;
+&lt;p&gt;1.学习问题，即由训练数据结合学习算法构建正确的模型&lt;br&gt;
+2.构建特征，即将原始数据根据所需构建特征，形成模型所识别的数据格式&lt;br&gt;
+3.完成任务，即借助正确的模型，对数据进行处理，得到输出。  &lt;/p&gt;
+&lt;h2&gt;2.简单分类器实例&lt;/h2&gt;
+&lt;p&gt;该分类器的数据处理过程如下：
+1)读入训练数据&lt;br&gt;
+2)初始化分类器&lt;br&gt;
+3)使用训练数据训练分类器&lt;br&gt;
+4)使用测试样本测试分类器的学习效果&lt;br&gt;
+5)打印分类结果  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;weka01&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.io.File&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.classifiers.Classifier&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.classifiers.Evaluation&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.core.Instance&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.core.Instances&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;weka.core.converters.ArffLoader&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SimpleCluster&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;Instances&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;Classifier&lt;/span&gt; &lt;span class="n"&gt;cfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+
+        &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;      *读入训练数据&lt;/span&gt;
+&lt;span class="cm"&gt;      */&lt;/span&gt;
+      &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/home/subond/subond/weka-3-8-0/data/weather.numeric.arff&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;ArffLoader&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;ArffLoader&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setFile&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;file&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;ins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getDataSet&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;      *设置数据集的分类类别，即指定哪一列作为类别&lt;/span&gt;
+&lt;span class="cm"&gt;      *注意：本例中设置最后一列作为类别&lt;/span&gt;
+&lt;span class="cm"&gt;      */&lt;/span&gt;
+            &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setClassIndex&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;numAttributes&lt;/span&gt;&lt;span class="o"&gt;()-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+
+      &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;      *初始化分类器&lt;/span&gt;
+&lt;span class="cm"&gt;      *具体使用哪一种特定的分类器可以在forName函数中指定&lt;/span&gt;
+&lt;span class="cm"&gt;      */&lt;/span&gt;
+            &lt;span class="n"&gt;cfs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Classifier&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="n"&gt;Class&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;forName&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;weka.classifiers.bayes.NaiveBayes&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;newInstance&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+      &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;      *使用训练数据训练分类器&lt;/span&gt;
+&lt;span class="cm"&gt;      */&lt;/span&gt;
+            &lt;span class="n"&gt;cfs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;buildClassifier&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+      &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;      *使用测试样本测试分类器的学习效果&lt;/span&gt;
+&lt;span class="cm"&gt;      *注意：本实例中，为了方便将训练数据和测试数据置为同一个&lt;/span&gt;
+&lt;span class="cm"&gt;      */&lt;/span&gt;
+            &lt;span class="n"&gt;Instance&lt;/span&gt; &lt;span class="n"&gt;testInst&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;Evaluation&lt;/span&gt; &lt;span class="n"&gt;testingEvaluation&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Evaluation&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;numInstances&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++)&lt;/span&gt;
+            &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;        *将每个测试样本都用来测试分类器的效果&lt;/span&gt;
+&lt;span class="cm"&gt;        */&lt;/span&gt;
+                &lt;span class="n"&gt;testInst&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ins&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;instance&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;testingEvaluation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;evaluateModelOnceAndRecordPrediction&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cfs&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;testInst&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+      &lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;      *输出结果&lt;/span&gt;
+&lt;span class="cm"&gt;      */&lt;/span&gt;
+            &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;分类器的正确率：&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;testingEvaluation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;errorRate&lt;/span&gt;&lt;span class="o"&gt;()));&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="k"&gt;catch&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;){&lt;/span&gt;
+            &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;printStackTrace&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="MachineLearning"></category><category term="AI"></category></entry><entry><title>Linux中的线程管理</title><link href="http://localhost:8005/pages/2016/06/19/pthread2-management-in-linux.html" rel="alternate"></link><published>2016-06-19T00:00:00+08:00</published><updated>2016-06-19T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-06-19:/pages/2016/06/19/pthread2-management-in-linux.html</id><summary type="html">&lt;p&gt;线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;1.线程&lt;/h3&gt;
+&lt;p&gt;线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。&lt;/p&gt;
+&lt;h3&gt;2.多线程模型&lt;/h3&gt;
+&lt;p&gt;操作系统中有两种方法提供线程支持：用户层的 &lt;strong&gt;用户线程&lt;/strong&gt; 和 内核层的 &lt;strong&gt;内核线程&lt;/strong&gt;。用户线程受内核内核支持，而无需内核管理；内核线程由系统直接支持和管理。&lt;/p&gt;
+&lt;p&gt;1）多对一模型：多个用户线程映射到一个内核线程&lt;/p&gt;
+&lt;p&gt;特点：线程管理由线程库在用户空间进行，效率高；一个线程阻塞系统调用，整个进程阻塞；任意时刻，只有一个线程能访问内核(也就是，多线程不能并行运行在多处理器上)&lt;/p&gt;
+&lt;p&gt;2）一对一模型：每个用户线程映射到一个内核线程&lt;/p&gt;
+&lt;p&gt;特点：一个线程阻塞，其他线程不受影响，具有并发功能；允许多线程运行在多处理器上。&lt;/p&gt;
+&lt;p&gt;3）多对多模型：即多路复用，许多用户线程映射到同等数量或较少数量的内核线程&lt;/p&gt;
+&lt;p&gt;特点：结合多对一模型和一对一模型的优点，其对应的一个变形是 &lt;strong&gt;二级模型&lt;/strong&gt; (先允许一个用户线程绑定到一个内核线程上，然后，其他用户线程多路复用)&lt;/p&gt;
+&lt;h3&gt;3.线程库&lt;/h3&gt;
+&lt;p&gt;线程库为程序员提供创建和管理线程的API函数，主要有两种方法来实现线程库：&lt;b&gt;系统调用&lt;/b&gt;和&lt;b&gt;非系统调用&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;1）在用户空间提供没有内核支持的库，称为 &lt;strong&gt;非系统调用&lt;/strong&gt;；&lt;br&gt;
+2）由系统支持的内核级库，称为 &lt;strong&gt;系统调用&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;系统调用fork()和exec()&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;exec():如果一个线程调用exec()，则其指定的程序替换整个进程，包括所有线程。&lt;br&gt;
+fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程，因为exec()会替换所有线程；2）fork()之后没有调用exec()，则另一个进程复制所有线程。&lt;/p&gt;
+&lt;h3&gt;4.线程取消&lt;/h3&gt;
+&lt;p&gt;线程取消是在线程完成之前来终止线程的任务。要取消的线程称为 &lt;strong&gt;目标线程&lt;/strong&gt;。目标线程可以在两种情况下发生：&lt;/p&gt;
+&lt;p&gt;1）&lt;strong&gt;异步取消&lt;/strong&gt;: 一个线程立即终止目标线程。  (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)&lt;br&gt;
+2）&lt;strong&gt;延迟取消&lt;/strong&gt;: 目标线程不断检查自己是否应该终止，让线程有机会有序结束自己。  (因为具有 &lt;strong&gt;取消点&lt;/strong&gt;，因此更安全)&lt;/p&gt;
+&lt;h3&gt;5.信号处理&lt;/h3&gt;
+&lt;p&gt;信号是用来通知进程某个事件已发生，可分为 &lt;strong&gt;异步接收&lt;/strong&gt; 和 &lt;strong&gt;同步接收&lt;/strong&gt;。所有的信号具有同样的模式：&lt;/p&gt;
+&lt;p&gt;1）信号是由特定事件发生；2）信号发送至进程；3）一旦发送，信号必须加以处理。  &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;同步信号&lt;/strong&gt;: 指发送信号到执行操作的同一进程(例如，非法访问，被0除)&lt;br&gt;
+&lt;strong&gt;异步信号&lt;/strong&gt;: 指信号由进程外事件产生，发送到另一个进程。(例如，特定键(ctrl+c))&lt;/p&gt;
+&lt;p&gt;标准发送信号的函数:1) kill(pid_t id, int signal)指定信号的发送进程；2）pthread_kill(pthread_t id, int signal)允许信号被传送到一个指定的线程。&lt;/p&gt;
+&lt;h3&gt;6.线程池&lt;/h3&gt;
+&lt;p&gt;其思想是：进程开始时，创建一定数量的线程，放入线程池等待工作。其优点有，1）不必创建新线程，响应时间更快；2）可以限制线程数量，有效利用系统资源。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Linux线程&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Linux系统中并不区分进程和线程，统称为 &lt;strong&gt;任务&lt;/strong&gt;。其系统调用包括：fork()和clone()。&lt;/p&gt;
+&lt;p&gt;fork():传统复制进程——具备父任务的所有数据的副本&lt;br&gt;
+clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构&lt;/p&gt;
+&lt;h2&gt;线程小结&lt;/h2&gt;
+&lt;p&gt;线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。&lt;/p&gt;
+&lt;h2&gt;一个小栗子&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;*Author:subond&lt;/span&gt;
+&lt;span class="cm"&gt;* Time: 2016-06-19&lt;/span&gt;
+&lt;span class="cm"&gt;* Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;pthread.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/types.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;unistd.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/wait.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;math.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nf"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;param&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;flag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;flag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;flag&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%d &amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_exit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Enter a number(&amp;gt;= 0):&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;scanf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_t&lt;/span&gt; &lt;span class="n"&gt;tid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_attr_t&lt;/span&gt; &lt;span class="n"&gt;attr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_attr_init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;attr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;pid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pthread_create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;tid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;attr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Create pthread error&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;pthread_join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="linux"></category><category term="process"></category><category term="pthread"></category></entry><entry><title>Linux中的进程管理</title><link href="http://localhost:8005/pages/2016/06/17/process-management-in-linux.html" rel="alternate"></link><published>2016-06-17T00:00:00+08:00</published><updated>2016-06-17T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-06-17:/pages/2016/06/17/process-management-in-linux.html</id><summary type="html">&lt;p&gt;进程是执行中的程序，是大多数系统的工作单元，是 &lt;strong&gt;活动实体&lt;/strong&gt;。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;1.进程&lt;/h3&gt;
+&lt;p&gt;进程是执行中的程序，是大多数系统的工作单元，是 &lt;strong&gt;活动实体&lt;/strong&gt;。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;进程调度&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;进程调度是指选择一个可用的进程到CPU上执行的过程，由相应的 &lt;strong&gt;调度程序&lt;/strong&gt; 来执行。进程进入系统后，进入 &lt;strong&gt;作业队列&lt;/strong&gt; (包含系统中的所有队列)；驻留在内存中就绪，等待执行的进程位于 &lt;strong&gt;就绪队列&lt;/strong&gt;。就绪队列通常用链表实现，其头节点指向链表的第一个和最后一个PCB块的指针；每个PCB包括一个指向就绪队列的下一个的PCB的指针域。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="三种进程调度的区别" src="http://on64c9tla.bkt.clouddn.com/20160617process2.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;调度程序分为 &lt;strong&gt;长期调度程序&lt;/strong&gt;, &lt;strong&gt;中期调度程序&lt;/strong&gt; 和 &lt;strong&gt;短期调度程序&lt;/strong&gt;。长期调度(高级调度)，又称为 &lt;strong&gt;作业调度&lt;/strong&gt;，是指从池中选择进程，并装入内存准备执行，其使用频率比较低，主要用来控制内存中进程的数量；中期调度(中级调度)，又称为 &lt;strong&gt;交换调度&lt;/strong&gt;，是指将进程中内存或CPU竞争中移出，从而降低多道程序设计的程度，之后进程被重新装入内存；短期调度(低级调度)，又称为 &lt;strong&gt;进程调度&lt;/strong&gt;，是指按照一定的策略和算法，将CPU分配给一个处于就绪的进程，分为 &lt;strong&gt;抢占式&lt;/strong&gt; 和 &lt;strong&gt;非抢占式&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="三种进程调度的区别" src="http://on64c9tla.bkt.clouddn.com/20160617process.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;上下文切换&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;将CPU切换找另一个进程需要保存当前进程的状态，并恢复另一个进程的状态，这个过程称为上下文切换。&lt;/p&gt;
+&lt;h3&gt;2.进程操作&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;进程创建&lt;/strong&gt; 和 &lt;strong&gt;进程终止&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;进程创建新进程时，有两种执行可能：&lt;/p&gt;
+&lt;p&gt;1）父进程与子进程并发执行；2）父进程等待，直到某个子进程或全部子进程执行完毕。&lt;/p&gt;
+&lt;p&gt;同样，新进程的地址空间也有两种可能：&lt;/p&gt;
+&lt;p&gt;1）子进程是父进程的复制品（具有父进程相同的程序和数据）；2）子进程装入一个新程序。&lt;/p&gt;
+&lt;p&gt;在linux系统，使用fork()函数可以创建一个新进程，相关内容参考fork()函数。&lt;/p&gt;
+&lt;p&gt;当进程完成执行最后的语句病使用系统调用exit()请求操作系统删除自身时，进程终止。进程终止时，可以返回状态值(整数)到父进程(通过系统调用wait())，所有进程资源将会被操作系统回收。&lt;/p&gt;
+&lt;h3&gt;3.进程间通信&lt;/h3&gt;
+&lt;p&gt;进程间通信(IPC)有两种基本模式：&lt;strong&gt;共享内存&lt;/strong&gt; 和 &lt;strong&gt;消息传递&lt;/strong&gt;。进程间通信可以调用send()和receive()来进行，其可分为 &lt;strong&gt;阻塞&lt;/strong&gt; 或 &lt;strong&gt;非阻塞&lt;/strong&gt;——也称为 &lt;strong&gt;同步&lt;/strong&gt; 和 &lt;strong&gt;异步&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;阻塞send: 发送进程阻塞，直到消息被进程或邮箱所接收；&lt;br&gt;
+非阻塞send: 发送进程发送消息并继续操作；&lt;br&gt;
+阻塞receive: 接收进程阻塞，直到有消息可用；&lt;br&gt;
+非阻塞receive: 接收进程接收到一个有用消息或空消息；&lt;/p&gt;
+&lt;p&gt;值得注意的是，无论是直接通信还是间接通信，通信进程的消息的驻留在临时队列中。队列的实现有三种方式：零容量，有限容量，无限容量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;共享内存实例&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;创建共享内存段shmget()&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;//三个参数：标识符，字节数，读写模式&lt;/span&gt;
+&lt;span class="c1"&gt;//函数返回整数标识值&lt;/span&gt;
+&lt;span class="n"&gt;segment_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;shmget&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IPC_PRIVATE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;S_IRUSR&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;S_IWURS&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//三个参数：共享内存段的ID，指针，读写模式&lt;/span&gt;
+&lt;span class="c1"&gt;//返回初始位置的指针&lt;/span&gt;
+&lt;span class="n"&gt;share_memory&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;shmat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//删除共享内存段，释放指针&lt;/span&gt;
+&lt;span class="n"&gt;shmdt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;share_memory&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;shmctl&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;消息传递&lt;/strong&gt;: Mach&lt;/p&gt;
+&lt;p&gt;Mach系统主要为分布式系统设计。在Mach系统中，每个任务创建时，同时创建了两个特别的邮箱：&lt;strong&gt;内核邮箱&lt;/strong&gt; 和 &lt;strong&gt;通报邮箱&lt;/strong&gt;。内核使用内核邮箱与任务通信，使用通报邮箱发送事件发生的通知。&lt;/p&gt;
+&lt;p&gt;消息传递使用三个系统调用：&lt;/p&gt;
+&lt;p&gt;1）msg_send():发送数据；&lt;br&gt;
+2）msg_receive():接收数据；&lt;br&gt;
+3）msg_rpc():发送远程消息，并只等待来自发送者的一个返回消息；  &lt;/p&gt;
+&lt;p&gt;值得注意的是，Mach可以确保来自同一个发送者额多个消息满足FIFO顺序排队，但不是绝对顺序。即两个发送者的消息可以任意排队。其次，Mach使用的是双重复制机制(发送者&amp;lt;--复制--&amp;gt;邮箱&amp;lt;--复制--&amp;gt;接收者)。若使用虚拟内存管理技术(即将发送者的地址空间映射到接收者的地址空间，但只适用与系统内部)，可以避免这种双重复制。&lt;/p&gt;
+&lt;h2&gt;4.进程小结&lt;/h2&gt;
+&lt;p&gt;进程是执行中的程序。随着程序的执行，它改变状态。进程状态由进程当前活动所定义。每个进程可处于：新的，就绪，执行，等待或终止状态。每个进程在操作系统内通过自己的进程控制块PCB来表示。当前不执行的进程放在某个等待队列中。操作系统有两种主要队列：&lt;strong&gt;I/O请求队列&lt;/strong&gt; 和 &lt;strong&gt;就绪队列&lt;/strong&gt;。就绪队列包括所有准备执行或等待CPU的进程。每个都有PCB，PCB链接起来就形成了就绪队列。长期调度通过选择进程来争用CPU。短期调度从就绪队列中选择进程。&lt;/p&gt;
+&lt;p&gt;操作系统的执行进程可以是独立进程，也可以是协作进程。协作进程需要进程间有互相通信机制，主要有两种形式：共享内存和消息传递。&lt;strong&gt;共享内存&lt;/strong&gt; 方法通过要求通信进程共享一些变量，进程通过使用共享变量来交换信息；而 &lt;strong&gt;消息系统&lt;/strong&gt; 方法允许进程交换信息。&lt;/p&gt;</content><category term="linux"></category><category term="process"></category></entry><entry><title>Linux中的线程函数</title><link href="http://localhost:8005/pages/2016/06/14/pthread-management-in-linux.html" rel="alternate"></link><published>2016-06-14T00:00:00+08:00</published><updated>2016-06-14T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-06-14:/pages/2016/06/14/pthread-management-in-linux.html</id><summary type="html">&lt;p&gt;线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。本节主要介绍5个基本线程函数。&lt;/p&gt;</summary><content type="html">&lt;p&gt;线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。以下内容，主要介绍5个基本线程函数。&lt;/p&gt;
+&lt;h3&gt;1.pthread_create()函数&lt;/h3&gt;
+&lt;p&gt;当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;pthread.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;pthread_create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pthread_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;pthread_attr_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;attr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//返回：成功为0，出错为正的Exxx值&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;tid&lt;/strong&gt;:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;attr&lt;/strong&gt;:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。&lt;/p&gt;
+&lt;p&gt;创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。&lt;strong&gt;注意&lt;/strong&gt; func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。&lt;/p&gt;
+&lt;h3&gt;2.pthread_join()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;pthread.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;pthread_join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pthread_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;    &lt;span class="c1"&gt;//返回：成功为0，出错为正的Exxx值。&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;该函数的功能是等待一个给定线程终止&lt;/p&gt;
+&lt;h3&gt;3.pthread_self()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;pthread.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;pthread_self&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;   &lt;span class="c1"&gt;//返回：调用线程的线程ID。&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;4.pthread_detach()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;pthread.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;pthread_detach&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pthread_t&lt;/span&gt; &lt;span class="n"&gt;tid&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;//返回：成功返回0，出错为正的Exxx值。&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源 都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。&lt;/p&gt;
+&lt;h3&gt;5.pthread_exit()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;pthread.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;pthread_exit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;//不返回&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;调用pthread_exit函数可使线程终止。&lt;/p&gt;
+&lt;h2&gt;一个栗子&lt;/h2&gt;
+&lt;p&gt;利用线程的方法，重新编写基本UDP套接字编程&lt;/p&gt;
+&lt;p&gt;其服务端源码地址：&lt;a href="https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c"&gt;https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;结果如下图所示：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="udp-socket" src="http://on64c9tla.bkt.clouddn.com/20160614pthread_udp.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="pthread"></category><category term="process"></category></entry><entry><title>Socket编程之基本UDP编程</title><link href="http://localhost:8005/pages/2016/05/24/socket-bian-cheng-udp.html" rel="alternate"></link><published>2016-05-24T00:00:00+08:00</published><updated>2016-05-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-05-24:/pages/2016/05/24/socket-bian-cheng-udp.html</id><summary type="html">&lt;p&gt;UDP套接字编程模型。TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)， NFS(网络文件系统)和SNMP(简单网络管理协议)。典型的UDP客户/服务器程序的函数调用如下图1-1所示。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.UDP套接字编程模型&lt;/h2&gt;
+&lt;p&gt;TCP编写的应用程序和UDP编写的应用程序之间存在本质的差别，其原因在于两者在传输层之间的差异：UDP是无连接不可靠的数据包协议，而不同于TCP提供的面向连接的可靠字节流。使用UDP编写的常见应用程序有：DNS(域名系统)， NFS(网络文件系统)和SNMP(简单网络管理协议)。典型的UDP客户/服务器程序的函数调用如下图1-1所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="udp-socket" src="http://on64c9tla.bkt.clouddn.com/20160514udp-bian-cheng-mo-xing.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;图1-1 UDP客户/服务器程序所用的套接字函数&lt;/p&gt;
+&lt;h2&gt;2.recvfrom()和sendto()函数&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;#include&amp;lt;sys/socket.h&amp;gt;
+ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
+ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
+//均返回：若成功返回读或写的字节数，出错返回-1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;前三个参数sockfd,buff和nbytes为：描述符、指向读入或写出的缓冲区的指针和读写字节数。
+flags一般置为0。&lt;/p&gt;
+&lt;p&gt;sendto的to参数指向一个含有数据包接收者的协议地址的套接字地址结构，其大小由addrlen参数指定。recvfrom的from参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字地址结构， 而在该套接字地址结构中填写的字节数则放在addrlen参数所所指的整数中返回给调用者。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数值的指针（即值-结果参数）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;:recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数： 调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。&lt;/p&gt;
+&lt;h2&gt;3.消息回传程序示例&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;服务端程序&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;socket_includes.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;argc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[])&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;listenfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr_in&lt;/span&gt; &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="kt"&gt;socklen_t&lt;/span&gt; &lt;span class="n"&gt;lenserv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;lencli&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="n"&gt;bzero&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;bzero&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;memset&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0x00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;memset&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0x00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;lenserv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;lencli&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;//创建套接字&lt;/span&gt;
+  &lt;span class="c1"&gt;//listenfd = socket(AF_INET,SOCK_DGRAM, 0);&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;listenfd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SOCK_DGRAM&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;perror&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Create socket fail!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="c1"&gt;//绑定套接字&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_family&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;htons&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8888&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;                &lt;span class="c1"&gt;//主机字节序转网络字节序&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_addr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;s_addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;htonl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INADDR_ANY&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;   &lt;span class="c1"&gt;//绑定主机的所有网卡&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listenfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lenserv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;perror&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bind socket error.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="kt"&gt;ssize_t&lt;/span&gt; &lt;span class="n"&gt;rv&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;rv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;recvfrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listenfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;lencli&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rv&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;recvfrom error.&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;inet_ntop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_addr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;s_addr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+    &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;size of buf_client: %ld&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;rv&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;client buf:%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;client IP: %s, Port: %d&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ntohs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_port&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+    &lt;span class="n"&gt;sendto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listenfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lencli&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;bzero&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lencli&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;memset&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0x00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;memset&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mh"&gt;0x00&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;客户端程序&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;socket_includes.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;argc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[])&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Hello UDP!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr_in&lt;/span&gt; &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ser&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;rv&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;socklen_t&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;bzero&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;bzero&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ser&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;//sockfd = socket(AF_INET,SOCK_DGRAM, 0);&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;SOCK_DGRAM&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;perror&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Create socket fail!&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_family&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;htons&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8888&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;inet_pton&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;10.103.14.28&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sin_addr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;s_addr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;sendto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;strlen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;rv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;recvfrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MAX_BUFFER_SIZE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ser&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rv&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;recvfr0m error!&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="n"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;server buf_back:%s&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;read_buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;其中头文件均为socket_includes.h&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/types.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;netinet/in.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/shm.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;arpa/inet.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;unistd.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;fcntl.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+
+&lt;span class="cp"&gt;#define MAX_LISTEN_QUE 5&lt;/span&gt;
+&lt;span class="cp"&gt;#define SERV_PORT 8888&lt;/span&gt;
+&lt;span class="cp"&gt;#define MAX_BUFFER_SIZE 100&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="socket"></category><category term="newtork programming"></category></entry><entry><title>Socket编程之函数学习篇</title><link href="http://localhost:8005/pages/2016/05/17/socket-bian-cheng-xue-xi.html" rel="alternate"></link><published>2016-05-17T00:00:00+08:00</published><updated>2016-05-17T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-05-17:/pages/2016/05/17/socket-bian-cheng-xue-xi.html</id><summary type="html">&lt;p&gt;Socket编程涉及多个函数，本篇主要介绍其相关函数。&lt;/p&gt;</summary><content type="html">&lt;p&gt;Socket编程涉及多个函数，本篇主要介绍其相关函数。&lt;/p&gt;
+&lt;h2&gt;基本API函数&lt;/h2&gt;
+&lt;h3&gt;1.socket()函数-创建套接字&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;protocol&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;//成功返回sockfd;出错返回-1.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;sockfd是一个socket描述符，它唯一标识一个socket。这个socket描述符跟其他文件描述符一样，后续的读写操作都需用到这个socket描述符。&lt;/p&gt;
+&lt;p&gt;创建socket的时候，可以指定不同的参数创建不同的socket描述符，socket()函数的三个参数分别为：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;domain:协议域&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;协议域规定了socket的地址类型，在通信中必须采用对应的地址类型。AF_INET(IPv4协议),AF_INET6(IPv6协议),AF_LOCAL(Unix域协议),AF_ROUTE(路由套接口)。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;type:socket类型&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;常见的socket类型有SOCK_STREAM(字节流套接口),SOCK_DGRAM(数据包套接口),SOCK_RAW(原始套接口),SOCK_PACKET,SOCK_SEQPACKET(有序分组套接口)等等。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;protocol:协议类型&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。&lt;/p&gt;
+&lt;h3&gt;2.bind()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;socklen_t&lt;/span&gt; &lt;span class="n"&gt;addrlen&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;//返回:0-成功，-1-出错&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;bind()函数涉及三个对象：套接口，地址和端口，负责把特定的地址和端口赋给socket描述符，即sockfd，是从进程到内核传递套接口地址结构的函数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;sockfd&lt;/strong&gt;:socket描述符，即socket()函数创建的唯一标识一个socket。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;addr&lt;/strong&gt;:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。其中ipv4地址对应如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;struct sockaddr_in{
+    sa_family_t sin_family;
+    in_port_t sin_port;       //port in network byte order
+    struct in_addr sin_addr;
+}
+struct in_addr{
+    uint32_t s_addr;  //address in network byte order
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;addrlen&lt;/strong&gt;:对应的是地址的长度。&lt;/p&gt;
+&lt;p&gt;函数示例&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;struct sockaddr_in serv;
+bind(sockfd, (struct sockaddr *)&amp;amp;serv, sizeof(serv));
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;3.listen()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;listen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;backlog&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;listen()函数用于服务器端，服务器通过调用listen()函数来监听某个socket。其两个参数如下：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;sockfd&lt;/strong&gt;:socket描述符，及socket()函数创建的唯一标识一个socket。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;backlog&lt;/strong&gt;:该sockfd可以允许的最大连接数。&lt;/p&gt;
+&lt;h3&gt;4.connect()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;socklen_t&lt;/span&gt; &lt;span class="n"&gt;addrlen&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//返回:0-成功，-1-出错&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;connect()函数用在客户端，客户端通过这个函数连接服务器端，是从进程到内核传递套接口地址结构的函数。其各参数如下：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;sockfd&lt;/strong&gt;:socket描述符，即socket()函数创建的唯一标识一个socket。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;addr&lt;/strong&gt;:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;addrlen&lt;/strong&gt;:对应的是地址的长度。&lt;/p&gt;
+&lt;h3&gt;5.accept()函数&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;accept&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;socklen_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;addrlen&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;//返回连接connect_fd&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;TCP服务器端依次调用&lt;font color="#ff0000"&gt;socket(),bind(),listen()&lt;/font&gt;之后，进入监听状态，并监听制定的socket地址。TCP客户端依次调用socket(),connect()之后，开始向TCP服务器端发送一个连接请求。TCP服务器端 监听到这个请求后，调用accept()函数接受请求，这样连接就建立好了。accept()函数是从内核到进程传递套接口地址结构的函数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;sockfd&lt;/strong&gt;:socket描述符，及socket()函数创建的唯一标识一个socket。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;addr&lt;/strong&gt;:一个结果参数，用来接受一个返回值，指向客户端的地址。若对客户的地址不感兴趣，可设这个值为NULL。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;addrlen&lt;/strong&gt;:一个结果参数，用来接受上addr的结构的大小，可以设置为NULL。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;6.网络I/O函数&lt;/h3&gt;
+&lt;p&gt;常见的网络I/O函数有read()/write(),recv()/send(),readv()/writev(),recvmsg()/sendmsg()和recvfrom()/sendto()。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;sys/socket.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;ssize_t&lt;/span&gt; &lt;span class="nf"&gt;recvmsg&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;msghdr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;ssize_t&lt;/span&gt; &lt;span class="nf"&gt;sendmsg&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sockfd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;msghdr&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//返回：成功返回读入/写出的字节数，出错为-1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;其中函数的大部分参数封装到一个msghdr结构中，如下所示。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;struct msghdr{
+    void          *msg_name;       /*protocol address*/
+    socklen_t     msg_namelen;     /*size of protocol address*/
+    struct iovec  *msg_iovlen;     /*scatter/gather array*/
+    int           msg_iovlen;      /*  elements in msg_iov*/
+    void          *msg_control;    /*ancillary data*/
+    socklen_t     msg_controllen;  /*length of ancillary data*/
+    int           msg_flags;       /*flags returned by recvmsg*/
+}
+&lt;/pre&gt;&lt;/div&gt;</content><category term="socket"></category><category term="newtork programming"></category></entry><entry><title>Socket编程之基础篇</title><link href="http://localhost:8005/pages/2016/05/14/socket-bian-cheng-ji-chu.html" rel="alternate"></link><published>2016-05-14T00:00:00+08:00</published><updated>2016-05-14T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-05-14:/pages/2016/05/14/socket-bian-cheng-ji-chu.html</id><summary type="html">&lt;p&gt;Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式， 即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。&lt;/p&gt;</summary><content type="html">&lt;p&gt;Socket，又称为“套接字”，是进程间进行通信的一种方式，即通过网络库的API函数实现分布在不同主机的相关进程间的数据交换。在TCP/IP网络应用中，通信的两个进程的主要模式是客户/服务器模式， 即客户向服务器发送服务请求，服务器接收到请求后，提供相应的服务。Socket编程接口是指从顶上三层（网际协议的应用层）进入传输层的接口，涉及两个方向上的传递：从进程到内核和从内核到进程，如图1-1所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="tcp-ip-stack" src="http://on64c9tla.bkt.clouddn.com/20160514socket-yu-xie-yi-ge-ceng.jpg"&gt;&lt;/p&gt;
+&lt;h2&gt;套接字地址结构&lt;/h2&gt;
+&lt;p&gt;学习套接字编程，首先要知道套接字的地址结构，大多数套接字函数都需要一个指向套接字的地址结构的指针作为参数。每个协议族都有自己的套接字地址结构， 均以sockaddr_开头，并以对应的每个协议族的唯一后缀结尾。&lt;/p&gt;
+&lt;h3&gt;1.IPv4套接字地址结构&lt;/h3&gt;
+&lt;p&gt;IPv4套接字地址结构以sockaddr_in命名，定义在&amp;lt;netinet/in.h&amp;amp;mt头文件中，如下所示。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;in_addr&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;in_addr_t&lt;/span&gt; &lt;span class="n"&gt;s_addr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;       &lt;span class="cm"&gt;/*32-bit IPv4 address;network byte ordered*/&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr_in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;uint8_t&lt;/span&gt;            &lt;span class="n"&gt;sin_len&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;sa_family_t&lt;/span&gt;        &lt;span class="n"&gt;sin_family&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;        &lt;span class="cm"&gt;/*AF_INET*/&lt;/span&gt;
+        &lt;span class="n"&gt;in_port_t&lt;/span&gt;          &lt;span class="n"&gt;sin_port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;          &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;bit&lt;/span&gt; &lt;span class="n"&gt;TCP&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="n"&gt;UDP&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="n"&gt;byte&lt;/span&gt; &lt;span class="n"&gt;ordered&lt;/span&gt;&lt;span class="err"&gt;*/&lt;/span&gt;
+        &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;in_addr&lt;/span&gt;     &lt;span class="n"&gt;in_addr&lt;/span&gt; &lt;span class="n"&gt;sin_addr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  &lt;span class="cm"&gt;/*32-bit IPv4 address;network byte ordered*/&lt;/span&gt;
+        &lt;span class="kt"&gt;char&lt;/span&gt;               &lt;span class="n"&gt;sin_zero&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;       &lt;span class="cm"&gt;/*unused*/&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;说明&lt;/strong&gt;: 一般情况下，我们只使用这个结构中的3个字段：sin_family,sin_addr和sin_port，其分别对应套接字地址结构的协议族、IP地址和端口号。套接字地址结构仅在给定主机上使用 其结构中的某些字段用在不同主机间的通信，但结构本身不在主机之间传递。&lt;/p&gt;
+&lt;h3&gt;2.IPv6套接字地址结构&lt;/h3&gt;
+&lt;p&gt;IPv4套接字地址结构以sockaddr_in6命名，定义在&amp;lt;netinet/in.h&amp;amp;mt头文件中，如下所示。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;in6_addr&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;uninet8_t&lt;/span&gt; &lt;span class="n"&gt;s6_addr&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;       &lt;span class="cm"&gt;/*128-bit IPv4 address;network byte ordered*/&lt;/span&gt;
+    &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;sockaddr_in&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kt"&gt;uint8_t&lt;/span&gt;          &lt;span class="n"&gt;sin6_len&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="n"&gt;sa_family_t&lt;/span&gt;      &lt;span class="n"&gt;sin6_family&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;        &lt;span class="cm"&gt;/*AF_INET6*/&lt;/span&gt;
+      &lt;span class="n"&gt;in_port_t&lt;/span&gt;        &lt;span class="n"&gt;sin6_port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;          &lt;span class="cm"&gt;/*transport layer port;network byte ordered*/&lt;/span&gt;
+      &lt;span class="kt"&gt;uint32_t&lt;/span&gt;         &lt;span class="n"&gt;sin6_flowinfo&lt;/span&gt;       &lt;span class="cm"&gt;/*flow information,undefined*/&lt;/span&gt;
+      &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;in6_addr&lt;/span&gt;  &lt;span class="n"&gt;sin6_addr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;          &lt;span class="cm"&gt;/*128-bit IPv6 address;network byte ordered*/&lt;/span&gt;
+      &lt;span class="kt"&gt;uint32_t&lt;/span&gt;         &lt;span class="n"&gt;sin6_zero&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;       &lt;span class="cm"&gt;/*unused*/&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;3.值-结果参数&lt;/h3&gt;
+&lt;p&gt;当往一个套接字函数传递一个套接字地址结构时，结构以引用形式来传递，也就是说传递的是指向该结构的一个指针，该结构的长度作为一个参数来传递，其传递方向取决于传递方向：是内核到进程，还是进程到内核。&lt;/p&gt;
+&lt;p&gt;(1)从进程到内核传递套接字地址结构的函数有3个：bind(),connet()和sendto()。这些函数的一个参数是指向某个套接字地址结构的指针，一个参数是该结构的整数大小，如下所示。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;(2)从内核到进程传递套接字地址结构的函数有4个：accept(),recvfrom(),getsockname()和getpeername()。这4个函数其中的两个参数是指向某个套接字地址结构的指针和指向该地址结构大小的整数变量指针，如下所示。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;4.字节排序函数&lt;/h3&gt;
+&lt;p&gt;简单来说，主机和网络存储整形数据的字节顺序一般是不一样的，我们将他们称之为主机字节序和网络字节序，分别对应内核处理和进程处理。两种字节序之间的互转使用以下4个函数，其对应套接字地址结构（IP地址＋端口号）的字节序的转换。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;netinet.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+    &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="nf"&gt;htons&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;host16bitvalue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="nf"&gt;htonl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;host32bitvalue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;//返回：网络字节序的值&lt;/span&gt;
+    &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="nf"&gt;ntohs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;host16bitvalue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="nf"&gt;ntohs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;host32bitvalue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;//返回：主机字节序的值&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;5.地址转换函数&lt;/h3&gt;
+&lt;p&gt;地址转换函数可以在ASCII字符串与网络字节序的二进制值之间转换网际地址。常用的地址转换函数有inet_pton()和inet_ntop()，其中p代表表达（presentation），n代表数值（numeric）。地址的表达格式通常是ASCII字符串，数值格式是存放到 套接字地址结构中的二进制值。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;arpa/inet.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;inet_pton&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;family&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;strptr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;addrptr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//返回：1-成功；0-输入不是有效表达式；-1-出错。&lt;/span&gt;
+&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nf"&gt;inet_ntop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;family&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;addrptr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;strptr&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;size_t&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="c1"&gt;//返回：成功则为指向结果的指针，出错为NULL。&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;6.字节操作函数&lt;/h3&gt;
+&lt;p&gt;字节操作函数用于处理多字节字段，例如bzero()函数。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;strings.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;bzero&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;size_t&lt;/span&gt; &lt;span class="n"&gt;nbytes&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="socket"></category><category term="newtork programming"></category></entry><entry><title>LTE系统网络架构</title><link href="http://localhost:8005/pages/2016/05/10/lte-xi-tong-wang-luo-jia-gou.html" rel="alternate"></link><published>2016-05-10T00:00:00+08:00</published><updated>2016-05-10T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-05-10:/pages/2016/05/10/lte-xi-tong-wang-luo-jia-gou.html</id><summary type="html">&lt;p&gt;整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。&lt;/p&gt;</summary><content type="html">&lt;p&gt;整个LTE网络是由核心网（EPC,Evolved Packet Core）和接入网（E-UTRAN）组成，如图1-1所示。核心网由许多逻辑节点组成，而接入网只有一个节点，即与用户终端（UE）相连的eNodeB。所有网元都通过接口相互连接，通过对接口的标准化，可以满足众多供应商产品间的互操作性。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="lte-xitong" src="http://on64c9tla.bkt.clouddn.com/20160510lte-xitong.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;图1-1&amp;nbsp;LTE系统网络架构示意图&lt;/p&gt;
+&lt;p&gt;与3G系统相比，LTE系统重新定义了系统网络架构，核心网和接入网之间的功能划分也随之有所变化，针对LTE系统架构，网络功能划分如图1-2所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="lte-xieyi" src="http://on64c9tla.bkt.clouddn.com/20160510lte-xitong-gongneng-xieyi.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;图1-2&amp;nbsp;LTE系统功能实体划分、协议架构示意图&lt;/p&gt;
+&lt;h3&gt;1.接入网&lt;/h3&gt;
+&lt;p&gt;LTE接入网E-UTRAN仅由eNodeB组成，网络架构中节点数量减少，网络架构更加趋于扁平化，这种扁平化的网络架构可以有效地降低呼叫时延以及用户数据传输时延。E-UTRAN系统提供用户平面和控制平面的协议，用户平面用户平面包括分组数据汇聚协议（PDCP,Packet Data Convergence Protocol）层、 无线链路层控制（RLC,Radio Link Control）层、媒体接入层（MAC,Medium Access Control）层；控制平面包括无线资源控制（RRC,Radio Resource Control）层。eNodeB之间通过X2接口进行连接，通过S1接口与EPC连接，具体来说就是，通过S1-MME接口连接到MME，通过S1-U接口连接到S-GW。eNodeB与UE间的协议为接入层（AS）协议。&lt;/p&gt;
+&lt;p&gt;eNodeB具有如下功能：&lt;/p&gt;
+&lt;p&gt;（1）无线资源管理相关的功能，如无线资源承载控制、接纳控制、连接移动性管理、上/下行动态资源分配/调度等；&lt;br&gt;
+（2）IP头压缩与用户数据流的加密；&lt;br&gt;
+（3）UE附着时的MME选择。由于eNodeB可以与 多个MME/S-GW之间存在S1接口相连，因此，UE初始接入到网络时，需要选择一个MME进行附着;&lt;br&gt;
+（4）寻呼信息的调度和传输；&lt;br&gt;
+（5）广播信息的调度和传输；&lt;br&gt;
+（6）用于移动和调度的测量和测量报告的配置。  &lt;/p&gt;
+&lt;h3&gt;2.核心网&lt;/h3&gt;
+&lt;p&gt;核心网负责对用户终端的全面控制和有关承载的建立。EPC的主要逻辑节点有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;分组数据网关（P-GW,Packet Data Network Gateway）  &lt;/li&gt;
+&lt;li&gt;服务网关（S-GW,Serving Gateway）  &lt;/li&gt;
+&lt;li&gt;移动性管理实体（MME, Mobility Management Entity）  &lt;/li&gt;
+&lt;li&gt;归属签约用户服务器（HSS,Home Subscriber Server）  &lt;/li&gt;
+&lt;li&gt;策略及计费规则功能（RCPF,Policy and Charging Rules Function）  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;EPC逻辑主要节点的功能，下面详细介绍。&lt;/p&gt;
+&lt;p&gt;(1) &lt;strong&gt;P-GW：分组数据网关&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;P-GW提供与外部分组数据网络的连接，是主要的移动性处理节点。P-GW负责用户IP地址分配和QoS保证，并根据PCRF规则进行基于流量的计费。一个UE可能和多个P-GW相连 ，P-GW同时负责UE IP地址的分配。P-GW为保证比特率承载提供QoS保证。另外，P-GW可以通过一系列不同的接口，成为其他3GPP网络或非3GPP网络。&lt;/p&gt;
+&lt;p&gt;(2) &lt;strong&gt;S-GW：服务网关&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;S-GW通过S1-U接口来实现用户数据包的路由和转发。实现的功能主要有数据通道、IP头压缩处理、用户数据流加密、针对移动性的用户面的切换、寻呼时用户面数据包的终止。当用户在eNodeB之间移动时，S-GW作为数据承载的本地移动性管理实体。当用户处于空闲状态时， S-GW将保留承载信息并临时把下行数据存储在缓存区里，以便当MME开始寻呼UE时重新建立承载。同时，在与其他3GPP技术如GPRS和UMTS等交互工作时，它可以作为“&lt;strong&gt;移动性管理锚点&lt;/strong&gt;”。&lt;/p&gt;
+&lt;p&gt;(3) &lt;strong&gt;MME：移动性管理实体&lt;/strong&gt;
+MME是处理UE和核心网络信令交互的控制节点。在UE和核心网络间所执行的协议栈成为非接入层协议（NAS）。MME具有如下功能：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;寻呼信息分发。MME负责将寻呼信息按照一定的原则分发到相关的eNodeB;    &lt;/li&gt;
+&lt;li&gt;安全控制;  &lt;/li&gt;
+&lt;li&gt;空闲状态的移动性管理;  &lt;/li&gt;
+&lt;li&gt;SAE（系统架构演进）承载控制;  &lt;/li&gt;
+&lt;li&gt;非接入层信令的加密和完整性保护。  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;(4) &lt;strong&gt;HSS：归属签约用户服务器&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;HSS作为用户的集中签约管理数据库，存放了用户的EPS网络签约信息，并完成对UE的位置登记管理，以及结合AUC（鉴权中心）网元完成用户鉴权参数管理，并通过S6a接口下发给 MME完成对UE的鉴权即安全功能。&lt;/p&gt;
+&lt;p&gt;(5) &lt;strong&gt;PCRF：策略及计费规则功能&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;PCRF网元是SAE架构中提供集中策略和计费控制的网元。PCRF主要完成策略控制的决定功能及基于不同IP流的计费控制功能。因此，PCRF要结合PCEE（Policy and Charging Enforcement Function）网元 检测后上报的不同业务类型来进行QoS及计费策略方面的决策，并通过Ｇx接口将策略下发给PCEF网元去执行。&lt;/p&gt;
+&lt;h3&gt;3.主要业务接口&lt;/h3&gt;
+&lt;h3&gt;S1接口&lt;/h3&gt;
+&lt;p&gt;S1接口是MME/S-G网关和eNodeB之间的接口。S1接口又可以分为两个接口，一个用于用户平面S1-U，一个用于控制平面S1-MME。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户平面&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;S1-U接口用于提供eNodeB与S-GW网元之间用户数据传输功能，其协议栈如图3-1所示。S1-U的传输网络层基于IP传输，UDP/IP协议之上采用GTP-U（GPRS Tunnelling Protocol for User Plane：GPRS用户平面隧道协议）来传输S-GW与eNodeB之间的用户平面PDU。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="s1-u" src="http://on64c9tla.bkt.clouddn.com/20160510s1-u-xie-yi-zhan.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;图3-1&amp;nbsp;S1-U接口协议栈&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;控制平面&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;S1-MME也是基于IP传输的，不同的是控制平面在IP层的上面采用SCTP（Stream Control Transmission Protocol：流控制传输协议），为无线网络层信令消息提供可靠的传输，其协议栈如图3-2所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="s1-mme" src="http://on64c9tla.bkt.clouddn.com/20160510s1-mme-xie-yi-zhan.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;图3-2&amp;nbsp;S1-MME接口协议栈&lt;/p&gt;
+&lt;h3&gt;X2接口&lt;/h3&gt;
+&lt;p&gt;X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户平面&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。&lt;/p&gt;</content><category term="architecture"></category><category term="lte"></category></entry><entry><title>利用Pelican+Github pages搭建个人博客</title><link href="http://localhost:8005/pages/2016/04/24/pelican-github-chuang-jian-blog.html" rel="alternate"></link><published>2016-04-24T00:00:00+08:00</published><updated>2016-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:localhost,2016-04-24:/pages/2016/04/24/pelican-github-chuang-jian-blog.html</id><summary type="html">&lt;p&gt;本教程基于pelican博客引擎和github page的功能，实现个人博客搭建。&lt;/p&gt;</summary><content type="html">&lt;p&gt;说明：本教程使用的系统平台为ubuntu16.04。&lt;/p&gt;
+&lt;h2&gt;Github pages&lt;/h2&gt;
+&lt;p&gt;注册Github，并创建一个名为username.github.io的版本库。注意username为自己的用户名。&lt;/p&gt;
+&lt;h2&gt;配置本地环境&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;安装Pelican和Markdown&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pelican是一套开源的使用Python编写的博客静态生成，可以添加文章和创建页面，可使用Markdown，reStructuredText和AsiiDoc的格式来书写，同时使用Disqus评论系统，支持 RSS和Atom输出，插件，主题，代码高亮等功能。&lt;/p&gt;
+&lt;p&gt;安装Pelican有很多方法，一般采用python的包管理器pip进行安装。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ sudo apt-get install python-pip
+$ sudo pip install pelican
+$ sudo pip install markdow
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;创建博客&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;创建博客目录，然后使用快速生成，具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ mkdir blog
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; blog
+$ pelican-quickstart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;执行pelican-quicstart命令后，会提示博客的配置选项，根据提示操作即可，除必填项之外，其他选择默认即可。如果有需要 可以在之后的pelicanconf.py文件进行修改。完成之后，会出现Pelican框架，如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;bolg
+&lt;span class="p"&gt;|&lt;/span&gt;__content             &lt;span class="c1"&gt;#存放输入的Markdown文件&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt;__output              &lt;span class="c1"&gt;#存放最终生成的静态博客网页文件&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt;__develop_server.sh   &lt;span class="c1"&gt;#本地测试服务器文件&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt;__Makefile            &lt;span class="c1"&gt;#管理博客的Makefile&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt;__pelicanconf.py      &lt;span class="c1"&gt;#博客配置文件&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt;__publishconf.py      &lt;span class="c1"&gt;#发布文件，可删除&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;撰写博客&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;完成博客主题搭建后，使用Markdown语法书写博客，完成后保存在content目录下。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Title&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;My&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt; &lt;span class="n"&gt;title&lt;/span&gt;     &lt;span class="c1"&gt;//文章名字&lt;/span&gt;
+&lt;span class="n"&gt;Date&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2016&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;04&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;
+&lt;span class="n"&gt;Category&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt;          &lt;span class="c1"&gt;//文章分类&lt;/span&gt;
+&lt;span class="n"&gt;Tags&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;pelican&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;publishing&lt;/span&gt; &lt;span class="c1"&gt;//文章标签&lt;/span&gt;
+&lt;span class="n"&gt;Slug&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;my&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;       &lt;span class="c1"&gt;//html文件名&lt;/span&gt;
+&lt;span class="n"&gt;Author&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Alexis&lt;/span&gt; &lt;span class="n"&gt;Metaireau&lt;/span&gt;  &lt;span class="c1"&gt;//作者信息&lt;/span&gt;
+&lt;span class="n"&gt;Summary&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Short&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;feeds&lt;/span&gt;  &lt;span class="c1"&gt;//文章摘要&lt;/span&gt;
+
+&lt;span class="c1"&gt;//文章正文&lt;/span&gt;
+
+&lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;my&lt;/span&gt; &lt;span class="kd"&gt;super&lt;/span&gt; &lt;span class="n"&gt;blog&lt;/span&gt; &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成之后，在blog目录下，执行如下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ make html
+$ ./develop_server.sh start 8000
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;之后，在浏览器中输入http://localhost:8000 即可看到博客效果。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;发布博客&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;之前我们已经在Github上创建了仓库，现在我们就将本地文件搬到远程仓库中，进入output目录下，具体指令如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ git init
+$ git add .
+$ git remote add origin https://github.com/username/username.github.io
+$ git pull origin master
+$ git commit -m &lt;span class="s2"&gt;&amp;quot;First update&amp;quot;&lt;/span&gt;
+$ git push origin master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;完成博客发布后，访问http://username.github.io 即可。&lt;/p&gt;
+&lt;h2&gt;附：Git简易教程&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ git init                    &lt;span class="c1"&gt;#把当前目录变成git可管理的repository&lt;/span&gt;
+$ git add &amp;lt;files&amp;gt;             &lt;span class="c1"&gt;#添加文件至缓存区&lt;/span&gt;
+$ git commit -m &lt;span class="s2"&gt;&amp;quot;message&amp;quot;&lt;/span&gt;     &lt;span class="c1"&gt;#提交文件&lt;/span&gt;
+$ git remote add origin &amp;lt;server&amp;gt;       &lt;span class="c1"&gt;#添加远程服务器&lt;/span&gt;
+$ git remote set-url origin &amp;lt;server&amp;gt;   &lt;span class="c1"&gt;#修改远程服务器地址&lt;/span&gt;
+$ git push origin master      &lt;span class="c1"&gt;#推送到远程服务器&lt;/span&gt;
+$ git status    &lt;span class="c1"&gt;#查看当前各文件状态&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="pelican"></category><category term="blog"></category></entry></feed>
