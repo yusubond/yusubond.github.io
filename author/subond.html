@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - About Me</title>
+    <title>Milestone - subond</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,95 +55,286 @@
 
         <div class="span9">
         
-<section id="content" class="body">    
-    <h2 class="content-title">
-        About Me
-    </h2>
-    <h2>于邦超</h2>
-<table width="600" algin="left">
-    <tr height="30"><td>Email:&nbsp;yubc0321@gmail.com</td><td>Github:<a href="https://github.com/yusubond">&nbsp;github.com/yusubond</a></td></tr>
-    <tr height="30"><td>Addr:&nbsp;北京市海淀区西土城路10号北京邮电大学</td><td>Blog:<a href="http://www.subond.com">&nbsp;www.subond.com</a></td></tr>
-</table>
 
-<p><hr size="3px" color="#00BFF"/>
-<p><font size="4"><b>教育背景</b></font></p>
-<hr size="3px" color="#000000"/>
-<table width="800" algin="left">
-  <tr height="30"><td>2015.09-2018.04(预计)</td><td>北京邮电大学</td><td>电子与通信工程</td><td>硕士研究生</td></tr>
-  <tr height="30"><td>2011.09-2015.06</td><td>北京化工大学</td><td>通信工程</td><td>本科</td></tr>
-</table>
-<p><font size="4"><b>科研项目经历</b></font></p>
-<hr size="3px" color="#000000"/>
-<table width="600" height="30" algin="left">
-<tr><td><b>2016.09-2017.09</b></td><td><b>基于OpenStack虚拟平台的业务链管理和服务编排</b></td></tr>
-</table>
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="../pages/2017/03/21/learn-paxos-in-distributed-system.html"><h1>深入理解Paxos算法</h1></a>
+2017-03-21
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><h2>1.Paxos算法</h2>
+<p>Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为:一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a>，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。</p>
+<p>Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。</p>
+<h2>2.基本概念</h2>
+<p>Paxos算法中有三种角色：<em>Proposer</em>, <em>Acceptor</em>, <em>Learner</em>。每个节点需要同时扮演 <strong>两种或两种以上的角色</strong>。</p>
 <ul>
-  <li>系统环境：Ubuntu, 编程语言：Shell脚本</li>
-  <li>负责对核心网网元进行虚拟化部署和服务编排，包括利用Charm编写网元生命周期的管理，服务功能链管理与预处理脚本</li>
-  <li>利用hooks脚本文件定义网元交互接口及端口设定，实现虚拟网元的快速部署，批量处理</li>
-  <li>完成基于Juju(一种业务编排工具)的核心网业务编排管理，实现终端设备的网络访问演示</li>
+<li>Proposal Value: 提议的值　　</li>
+<li>Proposal Number: 提议编号，并且要求提议编号不能冲突　　</li>
+<li>Proposal: 提议　=　提议编号 + 提议的值　　</li>
+<li>Proposer: 提议发起者　　</li>
+<li>Acceptors: 提议接受者　　</li>
+<li>Learners: 提议学习者　　</li>
 </ul>
-<table width="600" height="30" algin="left">
-<tr><td><b>2016.03-2016.09</b></td><td><b>基于软件定义网络的异构网络融合平台设计与搭建</b></td></tr>
-</table>
+<p>需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。</p>
+<h2>3.两个原则</h2>
+<p><strong>1安全原则</strong></p>
+<ol>
+<li>
+<p>只能(而且必须)允许一个值被选定；</p>
+</li>
+<li>
+<p>每个节点只能学习已经被选定的值；</p>
+</li>
+</ol>
+<p><strong>2存活原则</strong></p>
+<p>只要多数节点存活，并且彼此可以通信，则会达成以下两件事：</p>
+<ol>
+<li>最终会选定某个提议的值　　</li>
+<li>一个被选定的值，其他节点最终会学习到这个值　　</li>
+</ol>
+<h2>4.算法过程</h2>
+<p><strong>第一阶段A</strong>，即Prepare阶段</p>
+<p>Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。</p>
+<p><strong>第一阶段B</strong>，即Prepare阶段</p>
+<p>Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。</p>
+<p><strong>第二阶段A</strong>，即Accept阶段</p>
+<p>Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。</p>
+<p><strong>第二阶段B</strong>，即Accept阶段</p>
+<p>Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。</p>
+<p><img alt="paxos-protocolflow" src="http://on64c9tla.bkt.clouddn.com/2017A/paxos.png"></p>
+<p>需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。</p>
+<p>当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。</p>
+<h2>5.算法证明</h2>
+<p>其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。</p>
+<p><strong>Paxso算法原命题</strong></p>
+<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &lt; n1,v1 != v0。</p>
+<p><strong>Paxso算法原命题加强</strong></p>
+<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。</p>
+<p><strong>Paxso算法原命题进一步加强</strong></p>
+<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &lt; n1, v1 != v0。</p>
+<p><strong>归纳法证明</strong></p>
+<p>假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &gt;= m)，对应的值也是v。对n进行归纳假设。</p>
+<ol>
+<li>
+<p>n = m时，显然结论成立。</p>
+</li>
+<li>
+<p>设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。</p>
+</li>
+<li>
+<p>当n = k + 1时，若提议k+1不存在，则结论成立。</p>
+</li>
+</ol>
+<p>接下来，证明提议提议k+1不存问题。</p>
+<p>假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。<strong>两个多数派必有交集</strong>，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&gt;=m。又因为第一阶段A，t&lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。</p>
+<h2>6.示例演示</h2>
+<p>为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。</p>
+<p><img alt="simple-paxos" src="http://on64c9tla.bkt.clouddn.com/2017A/simple-paxos.png"></p>
+<h2>7.小结</h2>
+<p>通过前面的讨论和学习，我们可以回顾一下协议的细节：</p>
+<ol>
+<li>
+<p>为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。</p>
+</li>
+<li>
+<p>为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。</p>
+</li>
+<li>
+<p>为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。</p>
+</li>
+</ol>
+<p><strong>"与其预测未来，不如限制未来"</strong>,应该是Paxos协议的核心思想。——郑建军(微信工程师)</p>
+<p><strong>参考资料</strong></p>
+<p>Leslie Lanmport:<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a></p>
+<p>Info架构师2017年1月刊:<a href="http://www.infoq.com/cn/minibooks/architect-201701">微信PaxsoStore:深入浅出Paxos算法协议</a></p>
+<p><a href="http://www.cnblogs.com/zhengran/p/4212502.html">一步一步理解Paxos算法</a></p></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/12/03/introduction-about-osm.html"><h2>初识Open Source MANO</h2></a>
+        <div class= "well small"> 2016-12-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。</p> <a class="btn btn-info xsmall" href="../pages/2016/12/03/introduction-about-osm.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/11/15/something-about-reading-and-writing.html"><h2>读书写作那点事儿</h2></a>
+        <div class= "well small"> 2016-11-15
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>知识就是力量，从来都不是一句空话。获取知识的途径有很多，读书无疑是有效的方式之一。那么，有哪些较好的读书路径值得我们参考呢？李笑来老师给出了以下几个方法：1) <strong>泛读，即广泛地阅读</strong>。尤其是开始的时候，应尽得杂一点，漫无目的地读，慢慢地就会发现读书的乐趣，发现自己感兴趣的点，而后就可以着点而入，深入阅读。这是一个广散网，寻找点的过程。2) <strong>学会挑书，形成自己的书单</strong>。总的来说，挑书应该有这样一个原则：能够帮助我们认清现实并思考未来，且具有 <strong>繁殖能力</strong> 的书。能够帮组我们认清现实并有所思考的书多为非虚构类的书，这一类书可以往往能够就某一问题，或某一现象，甚至某个学科做较为深入的分析与探讨，是我们了解当下现实的基础，而书中关于这些问题的讨论有可以启发我们对未来的思考。具有繁殖能力的知识，往往是那些能够激发我们阅读欲望，探索问题解决之道；亦或与我们原有的知识形成冲突，或者形成补充的知识，这是一个不断发现其他点，形成星星之火的过程。3) <strong>建立检索书库，方便日后查询</strong>。选择一款自己喜欢的笔记软件，不断地做好自己的阅读笔记。将阅读过程中发现的亮点和思考，以及相关的书目形成记录。如何做好阅读笔记，这是一个将点连接成线，进而形成一个面的过程。4) <strong>杂读，尽量涉及更多的领域和学科</strong>。想要获得一些意外的收获，杂读就是一个很好的方法。用自己原有的专业知识及系统去接触一个相对陌生的领域和学科，往往可以碰撞出不一样的火花。这是一个发现其他面的过程，并产生面与面交集的过程。</p> <a class="btn btn-info xsmall" href="../pages/2016/11/15/something-about-reading-and-writing.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/11/10/juju-charm-mechanism.html"><h2>云端服务管理工具:Juju</h2></a>
+        <div class= "well small"> 2016-11-10
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p> <a class="btn btn-info xsmall" href="../pages/2016/11/10/juju-charm-mechanism.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/10/07/reply-1988.html"><h2>Reply 1988: 人生是个迷啊</h2></a>
+        <div class= "well small"> 2016-10-07
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>人，之所以为人，是因为可以享受生命的意义，生活的乐趣。这是一篇关于韩剧《请回答1988》的观后感。这部剧发生在韩国首尔一个叫做“双门洞”的胡同，讲述了五家人的故事，细致生动地再现了80年代邻里街坊小市民的生活面貌。<strong>整部剧以生活为主线，贯穿亲情，友情，爱情以及邻里情，细致地刻画了那个永远回不去的青春岁月</strong>。剧中的生活细节做的很足，处处都可以看到编剧和导演的良苦用心。其实，生活无非就是一日三餐，家长里短，却被演员们表现的淋漓尽致，主要集中在以下几个方面。</p> <a class="btn btn-info xsmall" href="../pages/2016/10/07/reply-1988.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html"><h2>机器学习之Weka学习-Evaluation类介绍</h2></a>
+        <div class= "well small"> 2016-07-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p> <a class="btn btn-info xsmall" href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
+        <div class= "well small"> 2016-06-29
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/28/machinelearning-about-weka-classifier.html"><h2>机器学习之Weka学习-简单分类器</h2></a>
+        <div class= "well small"> 2016-06-28
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/19/pthread2-management-in-linux.html"><h2>Linux中的线程管理</h2></a>
+        <div class= "well small"> 2016-06-19
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/19/pthread2-management-in-linux.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/17/process-management-in-linux.html"><h2>Linux中的进程管理</h2></a>
+        <div class= "well small"> 2016-06-17
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>进程是执行中的程序，是大多数系统的工作单元，是 <strong>活动实体</strong>。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/17/process-management-in-linux.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
 <ul>
-  <li>系统环境：Ubuntu, 编程语言：Linux/C++，Shell脚本</li>
-  <li>负责实现蜂窝网侧基站与SDN控制器的网络通信(Socket编程)，主要包括终端附着请求，网络切换命令的接收与转发</li>
-  <li>负责蜂窝网网关的数据分发策略设计，利用Iptables的标签工具实现蜂窝网流量与无线网流量数据分流</li>
-  <li>终端设备的双网桥结构设计，保证外部IP地址的一致性，从而实现业务不中断</li>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../author/subond.html">1</a></li>
+    <li class=""><a href="../author/subond2.html">2</a></li>
+
+    <li class="next"><a href="../author/subond2.html">Next &rarr;</a></li>
+
 </ul>
-<table width="600" height="30" algin="left">
-<tr algin="left"><td><b>2015.09-2016.03</b></td><td><b>基于SDN的核心网系统搭建与验证</b></td></tr>
-</table>
-<ul>
-  <li>系统环境：Ubuntu, 编程语言：Linux/C++，Shell脚本</li>
-  <li>搭建OAI-LTE核心网，验证UE附着请求，数据转发等</li>
-  <li>完成专利《一种基于SDN的核心网系统及使用方法》</li>
-</ul>
-<p><font size="4"><b>学术成果</b></font><p>
-<hr size="3px" color="#000000"/>
-  <table width="900" height="50" algin="left">
-    <tr><td><b>论文</b></td><td><b>Dynamic Resource Orchestration of Service Function Chaining In Network Function Virtualization</b></td><td><b>5GWN(2017)</b></td></tr>
-  </table>
-    <ul>
-      <li>设计资源编排控制器的监测模块，决策模块与执行模块等，实现虚拟单元的生命周期的管理(资源选择，资源部署，资源监控，资源控制等)</li>
-      <li>设计并实现多目标模拟退火算法，通过对服务单元能耗，负载等信息判断与决策，实现虚拟资源的统一调度与管理</li>
-    </ul>
-  <table width="600" height="50" algin="left">
-    <tr><td><b>专利</b></td><td><b>一种基于SDN的核心网系统及其使用方法(CN105933246A)</b></td></tr>
-  </table>
-<p><font size="4"><b>专业技能</b></font></p>
-<hr size="3px" color="#000000"/>
-  <ul>
-    <li>熟悉C/C++语言，了解基本的数据类型和算法，了解Shell编程和Linux操作系统</li>
-    <li>熟悉TCP/IP, Git版本控制，有个人仓库及主页，用于技术积累和分享</li>
-    <li>CET-4，英语文档阅读能力良好</li>
-  </ul>
-<p><font size="4"><b>社会实践</b></font></p>
-<hr size="3px" color="#000000"/>
-<table width="600" height="50" algin="left">
-  <tr><td><b>2013.09-2014.06</b></td><td><b>北京化工大学职业生涯规划协会</b></td><td><b>会长</b></td></tr>
-</table>
-  <ul>
-    <li>负责管理协会日程事务，并策划组织各种赛事及活动</li>
-    <li>主持编撰职协期刊《征程》，普及学业、职业规划理念，前后共发行1000多本</li>
-    <li>协助学校就业中心开展“学业·职业规划大赛”，负责赛事流程及选手培训</li>
-    <li>工作中，锻炼了项目策划、组织能力，同时提升了交流沟通能力，团队合作意识和执行力有了显著提高</li>
-  </ul>
-<table width="600" height="50" algin="left">
-  <tr><td><b>2013.07-2013.08</b></td><td><b>浙江·绍兴暑期社会实践团</b></td><td><b>副队长</b></td></tr>
-</table>
-<ul>
-  <li>确定主题，协助队长负责前期的线路策划工作</li>
-  <li>制定整个团队的日程安排，活动中注意保护团员安全</li>
-  <li>活动后进行总结，并负责相关材料的上报工作</li>
-</ul>
-<p><font size="4"><b>兴趣爱好</b></font></p>
-<hr size="3px" color="#000000"/>
-<ul>
-  <li>徒步，爬山，读书等</li>
-</ul></p>
-</section>
+</div>
+ 
+  
         </div>
         
         <div class="span3">
@@ -172,6 +363,7 @@
                 Categories
                 </li>
                 
+                <li><a href="../category/life.html">Life</a></li>
                 <li><a href="../category/note.html">Note</a></li>
                 <li><a href="../category/read.html">Read</a></li>
                 <li><a href="../category/tech.html">Tech</a></li>
