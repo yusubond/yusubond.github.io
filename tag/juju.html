@@ -19,8 +19,8 @@
     <link href="../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -40,14 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+            
             <li><a href="../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -88,7 +85,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 <p>1) 8 CPUs, 16G RAM, 100GB硬盘以及可用的网络接口；<br>
 2) Ubuntu 16.04系统，并配置LXD容器  </p>
 <p>LXD配置如下：</p>
-<div class="highlight"><pre>sudo apt update
+<div class="highlight"><pre><span></span>sudo apt update
 sudo apt install zfs lxd
 sudo newgrp lxd
 </pre></div>
@@ -100,7 +97,7 @@ sudo newgrp lxd
 <p><img alt="lxd_success" src="http://on64c9tla.bkt.clouddn.com/2016D/lxd_successfully.png"></p>
 <h3>2.从源安装OSM</h3>
 <p>安装之前，系统需要安装版本控制管理工具git，sudo apt install -y git；接下来，获取安装脚本，进行安装即可。</p>
-<div class="highlight"><pre>wget https://osm-download.etsi.org/ftp/osm-1.0-one/install_from_source.sh
+<div class="highlight"><pre><span></span>wget https://osm-download.etsi.org/ftp/osm-1.0-one/install_from_source.sh
 chmod +x install_from_source.sh
 ./install_from_source.sh
 </pre></div>
@@ -136,22 +133,22 @@ chmod +x install_from_source.sh
  
   
         </div>
-
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
-
+            
                 <li><a href="../archives.html">Archives</a>
                 <li><a href="../tags.html">Tags</a>
 
 
 
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -159,23 +156,24 @@ chmod +x install_from_source.sh
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
+                
                 <li><a href="../category/note.html">Note</a></li>
                 <li><a href="../category/read.html">Read</a></li>
                 <li><a href="../category/tech.html">Tech</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
+            
                 <li><a href="http://nsq.io/">NSQ</a></li>
                 <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
@@ -187,17 +185,18 @@ chmod +x install_from_source.sh
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>     </div>     </div> 
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
 <p><a href="..">Milestone</a> &copy; subond 2016</p>
@@ -207,5 +206,6 @@ chmod +x install_from_source.sh
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>

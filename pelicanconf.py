@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+import sitemap
 
 AUTHOR = u'subond'
 SITENAME = u'Milestone'
-SITEURL = 'http://localhost:8005'
+SITEURL = 'www.subond.com'
 
 PATH = 'content'
 
@@ -21,8 +22,9 @@ THEME = 'tuxlite_tbs'
 GOOGLE_ANALYTICS = 'UA-45955656-1'
 GOOGLE_CUSTOM_SEARCH_SIDEBAR = '007073422838042852012:lysvmhlibk8'
 
-PLUGIN_PATH=u'pelican-plugins'
-PLUGIN = ['sitemap']
+PLUGINS = [sitemap]
+#PLUGIN_PATH=u'pelican-plugins'
+#PLUGIN = ['sitemap']
 SITEMAP = {
     "format":"xml",
     "priorities":{
@@ -58,6 +60,3 @@ SOCIAL = (('Github', 'https://github.com/yusubond'),
           ('Weibo', 'http://weibo.com/ybconly'),)
 
 DEFAULT_PAGINATION = 10
-
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True

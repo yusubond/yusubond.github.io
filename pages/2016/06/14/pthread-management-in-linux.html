@@ -19,8 +19,8 @@
     <link href="../../../../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -40,14 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+            
             <li><a href="../../../../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -71,7 +68,7 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
         <div><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。以下内容，主要介绍5个基本线程函数。</p>
 <h3>1.pthread_create()函数</h3>
 <p>当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。</p>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">pthread_create</span><span class="p">(</span><span class="n">pthread_t</span> <span class="o">*</span><span class="n">tid</span><span class="p">,</span> <span class="k">const</span> <span class="n">pthread_attr_t</span> <span class="o">*</span><span class="n">attr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">),</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
 <span class="c1">//返回：成功为0，出错为正的Exxx值</span>
 </pre></div>
@@ -81,27 +78,27 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 <p><strong>attr</strong>:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。</p>
 <p>创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。<strong>注意</strong> func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。</p>
 <h3>2.pthread_join()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">pthread_join</span><span class="p">(</span><span class="n">pthread_t</span> <span class="o">*</span><span class="n">tid</span><span class="p">,</span> <span class="kt">void</span> <span class="o">**</span><span class="n">status</span><span class="p">);</span>    <span class="c1">//返回：成功为0，出错为正的Exxx值。</span>
 </pre></div>
 
 
 <p>该函数的功能是等待一个给定线程终止</p>
 <h3>3.pthread_self()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="n">pthread_self</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>   <span class="c1">//返回：调用线程的线程ID。</span>
 </pre></div>
 
 
 <h3>4.pthread_detach()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="n">pthread_detach</span><span class="p">(</span><span class="n">pthread_t</span> <span class="n">tid</span><span class="p">)</span>  <span class="c1">//返回：成功返回0，出错为正的Exxx值。</span>
 </pre></div>
 
 
 <p>一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源 都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。</p>
 <h3>5.pthread_exit()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="n">pthread_exit</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">status</span><span class="p">)</span>  <span class="c1">//不返回</span>
 </pre></div>
 
@@ -117,22 +114,22 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 
     </div>
         </div>
-
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
-
+            
                 <li><a href="../../../../archives.html">Archives</a>
                 <li><a href="../../../../tags.html">Tags</a>
 
 
 
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -140,22 +137,24 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
+                
                 <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
                 <li><a href="../../../../category/tech.html">Tech</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
+            
                 <li><a href="http://nsq.io/">NSQ</a></li>
                 <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
@@ -167,25 +166,27 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>     </div>     </div> 
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
-<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../../../../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>

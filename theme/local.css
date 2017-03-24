@@ -21,7 +21,7 @@
 
 .navbar .nav > li > a { color: #49AFCD; }
 .navbar .divider-vertical { border-right: 1px solid #4D4D4D; }
-.navbar { margin-bottom: 4em; }
+.navbar { margin-bottom: 4em; } 
 
 
 /* Styling for elements */
@@ -34,7 +34,7 @@ h3 { margin-top: 2.5em; }
 /* Styling for articles */
 .article { padding-bottom:20px; padding-right: 40px; }
 .content-title { margin-bottom: 30px; }
-.article a:hover { text-decoration: none; }
+.article a:hover { text-decoration: none; } 
 
 
 
@@ -58,7 +58,6 @@ h3 { margin-top: 2.5em; }
 
 
 /* Styling for Sidebar */
-.social a[href*='weibo.com']:before {content: url('./images/icons/weibo.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='activestate.com']:before {content: url('./images/icons/activestate.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='atom.xml']:before {content: url('./images/icons/rss.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='bitbucket.org']:before {content: url('./images/icons/bitbucket.png'); margin-right: 2px; vertical-align: -3px;}
@@ -75,3 +74,4 @@ h3 { margin-top: 2.5em; }
 .social a[href*='rss.xml']:before {content: url('./images/icons/rss.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='stackoverflow.com']:before {content: url('./images/icons/stackoverflow.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='twitter.com']:before {content: url('./images/icons/twitter.png'); margin-right: 2px; vertical-align: -3px;}
+.social a[href*='weibo.com']:before {content: url('./images/icons/weibo.png'); margin-right: 2px; vertical-align: -3px;}

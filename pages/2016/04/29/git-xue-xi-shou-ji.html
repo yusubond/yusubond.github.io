@@ -19,8 +19,8 @@
     <link href="../../../../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -40,14 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+            
             <li><a href="../../../../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -70,7 +67,7 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 	
         <div><h2>一、基础篇</h2>
 <h3>指令介绍</h3>
-<div class="highlight"><pre>git config --global user.name <span class="s2">&quot;username&quot;</span>    <span class="c1">#配置仓库参数，作为一个标志</span>
+<div class="highlight"><pre><span></span>git config --global user.name <span class="s2">&quot;username&quot;</span>    <span class="c1">#配置仓库参数，作为一个标志</span>
 git config --global user.email <span class="s2">&quot;useremail&quot;</span>  <span class="c1">#配置仓库参数，作为一个标志</span>
 git init                      <span class="c1">#把当前目录变成git可管理的仓库</span>
 git add files          <span class="c1">#添加文件到暂存区</span>
@@ -93,7 +90,7 @@ git remote -v         <span class="c1">#查看远程仓库详细信息</span>
 
 <h3>版本回退</h3>
 <p>git reset --hard 版本号(即commit_id)</p>
-<div class="highlight"><pre>git reset --hard HEAD^      <span class="c1">#回退至上一版本</span>
+<div class="highlight"><pre><span></span>git reset --hard HEAD^      <span class="c1">#回退至上一版本</span>
 git reset --hard HEAD^^     <span class="c1">#回退至上上版本</span>
 git reset --hard HEAD~10    <span class="c1">#回退至前10个版本</span>
 git reset --hard commit_id  <span class="c1">#结合git reflog;git log使用</span>
@@ -103,7 +100,7 @@ git reset --hard commit_id  <span class="c1">#结合git reflog;git log使用</sp
 
 
 <h3>分支操作</h3>
-<div class="highlight"><pre>git branch                <span class="c1">#查看分支</span>
+<div class="highlight"><pre><span></span>git branch                <span class="c1">#查看分支</span>
 git checkout &lt;分支名1&gt;       <span class="c1">#切换至分支名1</span>
 git checkout -b &lt;分支名1&gt;  <span class="c1">#创建并切换至分支名1</span>
 git merge &lt;分支名1&gt;        <span class="c1">#合并分支名1至当前分支</span>
@@ -140,7 +137,7 @@ Remote：远程仓库  </p>
 <ul>
 <li>指令介绍</li>
 </ul>
-<div class="highlight"><pre>git stash       <span class="c1">#备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中</span>
+<div class="highlight"><pre><span></span>git stash       <span class="c1">#备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中</span>
 git pop         <span class="c1">#从git栈中读取最近一次保存的内容，恢复工作区的相关内容</span>
 git stash list  <span class="c1">#显示git栈中所有备份，可以利用列表选择从哪恢复内容</span>
 git stash apply &lt;版本号&gt;   <span class="c1">#将制定版本号的内容恢复至当前工作区，配合git stash list使用</span>
@@ -150,7 +147,7 @@ git stash clear           <span class="c1">#清空git栈</span>
 
 <h2>三、gitbook使用指南</h2>
 <p>gitbook的使用方法和git基本类似，其修改记录，发布版本等相关操作均可参考上面的git指令，略有不同，下面详细介绍：</p>
-<div class="highlight"><pre><span class="c1"># 初始化书记目录</span>
+<div class="highlight"><pre><span></span><span class="c1"># 初始化书记目录</span>
 gitbook init
 <span class="c1"># 编译图书，可在本地查看</span>
 gitbook serve
@@ -170,22 +167,22 @@ git push -u gitbook master  <span class="c1">#第一次使用-u参数，之后�
 
     </div>
         </div>
-
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
-
+            
                 <li><a href="../../../../archives.html">Archives</a>
                 <li><a href="../../../../tags.html">Tags</a>
 
 
 
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -193,22 +190,24 @@ git push -u gitbook master  <span class="c1">#第一次使用-u参数，之后�
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
+                
                 <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
                 <li><a href="../../../../category/tech.html">Tech</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
+            
                 <li><a href="http://nsq.io/">NSQ</a></li>
                 <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
@@ -220,25 +219,27 @@ git push -u gitbook master  <span class="c1">#第一次使用-u参数，之后�
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>     </div>     </div> 
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
-<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../../../../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>

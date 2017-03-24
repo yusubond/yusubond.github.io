@@ -19,8 +19,8 @@
     <link href="../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -40,14 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+            
             <li><a href="../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -83,7 +80,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 </ul>
 <p>Pelican是一套开源的使用Python编写的博客静态生成，可以添加文章和创建页面，可使用Markdown，reStructuredText和AsiiDoc的格式来书写，同时使用Disqus评论系统，支持 RSS和Atom输出，插件，主题，代码高亮等功能。</p>
 <p>安装Pelican有很多方法，一般采用python的包管理器pip进行安装。</p>
-<div class="highlight"><pre>$ sudo apt-get install python-pip
+<div class="highlight"><pre><span></span>$ sudo apt-get install python-pip
 $ sudo pip install pelican
 $ sudo pip install markdow
 </pre></div>
@@ -93,14 +90,14 @@ $ sudo pip install markdow
 <li>创建博客</li>
 </ul>
 <p>创建博客目录，然后使用快速生成，具体如下：</p>
-<div class="highlight"><pre>$ mkdir blog
+<div class="highlight"><pre><span></span>$ mkdir blog
 $ <span class="nb">cd</span> blog
 $ pelican-quickstart
 </pre></div>
 
 
 <p>执行pelican-quicstart命令后，会提示博客的配置选项，根据提示操作即可，除必填项之外，其他选择默认即可。如果有需要 可以在之后的pelicanconf.py文件进行修改。完成之后，会出现Pelican框架，如下</p>
-<div class="highlight"><pre>bolg
+<div class="highlight"><pre><span></span>bolg
 <span class="p">|</span>__content             <span class="c1">#存放输入的Markdown文件</span>
 <span class="p">|</span>__output              <span class="c1">#存放最终生成的静态博客网页文件</span>
 <span class="p">|</span>__develop_server.sh   <span class="c1">#本地测试服务器文件</span>
@@ -114,7 +111,7 @@ $ pelican-quickstart
 <li>撰写博客</li>
 </ul>
 <p>完成博客主题搭建后，使用Markdown语法书写博客，完成后保存在content目录下。</p>
-<div class="highlight"><pre><span class="n">Title</span><span class="o">:</span> <span class="n">My</span> <span class="kd">super</span> <span class="n">title</span>     <span class="c1">//文章名字</span>
+<div class="highlight"><pre><span></span><span class="n">Title</span><span class="o">:</span> <span class="n">My</span> <span class="kd">super</span> <span class="n">title</span>     <span class="c1">//文章名字</span>
 <span class="n">Date</span><span class="o">:</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">04</span><span class="o">-</span><span class="mi">21</span>
 <span class="n">Category</span><span class="o">:</span> <span class="n">Python</span>          <span class="c1">//文章分类</span>
 <span class="n">Tags</span><span class="o">:</span> <span class="n">pelican</span><span class="o">,</span> <span class="n">publishing</span> <span class="c1">//文章标签</span>
@@ -129,8 +126,8 @@ $ pelican-quickstart
 
 
 <p>完成之后，在blog目录下，执行如下命令：</p>
-<div class="highlight"><pre>$ make html
-$ ./develop_server.sh start 8000
+<div class="highlight"><pre><span></span>$ make html
+$ ./develop_server.sh start <span class="m">8000</span>
 </pre></div>
 
 
@@ -139,7 +136,7 @@ $ ./develop_server.sh start 8000
 <li>发布博客</li>
 </ul>
 <p>之前我们已经在Github上创建了仓库，现在我们就将本地文件搬到远程仓库中，进入output目录下，具体指令如下：</p>
-<div class="highlight"><pre>$ git init
+<div class="highlight"><pre><span></span>$ git init
 $ git add .
 $ git remote add origin https://github.com/username/username.github.io
 $ git pull origin master
@@ -150,7 +147,7 @@ $ git push origin master
 
 <p>完成博客发布后，访问http://username.github.io 即可。</p>
 <h2>附：Git简易教程</h2>
-<div class="highlight"><pre>$ git init                    <span class="c1">#把当前目录变成git可管理的repository</span>
+<div class="highlight"><pre><span></span>$ git init                    <span class="c1">#把当前目录变成git可管理的repository</span>
 $ git add &lt;files&gt;             <span class="c1">#添加文件至缓存区</span>
 $ git commit -m <span class="s2">&quot;message&quot;</span>     <span class="c1">#提交文件</span>
 $ git remote add origin &lt;server&gt;       <span class="c1">#添加远程服务器</span>
@@ -174,22 +171,22 @@ $ git status    <span class="c1">#查看当前各文件状态</span>
  
   
         </div>
-
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
-
+            
                 <li><a href="../archives.html">Archives</a>
                 <li><a href="../tags.html">Tags</a>
 
 
 
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -197,23 +194,24 @@ $ git status    <span class="c1">#查看当前各文件状态</span>
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
+                
                 <li><a href="../category/note.html">Note</a></li>
                 <li><a href="../category/read.html">Read</a></li>
                 <li><a href="../category/tech.html">Tech</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
+            
                 <li><a href="http://nsq.io/">NSQ</a></li>
                 <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
@@ -225,17 +223,18 @@ $ git status    <span class="c1">#查看当前各文件状态</span>
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>     </div>     </div> 
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
 <p><a href="..">Milestone</a> &copy; subond 2016</p>
@@ -245,5 +244,6 @@ $ git status    <span class="c1">#查看当前各文件状态</span>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>

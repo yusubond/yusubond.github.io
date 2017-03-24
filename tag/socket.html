@@ -19,8 +19,8 @@
     <link href="../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -40,14 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+            
             <li><a href="../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -79,7 +76,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 <p><img alt="udp-socket" src="http://on64c9tla.bkt.clouddn.com/20160514udp-bian-cheng-mo-xing.jpg"></p>
 <p>图1-1 UDP客户/服务器程序所用的套接字函数</p>
 <h2>2.recvfrom()和sendto()函数</h2>
-<div class="highlight"><pre>#include&lt;sys/socket.h&gt;
+<div class="highlight"><pre><span></span>#include&lt;sys/socket.h&gt;
 ssize_t recvfrom(int sockfd, void *buff, size_t nbytes, int flags, struct sockaddr *from, socklen_t *addrlen);
 ssize_t sendto(int sockfd, const void *buf, size_t nbytes, int flags, const struct sockaddr *to, socklen_t addrlen);
 //均返回：若成功返回读或写的字节数，出错返回-1
@@ -93,7 +90,7 @@ flags一般置为0。</p>
 <p><strong>注意</strong>:recvfrom的最后两个参数类似accept的最后两个参数：返回时其中套接字地址结构的内容告诉我们是谁发送了数据报（UDP）或是谁发起了连接（TCP）。sendto的最后两个参数类似connect的最后两个参数： 调用时其中套接字地址结构被我们填入数据报发往（UDP）或预制建立连接（TCP）的协议地址。</p>
 <h2>3.消息回传程序示例</h2>
 <p><strong>服务端程序</strong></p>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;socket_includes.h&quot;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;socket_includes.h&quot;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">listenfd</span><span class="p">,</span> <span class="n">sockfd</span><span class="p">;</span>
@@ -149,7 +146,7 @@ flags一般置为0。</p>
 
 
 <p><strong>客户端程序</strong></p>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;socket_includes.h&quot;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;socket_includes.h&quot;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">sockfd</span><span class="p">;</span>
@@ -187,7 +184,7 @@ flags一般置为0。</p>
 
 
 <p>其中头文件均为socket_includes.h</p>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 
@@ -257,22 +254,22 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
   
         </div>
-
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
-
+            
                 <li><a href="../archives.html">Archives</a>
                 <li><a href="../tags.html">Tags</a>
 
 
 
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -280,23 +277,24 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
+                
                 <li><a href="../category/note.html">Note</a></li>
                 <li><a href="../category/read.html">Read</a></li>
                 <li><a href="../category/tech.html">Tech</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
+            
                 <li><a href="http://nsq.io/">NSQ</a></li>
                 <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
@@ -308,17 +306,18 @@ by <a class="url fn" href="../author/subond.html">subond</a>
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>     </div>     </div> 
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
 <p><a href="..">Milestone</a> &copy; subond 2016</p>
@@ -328,5 +327,6 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>

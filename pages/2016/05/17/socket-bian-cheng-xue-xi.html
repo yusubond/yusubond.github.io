@@ -19,8 +19,8 @@
     <link href="../../../../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
-        <link href="http://localhost:8005/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
-        <link href="http://localhost:8005/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -40,14 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-
+            
             <li><a href="../../../../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -71,7 +68,7 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
         <div><p>Socket编程涉及多个函数，本篇主要介绍其相关函数。</p>
 <h2>基本API函数</h2>
 <h3>1.socket()函数-创建套接字</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">socket</span><span class="p">(</span><span class="kt">int</span> <span class="n">domain</span><span class="p">,</span> <span class="kt">int</span> <span class="n">type</span><span class="p">,</span> <span class="kt">int</span> <span class="n">protocol</span><span class="p">);</span>  <span class="c1">//成功返回sockfd;出错返回-1.</span>
 </pre></div>
 
@@ -86,7 +83,7 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 <p>常见的通信协议有IPPROTO_TCP(TCP传输协议),IPPROTO_UDP(UDP传输协议),IPPROTO_SCTP(SCTP传输协议),IPPROTO_TIPC等等</p>
 <p><strong>注意</strong>：type和protocol并不是可以随意组合的。一般情况下设置protocol为０，系统会自动选择type类型所对应的默认协议。</p>
 <h3>2.bind()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">bind</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">addrlen</span><span class="p">);</span>  <span class="c1">//返回:0-成功，-1-出错</span>
 </pre></div>
 
@@ -94,7 +91,7 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 <p>bind()函数涉及三个对象：套接口，地址和端口，负责把特定的地址和端口赋给socket描述符，即sockfd，是从进程到内核传递套接口地址结构的函数。</p>
 <p><strong>sockfd</strong>:socket描述符，即socket()函数创建的唯一标识一个socket。</p>
 <p><strong>addr</strong>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。其中ipv4地址对应如下：</p>
-<div class="highlight"><pre>struct sockaddr_in{
+<div class="highlight"><pre><span></span>struct sockaddr_in{
     sa_family_t sin_family;
     in_port_t sin_port;       //port in network byte order
     struct in_addr sin_addr;
@@ -107,13 +104,13 @@ struct in_addr{
 
 <p><strong>addrlen</strong>:对应的是地址的长度。</p>
 <p>函数示例</p>
-<div class="highlight"><pre>struct sockaddr_in serv;
+<div class="highlight"><pre><span></span>struct sockaddr_in serv;
 bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 </pre></div>
 
 
 <h3>3.listen()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="n">listen</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">backlog</span><span class="p">)</span>
 </pre></div>
 
@@ -122,7 +119,7 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 <p><strong>sockfd</strong>:socket描述符，及socket()函数创建的唯一标识一个socket。</p>
 <p><strong>backlog</strong>:该sockfd可以允许的最大连接数。</p>
 <h3>4.connect()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">connect</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="n">addrlen</span><span class="p">);</span>
 <span class="c1">//返回:0-成功，-1-出错</span>
 </pre></div>
@@ -133,7 +130,7 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 <p><strong>addr</strong>:一个const struct sockaddr * 指针,指向要绑定给sockfd的协议地址。</p>
 <p><strong>addrlen</strong>:对应的是地址的长度。</p>
 <h3>5.accept()函数</h3>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">accept</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">socklen_t</span> <span class="o">*</span><span class="n">addrlen</span><span class="p">);</span>  <span class="c1">//返回连接connect_fd</span>
 </pre></div>
 
@@ -152,7 +149,7 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 </ul>
 <h3>6.网络I/O函数</h3>
 <p>常见的网络I/O函数有read()/write(),recv()/send(),readv()/writev(),recvmsg()/sendmsg()和recvfrom()/sendto()。</p>
-<div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp"></span>
 <span class="kt">ssize_t</span> <span class="nf">recvmsg</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">msghdr</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
 <span class="kt">ssize_t</span> <span class="nf">sendmsg</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">msghdr</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
 <span class="c1">//返回：成功返回读入/写出的字节数，出错为-1</span>
@@ -160,7 +157,7 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 
 
 <p>其中函数的大部分参数封装到一个msghdr结构中，如下所示。</p>
-<div class="highlight"><pre>struct msghdr{
+<div class="highlight"><pre><span></span>struct msghdr{
     void          *msg_name;       /*protocol address*/
     socklen_t     msg_namelen;     /*size of protocol address*/
     struct iovec  *msg_iovlen;     /*scatter/gather array*/
@@ -175,22 +172,22 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 
     </div>
         </div>
-
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
-
+            
                 <li><a href="../../../../archives.html">Archives</a>
                 <li><a href="../../../../tags.html">Tags</a>
 
 
 
-                <li><a href="http://localhost:8005/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
-                <li><a href="http://localhost:8005/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -198,22 +195,24 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
+                
                 <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
                 <li><a href="../../../../category/tech.html">Tech</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
+            
                 <li><a href="http://nsq.io/">NSQ</a></li>
                 <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
@@ -225,25 +224,27 @@ bind(sockfd, (struct sockaddr *)&amp;serv, sizeof(serv));
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>     </div>     </div> 
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
-<p><a href="../../../..">Milestone</a> &copy; subond 2016</p>
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="../../../../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>
