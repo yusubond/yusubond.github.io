@@ -19,7 +19,7 @@ Tags: about me
 <p><font size="4"><b>科研项目经历</b></font></p>
 <hr size="3px" color="#000000"/>
 <table width="600" height="30" algin="left">
-<tr><td><b>2016.09-2017.09</b></td><td><b>基于OpenStack虚拟平台的业务链管理和服务编排</b></td></tr>
+<tr><td><b>2016.09-2017.09</b></td><td algin="left"><b>基于OpenStack虚拟平台的业务链管理和服务编排</b></td></tr>
 </table>
 <ul>
   <li>系统环境：Ubuntu, 编程语言：Shell脚本</li>
@@ -28,7 +28,7 @@ Tags: about me
   <li>完成基于Juju(一种业务编排工具)的核心网业务编排管理，实现终端设备的网络访问演示</li>
 </ul>
 <table width="600" height="30" algin="left">
-<tr><td><b>2016.03-2016.09</b></td><td><b>基于软件定义网络的异构网络融合平台设计与搭建</b></td></tr>
+<tr><td><b>2016.03-2016.09</b></td><td algin="left"><b>基于软件定义网络的异构网络融合平台设计与搭建</b></td></tr>
 </table>
 <ul>
   <li>系统环境：Ubuntu, 编程语言：Linux/C++，Shell脚本</li>
@@ -37,7 +37,7 @@ Tags: about me
   <li>终端设备的双网桥结构设计，保证外部IP地址的一致性，从而实现业务不中断</li>
 </ul>
 <table width="600" height="30" algin="left">
-<tr algin="left"><td><b>2015.09-2016.03</b></td><td><b>基于SDN的核心网系统搭建与验证</b></td></tr>
+<tr><td><b>2015.09-2016.03</b></td><td algin="left"><b>基于SDN的核心网系统搭建与验证</b></td></tr>
 </table>
 <ul>
   <li>系统环境：Ubuntu, 编程语言：Linux/C++，Shell脚本</li>
