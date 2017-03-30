@@ -1,4 +1,4 @@
-Title: Ubuntu系统中彻底删除Mysql，并重新安装
+Title: 工作中遇到的小技巧
 Date: 2016-07-12
 Category: Tips
 Tags: tools
