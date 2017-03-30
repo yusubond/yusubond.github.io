@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>Milestone</title>
+    <title>Milestone - Tips</title>
     <meta name="description" content="">
-    <meta name="author" content="Yu Bangchao">
+    <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="/theme/html5.js"></script>
+    <script src="../theme/html5.js"></script>
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="/theme/bootstrap.min.css" rel="stylesheet">
-    <link href="/theme/bootstrap.min.responsive.css" rel="stylesheet">
-    <link href="/theme/local.css" rel="stylesheet">
-    <link href="/theme/pygments.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
 
 </head>
 
@@ -38,13 +40,11 @@
 
         <div class="nav-collapse">
         <ul class="nav">
-          <li><a href="/author/subond.html">About me</a></li>
+            
+            <li><a href="../pages/about-me.html">About Me</a></li>
         </ul>
-        <form class="navbar-search pull-right" action="/search.html">
-          <input  type="text" class="search-query" placeholder="Search" name="q" id="s">
-        </form>
         </div>
-
+        
     </div>
     </div>
 </div>
@@ -54,181 +54,48 @@
     <div class="row">
 
         <div class="span9">
+        
+
+        
+
+
     <div class='article'>
         <div class="content-title">
-            <h1>Tips</h1>
-2016-06-15
+            <a href="../pages/2016/07/12/tip-tools.html"><h1>Ubuntu系统中彻底删除Mysql，并重新安装</h1></a>
+2016-07-12
 
-by <a class="url fn" href="/author/subond.html">subond</a>
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
 
 
-
+ 
         </div>
-        <div>
-          <h2>linux指令</h2>
-          <p>linux指令学习手记<a href="/category/linux-zhi-ling.html">linux命令</a></p>
-          <ol type="1">
-            <li><h3>C编程</h3></li>
-              <p><b>问题#1</b>:头文件中全局函数多次引用出现重定义问题</p>
-              <p><b>解决方法：</b><br/>方法1：不要在头文件中定义函数，而将声明和实现分别写在.h和.cpp中<br/>方法2：.h中实现的函数加上static</p>
-              <p><b>问题#2</b>:线程编程和连接数学库</p>
-              <p><b>解决方法：</b><br/>线程编程中需要指定参数-pthread；链接数学库需要-lm</p>
-
-            <li><h3>Java语法：import</h3></li>
-              <p>import:导入包中的类，语法如下：</p>
-              <pre>import package1.package2.classname;</pre>
-              <p>package为包名，classname为类名。例如：</p>
-              <pre>import java.util.Date;     //导入java.util包下的Date类<br/>import java.swing.*;       //导入java.swing包下的所有类</pre>
-              <p><b>注意</b>:import只能导入包所包含的类，而不能导入包。</p>
-
-            <li><h3>oai-hss配置</h3></li>
-              <p>修改hss.conf的配置文件中的用户名及密码：(hssadmin+admin)or(root+linux);<br/>首次运行，需执行<pre>./run_hss --install-hss-files --import-db oai_db.sql</pre></p>
-
-              <li><h3>linux系统下快速切换目录</h3></li>
-              <p>作者<a href="http://kodango.com/">@团子的小窝</a>开发了一个可以快速目录切换工具mark-directory。工具很好用，容易上手，值得推荐。</p>
-              <p>文章原文地址：<a href="http://kodango.com/quick-way-to-change-directory-from-the-cmdline" target="_blank">mark-directory:快速目录切换工具</a></p>
-              <p>安装方法：</p>
-<pre>
-git clone https://github.com/dangoakachan/mark-directory
-cd mark-directory
-sh install_markrc.sh
-source ~/.markrc
-</pre>
-
-            <li><h3>Atom添加Git Plus插件</h3></li>
-              <p>Git Plus插件可实现在Atom编辑器里做git things，而不用切换至terminal。<br/><b>注意</b>：本文基于ubuntu环境系统。安装步骤如下：</p>
-              <ul>
-                <li>配置<code>user.name</code>和<code>user.email</code>比较简单不做介绍。</li>
-                <li>生成新的SSH Key，并添加到ssh-agent。可参考<a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/">Git Help</a></li>
-                <br>验证是否添加成功可以在终端执行<code>ssh -T git@github.com</code>进行查看。</li>
-                <li>安装Git Plus package。在Atom->Settings,install项里面，搜索git-plus，安装即可。</li>
-                <li>安装完成后，即可在Packages->Git Plus里面使用相应的git指令，亦或使用Ctrl-Shift-H快捷键，做一些git things。</li>
-              </ul>
-              <p>原文地址：<a href="https://atom.io/packages/git-plus">git-plus</a></p>
-              <p>在这个过程中可能遇到的问题及解决方法，如下所示：</p>
-              <p><h4>问题１：执行git push后，报错：fatal: could not read Username for 'https://github.com': Device not configured</h4></p>
-              <p>原因就是不能识别远端的用户名，解决方法就是重新设置远程地址即可。<code>git remote set-url origin git@github.com:{yourname}/{your_repo_name}.git</code></p>
-              <p>另外在Git 2.0中push有两种模式可选matching和simple。matching模式是提交名字一样的分支，所以可能的结果就是把其他分支的代码一起提交了，而这可能不是你想要的。而simple是push当前分支的代码。<br/>
-              其设置命令如下:<br/><code>git config --global push.default simple</code>or<code>git config --global push.default matching</code></p>
-            <li><h3>Linux系统4G上网卡的使用配置</h3></li>
-              <p>1、Linux系统下通过修改内核设置usbserial模式</p>
-              <p>2、利用usb_modeswitch工具切换usb工作模式，其配置文件为/etc/<a href="./tipsdir/usb_modeswitch.conf">usb_modeswitch.conf</a></p>
-              <p>3、利用wvdial工具配置上网卡参数，其配置文件为/etc/<a href="./tipsdir/wvdial.conf">wvdial.conf</a></p>
-              <p>4、启用上网卡</p>
-<pre>
-sudo insmod /lib/modules/$(uname -r)/kernel/drivers/usb/serial/usbserial.ko
-sudo usb_modeswitch -W -c /etc/usb_modeswitch.conf
-sudo wvdialconf /etc/wvdial.conf
-sudo wvdial</pre>
-
-            <li><h3>Ubuntu系统更新源</h3></li>
-              <pre>
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak #备份
-sudo vim /etc/apt/sources.list #修改
-sudo apt-get update #更新列表</pre>
-              <p>阿里云源</p>
-              <pre>
-deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse</pre>
-            <p>电子科大源</p>
-            <pre>
-deb http://ubuntu.uestc.edu.cn/ubuntu/ precise main restricted universe multiverse
-deb http://ubuntu.uestc.edu.cn/ubuntu/ precise-backports main restricted universe multiverse
-deb http://ubuntu.uestc.edu.cn/ubuntu/ precise-proposed main restricted universe multiverse
-deb http://ubuntu.uestc.edu.cn/ubuntu/ precise-security main restricted universe multiverse
-deb http://ubuntu.uestc.edu.cn/ubuntu/ precise-updates main restricted universe multiverse
-deb-src http://ubuntu.uestc.edu.cn/ubuntu/ precise main restricted universe multiverse
-deb-src http://ubuntu.uestc.edu.cn/ubuntu/ precise-backports main restricted universe multiverse
-deb-src http://ubuntu.uestc.edu.cn/ubuntu/ precise-proposed main restricted universe multiverse
-deb-src http://ubuntu.uestc.edu.cn/ubuntu/ precise-security main restricted universe multiverse
-deb-src http://ubuntu.uestc.edu.cn/ubuntu/ precise-updates main restricted universe multiverse</pre>
-            <p>清华大学源</p>
-            <pre>
-deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty main restricted universe multiverse
-deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
-deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
-deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
-deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
-deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty main restricted universe multiverse
-deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
-deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
-deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
-deb-src http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
-
-IPv4-Only 地址
-deb http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty main restricted universe multiverse
-deb http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
-deb http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
-deb http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
-deb http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
-deb-src http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty main restricted universe multiverse
-deb-src http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-security main restricted universe multiverse
-deb-src http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main restricted universe multiverse
-deb-src http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main restricted universe multiverse
-deb-src http://mirrors.4.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main restricted universe multiverse
-
-IPv6-Only 地址
-deb http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty main multiverse restricted universe
-deb http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main multiverse restricted universe
-deb http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main multiverse restricted universe
-deb http://mirrors.6.tuna.tsinghua.edu.cn//ubuntu/ trusty-security main multiverse restricted universe
-deb http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main multiverse restricted universe
-deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty main multiverse restricted universe
-deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-backports main multiverse restricted universe
-deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-proposed main multiverse restricted universe
-deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-security main multiverse restricted universe
-deb-src http://mirrors.6.tuna.tsinghua.edu.cn/ubuntu/ trusty-updates main multiverse restricted universe</pre>
-          <p>References:<a href="http://chenrongya.blog.163.com/blog/static/8747419620143185103297/">http://chenrongya.blog.163.com/blog/static/8747419620143185103297/</a></p>
-          <hr/>
-
-            <li><h3>安装libgtpnl packe</h3></li>
-            <img src="/category/images/tips/mme_error.png" align="left">
-            <p>在编程oai-mme和oai-spgw时，因为没有libgtpnl头文件而导致编译失败，可自行安装libgtpnl包，如下所示：<br/>从这个地方下载:<br/><pre>git clone git://git.osmocom.org/libgtpnl</pre><br/>
-            创建编译目录：<br/><pre>cd libgtpnl<br/>mkdir build-aux</pre><br/>之后就是安装<br/></p>
-            <pre>
-sudo apt-get install libmnl-dev  #this will be needed when make
-aclocal
-autoreconf --install
-automake --add-missing
-./configure
-make
-sudo make install</pre>
-        <hr/>
-
-        <li><h3>Ubuntu彻底删除Mysql,重装Mysql</h3></li>
-        <p>删除mysql</p>
-<pre>
+        
+        <div><h3>Ubuntu彻底删除Mysql,重装Mysql</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 删除MySQL</span>
 sudo apt-get autoremove --purge mysql-server-5.0
 sudo apt-get remove mysql-server
 sudo apt-get autoremove mysql-server
-sudo apt-get remove mysql-common  #很重要</pre>
-        <p>清理残留数据</p>
-        <pre>dpkg -l | grep ^rc | awk '{print $2}' | sudo xargs dpkg -P</pre>
-        <p>安装mysql</p>
-        <pre>sudo apt-get install mysql-server mysql-client php5-mysql</pre>
-        <p>启动mysql</p>
-        <pre>sudo /etc/init.d/mysql restart</pre>
-        <h4>安装phpmyadmin</h4>
-<pre>
+sudo apt-get remove mysql-common  <span class="c1">#很重要</span>
+
+<span class="c1"># 清理残留数据</span>
+dpkg -l <span class="p">|</span> grep ^rc <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="p">|</span> sudo xargs dpkg -P
+<span class="c1"># 安装mysql</span>
+sudo apt-get install mysql-server mysql-client php5-mysql
+<span class="c1"># 启动mysql</span>
+<span class="c1"># sudo /etc/init.d/mysql restart</span>
+<span class="c1"># 安装phpmyadmin</span>
 sudo apt-get install phpmyadmin
 sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2.conf-available/phpmyadmin.conf
 sudo a2enconf phpmyadmin
-sudo /etc/init.d/apache2 reload</pre>
-        <hr/>
+sudo /etc/init.d/apache2 reload
+</pre></div>
 
-        <li><h3>Ubuntu启动问题以及Grub Rescue修复方法</h3></li>
-          <p>在安装双系统时，或者不小心删除了启动引导项时，启动时系统将进入Grub Rescue模式。在rescue模式下，只用少量的命令可以使用，但是通过一定的操作可以让系统加载正常模块，然后进入正常启动模式，启动后修复grub启动项即可。</p>
-          <p>rescue模式下可使用的命令有：set,ls(列出文件),insmod(插入启动模块),root(设置启动分区),prefix(设置启动路径)。</p>
-          <p>解决方法如下：</p>
 
+<h3>Ubuntu启动问题以及Grub Rescue修复方法</h3>
+<p>在安装双系统时，或者不小心删除了启动引导项时，启动时系统将进入Grub Rescue模式。在rescue模式下，只用少量的命令可以使用，但是通过一定的操作可以让系统加载正常模块，然后进入正常启动模式，启动后修复grub启动项即可。</p>
+<p>rescue模式下可使用的命令有：set,ls(列出文件),insmod(插入启动模块),root(设置启动分区),prefix(设置启动路径)。</p>
+<p>解决方法如下：</p>
 <pre>
 # 查看系统分区情况
 grub rescue>ls
@@ -245,49 +112,47 @@ grub rescue>set prefix=(hd0,msdos3)/grub  #这个路径为之前找到的启动�
 grub rescue>insmod normal
 # 设置完成后，进行启动即可
 grub rescue>normal</pre>
-          <p>经过以上操作，就可以显示丢失的grub菜单，然后进入自己想进入的系统即可。</p>
-          <p><b>注意：如果进行重启，问题依旧存在。所以最关键的一步就是对grub进行修复。</b>进入系统后，使用以下命令对grub进行修复。</p>
+
+<p>经过以上操作，就可以显示丢失的grub菜单，然后进入自己想进入的系统即可。</p>
+<p><strong>注意</strong>：如果进行重启，问题依旧存在。所以最关键的一步就是对grub进行修复。</b>进入系统后，使用以下命令对grub进行修复。</p>
 <pre>
 sudo update-grub
 sudo grub-install /dev/sda
 # sda是磁盘号码，不是分区号码</pre>
-          <p>grub修复成功后，重启测试即可。<i>说明一下，grub修复成功后，其启动项是由当前系统去引导另一系统启动。</i>你也可以进入另一系统进行grub修复，修改启动引导顺序，或者修改文件/etc/default/grub设定默认启动项(GRUB_DEFAULT从0开始计算)。</p>
 
-
-          </ol>
-        </div>
-
-        <hr>
-
-        <h2>Comments</h2>
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'subond';
-    var disqus_title = 'My super title';
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<p>grub修复成功后，重启测试即可。<em>说明一下，grub修复成功后，其启动项是由当前系统去引导另一系统启动。</em>你也可以进入另一系统进行grub修复，修改启动引导顺序，或者修改文件/etc/default/grub设定默认启动项(GRUB_DEFAULT从0开始计算)。</p></div>
+        <hr />
     </div>
-        </div>
+		
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
+    <li class="active"><a href="../category/tips.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+        
         <div class="span3">
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Site
                 </li>
+            
+                <li><a href="../archives.html">Archives</a>
+                <li><a href="../tags.html">Tags</a>
 
-                <li><a href="/archives.html">Archives</a>
-                <li><a href="/tags.html">Tags</a>
 
 
-
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
 
             </ul>
             </div>
@@ -295,29 +160,29 @@ sudo grub-install /dev/sda
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Categories
                 </li>
-
-                <li><a href="/category/life.html">Life</a></li>
-                <li><a href="/category/tech.html">Tech</a></li>
-                <li><a href="/category/note.html">Note</a></li>
-                <li><a href="/category/tips.html">Tips</a></li>
-
+                
+                <li><a href="../category/life.html">Life</a></li>
+                <li><a href="../category/note.html">Note</a></li>
+                <li><a href="../category/read.html">Read</a></li>
+                <li><a href="../category/tech.html">Tech</a></li>
+                <li><a href="../category/tips.html">Tips</a></li>
+                   
             </ul>
             </div>
 
 
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Links
                 </li>
-
-                <li><a href="http://www.opensource5g.org">OpenSource5G</a></li>
-                <li><a href="https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/home">OpenAirInterface5g</a></li>
+            
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
-                <li><a href="http://www.sdnap.com/">SDNAP</a></li>
                 <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
             </ul>
             </div>
@@ -326,26 +191,27 @@ sudo grub-install /dev/sda
             <div class="social">
             <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
             <ul class="nav nav-list">
-                <li class="nav-header">
+                <li class="nav-header"> 
                 Social
                 </li>
-
+           
                 <li><a href="https://github.com/yusubond">Github</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
             </ul>
             </div>
             </div>
 
-        </div>
-    </div>     </div>
+        </div>  
+    </div>     </div> 
 <footer>
 <br />
-<p><a href="http://www.subond.com/">Milestone</a> &copy; Yu Bangchao 2016</p>
+<p><a href="..">Milestone</a> &copy; subond 2016</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="/theme/bootstrap-collapse.js"></script>
-
+<script src="../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
 </body>
 </html>

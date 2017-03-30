@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - 机器学习之Weka学习-Evaluation类介绍</title>
+    <title>Milestone - Ubuntu系统中彻底删除Mysql，并重新安装</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,8 +56,8 @@
         <div class="span9">
     <div class='article'>
         <div class="content-title">
-            <h1>机器学习之Weka学习-Evaluation类介绍</h1>
-2016-07-03
+            <h1>Ubuntu系统中彻底删除Mysql，并重新安装</h1>
+2016-07-12
 
 by <a class="url fn" href="../../../../author/subond.html">subond</a>
  
@@ -65,39 +65,56 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 
         </div>
 	
-        <div><h2>1.Evalution类介绍</h2>
-<p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
-<div class="highlight"><pre><span></span>public class　Evaluation
-extends java.lang.Object
-implemensts java.io.Serializable, Summarizable, RevisionHandler
+        <div><h3>Ubuntu彻底删除Mysql,重装Mysql</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 删除MySQL</span>
+sudo apt-get autoremove --purge mysql-server-5.0
+sudo apt-get remove mysql-server
+sudo apt-get autoremove mysql-server
+sudo apt-get remove mysql-common  <span class="c1">#很重要</span>
+
+<span class="c1"># 清理残留数据</span>
+dpkg -l <span class="p">|</span> grep ^rc <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="p">|</span> sudo xargs dpkg -P
+<span class="c1"># 安装mysql</span>
+sudo apt-get install mysql-server mysql-client php5-mysql
+<span class="c1"># 启动mysql</span>
+<span class="c1"># sudo /etc/init.d/mysql restart</span>
+<span class="c1"># 安装phpmyadmin</span>
+sudo apt-get install phpmyadmin
+sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2.conf-available/phpmyadmin.conf
+sudo a2enconf phpmyadmin
+sudo /etc/init.d/apache2 reload
 </pre></div>
 
 
-<h2>2.构造函数</h2>
-<p>Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：</p>
-<div class="highlight"><pre><span></span>Evaluation eval = new Evaluation(data)
-</pre></div>
+<h3>Ubuntu启动问题以及Grub Rescue修复方法</h3>
+<p>在安装双系统时，或者不小心删除了启动引导项时，启动时系统将进入Grub Rescue模式。在rescue模式下，只用少量的命令可以使用，但是通过一定的操作可以让系统加载正常模块，然后进入正常启动模式，启动后修复grub启动项即可。</p>
+<p>rescue模式下可使用的命令有：set,ls(列出文件),insmod(插入启动模块),root(设置启动分区),prefix(设置启动路径)。</p>
+<p>解决方法如下：</p>
+<pre>
+# 查看系统分区情况
+grub rescue>ls
+# 罗列出所有的磁盘分区信息，比如说：
+(hd0,msdos6) (hd0,msdos5) (hd0,msdos4) (hd0,msdos3)(hd0,msdos2)
+# 查找曾经安装系统的磁盘分区，找到相应的grub
+grub rescue>ls (hd0,X)/        # 查看X磁盘分区/根路径的文件信息
+grub rescue>ls (hd0,X)/boot    # 查看X磁盘分区/boot路径的文件信息
+grub rescue>ls (hd0,X)/grub    # 查看X磁盘分区/grub路径的文件信息
+# 假设找的(hd0,msdos3)时，显示了文件信息，则表明系统安装在这个分区，并记住相应的grub路径
+# 接下来，设置系统的启动项，调用如下命令
+grub rescue>set root=(hd0,msdos3)
+grub rescue>set prefix=(hd0,msdos3)/grub  #这个路径为之前找到的启动项路径
+grub rescue>insmod normal
+# 设置完成后，进行启动即可
+grub rescue>normal</pre>
 
+<p>经过以上操作，就可以显示丢失的grub菜单，然后进入自己想进入的系统即可。</p>
+<p><strong>注意</strong>：如果进行重启，问题依旧存在。所以最关键的一步就是对grub进行修复。</b>进入系统后，使用以下命令对grub进行修复。</p>
+<pre>
+sudo update-grub
+sudo grub-install /dev/sda
+# sda是磁盘号码，不是分区号码</pre>
 
-<p>data是训练集的数据，用来获取一些信息，并不用来评价分类器。</p>
-<p><img alt="evaluation-weka" src="http://on64c9tla.bkt.clouddn.com/2016C/Evaluation.jpg"></p>
-<h2>3.主要成员变量</h2>
-<ul>
-<li>evaluationModel(Classifier classifier, Instances data)</li>
-</ul>
-<p>如果训练集和测试集是分开的，可以使用evaluationModel方法，方法中的参数为：第一个参数是训练过的分类器，第二个参数是测试集的数据。</p>
-<ul>
-<li>crossValidationModel()</li>
-</ul>
-<p>crossValidationModel方法的四个参数为：第一个参数是分类器，第二个参数是测试集的数据，第三个参数是交叉检验的次数（比较常见的是10），第四个参数是一个随机数对象。</p>
-<h2>4.应用示例</h2>
-<p>下面这个小程序用同一数据测试了两类方法的评价结果，源码地址如下<a href="https://github.com/yusubond/Machine-Learning/blob/master/Evaluation/Demo_evaluation.java">Demo</a></p>
-<p>结果如下：</p>
-<p><img alt="result-evaluationModel" src="http://on64c9tla.bkt.clouddn.com/2016C/evaluationModel.jpg"></p>
-<p><img alt="result-crossvalidateModel" src="http://on64c9tla.bkt.clouddn.com/2016C/crossvalidateModel.jpg"></p>
-<p><strong>参考资料</strong></p>
-<p>官网资料：<a href="http://10.103.14.28/weka-3-8-0/doc/">Instances类</a><br>
-Weka开发[3]-Evaluation类：<a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/">http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/</a></p></div>
+<p>grub修复成功后，重启测试即可。<em>说明一下，grub修复成功后，其启动项是由当前系统去引导另一系统启动。</em>你也可以进入另一系统进行grub修复，修改启动引导顺序，或者修改文件/etc/default/grub设定默认启动项(GRUB_DEFAULT从0开始计算)。</p></div>
 	
         <hr>
 

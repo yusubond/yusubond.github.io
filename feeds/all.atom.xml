@@ -395,7 +395,70 @@ juju remove-machine
 &lt;h2&gt;关于人生&lt;/h2&gt;
 &lt;p&gt;人生的话题好大，可是细说起来也就那么点。每个人都有自己的选择，都有需要自己独自去面对的时刻，为了不让我们孤单，才拥有了家人，朋友。人生更像是一场修行，能帮到你的也只有 &lt;strong&gt;我们自己&lt;/strong&gt;。善待生命中遇到的每一个人，他们看似无关，却与你有着千丝万缕的牵连，来到你的身边，请珍惜。&lt;/p&gt;
 &lt;p&gt;剧中的正峰哥哥也是一个神奇的存在，说实话全剧95%的剧情中我都觉着这是一个多余，直到结尾才发现，这是导演的最后一步棋。正峰哥哥用了七年考大学，用了七年考司法考试，直到遇见真爱，才明白：活着，要做自己想做的事情。最终选择了做美食。&lt;strong&gt;一个人能够发现自己的擅长，并将其培养成自己的工作或者一生的事业，是多么的不容易！&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;人生最难的在于找到自己。&lt;/p&gt;</content><category term="Life"></category></entry><entry><title>机器学习之Weka学习-Evaluation类介绍</title><link href="www.subond.com/pages/2016/07/03/machinelearning-about-weka-evaluation.html" rel="alternate"></link><published>2016-07-03T00:00:00+08:00</published><updated>2016-07-03T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-07-03:www.subond.com/pages/2016/07/03/machinelearning-about-weka-evaluation.html</id><summary type="html">&lt;p&gt;Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.Evalution类介绍&lt;/h2&gt;
+&lt;p&gt;人生最难的在于找到自己。&lt;/p&gt;</content><category term="Life"></category></entry><entry><title>Ubuntu系统中彻底删除Mysql，并重新安装</title><link href="www.subond.com/pages/2016/07/12/tip-tools.html" rel="alternate"></link><published>2016-07-12T00:00:00+08:00</published><updated>2016-07-12T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-07-12:www.subond.com/pages/2016/07/12/tip-tools.html</id><summary type="html">&lt;h3&gt;Ubuntu彻底删除Mysql,重装Mysql&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 删除MySQL&lt;/span&gt;
+sudo apt-get autoremove --purge mysql-server-5.0
+sudo apt-get remove mysql-server
+sudo apt-get autoremove mysql-server
+sudo apt-get remove mysql-common  &lt;span class="c1"&gt;#很重要&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 清理残留数据&lt;/span&gt;
+dpkg -l &lt;span class="p"&gt;|&lt;/span&gt; grep ^rc &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo xargs dpkg -P
+&lt;span class="c1"&gt;# 安装mysql&lt;/span&gt;
+sudo apt-get install mysql-server mysql-client php5-mysql
+&lt;span class="c1"&gt;# 启动mysql&lt;/span&gt;
+&lt;span class="c1"&gt;# sudo /etc/init.d/mysql restart&lt;/span&gt;
+&lt;span class="c1"&gt;# 安装phpmyadmin&lt;/span&gt;
+sudo …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;h3&gt;Ubuntu彻底删除Mysql,重装Mysql&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 删除MySQL&lt;/span&gt;
+sudo apt-get autoremove --purge mysql-server-5.0
+sudo apt-get remove mysql-server
+sudo apt-get autoremove mysql-server
+sudo apt-get remove mysql-common  &lt;span class="c1"&gt;#很重要&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 清理残留数据&lt;/span&gt;
+dpkg -l &lt;span class="p"&gt;|&lt;/span&gt; grep ^rc &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo xargs dpkg -P
+&lt;span class="c1"&gt;# 安装mysql&lt;/span&gt;
+sudo apt-get install mysql-server mysql-client php5-mysql
+&lt;span class="c1"&gt;# 启动mysql&lt;/span&gt;
+&lt;span class="c1"&gt;# sudo /etc/init.d/mysql restart&lt;/span&gt;
+&lt;span class="c1"&gt;# 安装phpmyadmin&lt;/span&gt;
+sudo apt-get install phpmyadmin
+sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2.conf-available/phpmyadmin.conf
+sudo a2enconf phpmyadmin
+sudo /etc/init.d/apache2 reload
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Ubuntu启动问题以及Grub Rescue修复方法&lt;/h3&gt;
+&lt;p&gt;在安装双系统时，或者不小心删除了启动引导项时，启动时系统将进入Grub Rescue模式。在rescue模式下，只用少量的命令可以使用，但是通过一定的操作可以让系统加载正常模块，然后进入正常启动模式，启动后修复grub启动项即可。&lt;/p&gt;
+&lt;p&gt;rescue模式下可使用的命令有：set,ls(列出文件),insmod(插入启动模块),root(设置启动分区),prefix(设置启动路径)。&lt;/p&gt;
+&lt;p&gt;解决方法如下：&lt;/p&gt;
+&lt;pre&gt;
+# 查看系统分区情况
+grub rescue&gt;ls
+# 罗列出所有的磁盘分区信息，比如说：
+(hd0,msdos6) (hd0,msdos5) (hd0,msdos4) (hd0,msdos3)(hd0,msdos2)
+# 查找曾经安装系统的磁盘分区，找到相应的grub
+grub rescue&gt;ls (hd0,X)/        # 查看X磁盘分区/根路径的文件信息
+grub rescue&gt;ls (hd0,X)/boot    # 查看X磁盘分区/boot路径的文件信息
+grub rescue&gt;ls (hd0,X)/grub    # 查看X磁盘分区/grub路径的文件信息
+# 假设找的(hd0,msdos3)时，显示了文件信息，则表明系统安装在这个分区，并记住相应的grub路径
+# 接下来，设置系统的启动项，调用如下命令
+grub rescue&gt;set root=(hd0,msdos3)
+grub rescue&gt;set prefix=(hd0,msdos3)/grub  #这个路径为之前找到的启动项路径
+grub rescue&gt;insmod normal
+# 设置完成后，进行启动即可
+grub rescue&gt;normal&lt;/pre&gt;
+
+&lt;p&gt;经过以上操作，就可以显示丢失的grub菜单，然后进入自己想进入的系统即可。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：如果进行重启，问题依旧存在。所以最关键的一步就是对grub进行修复。&lt;/b&gt;进入系统后，使用以下命令对grub进行修复。&lt;/p&gt;
+&lt;pre&gt;
+sudo update-grub
+sudo grub-install /dev/sda
+# sda是磁盘号码，不是分区号码&lt;/pre&gt;
+
+&lt;p&gt;grub修复成功后，重启测试即可。&lt;em&gt;说明一下，grub修复成功后，其启动项是由当前系统去引导另一系统启动。&lt;/em&gt;你也可以进入另一系统进行grub修复，修改启动引导顺序，或者修改文件/etc/default/grub设定默认启动项(GRUB_DEFAULT从0开始计算)。&lt;/p&gt;</content><category term="tools"></category></entry><entry><title>机器学习之Weka学习-Evaluation类介绍</title><link href="www.subond.com/pages/2016/07/03/machinelearning-about-weka-evaluation.html" rel="alternate"></link><published>2016-07-03T00:00:00+08:00</published><updated>2016-07-03T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-07-03:www.subond.com/pages/2016/07/03/machinelearning-about-weka-evaluation.html</id><summary type="html">&lt;p&gt;Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.Evalution类介绍&lt;/h2&gt;
 &lt;p&gt;Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;public class　Evaluation
 extends java.lang.Object
