@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>Milestone - About Me</title>
+    <title>Milestone - subond</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,92 +55,255 @@
 
         <div class="span9">
         
-<section id="content" class="body">    
-    <h2 class="content-title">
-        About Me
-    </h2>
-    <h2>于邦超</h2>
-<table width="600" algin="left">
-    <tr height="30"><td>Email:&nbsp;yubc0321@gmail.com</td><td>Github:<a href="https://github.com/yusubond">&nbsp;github.com/yusubond</a></td></tr>
-    <tr height="30"><td>Addr:&nbsp;北京市海淀区西土城路10号北京邮电大学</td><td>Blog:<a href="http://www.subond.com">&nbsp;www.subond.com</a></td></tr>
-</table>
 
-<p><hr size="3px" color="#00BFF"/>
-<p><font size="4"><b>教育背景</b></font></p>
-<hr size="3px" color="#000000"/>
-<table width="800" algin="left">
-  <tr height="30"><td>2015.09-2018.04(预计)</td><td>北京邮电大学</td><td>电子与通信工程</td><td>硕士研究生</td></tr>
-  <tr height="30"><td>2011.09-2015.06</td><td>北京化工大学</td><td>通信工程</td><td>本科</td></tr>
-</table>
-<p><font size="4"><b>科研项目经历</b></font></p>
-<hr size="3px" color="#000000"/>
-<table width="600" height="30" algin="left">
-<tr><td><b>2016.09-2017.09</b></td><td algin="left"><b>基于OpenStack虚拟平台的业务链管理和服务编排</b></td></tr>
-</table>
+        
+
+
+    <div class='article'>
+        <div class="content-title">
+            <a href="../pages/2017/04/09/dynamo-distributed-systems.html"><h1>Dynamo分布式键值系统</h1></a>
+2017-04-09
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ 
+        </div>
+        
+        <div><p>分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 <strong>哈希分布算法</strong>。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。</p>
+<h3>Amazon Dynamo</h3>
+<p>Dynamo以简单的键值方式存储数据，且存储的是数据的原始形式，不解析数据的内容。以下是Dynamo设计中面临的问题及解决方案，接下来依次查看。</p>
+<p><img alt="Dynamo设计" src="http://on64c9tla.bkt.clouddn.com/Comput/dynamo.png"></p>
+<h4>数据分布</h4>
+<p>改进的一致性哈希算法(也称为一致性哈希表，简称DHT)的思想是：每一个物理节点根据其性能的差异分配多个token，<strong>每个token对应一个“虚拟节点”</strong>。每个虚拟节点的处理能力相当，并 <strong>随机分布</strong> 在哈希空间中，存储时，数据根据哈希值落在某个虚拟节点的负责的区域中，然后被存储在该虚拟节点对应的物理节点上。</p>
+<p><img alt="改进的哈希一致性算法" src="http://on64c9tla.bkt.clouddn.com/Comput/dynamo_hash.png"></p>
+<p>为了找到数据所属的节点，Dynamo系统中 <strong>每个节点维护整个集群的信息</strong>，客户端也缓存整个集群的信息。与此同时，为了保证每个节点缓存是Dynamo系统中最新的集群信息，<strong>所有节点每隔固定时间</strong> 通过 <strong>Gossip协议</strong> 从其他节点中任意一个与之通信的节点。如果连接成功，<strong>双方交换各自保存的集群信息</strong>。</p>
+<p>【补充】：Gossip协议</p>
+<p>Gossip协议用于P2P系统中自洽的节点协调对整个集群的认识，比如集群的节点，负载情况等。一个简单的例子是这样的(集群中节点A和节点B交换对集群的认识)。</p>
+<p>1）A告诉B其管理的所有节点的版本（包括Down状态和Up状态的节点）<br>
+2）B告诉A哪些版本比较旧，哪些版本它有最新的，然后把那些最新的版本发给A（处于Down状态下的版本由于没有更新，所有不会被关注）<br>
+3）A将B中比较旧的版本发给B，同时将B发来的最新节点信息做本地更新<br>
+4）B收到A发来的最新节点信息，然后做本地更新  </p>
+<h4>一致性和复制</h4>
+<p>Dynamo系统中对副本的管理思想是：假设数据存储N份，DHT定位到数据存储所属的节点K，则将数据存储在节点K, K+1, ..., K+N-1。如果第k+i(0&lt;=i&lt;=N-1)台机器，则往后找一台机器K+N临时替代。如果K+i台机器重启，临时替代的机器K+N能够通过Gossip协议发现，并把临时数据归还K+i，这个过程称为“<strong>消息回传</strong>”。</p>
+<p>Dynamo中的NWR机制，其中N表示副本数，R表示成功读取操作的最少节点数，W表示成功写操作的最少节点数。只要满足W+R&gt;N，可以保证当存在不超过一台机器故障时，至少能够读到一份有效的数据。由于每个节点存储的集群信息有所不同，可能出现同一条记录被多个节点同时更新，但不能多个节点之间的更新顺序。因此，Dynmao利用 <strong>向量时钟</strong> 技术了解决冲突。</p>
+<p>向量时钟机制如下：</p>
+<p>[nodes, counter]：其中nodes表示节点，counter表示计数器，初始为0，节点每次更新操作加1。</p>
+<p><img alt="向量时钟" src="http://on64c9tla.bkt.clouddn.com/Comput/vectorclock.png"></p>
+<h4>容错</h4>
+<p>Dynamo中异常分为两种：临时性异常和永久性异常。Dynamo中的容错机制包括：</p>
+<p>1）<strong>数据回传</strong>。<br>
+2）<strong>Merkle树同步</strong>。当出现永久性异常时，利用Merkle树机制从其他副本进行数据同步。其原理是，每个非叶子节点对应多个文件(为其所有节点值组合以后的哈希值)；叶子节点对应单个数据文件(为文件内容的哈希值)。因此，<strong>任何一个数据文件不匹配都将导致从该文件对应的叶子节点到根节点的所有节点值不同</strong>。每台机器对每一段范围的数据维护一棵Merkle树，机器同步时首先传输Merkle树信息，并且只需要同步从根到叶子的所有节点值均不同的文件。<br>
+3）<strong>读取故障</strong>。</p>
+<h4>负载均衡</h4>
+<p><strong>Dynamo的负载均衡取决于如何给每个机器分配虚拟节点号，即token</strong>。一般有两种方法，如下所述。</p>
+<p>第一种，<strong>随机分配</strong>。每台物理节点加入时根据其配置情况随机分配S个Token。优缺点是：可控性差，新节点加入/删除时，集群中的原有节点都需要扫描所有的数据从而找出属于新节点的数据，Merkle树也需要全部更新。</p>
+<p>第二种，<strong>数据范围等分+随机分配</strong>。其思想是将数据额哈希空间等分为Q = N x S份(N = 机器数，S = 每台机器的虚拟节点数)，然后每台机器随机选取S个分割点作为Token。优缺点：每台机器都可以对属于每个范围的数据维护一棵逻辑上的Merkle树，新节点加入/删除，只需要扫描部分数据进行同步，并更新这部分数据对应的逻辑Merkle树。</p>
+<h4>读写流程</h4>
+<p>Dynamo的读写流程如下图所示。</p>
+<p><img alt="写操作流程" src="http://on64c9tla.bkt.clouddn.com/Comput/dynamowrite.png"></p>
+<p>1) 根据一致性哈希算法计算出每个副本所在的存储节点，然后选取一个副本作为协调者。</p>
+<p>2）协调者 <strong>并发</strong> 地往所有其他副本发送写请求，并将数据写入本地；如果发送写请求失败，协调者将它加入重试列表并不断重试。</p>
+<p>3）当副本接收到数据后，成功写入本地，并回复协调者</p>
+<p>4）等到W-1(协调者写入成功)个副本回复写入成功后，协调者恢复客户端写入成功；并继续等待或重试，直到所有副本写入成功。</p>
+<p><img alt="读操作流程" src="http://on64c9tla.bkt.clouddn.com/Comput/dynamoread.png"></p>
+<p>1）根据一致性哈希算法计算出每个副本所在的存储节点，然后选取一个副本作为协调者</p>
+<p>2）协调者根据负载策略选择R个副本，<strong>并发</strong> 地向它们发送请求，并读取本地数据。</p>
+<p>3）每个副本读取本地数据，回复协调者读取结果。</p>
+<p>4）等到R-1个副本读取成功后，回复客户端。分两种情况，一种是，R个副本返回的数据一致，则将读取结果回复客户端；另一种是根据 <strong>冲突处理机制</strong> （根据修改的时间戳选择最新数据）合并多个副本的读取结果，然后回复客户端。</p></div>
+        <hr />
+    </div>
+		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/06/gfs-distributed-systems.html"><h2>GFS分布式文件系统</h2></a>
+        <div class= "well small"> 2017-04-06
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>分布式文件系统主要有两个功能：一个是存储文档，图像，视频之类的Blob类数据；一个是作为分布式表格系统的持久化层。分布式文件系统中最著名的就是Google File System(GFS)，因此，本章通过介绍GFS的内部实现机制来学习分布式文件系统的知识与设计。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/06/gfs-distributed-systems.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/03/21/learn-paxos-in-distributed-system.html"><h2>深入理解Paxos算法</h2></a>
+        <div class= "well small"> 2017-03-21
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a>，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。</p> <a class="btn btn-info xsmall" href="../pages/2017/03/21/learn-paxos-in-distributed-system.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/12/03/introduction-about-osm.html"><h2>初识Open Source MANO</h2></a>
+        <div class= "well small"> 2016-12-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Open Source Management and Orchestration (MANO)，简称Open Source MANO,即OSM，是一个开源社区，旨在为NFV提供满足商用NFV网络需求的生产质量(production-quality)的MANO软件堆栈，具有创建商用公开发布信息的模型能力，适用于所有所有人，适用于所有的VNFs(虚拟网络功能)，而且更重要的是，小操作与VIM(Virtual Infrastructure Management,虚拟基础设施管理)无关。OSM与NFV ISG信息模型保持一致，同时能够根据其实施经验提供第一手的反馈。</p> <a class="btn btn-info xsmall" href="../pages/2016/12/03/introduction-about-osm.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/11/15/something-about-reading-and-writing.html"><h2>读书写作那点事儿</h2></a>
+        <div class= "well small"> 2016-11-15
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>知识就是力量，从来都不是一句空话。获取知识的途径有很多，读书无疑是有效的方式之一。那么，有哪些较好的读书路径值得我们参考呢？李笑来老师给出了以下几个方法：1) <strong>泛读，即广泛地阅读</strong>。尤其是开始的时候，应尽得杂一点，漫无目的地读，慢慢地就会发现读书的乐趣，发现自己感兴趣的点，而后就可以着点而入，深入阅读。这是一个广散网，寻找点的过程。2) <strong>学会挑书，形成自己的书单</strong>。总的来说，挑书应该有这样一个原则：能够帮助我们认清现实并思考未来，且具有 <strong>繁殖能力</strong> 的书。能够帮组我们认清现实并有所思考的书多为非虚构类的书，这一类书可以往往能够就某一问题，或某一现象，甚至某个学科做较为深入的分析与探讨，是我们了解当下现实的基础，而书中关于这些问题的讨论有可以启发我们对未来的思考。具有繁殖能力的知识，往往是那些能够激发我们阅读欲望，探索问题解决之道；亦或与我们原有的知识形成冲突，或者形成补充的知识，这是一个不断发现其他点，形成星星之火的过程。3) <strong>建立检索书库，方便日后查询</strong>。选择一款自己喜欢的笔记软件，不断地做好自己的阅读笔记。将阅读过程中发现的亮点和思考，以及相关的书目形成记录。如何做好阅读笔记，这是一个将点连接成线，进而形成一个面的过程。4) <strong>杂读，尽量涉及更多的领域和学科</strong>。想要获得一些意外的收获，杂读就是一个很好的方法。用自己原有的专业知识及系统去接触一个相对陌生的领域和学科，往往可以碰撞出不一样的火花。这是一个发现其他面的过程，并产生面与面交集的过程。</p> <a class="btn btn-info xsmall" href="../pages/2016/11/15/something-about-reading-and-writing.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/11/10/juju-charm-mechanism.html"><h2>云端服务管理工具:Juju</h2></a>
+        <div class= "well small"> 2016-11-10
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p> <a class="btn btn-info xsmall" href="../pages/2016/11/10/juju-charm-mechanism.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/10/07/reply-1988.html"><h2>Reply 1988: 人生是个迷啊</h2></a>
+        <div class= "well small"> 2016-10-07
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>人，之所以为人，是因为可以享受生命的意义，生活的乐趣。这是一篇关于韩剧《请回答1988》的观后感。这部剧发生在韩国首尔一个叫做“双门洞”的胡同，讲述了五家人的故事，细致生动地再现了80年代邻里街坊小市民的生活面貌。<strong>整部剧以生活为主线，贯穿亲情，友情，爱情以及邻里情，细致地刻画了那个永远回不去的青春岁月</strong>。剧中的生活细节做的很足，处处都可以看到编剧和导演的良苦用心。其实，生活无非就是一日三餐，家长里短，却被演员们表现的淋漓尽致，主要集中在以下几个方面。</p> <a class="btn btn-info xsmall" href="../pages/2016/10/07/reply-1988.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/07/12/tip-tools.html"><h2>工作中遇到的小技巧</h2></a>
+        <div class= "well small"> 2016-07-12
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><h3>Ubuntu彻底删除Mysql,重装Mysql</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 删除MySQL</span>
+sudo apt-get autoremove --purge mysql-server-5.0
+sudo apt-get remove mysql-server
+sudo apt-get autoremove mysql-server
+sudo apt-get remove mysql-common  <span class="c1">#很重要</span>
+
+<span class="c1"># 清理残留数据</span>
+dpkg -l <span class="p">|</span> grep ^rc <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="p">|</span> sudo xargs dpkg -P
+<span class="c1"># 安装mysql</span>
+sudo apt-get install mysql-server mysql-client php5-mysql
+<span class="c1"># 启动mysql</span>
+<span class="c1"># sudo /etc/init.d/mysql restart</span>
+<span class="c1"># 安装phpmyadmin</span>
+sudo …</pre></div> <a class="btn btn-info xsmall" href="../pages/2016/07/12/tip-tools.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html"><h2>机器学习之Weka学习-Evaluation类介绍</h2></a>
+        <div class= "well small"> 2016-07-03
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p> <a class="btn btn-info xsmall" href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
+        <div class= "well small"> 2016-06-29
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
 <ul>
-  <li>系统环境：Ubuntu, 编程语言：Shell脚本</li>
-  <li>负责对核心网网元进行虚拟化部署和服务编排，包括利用Charm编写网元生命周期的管理，服务功能链管理与预处理脚本</li>
-  <li>利用hooks脚本文件定义网元交互接口及端口设定，实现虚拟网元的快速部署，批量处理</li>
-  <li>完成基于Juju(一种业务编排工具)的核心网业务编排管理，实现终端设备的网络访问演示</li>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../author/subond.html">1</a></li>
+    <li class=""><a href="../author/subond2.html">2</a></li>
+
+    <li class="next"><a href="../author/subond2.html">Next &rarr;</a></li>
+
 </ul>
-<table width="600" height="30" algin="left">
-<tr><td><b>2016.03-2016.09</b></td><td algin="left"><b>基于软件定义网络的异构网络融合平台设计与搭建</b></td></tr>
-</table>
-<ul>
-  <li>系统环境：Ubuntu, 编程语言：Linux/C++，Shell脚本</li>
-  <li>负责实现蜂窝网侧基站与SDN控制器的网络通信(Socket编程)，主要包括终端附着请求，网络切换命令的接收与转发</li>
-  <li>负责蜂窝网网关的数据分发策略设计，利用Iptables的标签工具实现蜂窝网流量与无线网流量数据分流</li>
-  <li>终端设备的双网桥结构设计，保证外部IP地址的一致性，从而实现业务不中断</li>
-</ul>
-<table width="600" height="30" algin="left">
-<tr><td><b>2015.09-2016.03</b></td><td algin="left"><b>基于SDN的核心网系统搭建与验证</b></td></tr>
-</table>
-<ul>
-  <li>系统环境：Ubuntu, 编程语言：Linux/C++，Shell脚本</li>
-  <li>搭建OAI-LTE核心网，验证UE附着请求，数据转发等</li>
-  <li>完成专利《一种基于SDN的核心网系统及使用方法》</li>
-</ul>
-<p><font size="4"><b>学术成果</b></font><p>
-<hr size="3px" color="#000000"/>
-  <table width="900" height="200" algin="left">
-    <tr><td><b>论文&nbsp;&nbsp;</b></td><td><b>Dynamic Resource Orchestration of Service Function Chaining In Network Function Virtualization</b></td><td><b>5GWN(2017)</b></td></tr>
-    <tr><td>&nbsp;&nbsp;</td><td colspan=2><i><b>Bangchao Yu</b>, Wei Zheng, Xiangming Wen, Zhaoming Lu, Luhan Wang, and Lu Ma</i></td></tr>
-    <tr><td>&nbsp;&nbsp;</td><td><b>An efficient and QoS-aware virtual network resource migration algorithm</b></td><td><b>ICCC(2015)</b></td></tr>
-    <tr><td>&nbsp;&nbsp;</td><td colspan= 2><i>Lu Ma; Zhaoming Lu; <b>Bangchao Yu</b>; Luhan Wang; Xiangming Wen</i></td></tr>
-    <tr><td><b>专利</b></td><td colspan=2><b>一种基于SDN的核心网系统及其使用方法(CN105933246A)</b></td></tr>
-  </table>
-<p><font size="4"><b>专业技能</b></font></p>
-<hr size="3px" color="#000000"/>
-  <ul>
-    <li>熟悉C/C++语言，了解基本的数据类型和算法，了解Shell编程和Linux操作系统</li>
-    <li>熟悉TCP/IP, Git版本控制，有个人仓库及主页，用于技术积累和分享</li>
-    <li>CET-4，英语文档阅读能力良好</li>
-  </ul>
-<p><font size="4"><b>社会实践</b></font></p>
-<hr size="3px" color="#000000"/>
-<table width="600" height="50" algin="left">
-  <tr><td><b>2013.09-2014.06</b></td><td><b>北京化工大学职业生涯规划协会</b></td><td><b>会长</b></td></tr>
-</table>
-  <ul>
-    <li>负责管理协会日程事务，并策划组织各种赛事及活动</li>
-    <li>主持编撰职协期刊《征程》，普及学业、职业规划理念，前后共发行1000多本</li>
-    <li>协助学校就业中心开展“学业·职业规划大赛”，负责赛事流程及选手培训</li>
-    <li>工作中，锻炼了项目策划、组织能力，同时提升了交流沟通能力，团队合作意识和执行力有了显著提高</li>
-  </ul>
-<table width="600" height="50" algin="left">
-  <tr><td><b>2013.07-2013.08</b></td><td><b>浙江·绍兴暑期社会实践团</b></td><td><b>副队长</b></td></tr>
-</table>
-<ul>
-  <li>确定主题，协助队长负责前期的线路策划工作</li>
-  <li>制定整个团队的日程安排，活动中注意保护团员安全</li>
-  <li>活动后进行总结，并负责相关材料的上报工作</li>
-</ul>
-<p><font size="4"><b>兴趣爱好</b></font></p>
-<hr size="3px" color="#000000"/>
-<ul>
-  <li>徒步，爬山，读书等</li>
-</ul></p>
-</section>
+</div>
+ 
+  
         </div>
         
         <div class="span3">

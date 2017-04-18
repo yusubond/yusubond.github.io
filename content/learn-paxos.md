@@ -4,13 +4,13 @@ Category: Tech
 Tags: Algorithm, Distributed Systems
 Slug: learn-paxos-in-distributed-system
 Author: subond
-Summary: Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为:一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了[Paxos Made Simple](http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf)，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
+Summary: Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了[Paxos Made Simple](http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf)，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
 
 ## 1.Paxos算法
 
-Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为:一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了[Paxos Made Simple](http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf)，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
+Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了[Paxos Made Simple](http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf)，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
 
-Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
+Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
 
 ## 2.基本概念
 
