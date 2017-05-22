@@ -2,9 +2,11 @@ Title: Docker集群：服务回滚
 Date: 2017-04-24
 Category: Tech
 Tags: Cloud, Docker
-Slug: docker-swarm-fu-wu-bu-shu
+Slug: docker-swarm-fu-wu-hui-gun
 Author: subond
 Summary:一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
+
+一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
 
 本文目录：
 

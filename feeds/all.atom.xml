@@ -437,7 +437,8 @@ $ docker node demote worker1
 
 &lt;p&gt;&lt;code&gt;docker node promote&lt;/code&gt;和&lt;code&gt;docker node demote&lt;/code&gt;命令是&lt;code&gt;docker node update --role manager&lt;/code&gt;和&lt;code&gt;docker node update --role worker&lt;/code&gt;命令的简化版，两者具有同样的作用。&lt;/p&gt;
 &lt;h4&gt;节点离开&lt;/h4&gt;
-&lt;p&gt;命令&lt;code&gt;docker swarm leave&lt;/code&gt;可以使一个节点离开Swarm集群。当一个节点离开Swarm集群时，该节点的Docker引擎将停止运行Swarm模式，调度器不再将任务分派值该节点。如果该节点是管理节点，移除节点将收到警告信息，可以通过--force参数强制移除。&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：工作原理</title><link href="www.subond.com/pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html" rel="alternate"></link><published>2017-04-26T00:00:00+08:00</published><updated>2017-04-26T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-26:www.subond.com/pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;p&gt;命令&lt;code&gt;docker swarm leave&lt;/code&gt;可以使一个节点离开Swarm集群。当一个节点离开Swarm集群时，该节点的Docker引擎将停止运行Swarm模式，调度器不再将任务分派值该节点。如果该节点是管理节点，移除节点将收到警告信息，可以通过--force参数强制移除。&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：工作原理</title><link href="www.subond.com/pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html" rel="alternate"></link><published>2017-04-26T00:00:00+08:00</published><updated>2017-04-26T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-26:www.subond.com/pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;
+&lt;p&gt;本文目录：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#节点的工作原理"&gt;节点的工作原理&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#服务的工作原理"&gt;服务的工作原理&lt;/a&gt;&lt;/li&gt;
@@ -519,7 +520,8 @@ To add a worker to this swarm, run the following command:
 
 
 &lt;p&gt;每次当新的节点加入Swarm集群时，管理节点向包含随机生成的节点ID颁发证书，用来标识证书通用名(CN)下的节点和组织名(UN)下的角色。节点ID用来标识Swarm集群中节点寿命的密码安全。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="PKI工作原理" src="http://on64c9tla.bkt.clouddn.com/Comput/PKI.png"&gt;&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务回滚</title><link href="www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-24T00:00:00+08:00</published><updated>2017-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-24:www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="PKI工作原理" src="http://on64c9tla.bkt.clouddn.com/Comput/PKI.png"&gt;&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务回滚</title><link href="www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html" rel="alternate"></link><published>2017-04-24T00:00:00+08:00</published><updated>2017-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-24:www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;
+&lt;p&gt;本文目录：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#服务更新与回滚"&gt;服务更新与回滚&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#路由网络"&gt;路由网络&lt;/a&gt;&lt;/li&gt;
@@ -596,84 +598,8 @@ $ docker service create --name dns-cache -p 53:53/tcp -p 53:53/udp dns-cache
 
 # 仅指定UDP端口
 $ docker service create --name dns-cache -p 53:53/udp dns-cache
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务回滚</title><link href="www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-24T00:00:00+08:00</published><updated>2017-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-24:www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="#服务更新与回滚"&gt;服务更新与回滚&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#路由网络"&gt;路由网络&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;服务更新与回滚&lt;/h3&gt;
-&lt;p&gt;Docker Swarm集群管理中支持服务的版本更新及回滚操作，具体演示如下：&lt;/p&gt;
-&lt;p&gt;所使用的系统环境环境如下：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统  &lt;/li&gt;
-&lt;li&gt;节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5)  &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manger节点上
-$ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6
-
-# --update-delay参数配置服务任务或任务集的更新的时延
-# 其格式为T1hT2mT3s，即T1小时T2分钟T3秒
-# 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数
-# 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。
-# 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。
-# 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如：
-# --update-failure-action docker service create
-# --update-failure-action docker service update
-
-# 接下来，我们更新redis的镜像
-$ docker service update --image redis:3.0.7 redis
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;如前所述，默认情况下，更新主要包括以下几个流程：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;停止第一个任务&lt;/li&gt;
-&lt;li&gt;调度器更新已经停止的任务&lt;/li&gt;
-&lt;li&gt;为更新过的任务启动容器&lt;/li&gt;
-&lt;li&gt;若任务更新返回RUNNING状态，则等待设定的时延，并进行下一个任务的更新&lt;/li&gt;
-&lt;li&gt;若任务更新返回FAILED状态，则停止更新&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;更新结束后，我们看到如下状态：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker service ps redis
-ID            NAME         IMAGE        NODE           DESIRED STATE  CURRENT STATE                ERROR  PORTS
-i9c6xvbopko2  redis.1      redis:3.0.7  ubuntu-xenial  Running        Running &lt;span class="m"&gt;5&lt;/span&gt; seconds ago
-mnw258z0j5hg   &lt;span class="se"&gt;\_&lt;/span&gt; redis.1  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown &lt;span class="m"&gt;5&lt;/span&gt; seconds ago
-iu7yjb7nm345  redis.2      redis:3.0.7  ubuntu-xenial  Running        Running &lt;span class="m"&gt;53&lt;/span&gt; seconds ago
-fmgyoq4vladx   &lt;span class="se"&gt;\_&lt;/span&gt; redis.2  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown &lt;span class="m"&gt;54&lt;/span&gt; seconds ago
-zsliph02ycsf  redis.3      redis:3.0.7  ubuntu-xenial  Running        Running about a minute ago
-8j75vwiunh49   &lt;span class="se"&gt;\_&lt;/span&gt; redis.3  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown about a minute ago
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;由此我们可以判断，在服务/任务更新的过程中，实质上是 &lt;strong&gt;创建了一批新的容器来满足我们的更新时所指定的新的需求&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3&gt;路由网格&lt;/h3&gt;
-&lt;p&gt;Docker Swarm模式下可以轻松地配置PublishedPort，使外部可以访问到Swarm集群中的资源。&lt;strong&gt;所有的节点都参与到入口路由网格&lt;/strong&gt;。路由网格使得Swarm集群中的每个节点能够接受已发布端口上的任何服务，即使节点上没有正在运行的任务。&lt;strong&gt;路由网格将所有传入请求路由到可用节点的已发布端口的活动容器上&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;为了保证在Swarm中使用入口网络，在启用Swarm模式时需要打开以下端口：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Port 7946[TCP/UDP]用于容器网络的发现&lt;/li&gt;
-&lt;li&gt;Port 4789[UDP]用于容器入口网络&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;当然，还必须打开Swarm集群节点和任何需要访问外部资源之间已发布的端口。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# --publish参数用于指定服务端口，--publish &amp;lt;PublishedPort&amp;gt;:&amp;lt;TARGET-PORT&amp;gt;
-# &amp;lt;TARGET-PORT&amp;gt;是容器监听的端口
-# &amp;lt;PublishedPort&amp;gt;是Swarm对外服务的端口
-$ docker service create --name myweb --publish 8080:80 --replicas 2 nginx
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;默认情况下，当我们发布一个端口时，默认指定为TCP端口。但是，有时我们需要仅指定TCP端口或UDP端口，可进行如下设置。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 仅指定TCP端口
-$ docker service create --name dns-cache -p 53:53 dns-cache
-$ docker service create --name dns-cache -p 53:53/tcp dns-cache
-# 以上两个命令是等价的，因为默认情况下即为TCP端口
-
-# 同时指定TCP和UDP端口
-$ docker service create --name dns-cache -p 53:53/tcp -p 53:53/udp dns-cache
-
-# 仅指定UDP端口
-$ docker service create --name dns-cache -p 53:53/udp dns-cache
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务部署</title><link href="www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-22T00:00:00+08:00</published><updated>2017-04-22T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-22:www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务部署</title><link href="www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-22T00:00:00+08:00</published><updated>2017-04-22T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-22:www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;
+&lt;p&gt;本文目录：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#核心概念"&gt;核心概念&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#搭建Swarm集群"&gt;搭建Swarm集群&lt;/a&gt;&lt;/li&gt;
@@ -838,172 +764,7 @@ $ docker service rm helloworld
 helloworld
 # 通过命令docker service inspect &amp;lt;SERVICE-ID&amp;gt;可以看到服务已经不存在
 # 通过命令docker ps可以看到相应的容器也随之删除
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务部署</title><link href="www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-22T00:00:00+08:00</published><updated>2017-04-22T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-22:www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="#核心概念"&gt;核心概念&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="#搭建Swarm集群"&gt;搭建Swarm集群&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;核心概念&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;Swarm&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;节点&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;一个节点即是参与Swarm集群的Docker引擎实例。我们可以将其理解为一个Docker节点。虽然，我们可以在同一物理主机或云服务上运行一个或多个节点，但是典型的Swarm生产环境则是在分布式的物理主机或云服务上部署多个Docker节点。&lt;/p&gt;
-&lt;p&gt;当部署一个服务到Swarm集群中时，我们需要率先在 &lt;strong&gt;管理节点&lt;/strong&gt; 上注册该服务。然后，管理节点将该服务（称之为 &lt;strong&gt;任务&lt;/strong&gt;）分派给各个 &lt;strong&gt;工作节点&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;管理节点(Swarm Manager)负责服务编排和集群管理以保证整个集群的正常运行，并负责选出一个leader进行任务编排工作。&lt;/p&gt;
-&lt;p&gt;工作节点(Swarm Agent)负责接收并执行管理节点派发下来的任务。默认情况下，管理节点同时扮演工作节点的角色，即接收并执行任务。当然，我们也可以通过配置让管理节点只负责任务管理的功能，使之成为“只具备管理”的节点。Agent在每个工作节点上运行，并报告分派给它的任务。工作节点向管理节点报告其分派到的任务的当前状态，以便管理节点可以维护每个工作节点所需的状态。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;服务和任务&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;一个服务是指运行在工作节点上任务的定义。它是Swarm系统的中心结构，也是用户与Swarm交互的主要根据。当创建一个服务时，我们需要指定容器即将使用的镜像以及容器中要执行的命令。在服务分派模型中，Swarm的管理节点根据我们在所需状态下设置的比例，在工作节点中分配特定数量的任务副本。对于全局服务，Swarm在集群中的每个可用工作节点上为服务运行一个任务。&lt;/p&gt;
-&lt;p&gt;一个任务带有一个Docker容器和在容器中执行的命令。任务是Swarm进行服务管理的原子调度单元。管理节点根据服务规模中设置的副本数量将任务分派给工作节点。一旦一个任务分派给某个节点，任务就不能移动到另一个节点，它只能在分配的节点上运行或者失败，这即是任务的原子性。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;负载均衡&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Swarm集群管理使用的是 &lt;strong&gt;入口负载均衡&lt;/strong&gt; 策略来暴露想要从外部访问的服务。Swarm的管理节点可以自动地给服务分配一个PublishedPort，也可以为该服务自行配置一个PublishedPort。如果不指定端口，Swarm管理节点将分配30000-32767之间的某个端口。&lt;/p&gt;
-&lt;p&gt;外部组件，像云端负载均衡，可以访问集群中任何一个节点的PublishedPort，无论这个节点当前是否在运行某个服务的任务。Swarm路由中的所有节点都将连接到正在运行任务实例的节点上。&lt;/p&gt;
-&lt;p&gt;Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配DNS条目。Swarm管理节点使用内部负载均衡，根据服务的DNS名称在集群内部的服务之间分配请求。&lt;/p&gt;
-&lt;h3&gt;搭建Swarm集群&lt;/h3&gt;
-&lt;p&gt;搭建Swarm集群过程中，所使用的系统环境环境如下：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;三个节点(manager, worker1, worker2)均为xenial64系统  &lt;/li&gt;
-&lt;li&gt;节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5)  &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;1.创建一个Swarm集群&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在manager所在的主机创建Swarm集群，即创建Swarm管理节点。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
-# 使用docker swarm init --advertise-addr &amp;lt;manager-ip&amp;gt;命令创建Swarm的管理节点
-$ docker swarm init --advertise-addr 172.28.128.0.3
-Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager.
-To add a worker to this Swarm, run the following command:
-    docker Swarm join \
-    --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
-    172.28.128.3:2377
-To add a manager to this Swarm, run &amp;#39;docker Swarm join-token manager&amp;#39; and follow the instructions.
-# docker node ls查看管理节点的状态
-$ docker node ls
-ID                           HOSTNAME       STATUS  AVAILABILITY  MANAGER STATUS
-utfwatnlalniyo5glt734m4sj *  ubuntu-xenial  Ready   Active        Leader
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;strong&gt;2.向Swarm中注册工作节点&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在worker[1-2]所在的主机创建Swarm工作节点，并加入到Swarm集群中。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在worker1节点上
-$ docker Swarm join \
-$ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
-$ 172.28.128.3:2377
-This node joined a Swarm as a worker.
-
-# 在worker2节点上
-$ docker Swarm join \
-$ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
-$ 172.28.128.3:2377
-This node joined a Swarm as a worker.
-# 使用命令docker Swarm leave将节点移除Swarm集群
-
-# 在manager节点上
-$ docker node ls
-ID                           HOSTNAME       STATUS  AVAILABILITY  MANAGER STATUS
-i8yofrrddqu8mkved5s2uwb0s    ubuntu-xenial  Ready   Active
-utfwatnlalniyo5glt734m4sj *  ubuntu-xenial  Ready   Active        Leader
-xf5ysyp7n2biukskzigc5f3bd    ubuntu-xenial  Ready   Active
-# 可以看到当前Swarm集群中已经存在三个节点，并且用*指出管理节点的ID
-# 需要注意的是，命令docker node ls只能工作在管理节点上，用于查看Swarm集群中的节点状态
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;strong&gt;3.向Swarm集群中部署服务&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;服务的部署和管理均在管理节点上进行。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
-$ docker service create --replicas 1 --name helloworld alpine ping docker.com
-kugt1fx2j2es172l4zmvr0fbk
-# --name 指定服务名称
-# --replicas 指定任务的副本数量
-# alpine ping docker.com 表示该服务所使用的容器镜像和容器中要执行的命令
-
-# 使用命令docker ps可以查看主机上服务运行所在的docker容器的状态
-$ docker ps
-CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
-8a0bd7183d20        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   3 minutes ago       Up 3 minutes                            helloworld.1.f1b58uxk5c1l56736uznzapjm
-
-# 使用docker service ls查看服务
-ID            NAME        MODE        REPLICAS  IMAGE
-kugt1fx2j2es  helloworld  replicated  1/1       alpine:latest
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;strong&gt;4.服务检查&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;当我们向Swarm集群中部署服务后，可以使用docker命令查看服务的运行状态。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 命令docker service inspect --pretty &amp;lt;SERVICE-ID&amp;gt;可以以可读的格式显示服务的细节信息
-# 在manager节点上
-$ docker service inspect --pretty helloworld
-ID:     kugt1fx2j2es172l4zmvr0fbk
-Name:       helloworld
-Service Mode:   Replicated
- Replicas:  1
-Placement:
-UpdateConfig:
- Parallelism:   1
- On failure:    pause
- Max failure ratio: 0
-ContainerSpec:
- Image:     alpine:latest@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96
- Args:      ping docker.com
-Resources:
-Endpoint Mode:  vip
-
-# 命令docker service ps &amp;lt;SERVICE-ID&amp;gt;可查看服务/任务运行在哪个节点上
-$ docker service ps helloworld
-ID            NAME          IMAGE          NODE           DESIRED STATE  CURRENT STATE           ERROR  PORTS
-f1b58uxk5c1l  helloworld.1  alpine:latest  ubuntu-xenial  Running        Running 13 minutes ago
-# 在任务运行的节点上，可使用docker ps查看容器运行的信息
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;strong&gt;5.Swarm集群中服务的缩放&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;一旦向Swarm中部署服务后，我们还可以调整某项服务的容器数量，即任务的数量。命令如下:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker service scale &amp;lt;SERVICE-ID&amp;gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;NUMBERS-OF-TASKS&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
-# 将之前部署的helloworld服务扩大至5个任务
-$ docker service scale helloworld=5
-helloworld scaled to 5
-
-# 查看5个任务的分布情况及运行状态
-$ docker service ps helloworld
-ID            NAME          IMAGE          NODE           DESIRED STATE  CURRENT STATE           ERROR  PORTS
-f1b58uxk5c1l  helloworld.1  alpine:latest  ubuntu-xenial  Running        Running 28 minutes ago
-xkgyz1874p3r  helloworld.2  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
-0rnlxcv4487o  helloworld.3  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
-izu5oeb5qerp  helloworld.4  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
-m2v2uzgoy9g1  helloworld.5  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
-
-$ docker ps
-CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
-ea297aa56bc4        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   2 minutes ago       Up 2 minutes                            helloworld.5.m2v2uzgoy9g1sdohtdyenjclu
-8a0bd7183d20        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   29 minutes ago      Up 29 minutes                           helloworld.1.f1b58uxk5c1l56736uznzapjm
-# 可以看到在manager主机上运行着1和5号任务
-
-# 在worker1节点上
-$ docker ps
-CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
-ebd0c448b9a4        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   15 minutes ago      Up 15 minutes                           helloworld.2.xkgyz1874p3rsaih8e1jbfmyx
-# 运行着2号任务
-
-# 在worker2节点上
-$ docker ps
-CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
-a30267238db2        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   5 minutes ago       Up 5 minutes                            helloworld.3.0rnlxcv4487o0y4qqaot7n0yt
-bb5b75e55b30        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   5 minutes ago       Up 5 minutes                            helloworld.4.izu5oeb5qerpkfjde4bna47e5
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;strong&gt;6.服务删除&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;在Swarm集群的管理节点上，我们可以使用命令&lt;code&gt;docker service rm &amp;lt;SERVICE-ID&amp;gt;&lt;/code&gt;删除服务。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
-$ docker service rm helloworld
-helloworld
-# 通过命令docker service inspect &amp;lt;SERVICE-ID&amp;gt;可以看到服务已经不存在
-# 通过命令docker ps可以看到相应的容器也随之删除
-&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker快速上手教程</title><link href="www.subond.com/pages/2017/04/20/docker-quickstart.html" rel="alternate"></link><published>2017-04-20T00:00:00+08:00</published><updated>2017-04-20T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-20:www.subond.com/pages/2017/04/20/docker-quickstart.html</id><summary type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker技术：快速上手教程</title><link href="www.subond.com/pages/2017/04/20/docker-quickstart.html" rel="alternate"></link><published>2017-04-20T00:00:00+08:00</published><updated>2017-04-20T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-20:www.subond.com/pages/2017/04/20/docker-quickstart.html</id><summary type="html">&lt;p&gt;本文目录：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="#1.构建容器-Containers"&gt;1.构建容器-Containers&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="#2.组合服务-Compose"&gt;2.组合服务-Compose&lt;/a&gt;&lt;/li&gt;
