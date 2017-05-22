@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Docker集群：服务回滚</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Docker集群：服务回滚</h1>
+2017-04-24
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+        <a href="../../../../pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html" class="btn btn-info xsmall">zh</a>
+            <a href="../../../../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html" class="btn btn-info xsmall">zh</a>&nbsp;
+ 
+
+
+        </div>
+	
+        <div><p>本文目录：</p>
+<ul>
+<li><a href="#服务更新与回滚">服务更新与回滚</a></li>
+<li><a href="#路由网络">路由网络</a></li>
+</ul>
+<h3>服务更新与回滚</h3>
+<p>Docker Swarm集群管理中支持服务的版本更新及回滚操作，具体演示如下：</p>
+<p>所使用的系统环境环境如下：</p>
+<ul>
+<li>三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统  </li>
+<li>节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5)  </li>
+</ul>
+<p>首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。</p>
+<div class="highlight"><pre><span></span># 在manger节点上
+$ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6
+
+# --update-delay参数配置服务任务或任务集的更新的时延
+# 其格式为T1hT2mT3s，即T1小时T2分钟T3秒
+# 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数
+# 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。
+# 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。
+# 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如：
+# --update-failure-action docker service create
+# --update-failure-action docker service update
+
+# 接下来，我们更新redis的镜像
+$ docker service update --image redis:3.0.7 redis
+</pre></div>
+
+
+<p>如前所述，默认情况下，更新主要包括以下几个流程：</p>
+<ul>
+<li>停止第一个任务</li>
+<li>调度器更新已经停止的任务</li>
+<li>为更新过的任务启动容器</li>
+<li>若任务更新返回RUNNING状态，则等待设定的时延，并进行下一个任务的更新</li>
+<li>若任务更新返回FAILED状态，则停止更新</li>
+</ul>
+<p>更新结束后，我们看到如下状态：</p>
+<div class="highlight"><pre><span></span>$ docker service ps redis
+ID            NAME         IMAGE        NODE           DESIRED STATE  CURRENT STATE                ERROR  PORTS
+i9c6xvbopko2  redis.1      redis:3.0.7  ubuntu-xenial  Running        Running <span class="m">5</span> seconds ago
+mnw258z0j5hg   <span class="se">\_</span> redis.1  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown <span class="m">5</span> seconds ago
+iu7yjb7nm345  redis.2      redis:3.0.7  ubuntu-xenial  Running        Running <span class="m">53</span> seconds ago
+fmgyoq4vladx   <span class="se">\_</span> redis.2  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown <span class="m">54</span> seconds ago
+zsliph02ycsf  redis.3      redis:3.0.7  ubuntu-xenial  Running        Running about a minute ago
+8j75vwiunh49   <span class="se">\_</span> redis.3  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown about a minute ago
+</pre></div>
+
+
+<p>由此我们可以判断，在服务/任务更新的过程中，实质上是 <strong>创建了一批新的容器来满足我们的更新时所指定的新的需求</strong>。</p>
+<h3>路由网格</h3>
+<p>Docker Swarm模式下可以轻松地配置PublishedPort，使外部可以访问到Swarm集群中的资源。<strong>所有的节点都参与到入口路由网格</strong>。路由网格使得Swarm集群中的每个节点能够接受已发布端口上的任何服务，即使节点上没有正在运行的任务。<strong>路由网格将所有传入请求路由到可用节点的已发布端口的活动容器上</strong>。</p>
+<p>为了保证在Swarm中使用入口网络，在启用Swarm模式时需要打开以下端口：</p>
+<ul>
+<li>Port 7946[TCP/UDP]用于容器网络的发现</li>
+<li>Port 4789[UDP]用于容器入口网络</li>
+</ul>
+<p>当然，还必须打开Swarm集群节点和任何需要访问外部资源之间已发布的端口。</p>
+<div class="highlight"><pre><span></span># --publish参数用于指定服务端口，--publish &lt;PublishedPort&gt;:&lt;TARGET-PORT&gt;
+# &lt;TARGET-PORT&gt;是容器监听的端口
+# &lt;PublishedPort&gt;是Swarm对外服务的端口
+$ docker service create --name myweb --publish 8080:80 --replicas 2 nginx
+</pre></div>
+
+
+<p>默认情况下，当我们发布一个端口时，默认指定为TCP端口。但是，有时我们需要仅指定TCP端口或UDP端口，可进行如下设置。</p>
+<div class="highlight"><pre><span></span># 仅指定TCP端口
+$ docker service create --name dns-cache -p 53:53 dns-cache
+$ docker service create --name dns-cache -p 53:53/tcp dns-cache
+# 以上两个命令是等价的，因为默认情况下即为TCP端口
+
+# 同时指定TCP和UDP端口
+$ docker service create --name dns-cache -p 53:53/tcp -p 53:53/udp dns-cache
+
+# 仅指定UDP端口
+$ docker service create --name dns-cache -p 53:53/udp dns-cache
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="../../../../category/life.html">Life</a></li>
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+                <li><a href="../../../../category/tips.html">Tips</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
+</body>
+</html>

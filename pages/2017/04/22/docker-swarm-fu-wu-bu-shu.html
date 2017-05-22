@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Docker集群：服务部署</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Docker集群：服务部署</h1>
+2017-04-22
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+        <a href="../../../../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html" class="btn btn-info xsmall">zh</a>
+            <a href="../../../../pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html" class="btn btn-info xsmall">zh</a>&nbsp;
+ 
+
+
+        </div>
+	
+        <div><p>本文目录：</p>
+<ul>
+<li><a href="#核心概念">核心概念</a></li>
+<li><a href="#搭建Swarm集群">搭建Swarm集群</a></li>
+</ul>
+<h3>核心概念</h3>
+<p><strong>Swarm</strong></p>
+<p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p>
+<p><strong>节点</strong></p>
+<p>一个节点即是参与Swarm集群的Docker引擎实例。我们可以将其理解为一个Docker节点。虽然，我们可以在同一物理主机或云服务上运行一个或多个节点，但是典型的Swarm生产环境则是在分布式的物理主机或云服务上部署多个Docker节点。</p>
+<p>当部署一个服务到Swarm集群中时，我们需要率先在 <strong>管理节点</strong> 上注册该服务。然后，管理节点将该服务（称之为 <strong>任务</strong>）分派给各个 <strong>工作节点</strong>。</p>
+<p>管理节点(Swarm Manager)负责服务编排和集群管理以保证整个集群的正常运行，并负责选出一个leader进行任务编排工作。</p>
+<p>工作节点(Swarm Agent)负责接收并执行管理节点派发下来的任务。默认情况下，管理节点同时扮演工作节点的角色，即接收并执行任务。当然，我们也可以通过配置让管理节点只负责任务管理的功能，使之成为“只具备管理”的节点。Agent在每个工作节点上运行，并报告分派给它的任务。工作节点向管理节点报告其分派到的任务的当前状态，以便管理节点可以维护每个工作节点所需的状态。</p>
+<p><strong>服务和任务</strong></p>
+<p>一个服务是指运行在工作节点上任务的定义。它是Swarm系统的中心结构，也是用户与Swarm交互的主要根据。当创建一个服务时，我们需要指定容器即将使用的镜像以及容器中要执行的命令。在服务分派模型中，Swarm的管理节点根据我们在所需状态下设置的比例，在工作节点中分配特定数量的任务副本。对于全局服务，Swarm在集群中的每个可用工作节点上为服务运行一个任务。</p>
+<p>一个任务带有一个Docker容器和在容器中执行的命令。任务是Swarm进行服务管理的原子调度单元。管理节点根据服务规模中设置的副本数量将任务分派给工作节点。一旦一个任务分派给某个节点，任务就不能移动到另一个节点，它只能在分配的节点上运行或者失败，这即是任务的原子性。</p>
+<p><strong>负载均衡</strong></p>
+<p>Swarm集群管理使用的是 <strong>入口负载均衡</strong> 策略来暴露想要从外部访问的服务。Swarm的管理节点可以自动地给服务分配一个PublishedPort，也可以为该服务自行配置一个PublishedPort。如果不指定端口，Swarm管理节点将分配30000-32767之间的某个端口。</p>
+<p>外部组件，像云端负载均衡，可以访问集群中任何一个节点的PublishedPort，无论这个节点当前是否在运行某个服务的任务。Swarm路由中的所有节点都将连接到正在运行任务实例的节点上。</p>
+<p>Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配DNS条目。Swarm管理节点使用内部负载均衡，根据服务的DNS名称在集群内部的服务之间分配请求。</p>
+<h3>搭建Swarm集群</h3>
+<p>搭建Swarm集群过程中，所使用的系统环境环境如下：</p>
+<ul>
+<li>三个节点(manager, worker1, worker2)均为xenial64系统  </li>
+<li>节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5)  </li>
+</ul>
+<p><strong>1.创建一个Swarm集群</strong></p>
+<p>在manager所在的主机创建Swarm集群，即创建Swarm管理节点。</p>
+<div class="highlight"><pre><span></span># 在manager节点上
+# 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点
+$ docker swarm init --advertise-addr 172.28.128.0.3
+Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager.
+To add a worker to this Swarm, run the following command:
+    docker Swarm join \
+    --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
+    172.28.128.3:2377
+To add a manager to this Swarm, run &#39;docker Swarm join-token manager&#39; and follow the instructions.
+# docker node ls查看管理节点的状态
+$ docker node ls
+ID                           HOSTNAME       STATUS  AVAILABILITY  MANAGER STATUS
+utfwatnlalniyo5glt734m4sj *  ubuntu-xenial  Ready   Active        Leader
+</pre></div>
+
+
+<p><strong>2.向Swarm中注册工作节点</strong></p>
+<p>在worker[1-2]所在的主机创建Swarm工作节点，并加入到Swarm集群中。</p>
+<div class="highlight"><pre><span></span># 在worker1节点上
+$ docker Swarm join \
+$ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
+$ 172.28.128.3:2377
+This node joined a Swarm as a worker.
+
+# 在worker2节点上
+$ docker Swarm join \
+$ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
+$ 172.28.128.3:2377
+This node joined a Swarm as a worker.
+# 使用命令docker Swarm leave将节点移除Swarm集群
+
+# 在manager节点上
+$ docker node ls
+ID                           HOSTNAME       STATUS  AVAILABILITY  MANAGER STATUS
+i8yofrrddqu8mkved5s2uwb0s    ubuntu-xenial  Ready   Active
+utfwatnlalniyo5glt734m4sj *  ubuntu-xenial  Ready   Active        Leader
+xf5ysyp7n2biukskzigc5f3bd    ubuntu-xenial  Ready   Active
+# 可以看到当前Swarm集群中已经存在三个节点，并且用*指出管理节点的ID
+# 需要注意的是，命令docker node ls只能工作在管理节点上，用于查看Swarm集群中的节点状态
+</pre></div>
+
+
+<p><strong>3.向Swarm集群中部署服务</strong></p>
+<p>服务的部署和管理均在管理节点上进行。</p>
+<div class="highlight"><pre><span></span># 在manager节点上
+$ docker service create --replicas 1 --name helloworld alpine ping docker.com
+kugt1fx2j2es172l4zmvr0fbk
+# --name 指定服务名称
+# --replicas 指定任务的副本数量
+# alpine ping docker.com 表示该服务所使用的容器镜像和容器中要执行的命令
+
+# 使用命令docker ps可以查看主机上服务运行所在的docker容器的状态
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+8a0bd7183d20        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &quot;ping docker.com&quot;   3 minutes ago       Up 3 minutes                            helloworld.1.f1b58uxk5c1l56736uznzapjm
+
+# 使用docker service ls查看服务
+ID            NAME        MODE        REPLICAS  IMAGE
+kugt1fx2j2es  helloworld  replicated  1/1       alpine:latest
+</pre></div>
+
+
+<p><strong>4.服务检查</strong></p>
+<p>当我们向Swarm集群中部署服务后，可以使用docker命令查看服务的运行状态。</p>
+<div class="highlight"><pre><span></span># 命令docker service inspect --pretty &lt;SERVICE-ID&gt;可以以可读的格式显示服务的细节信息
+# 在manager节点上
+$ docker service inspect --pretty helloworld
+ID:     kugt1fx2j2es172l4zmvr0fbk
+Name:       helloworld
+Service Mode:   Replicated
+ Replicas:  1
+Placement:
+UpdateConfig:
+ Parallelism:   1
+ On failure:    pause
+ Max failure ratio: 0
+ContainerSpec:
+ Image:     alpine:latest@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96
+ Args:      ping docker.com
+Resources:
+Endpoint Mode:  vip
+
+# 命令docker service ps &lt;SERVICE-ID&gt;可查看服务/任务运行在哪个节点上
+$ docker service ps helloworld
+ID            NAME          IMAGE          NODE           DESIRED STATE  CURRENT STATE           ERROR  PORTS
+f1b58uxk5c1l  helloworld.1  alpine:latest  ubuntu-xenial  Running        Running 13 minutes ago
+# 在任务运行的节点上，可使用docker ps查看容器运行的信息
+</pre></div>
+
+
+<p><strong>5.Swarm集群中服务的缩放</strong></p>
+<p>一旦向Swarm中部署服务后，我们还可以调整某项服务的容器数量，即任务的数量。命令如下:</p>
+<div class="highlight"><pre><span></span>$ docker service scale &lt;SERVICE-ID&gt;<span class="o">=</span>&lt;NUMBERS-OF-TASKS&gt;
+</pre></div>
+
+
+<div class="highlight"><pre><span></span># 在manager节点上
+# 将之前部署的helloworld服务扩大至5个任务
+$ docker service scale helloworld=5
+helloworld scaled to 5
+
+# 查看5个任务的分布情况及运行状态
+$ docker service ps helloworld
+ID            NAME          IMAGE          NODE           DESIRED STATE  CURRENT STATE           ERROR  PORTS
+f1b58uxk5c1l  helloworld.1  alpine:latest  ubuntu-xenial  Running        Running 28 minutes ago
+xkgyz1874p3r  helloworld.2  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+0rnlxcv4487o  helloworld.3  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+izu5oeb5qerp  helloworld.4  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+m2v2uzgoy9g1  helloworld.5  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+ea297aa56bc4        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &quot;ping docker.com&quot;   2 minutes ago       Up 2 minutes                            helloworld.5.m2v2uzgoy9g1sdohtdyenjclu
+8a0bd7183d20        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &quot;ping docker.com&quot;   29 minutes ago      Up 29 minutes                           helloworld.1.f1b58uxk5c1l56736uznzapjm
+# 可以看到在manager主机上运行着1和5号任务
+
+# 在worker1节点上
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+ebd0c448b9a4        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &quot;ping docker.com&quot;   15 minutes ago      Up 15 minutes                           helloworld.2.xkgyz1874p3rsaih8e1jbfmyx
+# 运行着2号任务
+
+# 在worker2节点上
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+a30267238db2        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &quot;ping docker.com&quot;   5 minutes ago       Up 5 minutes                            helloworld.3.0rnlxcv4487o0y4qqaot7n0yt
+bb5b75e55b30        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &quot;ping docker.com&quot;   5 minutes ago       Up 5 minutes                            helloworld.4.izu5oeb5qerpkfjde4bna47e5
+</pre></div>
+
+
+<p><strong>6.服务删除</strong></p>
+<p>在Swarm集群的管理节点上，我们可以使用命令<code>docker service rm &lt;SERVICE-ID&gt;</code>删除服务。</p>
+<div class="highlight"><pre><span></span># 在manager节点上
+$ docker service rm helloworld
+helloworld
+# 通过命令docker service inspect &lt;SERVICE-ID&gt;可以看到服务已经不存在
+# 通过命令docker ps可以看到相应的容器也随之删除
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="../../../../category/life.html">Life</a></li>
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+                <li><a href="../../../../category/tips.html">Tips</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
+</body>
+</html>

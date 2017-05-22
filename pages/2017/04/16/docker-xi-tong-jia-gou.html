@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Docker技术：Docker系统架构</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Docker技术：Docker系统架构</h1>
+2017-04-16
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><p>本文目录：</p>
+<ul>
+<li><a href="#Docker Engine">Docker Engine</a></li>
+<li><a href="#Docker交付内容">Docker交付内容</a></li>
+<li><a href="#Docker系统架构">Docker系统架构</a></li>
+</ul>
+<h3>Docker Engine</h3>
+<p>Docker Engine主要包含三个组件，如下图所示：</p>
+<ul>
+<li>Docker Server：一个长时间运行的守护进程。</li>
+<li>REST API：指定程序可以用来与守护进程通信的接口。</li>
+<li>Client：命令行CLI客户端。</li>
+</ul>
+<p><img alt="Docker全局预览" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-overview.png"></p>
+<p>CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。</p>
+<h3>Docker交付内容</h3>
+<ul>
+<li>快速，一致地交付应用程序</li>
+</ul>
+<p>Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务</p>
+<ul>
+<li>在同一硬件上可允许多个工作流程</li>
+</ul>
+<p>Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。</p>
+<h3>Docker系统架构</h3>
+<p>Docker采用Client/Server架构模式，其系统架构如下图所示。</p>
+<p><img alt="Docker系统架构" src="http://on64c9tla.bkt.clouddn.com/2017A/docker.png"></p>
+<p>Docker客户端与守护进程既可以运行在同一台主机，也运行在不同的主机上，两者利用Unix Socket或网络接口，通过REST API进行通信。</p>
+<p>Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。</p>
+<p>Docker客户端是用户与Docker Daemon进行交互的主要方式。</p>
+<p>Docker Registries用来管理Docker镜像。</p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="../../../../category/life.html">Life</a></li>
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+                <li><a href="../../../../category/tips.html">Tips</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
+</body>
+</html>

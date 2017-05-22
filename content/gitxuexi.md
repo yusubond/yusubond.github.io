@@ -11,24 +11,28 @@ Summary: Git版本控制功能很强大，作为程序猿必修掌握。
 ### 指令介绍
 
 ```shell
-git config --global user.name "username"   	#配置仓库参数，作为一个标志
-git config --global user.email "useremail"	#配置仓库参数，作为一个标志
-git init                      #把当前目录变成git可管理的仓库
-git add files          #添加文件到暂存区
-git diff file          #查看文件的修改内容
-git commit -m "提交说明信息"   #提交文件到仓库
-git status                    #获取当前仓库中文档的状态
-git log                       #查看历史记录
-git log -pretty=oneline       #单行显示历史信息
-git reflog                    #显示版本号
-git checkout -- file          #取出文件
-git remote add origin <仓库地址>    #添加远程仓库地址
-git push origin <分支名1>          #推送本地内容到远程仓库分支1
-git pull origin <远程主机名> <远程分支名>:<本地分支名>
+$ git config --global user.name "username"   	#配置仓库参数，作为一个标志
+$ git config --global user.email "useremail"	#配置仓库参数，作为一个标志
+$ git init                      #把当前目录变成git可管理的仓库
+$ git add files          #添加文件到暂存区
+$ git diff file          #查看文件的修改内容
+$ git commit -m "提交说明信息"   #提交文件到仓库
+$ git status                    #获取当前仓库中文档的状态
+$ git log                       #查看历史记录
+$ git log -pretty=oneline       #单行显示历史信息
+$ git reflog                    #显示版本号
+$ git checkout -- file          #取出文件
+$ git remote add origin <仓库地址>    #添加远程仓库地址
+$ git push origin <分支名1>          #推送本地内容到远程仓库分支1
+$ git pull origin <远程主机名> <远程分支名>:<本地分支名>
                                   #取回远程主机某个分支，并与本地指定分支合并
-git clone <仓库地址>               #克隆远程仓库到本地仓库
-git remote            #查看远程仓库信息
-git remote -v         #查看远程仓库详细信息
+$ git clone <仓库地址>               #克隆远程仓库到本地仓库
+$ git remote            #查看远程仓库信息
+$ git remote -v         #查看远程仓库详细信息
+$ git remote add origin <仓库地址>    #添加远程仓库地址
+# 如果需要修改远程仓库地址，先删除地址，再添加
+$ git remote rm origin
+$ git remote add origin <your_url>
 ```
 
 ### 版本回退
@@ -36,10 +40,10 @@ git remote -v         #查看远程仓库详细信息
 git reset --hard 版本号(即commit_id)
 
 ```shell
-git reset --hard HEAD^      #回退至上一版本
-git reset --hard HEAD^^     #回退至上上版本
-git reset --hard HEAD~10    #回退至前10个版本
-git reset --hard commit_id  #结合git reflog;git log使用
+$ git reset --hard HEAD^      #回退至上一版本
+$ git reset --hard HEAD^^     #回退至上上版本
+$ git reset --hard HEAD~10    #回退至前10个版本
+$ git reset --hard commit_id  #结合git reflog;git log使用
                             #git log可以查看提交历史，以便确定回退到哪个版本;
                             #git reflog可以查看命令历史，以便确定回到未来的哪个版本
 ```
@@ -47,10 +51,10 @@ git reset --hard commit_id  #结合git reflog;git log使用
 ### 分支操作
 
 ```shell
-git branch                #查看分支
-git checkout <分支名1>       #切换至分支名1
-git checkout -b <分支名1>  #创建并切换至分支名1
-git merge <分支名1>        #合并分支名1至当前分支
+$ git branch                #查看分支
+$ git checkout <分支名1>       #切换至分支名1
+$ git checkout -b <分支名1>  #创建并切换至分支名1
+$ git merge <分支名1>        #合并分支名1至当前分支
 ```
 
 ### 提交文件步骤
@@ -98,11 +102,11 @@ Remote：远程仓库
 + 指令介绍
 
 ```shell
-git stash       #备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中
-git pop         #从git栈中读取最近一次保存的内容，恢复工作区的相关内容
-git stash list  #显示git栈中所有备份，可以利用列表选择从哪恢复内容
-git stash apply <版本号>   #将制定版本号的内容恢复至当前工作区，配合git stash list使用
-git stash clear           #清空git栈
+$ git stash       #备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中
+$ git pop         #从git栈中读取最近一次保存的内容，恢复工作区的相关内容
+$ git stash list  #显示git栈中所有备份，可以利用列表选择从哪恢复内容
+$ git stash apply <版本号>   #将制定版本号的内容恢复至当前工作区，配合git stash list使用
+$ git stash clear           #清空git栈
 ```
 
 ## 三、gitbook使用指南
@@ -111,17 +115,17 @@ gitbook的使用方法和git基本类似，其修改记录，发布版本等相�
 
 ```shell
 # 初始化书记目录
-gitbook init
+$ gitbook init
 # 编译图书，可在本地查看
-gitbook serve
+$ gitbook serve
 # 克隆远程图书到本地
-git clone https://git.gitbook.com/user_name/book_name.git
+$ git clone https://git.gitbook.com/user_name/book_name.git
 # 添加文件
-git add file_name
+$ git add file_name
 # 提交修改记录
-git commit -m "sth about your changes"
+$ git commit -m "sth about your changes"
 # 添加图书的远程地址
-git remote add gitbook https://git.gitbook.com/user_name/book_name.git
+$ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
 # 发布图书至远程仓库
-git push -u gitbook master  #第一次使用-u参数，之后可以不用加-u参数
+$ git push -u gitbook master  #第一次使用-u参数，之后可以不用加-u参数
 ```

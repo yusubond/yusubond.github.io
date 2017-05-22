@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Docker快速上手教程</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Docker快速上手教程</h1>
+2017-04-20
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><p>本文目录：</p>
+<ul>
+<li><a href="#1.构建容器-Containers">1.构建容器-Containers</a></li>
+<li><a href="#2.组合服务-Compose">2.组合服务-Compose</a></li>
+<li><a href="#3.集群管理-Swarm">3.集群管理-Swarm</a></li>
+<li><a href="#4.应用协作-Stacks">4.应用协作-Stacks</a></li>
+</ul>
+<h3>1.构建容器-Containers</h3>
+<p>Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。</p>
+<p><strong>Dockerfile</strong></p>
+<p>创建一个新的空目录，在目录下创建名为<code>Dockerfile</code>的文件，并写入以下内容。</p>
+<div class="highlight"><pre><span></span># Use an official Python runtime as a base image
+FROM python:2.7-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+ADD . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</pre></div>
+
+
+<p>Dockerfile中用到两个我们还未创建的文件，即<code>requirements.txt</code>和<code>app.py</code>。接下来，创建这两个文件，内容分别如下：</p>
+<p><code>requirements.txt</code></p>
+<div class="highlight"><pre><span></span>Flask
+Redis
+</pre></div>
+
+
+<p><code>app.py</code></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">redis</span> <span class="kn">import</span> <span class="n">Redis</span><span class="p">,</span> <span class="n">RedisError</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="c1"># Connect to Redis</span>
+<span class="n">redis</span> <span class="o">=</span> <span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;redis&quot;</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">socket_connect_timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">socket_timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">visits</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">incr</span><span class="p">(</span><span class="s2">&quot;counter&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">RedisError</span><span class="p">:</span>
+        <span class="n">visits</span> <span class="o">=</span> <span class="s2">&quot;&lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;&quot;</span>
+
+    <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&lt;h3&gt;Hello {name}!&lt;/h3&gt;&quot;</span> \
+           <span class="s2">&quot;&lt;b&gt;Hostname:&lt;/b&gt; {hostname}&lt;br/&gt;&quot;</span> \
+           <span class="s2">&quot;&lt;b&gt;Visits:&lt;/b&gt; {visits}&quot;</span>
+    <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">),</span> <span class="n">hostname</span><span class="o">=</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">(),</span> <span class="n">visits</span><span class="o">=</span><span class="n">visits</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>构建并运行应用</strong></p>
+<p>创建好Dockerfile和其所需的文件后，我们就可以利用docker命令构建Dockerfile中定义的应用。</p>
+<div class="highlight"><pre><span></span># 构建应用，即为构建Dockerfile定义的应用镜像
+$ docker build -t subond-hello .
+# -t指定镜像名称
+# .代表以当前目录为上下文内容
+
+# 镜像创建成功后，可以通过docker images命令查看镜像信息
+$ docker images
+subond-hello        latest              e440849c12a4        3 hours ago         195 MB
+python              2.7-slim            1c7128a655f6        5 days ago          183 MB
+</pre></div>
+
+
+<p>在Dockerfile中我们定义了容器需要暴露的端口，因此，在容器运行时需要将暴露出来的端口映射到宿主机的某个端口，这样在宿主机上就可以访问容器中的资源。-p可以指定宿主机与容器间的端口映射关系。</p>
+<div class="highlight"><pre><span></span># 运行刚刚构建好的应用镜像
+$ docker run -p 8080:80 subond-hello
+* Running on http://0.0.0.0:80/ (Press CTRL+C to quit)
+
+# 验证应用是否成功运行
+# 在宿主机上
+$ curl http://localhost:8080
+<span class="nt">&lt;h3&gt;</span>Hello World!<span class="nt">&lt;/h3&gt;&lt;b&gt;</span>Hostname:<span class="nt">&lt;/b&gt;</span> 3d8822177c83<span class="nt">&lt;br/&gt;&lt;b&gt;</span>Visits:<span class="nt">&lt;/b&gt;</span> <span class="nt">&lt;i&gt;</span>cannot connect to Redis, counter disabled<span class="nt">&lt;/i&gt;</span>
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                  NAMES
+3d8822177c83        subond-hello        &quot;python app.py&quot;     57 seconds ago      Up 56 seconds       0.0.0.0:8080-&gt;80/tcp   heuristic_davinci
+</pre></div>
+
+
+<p><strong>共享镜像</strong></p>
+<p>当自己创建的镜像能够正常运行时，我们可以选择将镜像上传到DockerHub上与别人分享。</p>
+<div class="highlight"><pre><span></span># 登录DockerHub账号
+$ docker login
+# 给自己的镜像打上tag标签，如果不添加tag信息，则默认为最新，即latest
+# username/repository:tag为DockerHub上的仓库
+$ docker tag subond-hello username/repository:tag
+
+# 上传镜像
+$ docker push username/repository:tag
+</pre></div>
+
+
+<p>一旦上传成功，镜像就实现了共享。此后，运行该镜像的时候，就可以指定DockerHub仓库中的镜像了。</p>
+<div class="highlight"><pre><span></span># 以DockerHub上的镜像启动容器
+$ docker run -p 8080:80 username/repository:tag
+</pre></div>
+
+
+<h4>常用命令</h4>
+<div class="highlight"><pre><span></span>docker build -t friendlyname .        # 使用当前目录下的Dockerfile创建应用镜像
+docker run -p 4000:80 appname         # 运行”appname&quot;的镜像，并进行端口映射
+docker run -d -p 4000:80 friendlyname # 独立运行&quot;appname&quot;镜像，并进行端口映射
+docker ps                             # 显示运行中的容器
+docker stop &lt;hash&gt;                    # 停止运行中的容器
+docker ps -a                          # 显示所有容器(运行的和未运行的)
+docker kill &lt;hash&gt;                    # 杀死某个容器
+docker rm &lt;hash&gt;                      # 移除容器
+docker rm $(docker ps -a -q)          # 移除宿主机上的全部容器
+docker images -a                      # 显示应用镜像
+docker rmi &lt;imagename&gt;                # 移除应用镜像
+docker rmi $(docker images -q)        # 移除所有应用镜像
+docker images -f &quot;dangling=true&quot;      # 显示所有&lt;none&gt;:&lt;none&gt;的镜像
+docker login                          # 登录DockerHub仓库
+docker tag &lt;image&gt; username/repository:tag      # 为上传镜像打标签
+docker push username/repository:tag             # 上传镜像至仓库
+docker run username/repository:tag              # 运行仓库中的镜像
+</pre></div>
+
+
+<h3>2.组合服务-Compose</h3>
+<p>在分布式应用程序中，应用的不同部分称为“服务”。例如，一个视频共享网站，它可能需要数据库服务，用于存储应用程序数据；还需要后台视频转码服务，用于用户上传视频；还需要前端服务等。</p>
+<p>一个服务只是意味着“生产中的容器”。一个服务只运行一个镜像，但是它编码了镜像运行的方式——使用哪些端口，需要运行多少副本以及服务所需的容量等。因此，扩展服务实际上更改容器实例的数量，并提供扩展服务过程中所需的计算资源。</p>
+<p>Docker平台可以让服务运行及扩展变得更为简单，只需一个<code>docker-compose.yaml</code>文件。<code>docker-compose.yaml</code>文件是一个YAML文件，定义了实际生产环境中Docker容器的行为。</p>
+<p><code>docker-compose.yaml</code></p>
+<div class="highlight"><pre><span></span>version: &quot;3&quot;
+services:
+  web:
+    image: subond/suker:v1.0
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: &quot;0.1&quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &quot;80:80&quot;
+    networks:
+      - webnet
+networks:
+  webnet:
+</pre></div>
+
+
+<p>接下来，我们就可以利用<code>docker-compose.yml</code>文件运行带有 <strong>负载均衡</strong> 的应用服务。在使用<code>docker stack deploy</code>之前，需要将Docker切换至Swarm模式。</p>
+<div class="highlight"><pre><span></span># 将Docker引擎切换至Swarm模式
+$ docker swarm init
+# 启动应用服务，并命名为suweb
+$ docker stack deploy -c docker-compose.yml suweb
+Creating network suweb_webnet
+Creating service suweb_web
+
+# 查看suweb的状态
+$ docker stack ps suweb
+ID            NAME         IMAGE              NODE       DESIRED STATE  CURRENT STATE           ERROR  PORTS
+gcc9oupfdi8g  suweb_web.1  subond/suker:v1.0  Ubuntu-16  Running        Running 10 seconds ago
+s7vrc9fwwnt7  suweb_web.2  subond/suker:v1.0  Ubuntu-16  Running        Running 9 seconds ago
+ns8trslxt2n6  suweb_web.3  subond/suker:v1.0  Ubuntu-16  Running        Running 10 seconds ago
+
+# 查看容器信息
+$ docker ps
+CONTAINER ID        IMAGE                                                                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+89f858d3e9ff        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &quot;python app.py&quot;     2 minutes ago       Up 2 minutes        80/tcp              suweb_web.2.s7vrc9fwwnt7szj62cwf235zc
+0999d38459a6        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &quot;python app.py&quot;     2 minutes ago       Up 2 minutes        80/tcp              suweb_web.3.ns8trslxt2n6vsw5pcxo6iiw6
+1bc62f75cdca        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &quot;python app.py&quot;     2 minutes ago       Up 2 minutes        80/tcp              suweb_web.1.gcc9oupfdi8gflriegrsth272
+
+# 命令docker stack rm suweb，可以移除服务
+</pre></div>
+
+
+<h4>常用命令</h4>
+<div class="highlight"><pre><span></span>docker stack ls                                 # 列出所有运行着的应用程序
+docker stack deploy -c &lt;composefile&gt; &lt;appname&gt;  # 以Compose文件运行容器服务
+docker stack services &lt;appname&gt;                 # 列出与应用程序关联的服务
+docker stack ps &lt;appname&gt;                       # 列出与应用程序关联的运行着的容器
+docker stack rm &lt;appname&gt;                       # 删除应用程序
+</pre></div>
+
+
+<p><strong>小结</strong></p>
+<p>通过<code>docker-compose.yml</code>文件，我们可以很方便的扩展应用服务的规模，只需要修理该文件里面的相关配置，然后重新运行命令<code>docker stack deploy -c docker-compose.yml suweb</code>即可。例如，修改replicas的值来增加或减少容器副本的数量。</p>
+<p>命令<code>docker run</code>可以简单地实现应用服务的部署和管理；而对于实际生产环境需要大量部署应用服务时，Compose文件(即<code>docker-compose.yml</code>)可以方便地定义容器的行为，使得对服务的扩展，限制以及重新部署非常容易。命令<code>docker stack deploy</code>就是提供这样的一种方式。</p>
+<h3>3.集群管理-Swarm</h3>
+<p><strong>准备工作</strong></p>
+<ul>
+<li>两个虚拟机，并且均安装Docker引擎1.13或者更高版本</li>
+<li>完成<a href="#1.构建容器">1.构建容器</a>和<a href="#2.组合服务">2.组合服务</a></li>
+<li>构建Swarm集群环境</li>
+</ul>
+<p>关于Swarm集群环境说明：</p>
+<p>两个虚拟机的主机名与ip的配置如下：</p>
+<ul>
+<li>manager(ip:172.28.128.4)扮演Swarm集群中管理节点的角色</li>
+<li>worker1(ip:172.28.128.5)扮演Swarm集群中工作节点的角色</li>
+</ul>
+<p><strong>Swarm集群中部署应用</strong></p>
+<div class="highlight"><pre><span></span># 第一步，将docker-compose.yml文件拷贝至manager的home目录下
+# 第二步，在manager上通过composer文件部署应用服务
+# 这个示例中，我使用的是vagrant虚拟机，如果你使用的是Docker-manchine方式
+# 将下面指令中vagrant ssh 替换为docker-manchine，并且删除-c参数
+
+$ vagrant ssh manager -c &quot;docker stack deploy -c docker-compose.yml suweb&quot;
+Creating network suweb_webnet
+Creating service suweb_web
+
+# 查看容器分布及运行情况
+$ vagrant ssh manager -c &quot;docker stack ps suweb&quot;
+ID            NAME         IMAGE              NODE     DESIRED STATE  CURRENT STATE            ERROR  PORTS
+d6g4m7qldta8  suweb_web.1  subond/suker:v1.0  worker1  Running        Preparing 3 seconds ago
+nrginvlp568y  suweb_web.2  subond/suker:v1.0  manager  Running        Preparing 3 seconds ago
+o61f0oc280et  suweb_web.3  subond/suker:v1.0  manager  Running        Preparing 3 seconds ago
+
+# 可以看出：在worker1节点上运行着一个suweb容器服务
+$ vagrant ssh worker1 -c &quot;docker ps&quot;
+CONTAINER ID        IMAGE                                                                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+33a0a2a34b8b        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &quot;python app.py&quot;     12 seconds ago      Up 11 seconds       80/tcp              suweb_web.1.d6g4m7qldta8mm16x80qimx8i
+</pre></div>
+
+
+<p><strong>小结</strong></p>
+<h3>4.应用协作-Stacks</h3>
+<p><a href="#3.Swarm集群-Swarm">3.Swarm集群-Swarm</a>中，我们学习了如何启用Swarm模式，并向Swarm集群中部署应用服务。接下来，我们将完成如何让多个应用服务进行协作，完成更加复杂的功能。这一部分，我们将接触分布式应用程序的结构层次的顶部，即Stacks。一个Stack是一组相互关联的服务，它们共享依赖关系，并可以一起进行编排和缩放。单个堆栈能够定义和协调整个应用程序的功能(更为复杂的功能可以需要使用多个堆栈)。</p>
+<p>第一步：在<code>docker-compose.yml</code>文件中，增加新的服务，并重新部署</p>
+<p><code>docker-compose.yml</code>文件内容如下：</p>
+<div class="highlight"><pre><span></span>version: &quot;3&quot;
+services:
+  web:
+    image: subond/suker:v1.0
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: &quot;0.1&quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &quot;80:80&quot;
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - &quot;8080:8080&quot;
+    volumes:
+      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
+</pre></div>
+
+
+<p>接下来，将<code>docker-compose.yml</code>文件拷贝至manager节点的home目录下，并重新部署应用。</p>
+<div class="highlight"><pre><span></span># 重新部署suweb应用程序
+$ vagrant ssh manager -c &quot;docker stack deploy -c docker-compose.yml suweb&quot;
+Creating network suweb_webnet
+Creating service suweb_visualizer
+Creating service suweb_web
+
+# 查看stack中的服务
+$ vagrant ssh manager -c &quot;docker stack ls&quot;
+NAME   SERVICES
+suweb  2
+
+# 查看suweb应用的容器分布及运行情况
+$ vagrant ssh manager -c &quot;docker stack ps suweb&quot;
+ID            NAME                IMAGE                            NODE     DESIRED STATE  CURRENT STATE               ERROR  PORTS
+eu18grghbpbq  suweb_web.1         subond/suker:v1.0                worker1  Running        Running about a minute ago
+qw03jh0fibxi  suweb_visualizer.1  dockersamples/visualizer:stable  manager  Running        Running 32 seconds ago
+7q2481c0p04b  suweb_web.2         subond/suker:v1.0                manager  Running        Running about a minute ago
+6ugzg4hpvqio  suweb_web.3         subond/suker:v1.0                worker1  Running        Running about a minute ago
+
+# manager节点上运行两个容器，suweb_visualizer.1和suweb_web.2
+$ vagrant ssh manager -c &quot;docker ps&quot;
+CONTAINER ID        IMAGE                                                                                              COMMAND             CREATED              STATUS              PORTS               NAMES
+b26cef6f4852        dockersamples/visualizer@sha256:f924ad66c8e94b10baeaf7bdb9cd491ef4e982a1d048a56a17e02bf5945401e5   &quot;npm start&quot;         About a minute ago   Up About a minute   8080/tcp            suweb_visualizer.1.qw03jh0fibxizukjrep7ipkaj
+6742285357df        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a               &quot;python app.py&quot;     2 minutes ago        Up 2 minutes        80/tcp              suweb_web.2.7q2481c0p04b908m5knwexgsa
+
+# worker1节点上运行两个容器，suweb_web.1和suweb_web.3
+$ vagrant ssh worker1 -c &quot;docker ps&quot;
+CONTAINER ID        IMAGE                                                                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+e9207afbd53f        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &quot;python app.py&quot;     4 minutes ago       Up 4 minutes        80/tcp              suweb_web.1.eu18grghbpbqyzu3nbflx1d4z
+4f841d8748fd        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &quot;python app.py&quot;     4 minutes ago       Up 4 minutes        80/tcp              suweb_web.3.6ugzg4hpvqiouhoy8u6109y3h
+</pre></div>
+
+
+<p>第二步，持久化数据。利用Redis服务可进行数据的持久化数据，修改<code>docker-compose.yml</code>文件，文件内容如下：</p>
+<div class="highlight"><pre><span></span>version: &quot;3&quot;
+services:
+  web:
+    image: subond/suker:v1.0
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: &quot;0.1&quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &quot;80:80&quot;
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - &quot;8080:8080&quot;
+    volumes:
+      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+  redis:
+    image: redis
+    ports:
+      - &quot;6379:6379&quot;
+    volumes:
+      - ./data:/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
+</pre></div>
+
+
+<p>接下来，在manager节点上创建数据卷，用于持久化数据；并更新<code>docker-compose.yml</code>文件。</p>
+<div class="highlight"><pre><span></span># 创建数据卷目录
+$ vagrant ssh manager -c &quot;mkdir ./data&quot;
+
+# 更新`docker-compose.yml`文件，具体指令省略
+
+# 更新之前的suweb服务或者删除suweb服务后重新部署，指令均如下
+$ vagrant ssh manager -c &quot;docker stack deploy -c docker-compose.yml suweb&quot;
+Creating network suweb_webnet
+Creating service suweb_web
+Creating service suweb_visualizer
+Creating service suweb_redis
+
+# 查看suweb应用的运行及分布情况
+$ vagrant ssh manager -c &quot;docker stack ps suweb&quot;
+ID            NAME                IMAGE                            NODE     DESIRED STATE  CURRENT STATE           ERROR  PORTS
+r9j3wjnpkl9r  suweb_redis.1       redis:latest                     manager  Running        Running 15 seconds ago
+5eyr3izyrv7h  suweb_visualizer.1  dockersamples/visualizer:stable  manager  Running        Running 19 seconds ago
+ubdvzap007ml  suweb_web.1         subond/suker:v1.0                worker1  Running        Running 24 seconds ago
+2dshgwsnfftp  suweb_web.2         subond/suker:v1.0                manager  Running        Running 24 seconds ago
+v82zhyx225yu  suweb_web.3         subond/suker:v1.0                manager  Running        Running 23 seconds ago
+</pre></div></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="../../../../category/life.html">Life</a></li>
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+                <li><a href="../../../../category/tips.html">Tips</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
+</body>
+</html>

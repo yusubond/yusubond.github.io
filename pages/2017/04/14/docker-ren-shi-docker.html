@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Milestone - Docker技术：认识Docker</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../../../../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="Milestone" type="application/atom+xml">
+        <link href="www.subond.com/feeds/all.rss.xml" rel="alternate" title="Milestone" type="application/rss+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="../../../..">Milestone</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+    <div class='article'>
+        <div class="content-title">
+            <h1>Docker技术：认识Docker</h1>
+2017-04-14
+
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
+ 
+
+
+        </div>
+	
+        <div><p>Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。</p>
+<p>本文目录：</p>
+<ul>
+<li><a href="#1.什么是Docker">1.什么是Docker</a></li>
+<li><a href="#2.Docker基本概念">2.Docker基本概念</a></li>
+<li><a href="#3.Docker安装">3.Docker安装</a></li>
+<li><a href="#4.Docker网络">4.Docker网络</a></li>
+</ul>
+<h3>1.什么是Docker</h3>
+<p>Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对 <strong>进程</strong> 进行封装隔离，属于 <strong>操作系统层面的虚拟化技术</strong>。<em>由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器</em>。</p>
+<p>Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的 <strong>应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟</strong>。</p>
+<p><img alt="Docker与虚拟化技术" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-vm.png"></p>
+<h3>2.Docker基本概念</h3>
+<p>Docker包括三个基本概念：<strong>镜像</strong>、<strong>容器</strong>、<strong>仓库</strong>。</p>
+<p><strong>1 镜像(Image)</strong></p>
+<p>众所周知，操作系统分为内核和用户空间。对于Linux而言，内核启动后，会挂载<code>root</code>文件系统为其提供用户空间支持。而Docker镜像，就相当于一个<code>root</code>文件系统。</p>
+<p>Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。<strong>镜像不包含任何动态数据，其内容在构建之后也不会被改变</strong>。</p>
+<p><strong>分层存储</strong></p>
+<p>镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令<code>docker pull ubuntu:14.04</code>获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。</p>
+<div class="highlight"><pre><span></span># 获取DockerHub中的ubuntu14.04镜像
+$ docker pull ubuntu:16.04
+16.04: Pulling from library/ubuntu
+b6f892c0043b: Pull complete
+55010f332b04: Pull complete
+2955fb827c94: Pull complete
+3deef3fcbd30: Pull complete
+cf9722e506aa: Pull complete
+Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8
+Status: Downloaded newer image for ubuntu:16.04
+# 可以看到，整个ubuntu16.04镜像由五层存储构成
+
+# 仓库的元数据
+# 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据
+$ cat repositories.json | python -mjson.tool
+{
+    &quot;Repositories&quot;: {
+        &quot;ubuntu&quot;: {
+            &quot;ubuntu:16.04&quot;: &quot;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&quot;,
+            &quot;ubuntu@sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8&quot;: &quot;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&quot;
+        }
+    }
+}
+
+# 镜像的元数据
+# 在文件/var/lib/docker/image/graph_dirver/imagedb/content/sha256/[image_id]中可以看到镜像的元数据
+# 命令cat image_id | python -mjson.tool
+
+# 镜像层的元数据
+# 在文件/var/lib/docker/image/graph_dirver/layerdb/sha256/[chain_id]
+# [chain_id]是某一层镜像层的存储索引
+</pre></div>
+
+
+<p><strong>2 容器(Container)</strong></p>
+<p><strong>容器的实质是进程</strong>。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，称为“容器存储层”。容器存储层的生命周期与容器一样，容器消亡时，容器存储层也随之消亡。因此，任何保存在容器存储层的信息都会随容器删除而丢失。</p>
+<p>容器是Docker的核心概念。简单来讲，容器是 <strong>独立运行的一个或一组应用，以它们的运行态环境</strong>。与之对应的，容易混淆的概念是虚拟机。虚拟机可以理解为 <strong>模拟运行的一整套操作系统(包括运行态环境和其他系统环境)和运行在操作系统上的应用</strong>。</p>
+<p>容器的核心为所执行的应用程序，所需要的资源都是应用程序所必需的的。当Docker容器中指定的应用终结时，容器也自动终止。当利用<code>docker run</code>创建容器时，Docker在后台运行的标准操作包括：</p>
+<ul>
+<li>检查本地是否存在指定的镜像，不存在就从公有仓库下载  </li>
+<li>利用镜像创建并启动一个容器  </li>
+<li>分配一个文件系统，并在只读的镜像层外面挂载一层可读写层  </li>
+<li>从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中  </li>
+<li>从地址池配置一个ip地址给容器  </li>
+<li>执行用户指定的应用程序  </li>
+<li>执行完毕后容器被终止</li>
+</ul>
+<p><strong>3 仓库(Repository)</strong></p>
+<p>仓库(Repository)是集中存放镜像的地方，每个仓库下面有多个镜像。因此，仓库可以被认为是一个具体的项目或目录。仓库分为公有仓库和本地仓库(私有仓库)，公有仓库Docker Hub由Docker公司或用户维护，主要包括根镜像和用户镜像；而本地仓库可供私人使用。</p>
+<h3>3.Docker安装</h3>
+<p>对于Ubuntu系列，Docker CE支持以下三种64位发行版：</p>
+<ul>
+<li>Yakkety 16.10</li>
+<li>Xenial 16.04</li>
+<li>Trusty 14.04</li>
+</ul>
+<p>第一步：设置仓库。可以通过<code>lsb_release -cs</code>命令查看Ubuntu系统版本，然后添加相应的仓库。</p>
+<div class="highlight"><pre><span></span>$ sudo apt-get -y install apt-transport-https ca-certificates curl
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span> sudo apt-key add -
+$ sudo add-apt-repository <span class="s2">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> stable&quot;</span>
+$ sudo apt-get update
+</pre></div>
+
+
+<p>第二步：获取Docker CE</p>
+<div class="highlight"><pre><span></span>$ sudo apt-get install -y docker-ce
+</pre></div>
+
+
+<p>第三步：检查Docker版本，查看是否安装成功。</p>
+<div class="highlight"><pre><span></span>$ docker --version
+<span class="c1"># Docker version 17.04.0-ce, build 4845c56</span>
+</pre></div>
+
+
+<p>第四步：建立Docker用户组</p>
+<p>默认情况下，docker命令使用Unix Socket与Docker Daemon通信，而只有root用户和docker组用户才可以与Docker Daemon的Unix Socket建立通信。因此，出于安全考虑，我们可以将使用docker的用户加入Docker用户组。</p>
+<div class="highlight"><pre><span></span># 建立docker用户组
+$ sudo groupadd docker
+# 将当前用户加入docker用户组
+$ sudo usermod -aG docker $USER
+</pre></div>
+
+
+<h3>4.Docker网络</h3>
+<p>Docker使用-p参数指定网络端口，将宿主主机的端口与容器中的端口形成映射关系。容器的连接(linking)系统是除了端口映射外，另一种与容器中应用的方式。<strong>连接系统可以在源和接收容器之间创建一个隧道，接收容器可以看到源容器指定的信息，而且不用映射容器的端口到宿主主机上</strong>。</p>
+<p>Docker通过2种方式为容器公开连接信息：</p>
+<ul>
+<li>环境变量  </li>
+<li>更新/etc/hosts文件</li>
+</ul>
+<p><strong>高级网络配置</strong></p>
+<p>当Docker启动时，自动在宿主机上创建一个<code>docker0</code>虚拟网桥，实际上是Linux的一个网桥，对挂载到它的网口进行数据转发。同时，Docker随机分配一个本地未占用的私有网段中的一个地址给<code>docker0</code>接口。</p>
+<p>当创建一个Docker容器的时候，同时会创建一对<code>veth pair</code>接口(虚拟网络设备对：即一对端口，当数据包发送到一个端口时，另一个端口也可以收到相同的数据包)。这对接口一端在容器内，即<code>eth0</code>；另一端在本地并被挂载到<code>docker0</code>网桥，名称以<code>veth</code>开头。通过这种方式，主机可以跟容器通信，容器之间也可以通信。</p>
+<p><img alt="Docker网络" src="http://on64c9tla.bkt.clouddn.com/Comput/docker_network.png"></p></div>
+	
+        <hr>
+
+    </div>
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
+
+
+
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+                <li><a href="www.subond.com/feeds/all.rss.xml" rel="alternate">RSS feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="../../../../category/life.html">Life</a></li>
+                <li><a href="../../../../category/note.html">Note</a></li>
+                <li><a href="../../../../category/read.html">Read</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
+                <li><a href="../../../../category/tips.html">Tips</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="http://nsq.io/">NSQ</a></li>
+                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="../../../..">Milestone</a> &copy; subond 2017</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
+</body>
+</html>

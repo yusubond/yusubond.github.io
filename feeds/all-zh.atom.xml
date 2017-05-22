@@ -1,5 +1,1484 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Milestone</title><link href="www.subond.com/" rel="alternate"></link><link href="www.subond.com/feeds/all-zh.atom.xml" rel="self"></link><id>www.subond.com/</id><updated>2017-04-09T00:00:00+08:00</updated><entry><title>Dynamo分布式键值系统</title><link href="www.subond.com/pages/2017/04/09/dynamo-distributed-systems.html" rel="alternate"></link><published>2017-04-09T00:00:00+08:00</published><updated>2017-04-09T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-09:www.subond.com/pages/2017/04/09/dynamo-distributed-systems.html</id><summary type="html">&lt;p&gt;分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 &lt;strong&gt;哈希分布算法&lt;/strong&gt;。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。&lt;/p&gt;</summary><content type="html">&lt;p&gt;分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 &lt;strong&gt;哈希分布算法&lt;/strong&gt;。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Milestone</title><link href="www.subond.com/" rel="alternate"></link><link href="www.subond.com/feeds/all-zh.atom.xml" rel="self"></link><id>www.subond.com/</id><updated>2017-05-01T00:00:00+08:00</updated><entry><title>Docker进阶：服务配置</title><link href="www.subond.com/pages/2017/05/01/docker-swarm-jin-jie2.html" rel="alternate"></link><published>2017-05-01T00:00:00+08:00</published><updated>2017-05-01T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-05-01:www.subond.com/pages/2017/05/01/docker-swarm-jin-jie2.html</id><summary type="html">&lt;p&gt;当使用Docker Swarm模式时，我们可以通过命令&lt;code&gt;docker service create&lt;/code&gt;向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即&lt;code&gt;docker service&lt;/code&gt;，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。&lt;/p&gt;</summary><content type="html">&lt;p&gt;当使用Docker Swarm模式时，我们可以通过命令&lt;code&gt;docker service create&lt;/code&gt;向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即&lt;code&gt;docker service&lt;/code&gt;，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。&lt;/p&gt;
+&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#创建服务"&gt;创建服务&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#配置服务"&gt;配置服务&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;创建服务&lt;/h3&gt;
+&lt;p&gt;Swarm集群中最简单创建服务的方式就是指定所要创建的服务镜像就可以，即命令&lt;code&gt;docker service create &amp;lt;IMAGE&amp;gt;&lt;/code&gt;。当执行创建服务命令后，Swarm编排器则向可用节点分派服务任务。一个任务其实就是一个基于指定镜像生成的容器。比如，创建一个nginx web服务。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在管理节点上
+# --name参数用于指定服务的名称
+$ docker service create --name myweb nginx
+l3w3x4df6tnia8qql64mkdm1s
+# 查看Swarm集群中的服务
+$ docker service ls
+ID            NAME   MODE        REPLICAS  IMAGE
+l3w3x4df6tni  myweb  replicated  1/1       nginx:latest
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;当然，我们也可以在部署服务时指定容器中将要运行的指令，其命令为&lt;code&gt;docker service create &amp;lt;IMAGE&amp;gt; &amp;lt;COMMAND&amp;gt;&lt;/code&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker service create --name myalpine ping www.bing.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;服务配置&lt;/h3&gt;
+&lt;p&gt;当创建一个服务时，我们通过修改配置选项对服务进行限制，命令&lt;code&gt;docker service create --help&lt;/code&gt;可以查看创建服务的帮助信息。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;配置服务的运行环境&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们可以通过以下参数配置服务的运行环境：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;--env参数可以指定环境变量&lt;/li&gt;
+&lt;li&gt;--workdir参数可以指定容器中的工作目录&lt;/li&gt;
+&lt;li&gt;--user参数可以指定用户名或者UID&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 通过不同的参数配置服务
+$ docker service create --name myservice \
+  --env MYSERVICE=/usr/local/service
+  --workdir /tmp
+  --user subond
+  alpine ping www.baidu.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;配置服务规模和位置&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;前面的介绍中，我们讲到Swarm模式中有两种服务类型：复制服务(replicated service)和全局服务(global service)。对于复制服务类型，我们可指定--replicas参数来创建一定数量的服务任务，从而将任务分派到可用节点上；而对于全局服务，调度器则在每一个可用节点上均部署一个任务，--mode参数可以指定全局服务。具体如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在具有一个管理节点(manager)和一个工作节点(worker1)的Swarm集群中，部署一个具有两个副本的nginx web服务
+# 在节点manger
+$ docker node ls
+ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+34y77dgnqon4soj2kqyb65a9y *  manager   Ready   Active        Leader
+nxb55hhu8kwp272z21xi9dhyy    worker1   Ready   Active
+$ docker service create --name myweb1 --replicas 3 nginx
+xpmhprvzqtl1fi0mdveowjdoa
+# 创建成功
+# docker service ls
+ID            NAME    MODE        REPLICAS  IMAGE
+xpmhprvzqtl1  myweb1  replicated  2/2       nginx:latest
+$ docker ps
+CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED             STATUS              PORTS               NAMES
+27aa642e7786        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   59 seconds ago      Up 58 seconds       80/tcp              myweb1.1.ei5mappmkkcdhbnk6gv3tcgrf
+
+# 在节点worker1
+$ docker ps
+CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
+245a257c56d5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   About a minute ago   Up About a minute   80/tcp              myweb1.2.y2am04ermd2b8d3qevfeyzn67
+# 我们的可以看到在两个节点上均有一个myweb1服务
+
+# 接下来，我们再部署一个myweb2服务，与myweb1不同的是，myweb2是全局服务
+# 在manager节点上
+$ docker service create --name myweb2 --mode global nginx
+yfbd525ztbqpa688ego4u0de8
+$ docker service ls
+ID            NAME    MODE        REPLICAS  IMAGE
+xpmhprvzqtl1  myweb1  replicated  2/2       nginx:latest
+yfbd525ztbqp  myweb2  global      2/2       nginx:latest
+$ docker ps
+CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
+5a99dca94917        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   About a minute ago   Up About a minute   80/tcp              myweb2.34y77dgnqon4soj2kqyb65a9y.rush02tpvachu294flrklw32p
+27aa642e7786        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   8 minutes ago        Up 8 minutes        80/tcp              myweb1.1.ei5mappmkkcdhbnk6gv3tcgrf
+
+# 在worker1节点上
+$ docker ps
+CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
+3a00f5c5ce9b        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   About a minute ago   Up About a minute   80/tcp              myweb2.nxb55hhu8kwp272z21xi9dhyy.on9e6cr8obz3y51e84b3s72z4
+245a257c56d5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   8 minutes ago        Up 8 minutes        80/tcp              myweb1.2.y2am04ermd2b8d3qevfeyzn67
+
+# 接下来，我们将工作节点worker2加入Swarm集群
+$ 在worker2节点上
+$ docker swarm join \
+  --token SWMTKN-1-1omg2k2e92snxv3wlja3komux5wan4hynn80ikkma2s9rd5cxz-9hq2vf8n0jysukytfqpavd8j7 \
+  172.28.128.3:2377
+This node joined a swarm as a worker.
+# 在manager节点上
+$ docker node ls
+ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+34y77dgnqon4soj2kqyb65a9y *  manager   Ready   Active        Leader
+nxb55hhu8kwp272z21xi9dhyy    worker1   Ready   Active
+v0rmad0igl7xwn8alop33j3fu    worker2   Ready   Active
+
+# 在worker2节点上
+$ docker ps
+CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED             STATUS              PORTS               NAMES
+356da4542dd5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &amp;quot;nginx -g &amp;#39;daemon ...&amp;quot;   40 seconds ago      Up 39 seconds       80/tcp              myweb2.v0rmad0igl7xwn8alop33j3fu.5wa1pg01i73u3a1feb73ht5p5
+# 可以看到worker2上具有myweb2的服务，而不具备myweb1服务
+# 这是复制服务和全局的模式的重要区别
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;配置发布端口&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当创建Swarm服务时，有两个方式将服务的端口发布到Swarm群外的主机端口上：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;依靠路由网络。当我们发布一个服务端口时，无论节点上是否运行着服务的任务，Swarm都会在每个节点的目标端口上访问该服务。&lt;/li&gt;
+&lt;li&gt;直接在运行该服务任务的节点上发布服务端口。Docker1.13及其更高版本支持该功能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;第一种：依靠路由网络发布端口&lt;/p&gt;
+&lt;p&gt;我们可以通过参数--publish &lt;target-port&gt;:&lt;service-port&gt;发布服务的端口。Swarm使得服务在每个节点的目标端口均可达。如果外部主机连接到Swarm集群中的任何一个节点，都可以通过路由网络将其路由到服务任务所在的节点上。外部主机不要知道服务任务所在的ip和内部使用的服务端口就可以与服务进行交互。&lt;/p&gt;
+&lt;p&gt;例如，我们在一个具有3个节点的Swarm集群中运行一个具有2个副本的nginx web服务，并将发布端口设为8080。那么，在任何一个节点上可以使用8080端口上的nging服务。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manger节点上部署nginx web服务，并发布8080端口
+$ docker service create --name myweb --replicas 2 --publish 8080:80 nginx
+# 通过检查，我们发现在manager节点和worker2节点均有myweb任务
+# 在worker1节点请求nginx服务
+$ curl localhost:8080
+&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Welcome to nginx!&lt;span class="nt"&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;style&amp;gt;&lt;/span&gt;
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+&lt;span class="nt"&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+...
+&lt;span class="nt"&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;外部主机上，使用任何一个节点的ip均可以访问到nginx服务，如下图：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="nginx服务" src="http://on64c9tla.bkt.clouddn.com/Comput/docker_nginx.png"&gt;&lt;/p&gt;
+&lt;p&gt;第二种：在Swarm节点上发布端口&lt;/p&gt;
+&lt;p&gt;通过指定mode=host来进行参数--publish的设定，我们可以将发布端口指定到每个运行服务任务的Swarm节点上。&lt;/p&gt;
+&lt;p&gt;主要注意的是：如果使用mode=host直接在Swarm节点上发布服务的端口，并且还设置published=&lt;PORT&gt;，则会创建一个隐式限制，只能在给定的群组节点上为该服务运行一个任务。 另外，如果使用mode=host，并且在docker服务创建时不使用--mode=global标志，那么将难以知道哪些节点正在运行服务，以便将工作路由到它们。&lt;/p&gt;
+&lt;p&gt;接下来，我们创建一个全局服务类型的nginx web服务，并将发布端口指定为8090。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
+$ docker service create --name mynginx --mode global --publish mode=host,target=80,published=8090 nginx
+# 这样我们可以在Swarm任何一个节点上访问到8090端口上的nginx服务，即使新加入的节点。
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker进阶：以Swarm模式运行Docker引擎</title><link href="www.subond.com/pages/2017/04/28/docker-swarm-jin-jie1.html" rel="alternate"></link><published>2017-04-28T00:00:00+08:00</published><updated>2017-04-28T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-28:www.subond.com/pages/2017/04/28/docker-swarm-jin-jie1.html</id><summary type="html">&lt;p&gt;Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：创建一个Swarm集群和加入一个已有的Swarm集群。&lt;/p&gt;</summary><content type="html">&lt;p&gt;Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;创建一个Swarm集群&lt;/li&gt;
+&lt;li&gt;加入一个已有的Swarm集群&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#创建Swarm"&gt;创建Swarm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#加入Swarm"&gt;加入Swarm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#节点管理"&gt;节点管理&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;创建Swarm&lt;/h3&gt;
+&lt;p&gt;当我们使用命令行创建一个Swarm集群时，Docker引擎将启用Swarm模式。当执行&lt;code&gt;docker swarm init&lt;/code&gt;命令时，Docker引擎将启动一个Swarm集群，主要过程如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将当前的模式切换至Swarm模式，并创建一个名为&lt;code&gt;default&lt;/code&gt;的Swarm&lt;/li&gt;
+&lt;li&gt;指定当前节点为Swarm的管理节点，并以当前主机名命名当前节点&lt;/li&gt;
+&lt;li&gt;配置网络监听端口，端口号为2377&lt;/li&gt;
+&lt;li&gt;将当前节点设置为&lt;code&gt;Active&lt;/code&gt;状态，意味着该节点可以接收调度器分派的任务&lt;/li&gt;
+&lt;li&gt;启动一个全局分布式数据中心，存储并维护Swarm信息和服务信息&lt;/li&gt;
+&lt;li&gt;默认情况下，为Swarm集群生成自签名根CA&lt;/li&gt;
+&lt;li&gt;默认情况下，生成工作节点和管理节点的token(令牌)，用于其他节点加入该Swarm&lt;/li&gt;
+&lt;li&gt;创建一个名为&lt;code&gt;ingress&lt;/code&gt;的overlay网络，用于对外发布服务端口&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 创建一个swarm
+$ docker swarm init
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;配置通告地址&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;管理节点通过通告地址(advertise address)来允许Swarm集群中的其他节点访问Swarmkit API和覆盖网络。Swarm集群上的其他节点必须能够访问其通告地址(Ip地址)上的管理节点。&lt;/p&gt;
+&lt;p&gt;如果不指定通告地址，Docker则通过检查系统IP，设置其中一个为通告地址，并监听2377端口。如果系统有多个Ip，最好通过--advertise-addr配置通告地址，以便其他节点能够与管理节点进行通信。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 设置通告地址
+$ docker swarm init --advertise-addr 172.28.128.3:2377
+Swarm initialized: current node (34y77dgnqon4soj2kqyb65a9y) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-1omg2k2e92snxv3wlja3komux5wan4hynn80ikkma2s9rd5cxz-9hq2vf8n0jysukytfqpavd8j7 \
+    172.28.128.3:2377
+
+To add a manager to this swarm, run &amp;#39;docker swarm join-token manager&amp;#39; and follow the instructions.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;查看节点加入指令&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如前所述，其他节点加入Swarm需要使用正确的token值。对于管理节点和工作节点，其加入Swarm使用的token值是不同的。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 向Swarm中加入管理节点 docker swarm join-token manager
+$ docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \
+    10.0.2.15:2377
+
+# 向Swarm中加入工作节点 docker swarm join-token worker
+$ docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \
+    10.0.2.15:2377
+# 通过对比可以发现，管理节点和工作节点使用的是不同的token值
+# 两个token值的前半部分是一样的，即根证书的摘要是一样的；后半部分是不一样的，即随机生成的密钥
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;通过传递--quiet标志，可以仅输出token值。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 输出工作节点的token值
+$ docker swarm join-token --quiet worker
+SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll
+
+# 输出管理节点的token值
+$ docker swarm join-token --quiet manager
+SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Swarm集群的token值是需要保护的，因为它允许新的工作节点/管理节点加入该Swarm。Docker建议我们在以下情况下轮换token值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果token被意外登记到版本控制系统中，群聊或日志中。&lt;/li&gt;
+&lt;li&gt;如果怀疑某个节点被入侵。&lt;/li&gt;
+&lt;li&gt;如果希望保证没有新的节点加入Swarm集群。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;出于对Swarm集群的保护，建议至少每6个月轮换一次token值。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 轮换工作节点token值
+$ docker swarm join-token --roteate worker
+# 轮换管理节点token值
+$ docker swarm join-token --rotate manager
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;加入Swarm&lt;/h3&gt;
+&lt;p&gt;当我们创建一个Swarm集群时，只是创建一个包含单个管理节点的Swarm集群。为了充分利用Swarm集群的优势，我们可以向Swarm集群中加入其它节点。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;加入工作节点(worker node)以实现Swarm的增容。当我们向Swarm集群中部署服务时，调度器可以通过random/binpacking/spread策略向可用的节点上分派任务。因此，增加工作节点可以提高Swarm对于服务的处理能力。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;加入管理节点(manager node)以提高Swarm的容错性。管理节点负责Swarm集群的编排和管理。如果存在多个管理节点时，当单一的主管理节点出现宕机时，其他管理节点则可以通过选举产生新的主管理节点来保证整个Swarm集群的正常运行。默认情况下，管理节点也运行任务。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;加入工作节点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在管理节点上，通过命令&lt;code&gt;docker swarm join-token worker&lt;/code&gt;查看加入工作节点的token值。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在管理节点上
+$ docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \
+    10.0.2.15:2377
+
+# 在预接入的工作节点上
+$ docker swarm join \
+--token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \
+10.0.2.15:2377
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;命令&lt;code&gt;docker swarm join&lt;/code&gt;主要的工作流程包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将当前节点Docker Engine切换至Swarm模式&lt;/li&gt;
+&lt;li&gt;向管理节点请求一个TLS证书&lt;/li&gt;
+&lt;li&gt;基于token将当前节点加入到管理节点监听地址所在的Swarm集群&lt;/li&gt;
+&lt;li&gt;设置当前节点为&lt;code&gt;Active&lt;/code&gt;状态，意味着该节点可以接收分派的任务&lt;/li&gt;
+&lt;li&gt;将入口翻盖网络扩展至当前节点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;加入管理节点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当我们向Swarm集群中加入管理节点时，Docker引擎同样将当前节点切换至Swarm模式。与工作节点不同的是，管理节点的状态是&lt;code&gt;Reachable&lt;/code&gt;（可达的），已经存在的管理节点将成为Leader管理节点，即主管理节点。&lt;/p&gt;
+&lt;p&gt;Docker建议在每个Swarm集群中放置三到五个管理节点以提高整个集群的高可用性。因为，Swarm模式下管理节点之间通过Raft共享数据，因此需要奇数个管理节点。&lt;/p&gt;
+&lt;p&gt;在管理节点上，通过命令&lt;code&gt;docker swarm join-token manager&lt;/code&gt;查看加入管理节点的token值。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在管理节点上
+$ docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \
+    10.0.2.15:2377
+
+# 在预加入的管理节点上
+$ docker swarm join \
+--token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \
+10.0.2.15:2377
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;节点管理&lt;/h3&gt;
+&lt;p&gt;作为Swarm集群管理生命周期的一部分，我们需要掌握节点的主要操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#列出节点"&gt;列出Swarm集群中的所有节点&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#检查节点"&gt;检查单个节点&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#更新节点"&gt;节点的更新&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#节点离开"&gt;节点离开Swarm集群&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;列出节点&lt;/h4&gt;
+&lt;p&gt;在管理节点上通过命令&lt;code&gt;docker node ls&lt;/code&gt;可以查看Swarm集群中的所有节点。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在管理节点上
+$ docker node ls
+ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+i8yofrrddqu8mkved5s2uwb0s    worker2   Ready   Active
+utfwatnlalniyo5glt734m4sj *  manager   Ready   Active        Leader
+xf5ysyp7n2biukskzigc5f3bd    worker1   Ready   Active
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;AVAILABILITY&lt;/code&gt;标志状态，描述了调度器是否可以将任务分派至该节点，有三个值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Active:激活状态，意味着调度器可以向该节点分派任务&lt;/li&gt;
+&lt;li&gt;Pause:暂停状态，意味着调度器不可以向该节点分派新的任务，但是原有的任务将正常运行&lt;/li&gt;
+&lt;li&gt;Drain:排水状态，意味着调度器不可以向该节点分派新的任务，并且将其原来负责的任务迁移至其他可用节点。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;MANAGER STATUS&lt;/code&gt;标志状态，显示了节点的是否参与Raft共识过程，有四个值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无状态标记，意味着该节点是工作节点，不参与Swarm集群管理&lt;/li&gt;
+&lt;li&gt;Leader:意味着该节点是主管理节点，负责整个Swarm集群的管理和服务编排&lt;/li&gt;
+&lt;li&gt;Reachable:意味着该节点参与Raft共识过程。如果Leader节点变成不可达状态，该节点则参与选举产生新的Leader过程。&lt;/li&gt;
+&lt;li&gt;Unavailable:意味着该节点不能够与其他管理节点进行通信。当一个管理节点变成不可达状态，最好向Swarm集群中加入新的管理节点或者将其中的一个工作节点变成管理节点。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;检查节点&lt;/h4&gt;
+&lt;p&gt;我们可以通过命令&lt;code&gt;docker node inspect &amp;lt;NODE-ID&amp;gt;&lt;/code&gt;查看单个节点的信息，默认信息的输出格式为JSON格式，也可以通过--pretty标志以可读的方式输出节点信息。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在管理节点上
+$ docker node inspect self --pretty
+ID:         utfwatnlalniyo5glt734m4sj
+Hostname:       manager
+Joined at:      2017-05-11 08:23:12.477597386 +0000 utc
+Status:
+ State:         Ready
+ Availability:      Active
+ Address:       172.28.128.3
+Manager Status:
+ Address:       172.28.128.3:2377
+ Raft Status:       Reachable
+ Leader:        Yes
+Platform:
+ Operating System:  linux
+ Architecture:      x86_64
+Resources:
+ CPUs:          2
+ Memory:        992.2 MiB
+Plugins:
+  Network:      bridge, host, macvlan, null, overlay
+  Volume:       local
+Engine Version:     17.03.1-ce
+
+$ docker node inspect worker1 --pretty
+ID:         xf5ysyp7n2biukskzigc5f3bd
+Hostname:       worker1
+Joined at:      2017-05-11 08:31:54.044503498 +0000 utc
+Status:
+ State:         Ready
+ Availability:      Active
+ Address:       172.28.128.4
+Platform:
+ Operating System:  linux
+ Architecture:      x86_64
+Resources:
+ CPUs:          2
+ Memory:        992.2 MiB
+Plugins:
+  Network:      bridge, host, macvlan, null, overlay
+  Volume:       local
+Engine Version:     17.03.1-ce
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;更新节点&lt;/h3&gt;
+&lt;p&gt;在Swarm集群中，我们可以修改节点的以下属性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;改变节点的可用性&lt;/li&gt;
+&lt;li&gt;添加/移除标签元数据&lt;/li&gt;
+&lt;li&gt;改变节点的角色&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;改变节点的可用性&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;改变节点的可用性主要包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将管理节点置为&lt;code&gt;Drain&lt;/code&gt;状态，这样做意味着该节点只负责Swarm集群的管理工作，而不具备运行任务的功能，使节点成为“纯管理节点”。&lt;/li&gt;
+&lt;li&gt;将节点置为&lt;code&gt;Drain&lt;/code&gt;状态，以便将其停止并进行维护工作。&lt;/li&gt;
+&lt;li&gt;将节点置为&lt;code&gt;Pause&lt;/code&gt;状态，使它不再接收新的任务&lt;/li&gt;
+&lt;li&gt;将节点由暂停或不可达状态置为可达状态，使其重新接收新任务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 将worker1节点置为drain状态
+$ docker node update --availability drain worker1
+worker1
+$ docker node ls
+ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+i8yofrrddqu8mkved5s2uwb0s    worker2   Ready   Active
+utfwatnlalniyo5glt734m4sj *  manager   Ready   Active        Leader
+xf5ysyp7n2biukskzigc5f3bd    worker1   Ready   Drain
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;添加/移除标签元数据&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;节点标签提供了一种节点管理的灵活方式，当然，在进行服务部署和限制时也可以使用节点标签。在管理节点上运行命令&lt;code&gt;docker node update --label-add&lt;/code&gt;，可以向一个节点添加标签，&lt;code&gt;--label-add&lt;/code&gt;标志接收键参数(&lt;key&gt;)，也可以接收键值对(&lt;key&gt;=&lt;value&gt;)。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# docker node update --label-add subond worker1
+# docker node inspect worker1 --pretty
+ID:         xf5ysyp7n2biukskzigc5f3bd
+Labels:
+ - subond =
+Hostname:       worker1
+Joined at:      2017-05-11 08:31:54.044503498 +0000 utc
+Status:
+ State:         Ready
+ Availability:      Active
+ Address:       172.28.128.4
+Platform:
+ Operating System:  linux
+ Architecture:      x86_64
+Resources:
+ CPUs:          2
+ Memory:        992.2 MiB
+Plugins:
+  Network:      bridge, host, macvlan, null, overlay
+  Volume:       local
+Engine Version:     17.03.1-ce
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;节点角色的转换&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Docker允许提升工作节点为管理节点，尤其是在管理节点宕机时，这个方法很有用。当然，我们也可以将管理节点降为工作节点。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 提升节点角色命令 docker node promote
+$ docker node promote worker1
+
+# 降低节点角色命令 docker node demote
+$ docker node demote worker1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;docker node promote&lt;/code&gt;和&lt;code&gt;docker node demote&lt;/code&gt;命令是&lt;code&gt;docker node update --role manager&lt;/code&gt;和&lt;code&gt;docker node update --role worker&lt;/code&gt;命令的简化版，两者具有同样的作用。&lt;/p&gt;
+&lt;h4&gt;节点离开&lt;/h4&gt;
+&lt;p&gt;命令&lt;code&gt;docker swarm leave&lt;/code&gt;可以使一个节点离开Swarm集群。当一个节点离开Swarm集群时，该节点的Docker引擎将停止运行Swarm模式，调度器不再将任务分派值该节点。如果该节点是管理节点，移除节点将收到警告信息，可以通过--force参数强制移除。&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：工作原理</title><link href="www.subond.com/pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html" rel="alternate"></link><published>2017-04-26T00:00:00+08:00</published><updated>2017-04-26T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-26:www.subond.com/pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#节点的工作原理"&gt;节点的工作原理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#服务的工作原理"&gt;服务的工作原理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#PKI工作原理"&gt;PKI工作原理&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;节点的工作原理&lt;/h3&gt;
+&lt;p&gt;Docker1.12及其以后版本中引入的Swarm模式，即允许创建一个Docker集群。一个Swarm集群包含一个或多个节点，既可以是物理节点，也可以是虚拟节点。但是，需要保证的是节点上要安装Docker1.12或高于1.12的Docker引擎。&lt;/p&gt;
+&lt;p&gt;Swarm模式下节点分为两种：&lt;strong&gt;管理节点&lt;/strong&gt; 和 &lt;strong&gt;工作节点&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="节点的工作原理" src="http://on64c9tla.bkt.clouddn.com/Comput/node_work.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;管理节点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;管理节点负责集群的管理任务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;维护集群状态信息&lt;/li&gt;
+&lt;li&gt;服务调度&lt;/li&gt;
+&lt;li&gt;处理Swarm模式下的API请求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;通过Raft原理，管理节点负责维护整个Swarm集群的内部一致状态以及其上运行的所有服务。为了测试其功能，我们可以运行单个管理节点的Swarm集群。为了保证服务的正常运行，如果单个管理节点的Swarm集群失败，则需要创建一个新的Swarm集群来接管原来的服务。&lt;/p&gt;
+&lt;p&gt;为了很好的利用Swarm集群的容错功能，Docker建议部署奇数个节点以保证整个Swarm集群的高可用性。与此同时，当采用多个管理节点时，Swarm系统可以保证管理节点的故障恢复，而不会导致服务停机。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个具有三个管理节点的Swarm集群，最多可允许一个管理节点出现故障。&lt;/li&gt;
+&lt;li&gt;一个具有五个管理节点的Swarm集群，最多可允许两个管理节点出现故障。&lt;/li&gt;
+&lt;li&gt;一个具有&lt;code&gt;N&lt;/code&gt;个管理节点的Swarm集群，最多可允许&lt;code&gt;(N-1)/2&lt;/code&gt;个管理节点出现故障。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在一个Swarm集群中，Docker推荐最多部署七个管理节点。因为，更多的管理节点并不一定意味着高可用性和高伸缩性，有时恰恰相反。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;工作节点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;工作节点也是Docker引擎的实例，主要负责运行容器实例。工作节点不参与Raft分布式状态维护，调度决策的制定以及服务Swarm模式下的API请求。我们可以创建单个管理节点的Swarm集群，但却不能创建具有单个工作节点的Swarm集群。&lt;strong&gt;模式情况下，所有的管理节点也是工作节点&lt;/strong&gt;。当然，也可以通过配置，让管理节点仅负责“管理功能”。&lt;/p&gt;
+&lt;p&gt;为了防止服务调度器在具有多个节点的Swarm集群中，将任务布置到管理节点上，可以将管理节点的可用性设置为&lt;code&gt;Drain&lt;/code&gt;。这样，服务调度器就不会将任务部署到&lt;code&gt;Drain&lt;/code&gt;状态的节点上，而只将任务分派到&lt;code&gt;Active&lt;/code&gt;状态的节点。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;角色转换&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Docker Swarm模式中，允许我们将工作节点提升为管理节点以保证整个Swarm集群的正常运行，尤其是在管理节点出现故障时。相关命令可以参考&lt;code&gt;docker node promote&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;同样的道理，我们也可以将管理节点变为工作节点。相关命令可以参考&lt;code&gt;docker node demote&lt;/code&gt;。&lt;/p&gt;
+&lt;h3&gt;服务的工作原理&lt;/h3&gt;
+&lt;p&gt;在Swarm模式下，Docker允许我们通过创建服务的方式来部署应用镜像。通常情况下，服务是某些更大应用程序的上下文中为服务器的镜像。比如，服务包括HTTP服务器，数据库，或者希望在分布式环境中运行的任何类型的可执行程序。&lt;/p&gt;
+&lt;p&gt;当创建一个服务的时候，我们需要制定服务需要的镜像(即运行环境)和即将在容器中运行的命令(即应用程序)。当然，也包括其他选项：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;端口:在Swarm集群外提供服务的端口&lt;/li&gt;
+&lt;li&gt;网络方式:用于连接到Swarm集群中其他服务的网络环境&lt;/li&gt;
+&lt;li&gt;系统限制:CPU和内存限制及预留&lt;/li&gt;
+&lt;li&gt;更新操作:更新时延策略&lt;/li&gt;
+&lt;li&gt;副本数量:Swarm中镜像的副本数量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;服务，任务与容器&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当我们向Swarm集群中部署服务时，管理节点将服务定义为服务所需的状态。然后，将服务以任务副本的方式分派到Swarm集群中的各个节点上。这些任务在Swarm集群中的节点上独立运行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一个容器就是一个独立的进程&lt;/strong&gt;。Swarm集群中，每个任务调用一个容器。一个任务类似调度器放置在容器里面的一个”插槽“。一旦容器处于运行状态，调度器能够识别任务处于运行状态。如果容器出现问题或终止，则任务终止。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="服务的工作原理" src="http://on64c9tla.bkt.clouddn.com/Comput/service_work.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;任务与调度&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;任务是 &lt;strong&gt;Swarm集群中调度的基本单元&lt;/strong&gt;，具有 &lt;strong&gt;原子性&lt;/strong&gt;，即一个任务在容器中要么运行成功，要么失败。当我们创建或更新一个服务所需要的服务状态时，调度器通过调度任务来满足服务所需的状态。比如，我们创建一个包括三个HTTP监听的服务，调度器则通过创建三个任务来做出响应。每个任务都是调度器通过创建一个容器并填充一个”插槽“来实现。简单来讲就是，容器是任务的实例化。如果其中一个HTTP监听服务失败或崩溃，调度器将创建一个新容器并执行新的任务副本。&lt;/p&gt;
+&lt;p&gt;任务采用的是 &lt;strong&gt;单向机制&lt;/strong&gt;。它通过一系列状态单独运行：分配，准备，运行等。如果任务失败，调度器将删除该任务及其容器，然后根据服务所需的状态创建一个新任务来替代原来的任务。&lt;/p&gt;
+&lt;p&gt;Swarm集群的基础逻辑包括 &lt;strong&gt;通用调度器&lt;/strong&gt; 和 &lt;strong&gt;编排器&lt;/strong&gt;。服务和任务均具有抽象性，而将其类型是不可知。假设我们要实现其他类型的任务，比如虚拟机任务或非容器化任务。调度器和编排器对于任务的类型是不可知的。但是，目前Docker只支持容器任务。&lt;/p&gt;
+&lt;p&gt;Swarm模式下如何接受服务并创建任务，以及将任务分派到其他节点，如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="调度器与编排器" src="http://on64c9tla.bkt.clouddn.com/Comput/scheduler.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;复制及全局服务&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Swarm模式下有两种服务的部署方式，&lt;strong&gt;复制服务&lt;/strong&gt; 和 &lt;strong&gt;全局服务&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;复制服务模式下，我们需要制定将要运行的任务副本的数量。比如，部署一个具有三个任务副本的HTTP监控服务，每个任务都具有相同的内容。&lt;/p&gt;
+&lt;p&gt;全局服务模式下，每个节点均运行一个服务的任务副本，不需要指定任务副本的数量。当新的节点加入Swarm集群后，编排器则创建新的任务并将其分派到该节点。监控服务，反病毒扫描程序或者其他类型的容器都是比较好的全局服务的对象。&lt;/p&gt;
+&lt;h3&gt;PKI工作原理&lt;/h3&gt;
+&lt;p&gt;Docker引擎中内置的公钥基础设施(Public Key Infrastructure)系统使得容器的部署和编排变得更加简单和安全。Swarm集群中的节点使用传输层安全(TLS)来认证，授权和加密它们与集群中其他节点的通信。&lt;/p&gt;
+&lt;p&gt;当我们使用命令&lt;code&gt;docker swarm init&lt;/code&gt;创建一个Swarm集群时，Docker引擎则将当前节点视为一个管理节点。默认情况下，管理节点自身生成一个新的跟证书颁发机构(CA)以及密钥对，以保护与加入集群的其他节点的通信。当然，也可以通过配置--external-ca参数来指定外部的根证书颁发机构。&lt;/p&gt;
+&lt;p&gt;与此同时，管理节点还生成两个token值(用于向Swarm集群中加入节点)，一个是工作节点token值，另一个是管理节点token值。每一个token值都包含根CA证书的摘要和随机生成的密钥。当节点加入集群时，它使用摘要来验证远程管理节点的根CA证书，使用密钥来确保该节点是经过批准的节点。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 创建一个swarm
+$ docker swarm init
+# 查看管理节点和工作节点的加入命令
+# 向Swarm中加入管理节点 docker swarm join-token manager
+# 向Swarm中加入工作节点 docker swarm join-token worker
+$ docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \
+    10.0.2.15:2377
+$ docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \
+    10.0.2.15:2377
+# 通过对比可以发现，管理节点和工作节点使用的是不同的token值
+# 两个token值的前半部分是一样的，即根证书的摘要是一样的；后半部分是不一样的，即随机生成的密钥
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;每次当新的节点加入Swarm集群时，管理节点向包含随机生成的节点ID颁发证书，用来标识证书通用名(CN)下的节点和组织名(UN)下的角色。节点ID用来标识Swarm集群中节点寿命的密码安全。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="PKI工作原理" src="http://on64c9tla.bkt.clouddn.com/Comput/PKI.png"&gt;&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务回滚</title><link href="www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-24T00:00:00+08:00</published><updated>2017-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-24:www.subond.com/pages/2017/04/24/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#服务更新与回滚"&gt;服务更新与回滚&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#路由网络"&gt;路由网络&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;服务更新与回滚&lt;/h3&gt;
+&lt;p&gt;Docker Swarm集群管理中支持服务的版本更新及回滚操作，具体演示如下：&lt;/p&gt;
+&lt;p&gt;所使用的系统环境环境如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统  &lt;/li&gt;
+&lt;li&gt;节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5)  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manger节点上
+$ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6
+
+# --update-delay参数配置服务任务或任务集的更新的时延
+# 其格式为T1hT2mT3s，即T1小时T2分钟T3秒
+# 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数
+# 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。
+# 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。
+# 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如：
+# --update-failure-action docker service create
+# --update-failure-action docker service update
+
+# 接下来，我们更新redis的镜像
+$ docker service update --image redis:3.0.7 redis
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如前所述，默认情况下，更新主要包括以下几个流程：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;停止第一个任务&lt;/li&gt;
+&lt;li&gt;调度器更新已经停止的任务&lt;/li&gt;
+&lt;li&gt;为更新过的任务启动容器&lt;/li&gt;
+&lt;li&gt;若任务更新返回RUNNING状态，则等待设定的时延，并进行下一个任务的更新&lt;/li&gt;
+&lt;li&gt;若任务更新返回FAILED状态，则停止更新&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;更新结束后，我们看到如下状态：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker service ps redis
+ID            NAME         IMAGE        NODE           DESIRED STATE  CURRENT STATE                ERROR  PORTS
+i9c6xvbopko2  redis.1      redis:3.0.7  ubuntu-xenial  Running        Running &lt;span class="m"&gt;5&lt;/span&gt; seconds ago
+mnw258z0j5hg   &lt;span class="se"&gt;\_&lt;/span&gt; redis.1  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown &lt;span class="m"&gt;5&lt;/span&gt; seconds ago
+iu7yjb7nm345  redis.2      redis:3.0.7  ubuntu-xenial  Running        Running &lt;span class="m"&gt;53&lt;/span&gt; seconds ago
+fmgyoq4vladx   &lt;span class="se"&gt;\_&lt;/span&gt; redis.2  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown &lt;span class="m"&gt;54&lt;/span&gt; seconds ago
+zsliph02ycsf  redis.3      redis:3.0.7  ubuntu-xenial  Running        Running about a minute ago
+8j75vwiunh49   &lt;span class="se"&gt;\_&lt;/span&gt; redis.3  redis:3.0.6  ubuntu-xenial  Shutdown       Shutdown about a minute ago
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;由此我们可以判断，在服务/任务更新的过程中，实质上是 &lt;strong&gt;创建了一批新的容器来满足我们的更新时所指定的新的需求&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3&gt;路由网格&lt;/h3&gt;
+&lt;p&gt;Docker Swarm模式下可以轻松地配置PublishedPort，使外部可以访问到Swarm集群中的资源。&lt;strong&gt;所有的节点都参与到入口路由网格&lt;/strong&gt;。路由网格使得Swarm集群中的每个节点能够接受已发布端口上的任何服务，即使节点上没有正在运行的任务。&lt;strong&gt;路由网格将所有传入请求路由到可用节点的已发布端口的活动容器上&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;为了保证在Swarm中使用入口网络，在启用Swarm模式时需要打开以下端口：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Port 7946[TCP/UDP]用于容器网络的发现&lt;/li&gt;
+&lt;li&gt;Port 4789[UDP]用于容器入口网络&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当然，还必须打开Swarm集群节点和任何需要访问外部资源之间已发布的端口。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# --publish参数用于指定服务端口，--publish &amp;lt;PublishedPort&amp;gt;:&amp;lt;TARGET-PORT&amp;gt;
+# &amp;lt;TARGET-PORT&amp;gt;是容器监听的端口
+# &amp;lt;PublishedPort&amp;gt;是Swarm对外服务的端口
+$ docker service create --name myweb --publish 8080:80 --replicas 2 nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;默认情况下，当我们发布一个端口时，默认指定为TCP端口。但是，有时我们需要仅指定TCP端口或UDP端口，可进行如下设置。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 仅指定TCP端口
+$ docker service create --name dns-cache -p 53:53 dns-cache
+$ docker service create --name dns-cache -p 53:53/tcp dns-cache
+# 以上两个命令是等价的，因为默认情况下即为TCP端口
+
+# 同时指定TCP和UDP端口
+$ docker service create --name dns-cache -p 53:53/tcp -p 53:53/udp dns-cache
+
+# 仅指定UDP端口
+$ docker service create --name dns-cache -p 53:53/udp dns-cache
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker集群：服务部署</title><link href="www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html" rel="alternate"></link><published>2017-04-22T00:00:00+08:00</published><updated>2017-04-22T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-22:www.subond.com/pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html</id><summary type="html">&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#核心概念"&gt;核心概念&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#搭建Swarm集群"&gt;搭建Swarm集群&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;核心概念&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Swarm&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;节点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一个节点即是参与Swarm集群的Docker引擎实例。我们可以将其理解为一个Docker节点。虽然，我们可以在同一物理主机或云服务上运行一个或多个节点，但是典型的Swarm生产环境则是在分布式的物理主机或云服务上部署多个Docker节点。&lt;/p&gt;
+&lt;p&gt;当部署一个服务到Swarm集群中时，我们需要率先在 &lt;strong&gt;管理节点&lt;/strong&gt; 上注册该服务。然后，管理节点将该服务（称之为 &lt;strong&gt;任务&lt;/strong&gt;）分派给各个 &lt;strong&gt;工作节点&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;管理节点(Swarm Manager)负责服务编排和集群管理以保证整个集群的正常运行，并负责选出一个leader进行任务编排工作。&lt;/p&gt;
+&lt;p&gt;工作节点(Swarm Agent)负责接收并执行管理节点派发下来的任务。默认情况下，管理节点同时扮演工作节点的角色，即接收并执行任务。当然，我们也可以通过配置让管理节点只负责任务管理的功能，使之成为“只具备管理”的节点。Agent在每个工作节点上运行，并报告分派给它的任务。工作节点向管理节点报告其分派到的任务的当前状态，以便管理节点可以维护每个工作节点所需的状态。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;服务和任务&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一个服务是指运行在工作节点上任务的定义。它是Swarm系统的中心结构，也是用户与Swarm交互的主要根据。当创建一个服务时，我们需要指定容器即将使用的镜像以及容器中要执行的命令。在服务分派模型中，Swarm的管理节点根据我们在所需状态下设置的比例，在工作节点中分配特定数量的任务副本。对于全局服务，Swarm在集群中的每个可用工作节点上为服务运行一个任务。&lt;/p&gt;
+&lt;p&gt;一个任务带有一个Docker容器和在容器中执行的命令。任务是Swarm进行服务管理的原子调度单元。管理节点根据服务规模中设置的副本数量将任务分派给工作节点。一旦一个任务分派给某个节点，任务就不能移动到另一个节点，它只能在分配的节点上运行或者失败，这即是任务的原子性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;负载均衡&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Swarm集群管理使用的是 &lt;strong&gt;入口负载均衡&lt;/strong&gt; 策略来暴露想要从外部访问的服务。Swarm的管理节点可以自动地给服务分配一个PublishedPort，也可以为该服务自行配置一个PublishedPort。如果不指定端口，Swarm管理节点将分配30000-32767之间的某个端口。&lt;/p&gt;
+&lt;p&gt;外部组件，像云端负载均衡，可以访问集群中任何一个节点的PublishedPort，无论这个节点当前是否在运行某个服务的任务。Swarm路由中的所有节点都将连接到正在运行任务实例的节点上。&lt;/p&gt;
+&lt;p&gt;Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配DNS条目。Swarm管理节点使用内部负载均衡，根据服务的DNS名称在集群内部的服务之间分配请求。&lt;/p&gt;
+&lt;h3&gt;搭建Swarm集群&lt;/h3&gt;
+&lt;p&gt;搭建Swarm集群过程中，所使用的系统环境环境如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;三个节点(manager, worker1, worker2)均为xenial64系统  &lt;/li&gt;
+&lt;li&gt;节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5)  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;1.创建一个Swarm集群&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在manager所在的主机创建Swarm集群，即创建Swarm管理节点。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
+# 使用docker swarm init --advertise-addr &amp;lt;manager-ip&amp;gt;命令创建Swarm的管理节点
+$ docker swarm init --advertise-addr 172.28.128.0.3
+Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager.
+To add a worker to this Swarm, run the following command:
+    docker Swarm join \
+    --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
+    172.28.128.3:2377
+To add a manager to this Swarm, run &amp;#39;docker Swarm join-token manager&amp;#39; and follow the instructions.
+# docker node ls查看管理节点的状态
+$ docker node ls
+ID                           HOSTNAME       STATUS  AVAILABILITY  MANAGER STATUS
+utfwatnlalniyo5glt734m4sj *  ubuntu-xenial  Ready   Active        Leader
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;2.向Swarm中注册工作节点&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在worker[1-2]所在的主机创建Swarm工作节点，并加入到Swarm集群中。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在worker1节点上
+$ docker Swarm join \
+$ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
+$ 172.28.128.3:2377
+This node joined a Swarm as a worker.
+
+# 在worker2节点上
+$ docker Swarm join \
+$ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \
+$ 172.28.128.3:2377
+This node joined a Swarm as a worker.
+# 使用命令docker Swarm leave将节点移除Swarm集群
+
+# 在manager节点上
+$ docker node ls
+ID                           HOSTNAME       STATUS  AVAILABILITY  MANAGER STATUS
+i8yofrrddqu8mkved5s2uwb0s    ubuntu-xenial  Ready   Active
+utfwatnlalniyo5glt734m4sj *  ubuntu-xenial  Ready   Active        Leader
+xf5ysyp7n2biukskzigc5f3bd    ubuntu-xenial  Ready   Active
+# 可以看到当前Swarm集群中已经存在三个节点，并且用*指出管理节点的ID
+# 需要注意的是，命令docker node ls只能工作在管理节点上，用于查看Swarm集群中的节点状态
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;3.向Swarm集群中部署服务&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;服务的部署和管理均在管理节点上进行。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
+$ docker service create --replicas 1 --name helloworld alpine ping docker.com
+kugt1fx2j2es172l4zmvr0fbk
+# --name 指定服务名称
+# --replicas 指定任务的副本数量
+# alpine ping docker.com 表示该服务所使用的容器镜像和容器中要执行的命令
+
+# 使用命令docker ps可以查看主机上服务运行所在的docker容器的状态
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+8a0bd7183d20        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   3 minutes ago       Up 3 minutes                            helloworld.1.f1b58uxk5c1l56736uznzapjm
+
+# 使用docker service ls查看服务
+ID            NAME        MODE        REPLICAS  IMAGE
+kugt1fx2j2es  helloworld  replicated  1/1       alpine:latest
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;4.服务检查&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当我们向Swarm集群中部署服务后，可以使用docker命令查看服务的运行状态。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 命令docker service inspect --pretty &amp;lt;SERVICE-ID&amp;gt;可以以可读的格式显示服务的细节信息
+# 在manager节点上
+$ docker service inspect --pretty helloworld
+ID:     kugt1fx2j2es172l4zmvr0fbk
+Name:       helloworld
+Service Mode:   Replicated
+ Replicas:  1
+Placement:
+UpdateConfig:
+ Parallelism:   1
+ On failure:    pause
+ Max failure ratio: 0
+ContainerSpec:
+ Image:     alpine:latest@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96
+ Args:      ping docker.com
+Resources:
+Endpoint Mode:  vip
+
+# 命令docker service ps &amp;lt;SERVICE-ID&amp;gt;可查看服务/任务运行在哪个节点上
+$ docker service ps helloworld
+ID            NAME          IMAGE          NODE           DESIRED STATE  CURRENT STATE           ERROR  PORTS
+f1b58uxk5c1l  helloworld.1  alpine:latest  ubuntu-xenial  Running        Running 13 minutes ago
+# 在任务运行的节点上，可使用docker ps查看容器运行的信息
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;5.Swarm集群中服务的缩放&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一旦向Swarm中部署服务后，我们还可以调整某项服务的容器数量，即任务的数量。命令如下:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker service scale &amp;lt;SERVICE-ID&amp;gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;NUMBERS-OF-TASKS&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
+# 将之前部署的helloworld服务扩大至5个任务
+$ docker service scale helloworld=5
+helloworld scaled to 5
+
+# 查看5个任务的分布情况及运行状态
+$ docker service ps helloworld
+ID            NAME          IMAGE          NODE           DESIRED STATE  CURRENT STATE           ERROR  PORTS
+f1b58uxk5c1l  helloworld.1  alpine:latest  ubuntu-xenial  Running        Running 28 minutes ago
+xkgyz1874p3r  helloworld.2  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+0rnlxcv4487o  helloworld.3  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+izu5oeb5qerp  helloworld.4  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+m2v2uzgoy9g1  helloworld.5  alpine:latest  ubuntu-xenial  Running        Running 2 minutes ago
+
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+ea297aa56bc4        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   2 minutes ago       Up 2 minutes                            helloworld.5.m2v2uzgoy9g1sdohtdyenjclu
+8a0bd7183d20        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   29 minutes ago      Up 29 minutes                           helloworld.1.f1b58uxk5c1l56736uznzapjm
+# 可以看到在manager主机上运行着1和5号任务
+
+# 在worker1节点上
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+ebd0c448b9a4        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   15 minutes ago      Up 15 minutes                           helloworld.2.xkgyz1874p3rsaih8e1jbfmyx
+# 运行着2号任务
+
+# 在worker2节点上
+$ docker ps
+CONTAINER ID        IMAGE                                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+a30267238db2        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   5 minutes ago       Up 5 minutes                            helloworld.3.0rnlxcv4487o0y4qqaot7n0yt
+bb5b75e55b30        alpine@sha256:c0537ff6a5218ef531ece93d4984efc99bbf3f7497c0a7726c88e2bb7584dc96   &amp;quot;ping docker.com&amp;quot;   5 minutes ago       Up 5 minutes                            helloworld.4.izu5oeb5qerpkfjde4bna47e5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;6.服务删除&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在Swarm集群的管理节点上，我们可以使用命令&lt;code&gt;docker service rm &amp;lt;SERVICE-ID&amp;gt;&lt;/code&gt;删除服务。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 在manager节点上
+$ docker service rm helloworld
+helloworld
+# 通过命令docker service inspect &amp;lt;SERVICE-ID&amp;gt;可以看到服务已经不存在
+# 通过命令docker ps可以看到相应的容器也随之删除
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker快速上手教程</title><link href="www.subond.com/pages/2017/04/20/docker-quickstart.html" rel="alternate"></link><published>2017-04-20T00:00:00+08:00</published><updated>2017-04-20T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-20:www.subond.com/pages/2017/04/20/docker-quickstart.html</id><summary type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#1.构建容器-Containers"&gt;1.构建容器-Containers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#2.组合服务-Compose"&gt;2.组合服务-Compose&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#3.集群管理-Swarm"&gt;3.集群管理-Swarm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#4.应用协作-Stacks"&gt;4.应用协作-Stacks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.构建容器-Containers&lt;/h3&gt;
+&lt;p&gt;Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dockerfile&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;创建一个新的空目录，在目录下创建名为&lt;code&gt;Dockerfile&lt;/code&gt;的文件，并写入以下内容。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Use an official Python runtime as a base image
+FROM python:2.7-slim
+
+# Set the working directory to /app …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#1.构建容器-Containers"&gt;1.构建容器-Containers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#2.组合服务-Compose"&gt;2.组合服务-Compose&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#3.集群管理-Swarm"&gt;3.集群管理-Swarm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#4.应用协作-Stacks"&gt;4.应用协作-Stacks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.构建容器-Containers&lt;/h3&gt;
+&lt;p&gt;Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dockerfile&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;创建一个新的空目录，在目录下创建名为&lt;code&gt;Dockerfile&lt;/code&gt;的文件，并写入以下内容。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Use an official Python runtime as a base image
+FROM python:2.7-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+ADD . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD [&amp;quot;python&amp;quot;, &amp;quot;app.py&amp;quot;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Dockerfile中用到两个我们还未创建的文件，即&lt;code&gt;requirements.txt&lt;/code&gt;和&lt;code&gt;app.py&lt;/code&gt;。接下来，创建这两个文件，内容分别如下：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;requirements.txt&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Flask
+Redis
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;app.py&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;redis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redis&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;RedisError&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Connect to Redis&lt;/span&gt;
+&lt;span class="n"&gt;redis&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redis&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;redis&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;socket_connect_timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;socket_timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;hello&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;visits&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;redis&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;incr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;counter&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;RedisError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;visits&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;i&amp;gt;cannot connect to Redis, counter disabled&amp;lt;/i&amp;gt;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="n"&gt;html&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;h3&amp;gt;Hello {name}!&amp;lt;/h3&amp;gt;&amp;quot;&lt;/span&gt; \
+           &lt;span class="s2"&gt;&amp;quot;&amp;lt;b&amp;gt;Hostname:&amp;lt;/b&amp;gt; {hostname}&amp;lt;br/&amp;gt;&amp;quot;&lt;/span&gt; \
+           &lt;span class="s2"&gt;&amp;quot;&amp;lt;b&amp;gt;Visits:&amp;lt;/b&amp;gt; {visits}&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;html&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getenv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;NAME&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;hostname&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gethostname&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;visits&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;visits&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;0.0.0.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;80&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;构建并运行应用&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;创建好Dockerfile和其所需的文件后，我们就可以利用docker命令构建Dockerfile中定义的应用。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 构建应用，即为构建Dockerfile定义的应用镜像
+$ docker build -t subond-hello .
+# -t指定镜像名称
+# .代表以当前目录为上下文内容
+
+# 镜像创建成功后，可以通过docker images命令查看镜像信息
+$ docker images
+subond-hello        latest              e440849c12a4        3 hours ago         195 MB
+python              2.7-slim            1c7128a655f6        5 days ago          183 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在Dockerfile中我们定义了容器需要暴露的端口，因此，在容器运行时需要将暴露出来的端口映射到宿主机的某个端口，这样在宿主机上就可以访问容器中的资源。-p可以指定宿主机与容器间的端口映射关系。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 运行刚刚构建好的应用镜像
+$ docker run -p 8080:80 subond-hello
+* Running on http://0.0.0.0:80/ (Press CTRL+C to quit)
+
+# 验证应用是否成功运行
+# 在宿主机上
+$ curl http://localhost:8080
+&lt;span class="nt"&gt;&amp;lt;h3&amp;gt;&lt;/span&gt;Hello World!&lt;span class="nt"&gt;&amp;lt;/h3&amp;gt;&amp;lt;b&amp;gt;&lt;/span&gt;Hostname:&lt;span class="nt"&gt;&amp;lt;/b&amp;gt;&lt;/span&gt; 3d8822177c83&lt;span class="nt"&gt;&amp;lt;br/&amp;gt;&amp;lt;b&amp;gt;&lt;/span&gt;Visits:&lt;span class="nt"&gt;&amp;lt;/b&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;&amp;lt;i&amp;gt;&lt;/span&gt;cannot connect to Redis, counter disabled&lt;span class="nt"&gt;&amp;lt;/i&amp;gt;&lt;/span&gt;
+
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                  NAMES
+3d8822177c83        subond-hello        &amp;quot;python app.py&amp;quot;     57 seconds ago      Up 56 seconds       0.0.0.0:8080-&amp;gt;80/tcp   heuristic_davinci
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;共享镜像&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当自己创建的镜像能够正常运行时，我们可以选择将镜像上传到DockerHub上与别人分享。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 登录DockerHub账号
+$ docker login
+# 给自己的镜像打上tag标签，如果不添加tag信息，则默认为最新，即latest
+# username/repository:tag为DockerHub上的仓库
+$ docker tag subond-hello username/repository:tag
+
+# 上传镜像
+$ docker push username/repository:tag
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;一旦上传成功，镜像就实现了共享。此后，运行该镜像的时候，就可以指定DockerHub仓库中的镜像了。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 以DockerHub上的镜像启动容器
+$ docker run -p 8080:80 username/repository:tag
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;常用命令&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker build -t friendlyname .        # 使用当前目录下的Dockerfile创建应用镜像
+docker run -p 4000:80 appname         # 运行”appname&amp;quot;的镜像，并进行端口映射
+docker run -d -p 4000:80 friendlyname # 独立运行&amp;quot;appname&amp;quot;镜像，并进行端口映射
+docker ps                             # 显示运行中的容器
+docker stop &amp;lt;hash&amp;gt;                    # 停止运行中的容器
+docker ps -a                          # 显示所有容器(运行的和未运行的)
+docker kill &amp;lt;hash&amp;gt;                    # 杀死某个容器
+docker rm &amp;lt;hash&amp;gt;                      # 移除容器
+docker rm $(docker ps -a -q)          # 移除宿主机上的全部容器
+docker images -a                      # 显示应用镜像
+docker rmi &amp;lt;imagename&amp;gt;                # 移除应用镜像
+docker rmi $(docker images -q)        # 移除所有应用镜像
+docker images -f &amp;quot;dangling=true&amp;quot;      # 显示所有&amp;lt;none&amp;gt;:&amp;lt;none&amp;gt;的镜像
+docker login                          # 登录DockerHub仓库
+docker tag &amp;lt;image&amp;gt; username/repository:tag      # 为上传镜像打标签
+docker push username/repository:tag             # 上传镜像至仓库
+docker run username/repository:tag              # 运行仓库中的镜像
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;2.组合服务-Compose&lt;/h3&gt;
+&lt;p&gt;在分布式应用程序中，应用的不同部分称为“服务”。例如，一个视频共享网站，它可能需要数据库服务，用于存储应用程序数据；还需要后台视频转码服务，用于用户上传视频；还需要前端服务等。&lt;/p&gt;
+&lt;p&gt;一个服务只是意味着“生产中的容器”。一个服务只运行一个镜像，但是它编码了镜像运行的方式——使用哪些端口，需要运行多少副本以及服务所需的容量等。因此，扩展服务实际上更改容器实例的数量，并提供扩展服务过程中所需的计算资源。&lt;/p&gt;
+&lt;p&gt;Docker平台可以让服务运行及扩展变得更为简单，只需一个&lt;code&gt;docker-compose.yaml&lt;/code&gt;文件。&lt;code&gt;docker-compose.yaml&lt;/code&gt;文件是一个YAML文件，定义了实际生产环境中Docker容器的行为。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;docker-compose.yaml&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;version: &amp;quot;3&amp;quot;
+services:
+  web:
+    image: subond/suker:v1.0
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: &amp;quot;0.1&amp;quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &amp;quot;80:80&amp;quot;
+    networks:
+      - webnet
+networks:
+  webnet:
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;接下来，我们就可以利用&lt;code&gt;docker-compose.yml&lt;/code&gt;文件运行带有 &lt;strong&gt;负载均衡&lt;/strong&gt; 的应用服务。在使用&lt;code&gt;docker stack deploy&lt;/code&gt;之前，需要将Docker切换至Swarm模式。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 将Docker引擎切换至Swarm模式
+$ docker swarm init
+# 启动应用服务，并命名为suweb
+$ docker stack deploy -c docker-compose.yml suweb
+Creating network suweb_webnet
+Creating service suweb_web
+
+# 查看suweb的状态
+$ docker stack ps suweb
+ID            NAME         IMAGE              NODE       DESIRED STATE  CURRENT STATE           ERROR  PORTS
+gcc9oupfdi8g  suweb_web.1  subond/suker:v1.0  Ubuntu-16  Running        Running 10 seconds ago
+s7vrc9fwwnt7  suweb_web.2  subond/suker:v1.0  Ubuntu-16  Running        Running 9 seconds ago
+ns8trslxt2n6  suweb_web.3  subond/suker:v1.0  Ubuntu-16  Running        Running 10 seconds ago
+
+# 查看容器信息
+$ docker ps
+CONTAINER ID        IMAGE                                                                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+89f858d3e9ff        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &amp;quot;python app.py&amp;quot;     2 minutes ago       Up 2 minutes        80/tcp              suweb_web.2.s7vrc9fwwnt7szj62cwf235zc
+0999d38459a6        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &amp;quot;python app.py&amp;quot;     2 minutes ago       Up 2 minutes        80/tcp              suweb_web.3.ns8trslxt2n6vsw5pcxo6iiw6
+1bc62f75cdca        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &amp;quot;python app.py&amp;quot;     2 minutes ago       Up 2 minutes        80/tcp              suweb_web.1.gcc9oupfdi8gflriegrsth272
+
+# 命令docker stack rm suweb，可以移除服务
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;常用命令&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker stack ls                                 # 列出所有运行着的应用程序
+docker stack deploy -c &amp;lt;composefile&amp;gt; &amp;lt;appname&amp;gt;  # 以Compose文件运行容器服务
+docker stack services &amp;lt;appname&amp;gt;                 # 列出与应用程序关联的服务
+docker stack ps &amp;lt;appname&amp;gt;                       # 列出与应用程序关联的运行着的容器
+docker stack rm &amp;lt;appname&amp;gt;                       # 删除应用程序
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;小结&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;通过&lt;code&gt;docker-compose.yml&lt;/code&gt;文件，我们可以很方便的扩展应用服务的规模，只需要修理该文件里面的相关配置，然后重新运行命令&lt;code&gt;docker stack deploy -c docker-compose.yml suweb&lt;/code&gt;即可。例如，修改replicas的值来增加或减少容器副本的数量。&lt;/p&gt;
+&lt;p&gt;命令&lt;code&gt;docker run&lt;/code&gt;可以简单地实现应用服务的部署和管理；而对于实际生产环境需要大量部署应用服务时，Compose文件(即&lt;code&gt;docker-compose.yml&lt;/code&gt;)可以方便地定义容器的行为，使得对服务的扩展，限制以及重新部署非常容易。命令&lt;code&gt;docker stack deploy&lt;/code&gt;就是提供这样的一种方式。&lt;/p&gt;
+&lt;h3&gt;3.集群管理-Swarm&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;准备工作&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;两个虚拟机，并且均安装Docker引擎1.13或者更高版本&lt;/li&gt;
+&lt;li&gt;完成&lt;a href="#1.构建容器"&gt;1.构建容器&lt;/a&gt;和&lt;a href="#2.组合服务"&gt;2.组合服务&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;构建Swarm集群环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;关于Swarm集群环境说明：&lt;/p&gt;
+&lt;p&gt;两个虚拟机的主机名与ip的配置如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;manager(ip:172.28.128.4)扮演Swarm集群中管理节点的角色&lt;/li&gt;
+&lt;li&gt;worker1(ip:172.28.128.5)扮演Swarm集群中工作节点的角色&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Swarm集群中部署应用&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 第一步，将docker-compose.yml文件拷贝至manager的home目录下
+# 第二步，在manager上通过composer文件部署应用服务
+# 这个示例中，我使用的是vagrant虚拟机，如果你使用的是Docker-manchine方式
+# 将下面指令中vagrant ssh 替换为docker-manchine，并且删除-c参数
+
+$ vagrant ssh manager -c &amp;quot;docker stack deploy -c docker-compose.yml suweb&amp;quot;
+Creating network suweb_webnet
+Creating service suweb_web
+
+# 查看容器分布及运行情况
+$ vagrant ssh manager -c &amp;quot;docker stack ps suweb&amp;quot;
+ID            NAME         IMAGE              NODE     DESIRED STATE  CURRENT STATE            ERROR  PORTS
+d6g4m7qldta8  suweb_web.1  subond/suker:v1.0  worker1  Running        Preparing 3 seconds ago
+nrginvlp568y  suweb_web.2  subond/suker:v1.0  manager  Running        Preparing 3 seconds ago
+o61f0oc280et  suweb_web.3  subond/suker:v1.0  manager  Running        Preparing 3 seconds ago
+
+# 可以看出：在worker1节点上运行着一个suweb容器服务
+$ vagrant ssh worker1 -c &amp;quot;docker ps&amp;quot;
+CONTAINER ID        IMAGE                                                                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+33a0a2a34b8b        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &amp;quot;python app.py&amp;quot;     12 seconds ago      Up 11 seconds       80/tcp              suweb_web.1.d6g4m7qldta8mm16x80qimx8i
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;小结&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;4.应用协作-Stacks&lt;/h3&gt;
+&lt;p&gt;&lt;a href="#3.Swarm集群-Swarm"&gt;3.Swarm集群-Swarm&lt;/a&gt;中，我们学习了如何启用Swarm模式，并向Swarm集群中部署应用服务。接下来，我们将完成如何让多个应用服务进行协作，完成更加复杂的功能。这一部分，我们将接触分布式应用程序的结构层次的顶部，即Stacks。一个Stack是一组相互关联的服务，它们共享依赖关系，并可以一起进行编排和缩放。单个堆栈能够定义和协调整个应用程序的功能(更为复杂的功能可以需要使用多个堆栈)。&lt;/p&gt;
+&lt;p&gt;第一步：在&lt;code&gt;docker-compose.yml&lt;/code&gt;文件中，增加新的服务，并重新部署&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;docker-compose.yml&lt;/code&gt;文件内容如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;version: &amp;quot;3&amp;quot;
+services:
+  web:
+    image: subond/suker:v1.0
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: &amp;quot;0.1&amp;quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &amp;quot;80:80&amp;quot;
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - &amp;quot;8080:8080&amp;quot;
+    volumes:
+      - &amp;quot;/var/run/docker.sock:/var/run/docker.sock&amp;quot;
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;接下来，将&lt;code&gt;docker-compose.yml&lt;/code&gt;文件拷贝至manager节点的home目录下，并重新部署应用。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 重新部署suweb应用程序
+$ vagrant ssh manager -c &amp;quot;docker stack deploy -c docker-compose.yml suweb&amp;quot;
+Creating network suweb_webnet
+Creating service suweb_visualizer
+Creating service suweb_web
+
+# 查看stack中的服务
+$ vagrant ssh manager -c &amp;quot;docker stack ls&amp;quot;
+NAME   SERVICES
+suweb  2
+
+# 查看suweb应用的容器分布及运行情况
+$ vagrant ssh manager -c &amp;quot;docker stack ps suweb&amp;quot;
+ID            NAME                IMAGE                            NODE     DESIRED STATE  CURRENT STATE               ERROR  PORTS
+eu18grghbpbq  suweb_web.1         subond/suker:v1.0                worker1  Running        Running about a minute ago
+qw03jh0fibxi  suweb_visualizer.1  dockersamples/visualizer:stable  manager  Running        Running 32 seconds ago
+7q2481c0p04b  suweb_web.2         subond/suker:v1.0                manager  Running        Running about a minute ago
+6ugzg4hpvqio  suweb_web.3         subond/suker:v1.0                worker1  Running        Running about a minute ago
+
+# manager节点上运行两个容器，suweb_visualizer.1和suweb_web.2
+$ vagrant ssh manager -c &amp;quot;docker ps&amp;quot;
+CONTAINER ID        IMAGE                                                                                              COMMAND             CREATED              STATUS              PORTS               NAMES
+b26cef6f4852        dockersamples/visualizer@sha256:f924ad66c8e94b10baeaf7bdb9cd491ef4e982a1d048a56a17e02bf5945401e5   &amp;quot;npm start&amp;quot;         About a minute ago   Up About a minute   8080/tcp            suweb_visualizer.1.qw03jh0fibxizukjrep7ipkaj
+6742285357df        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a               &amp;quot;python app.py&amp;quot;     2 minutes ago        Up 2 minutes        80/tcp              suweb_web.2.7q2481c0p04b908m5knwexgsa
+
+# worker1节点上运行两个容器，suweb_web.1和suweb_web.3
+$ vagrant ssh worker1 -c &amp;quot;docker ps&amp;quot;
+CONTAINER ID        IMAGE                                                                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+e9207afbd53f        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &amp;quot;python app.py&amp;quot;     4 minutes ago       Up 4 minutes        80/tcp              suweb_web.1.eu18grghbpbqyzu3nbflx1d4z
+4f841d8748fd        subond/suker@sha256:c2c33f0db407c195ae44dcafc5a81172afb1e88157efd489580148d73d8a532a   &amp;quot;python app.py&amp;quot;     4 minutes ago       Up 4 minutes        80/tcp              suweb_web.3.6ugzg4hpvqiouhoy8u6109y3h
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;第二步，持久化数据。利用Redis服务可进行数据的持久化数据，修改&lt;code&gt;docker-compose.yml&lt;/code&gt;文件，文件内容如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;version: &amp;quot;3&amp;quot;
+services:
+  web:
+    image: subond/suker:v1.0
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: &amp;quot;0.1&amp;quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &amp;quot;80:80&amp;quot;
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - &amp;quot;8080:8080&amp;quot;
+    volumes:
+      - &amp;quot;/var/run/docker.sock:/var/run/docker.sock&amp;quot;
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+  redis:
+    image: redis
+    ports:
+      - &amp;quot;6379:6379&amp;quot;
+    volumes:
+      - ./data:/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;接下来，在manager节点上创建数据卷，用于持久化数据；并更新&lt;code&gt;docker-compose.yml&lt;/code&gt;文件。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 创建数据卷目录
+$ vagrant ssh manager -c &amp;quot;mkdir ./data&amp;quot;
+
+# 更新`docker-compose.yml`文件，具体指令省略
+
+# 更新之前的suweb服务或者删除suweb服务后重新部署，指令均如下
+$ vagrant ssh manager -c &amp;quot;docker stack deploy -c docker-compose.yml suweb&amp;quot;
+Creating network suweb_webnet
+Creating service suweb_web
+Creating service suweb_visualizer
+Creating service suweb_redis
+
+# 查看suweb应用的运行及分布情况
+$ vagrant ssh manager -c &amp;quot;docker stack ps suweb&amp;quot;
+ID            NAME                IMAGE                            NODE     DESIRED STATE  CURRENT STATE           ERROR  PORTS
+r9j3wjnpkl9r  suweb_redis.1       redis:latest                     manager  Running        Running 15 seconds ago
+5eyr3izyrv7h  suweb_visualizer.1  dockersamples/visualizer:stable  manager  Running        Running 19 seconds ago
+ubdvzap007ml  suweb_web.1         subond/suker:v1.0                worker1  Running        Running 24 seconds ago
+2dshgwsnfftp  suweb_web.2         subond/suker:v1.0                manager  Running        Running 24 seconds ago
+v82zhyx225yu  suweb_web.3         subond/suker:v1.0                manager  Running        Running 23 seconds ago
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker镜像：Dockerfile的定义与使用</title><link href="www.subond.com/pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html" rel="alternate"></link><published>2017-04-18T00:00:00+08:00</published><updated>2017-04-18T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-18:www.subond.com/pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html</id><summary type="html">&lt;p&gt;Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令&lt;code&gt;docker build&lt;/code&gt;可以与Dockerfile文件中构建我们自己需要的镜像。&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#Dockerfile的使用"&gt;Dockerfile的使用&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Dockerfile指令"&gt;Dockerfile指令&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令&lt;code&gt;docker build&lt;/code&gt;可以与Dockerfile文件中构建我们自己需要的镜像。&lt;/p&gt;
+&lt;h3&gt;Dockerfile的使用&lt;/h3&gt;
+&lt;p&gt;Dockerfile文件描述了构建镜像的步骤，其中每条指定都是单独执行的。除了FROM指令，&lt;strong&gt;其他每条指令都会在上一条指令所生成镜像的基础上执行，执行完成后生成一个新的镜像层。新的镜像层覆盖在原来的镜像之上，进而形成新的镜像&lt;/strong&gt;。Dockerfile文件所生成的最终镜像是在基础镜像上叠加一层层的镜像形成的。&lt;/p&gt;
+&lt;p&gt;值得注意的是，Docker引擎在构建镜像的过程中会缓存中间镜像。当从一个已经存在的基础镜像开始构建新镜像时，则将Dockerfile中的下一个指令和基础镜像的所有子镜像进行比较，如果有一个子镜像是由相同的指令生成的，则命中缓存，直接使用该镜像。&lt;/p&gt;
+&lt;h3&gt;Dockerfile指令&lt;/h3&gt;
+&lt;p&gt;Dockerfile的基本格式如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 注释信息
+INSTRUCTION arguments
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Dockerfile指令不区分大小写，但是建议使用大写，方便区分；#开头的表示注释行。根据指令的作用可以分分为两种：构建指令和设置指令。构建指令用于构建镜像，其指定的操作不会运行在镜像的容器上；而设置指令用于设置镜像的属性，其指定的操作运行在镜像的容器上。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;FROM&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：FROM &lt;image&gt;或FROM &lt;image&gt;:&lt;tag&gt;&lt;br&gt;
+分类：构建指令&lt;/p&gt;
+&lt;p&gt;FROM指令指定基础镜像，一个有效的Dockerfile文件必须以FROM作为第一条非注释指令。后续的指令都依赖于该指令指定的image。FROM指令指定的基础image可以是官方远程仓库中的，也可以位于本地仓库。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;MAINTAINER&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：MAINTAINER &lt;name&gt;&lt;br&gt;
+分类：构建指令&lt;/p&gt;
+&lt;p&gt;用于将image的制作者相关的信息写入到image中。当我们对该image执行docker inspect命令时，输出中有相应的字段记录该信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;RUN&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：RUN &lt;shell_cmd&gt;  # shell格式&lt;br&gt;
+  或 RUN ["exec", "param1", "param2"]  # exec格式&lt;br&gt;
+分类：构建指令&lt;/p&gt;
+&lt;p&gt;RUN可以运行任何被基础image支持的命令。如基础image选择了ubuntu，那么软件管理部分只能使用ubuntu的命令。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;ENV&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：ENV &lt;key&gt; &lt;value&gt;&lt;br&gt;
+分类：构建指令&lt;/p&gt;
+&lt;p&gt;ENV指令用于在image中设置一个环境变量。设置完环境变量后，后续的RUN命令都可以使用，container启动后，可以通过docker inspect查看这个环境变量，也可以通过在docker run --env key=value时设置或修改环境变量。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;WORKDIR&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：WORKDIR &lt;path&gt;&lt;br&gt;
+分类：设置指令&lt;/p&gt;
+&lt;p&gt;WORKDIR用于指定工作目录，相当于切换指令，对RUN,CMD,ENTRYPOINT生效，可设置多次。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;ADD&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：ADD &lt;src&gt; &lt;dest&gt;&lt;br&gt;
+分类：构建指令&lt;/p&gt;
+&lt;p&gt;&lt;src&gt; 是相对被构建的源目录的相对路径，可以是文件或目录的路径，也可以是一个远程的文件url&lt;br&gt;
+&lt;dest&gt; 是container中的绝对路径&lt;/p&gt;
+&lt;p&gt;所有复制到容器中的文件和文件夹权限为0755，uid和gid为0；如果是一个目录，那么会将该目录下的所有文件添加到容器中，不包括目录；如果文件是可识别的压缩格式，则Docker引擎会进行解压缩；如果&lt;src&gt;是文件且&lt;dest&gt;中不使用斜杠结束，则会将&lt;dest&gt;视为文件，&lt;src&gt;的内容会写入&lt;dest&gt;；如果&lt;src&gt;是文件且&lt;dest&gt;中使用斜杠结束，则会&lt;src&gt;文件拷贝到&lt;dest&gt;目录下。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;COPY&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：COPY &lt;src&gt; &lt;dest&gt;&lt;br&gt;
+分类：构建指令&lt;/p&gt;
+&lt;p&gt;COPY指令复制&lt;src&gt;所指向的文件或目录，将其添加至新镜像中，复制的文件或目录在镜像中的路径是&lt;dest&gt;。&lt;src&gt;所指定的源可以是多个，但必须使上下文根目录的相对路径；也可以使用通配符指向所有匹配通配符的文件或目录。&lt;/p&gt;
+&lt;p&gt;&lt;dest&gt;可以是文件或目录，但必须使镜像中的绝对路径或相对于WORKDIR的相对路径。&lt;/p&gt;
+&lt;p&gt;若&lt;dest&gt;以反斜杠/结尾则其指向是目录，否则指向文件。&lt;src&gt;同理。&lt;/p&gt;
+&lt;p&gt;若&lt;dest&gt;是文件，则&lt;src&gt;的内容被写入&lt;dest&gt;中；否则&lt;src&gt;所指向的文件或目录中的内容被复制到&lt;dest&gt;目录中。&lt;/p&gt;
+&lt;p&gt;当&lt;src&gt;指定多个源时，&lt;dest&gt;必须使目录。若&lt;dest&gt;不存在，则会被创建。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;CMD&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：RUN &lt;shell_cmd&gt;  # shell格式&lt;br&gt;
+或者：RUN ["exec", "param1", "param2"]  # exec格式&lt;br&gt;
+或者：RUN ["param1", "param2"]  # 为ENTRYPOINT指令提供参数&lt;br&gt;
+分类：设置指令&lt;/p&gt;
+&lt;p&gt;CMD指令为容器运行时指定的操作默认操作。该操作可以是执行自定义脚本，也可以是执行系统命令。该指令只能在文件中存在一次，如果有多个，则只执行最后一条。&lt;/p&gt;
+&lt;p&gt;第三种情况时，ENTRYPOINT指定的是一个可执行的脚本或者程序的路径，该指定的脚本或者程序将会以param1和param2作为参数执行。所以如果CMD指令使用上面的形式，那么Dockerfile中必须要有配套的ENTRYPOINT。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;ENTRYPOINT（设置container启动时执行的操作&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：ENTRYPOINT &lt;commond&gt;  # shell格式&lt;br&gt;
+或者：ENTRYPOINT ["exec", "param1", "param2"]  # exec格式&lt;br&gt;
+分类：设置指令&lt;/p&gt;
+&lt;p&gt;ENTRYPOINT指定容器启动时执行的命令，可以多次设置，但是只有最后一个有效。该指令的使用分为两种情况，一种是独自使用，另一种和CMD指令配合使用。当独自使用时，如果你还使用了CMD命令且CMD是一个完整的可执行的命令，那么CMD指令和ENTRYPOINT会互相覆盖只有最后一个CMD或者ENTRYPOINT有效。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# CMD指令将不会被执行，只有ENTRYPOINT指令被执行  
+CMD echo “Hello, World!”  
+ENTRYPOINT ls -l  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;CMD指令配合使用来指定ENTRYPOINT的默认参数，这时CMD指令不是一个完整的可执行命令，仅仅是参数部分；ENTRYPOINT指令只能使用JSON方式指定执行命令，而不能指定参数。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM ubuntu  
+CMD [&amp;quot;-l&amp;quot;]  
+ENTRYPOINT [&amp;quot;/usr/bin/ls&amp;quot;]  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;USER&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：USER &lt;name&gt;&lt;br&gt;
+分类：设置指令&lt;/p&gt;
+&lt;p&gt;USER用于设置启动容器的用户，默认是root用户。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;EXPOSE 指定容器需要映射到宿主机器的端口）&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：EXPOSE &lt;port&gt;  [&lt;port&gt;...]&lt;br&gt;
+分类：设置指令&lt;/p&gt;
+&lt;p&gt;EXPOSE用于指定容器需要映射到宿主机器的端口。当你需要访问容器的时候，可以不是用容器的IP地址而是使用宿主机器的IP地址和映射后的端口。要完成整个操作需要两个步骤，首先在Dockerfile使用EXPOSE设置需要映射的容器端口，然后在运行容器的时候指定-p选项加上EXPOSE设置的端口，这样EXPOSE设置的端口号会被随机映射成宿主机器中的一个端口号。也可以指定需要映射到宿主机器的那个端口，这时要确保宿主机器上的端口号没有被使用。EXPOSE指令可以一次设置多个端口号，相应的运行容器的时候，可以配套的多次使用-p选项。&lt;/p&gt;
+&lt;p&gt;端口映射是docker比较重要的一个功能，原因在于每次运行容器的时候容器的IP地址不能指定而是在桥接网卡的地址范围内随机生成的。宿主机器的IP地址是固定的，我们可以将容器的端口的映射到宿主机器上的一个端口，免去每次访问容器中的某个服务时都要查看容器的IP的地址。对于一个运行的容器，可以使用docker port加上容器中需要映射的端口和容器的ID来查看该端口号在宿主机器上的映射端口。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 映射一个端口  
+EXPOSE port1  
+# 相应的运行容器使用的命令  
+docker run -p port1 image  
+
+# 映射多个端口  
+EXPOSE port1 port2 port3  
+# 相应的运行容器使用的命令  
+docker run -p port1 -p port2 -p port3 image  
+# 还可以指定需要映射到宿主机器上的某个端口号  
+docker run -p host_port1:port1 -p host_port2:port2 -p host_port3:port3 image
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h4&gt;VOLUME（指定挂载点）&lt;/h4&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;格式：VOLUME ["&amp;lt;mountpoint"]&lt;br&gt;
+分类：设置指令&lt;/p&gt;
+&lt;p&gt;VOLUME指令用于指定容器中的一个目录具有持久化存储数据的功能，该目录可以被容器本身使用，也可以共享给其他容器使用。当容器中的应用有持久化数据的需求时可以在Dockerfile中使用该指令。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;VOLUME [&amp;quot;&amp;lt;mountpoint&amp;gt;&amp;quot;]
+FROM base  
+VOLUME [&amp;quot;/tmp/data&amp;quot;]
+# 运行通过该Dockerfile生成image的容器，/tmp/data目录中的数据在容器关闭后，里面的数据还存在。
+# 例如另一个容器也有持久化数据的需求，且想使用上面容器共享的/tmp/data目录，那么可以运行下面的命令启动一个容器：
+$ docker run -t -i -rm -volumes-from container1 image2 bash
+# container1为第一个容器的ID，image2为第二个容器运行image的名字。
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker技术：Docker系统架构</title><link href="www.subond.com/pages/2017/04/16/docker-xi-tong-jia-gou.html" rel="alternate"></link><published>2017-04-16T00:00:00+08:00</published><updated>2017-04-16T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-16:www.subond.com/pages/2017/04/16/docker-xi-tong-jia-gou.html</id><summary type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#Docker Engine"&gt;Docker Engine&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Docker交付内容"&gt;Docker交付内容&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Docker系统架构"&gt;Docker系统架构&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Docker Engine&lt;/h3&gt;
+&lt;p&gt;Docker Engine主要包含三个组件，如下图所示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Docker Server：一个长时间运行的守护进程。&lt;/li&gt;
+&lt;li&gt;REST API：指定程序可以用来与守护进程通信的接口。&lt;/li&gt;
+&lt;li&gt;Client：命令行CLI客户端。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Docker全局预览" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-overview.png"&gt;&lt;/p&gt;
+&lt;p&gt;CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。&lt;/p&gt;
+&lt;h3&gt;Docker交付内容&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;快速，一致地交付应用程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在同一硬件上可允许多个工作流程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。&lt;/p&gt;
+&lt;h3&gt;Docker系统架构&lt;/h3&gt;
+&lt;p&gt;Docker采用Client/Server架构模式，其系统架构如下图所示 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#Docker Engine"&gt;Docker Engine&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Docker交付内容"&gt;Docker交付内容&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#Docker系统架构"&gt;Docker系统架构&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Docker Engine&lt;/h3&gt;
+&lt;p&gt;Docker Engine主要包含三个组件，如下图所示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Docker Server：一个长时间运行的守护进程。&lt;/li&gt;
+&lt;li&gt;REST API：指定程序可以用来与守护进程通信的接口。&lt;/li&gt;
+&lt;li&gt;Client：命令行CLI客户端。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Docker全局预览" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-overview.png"&gt;&lt;/p&gt;
+&lt;p&gt;CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。&lt;/p&gt;
+&lt;h3&gt;Docker交付内容&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;快速，一致地交付应用程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在同一硬件上可允许多个工作流程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。&lt;/p&gt;
+&lt;h3&gt;Docker系统架构&lt;/h3&gt;
+&lt;p&gt;Docker采用Client/Server架构模式，其系统架构如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Docker系统架构" src="http://on64c9tla.bkt.clouddn.com/2017A/docker.png"&gt;&lt;/p&gt;
+&lt;p&gt;Docker客户端与守护进程既可以运行在同一台主机，也运行在不同的主机上，两者利用Unix Socket或网络接口，通过REST API进行通信。&lt;/p&gt;
+&lt;p&gt;Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。&lt;/p&gt;
+&lt;p&gt;Docker客户端是用户与Docker Daemon进行交互的主要方式。&lt;/p&gt;
+&lt;p&gt;Docker Registries用来管理Docker镜像。&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Docker技术：认识Docker</title><link href="www.subond.com/pages/2017/04/14/docker-ren-shi-docker.html" rel="alternate"></link><published>2017-04-14T00:00:00+08:00</published><updated>2017-04-14T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-14:www.subond.com/pages/2017/04/14/docker-ren-shi-docker.html</id><summary type="html">&lt;p&gt;Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。&lt;/p&gt;</summary><content type="html">&lt;p&gt;Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。&lt;/p&gt;
+&lt;p&gt;本文目录：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#1.什么是Docker"&gt;1.什么是Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#2.Docker基本概念"&gt;2.Docker基本概念&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#3.Docker安装"&gt;3.Docker安装&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#4.Docker网络"&gt;4.Docker网络&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.什么是Docker&lt;/h3&gt;
+&lt;p&gt;Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对 &lt;strong&gt;进程&lt;/strong&gt; 进行封装隔离，属于 &lt;strong&gt;操作系统层面的虚拟化技术&lt;/strong&gt;。&lt;em&gt;由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的 &lt;strong&gt;应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Docker与虚拟化技术" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-vm.png"&gt;&lt;/p&gt;
+&lt;h3&gt;2.Docker基本概念&lt;/h3&gt;
+&lt;p&gt;Docker包括三个基本概念：&lt;strong&gt;镜像&lt;/strong&gt;、&lt;strong&gt;容器&lt;/strong&gt;、&lt;strong&gt;仓库&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1 镜像(Image)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;众所周知，操作系统分为内核和用户空间。对于Linux而言，内核启动后，会挂载&lt;code&gt;root&lt;/code&gt;文件系统为其提供用户空间支持。而Docker镜像，就相当于一个&lt;code&gt;root&lt;/code&gt;文件系统。&lt;/p&gt;
+&lt;p&gt;Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。&lt;strong&gt;镜像不包含任何动态数据，其内容在构建之后也不会被改变&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;分层存储&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令&lt;code&gt;docker pull ubuntu:14.04&lt;/code&gt;获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 获取DockerHub中的ubuntu14.04镜像
+$ docker pull ubuntu:16.04
+16.04: Pulling from library/ubuntu
+b6f892c0043b: Pull complete
+55010f332b04: Pull complete
+2955fb827c94: Pull complete
+3deef3fcbd30: Pull complete
+cf9722e506aa: Pull complete
+Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8
+Status: Downloaded newer image for ubuntu:16.04
+# 可以看到，整个ubuntu16.04镜像由五层存储构成
+
+# 仓库的元数据
+# 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据
+$ cat repositories.json | python -mjson.tool
+{
+    &amp;quot;Repositories&amp;quot;: {
+        &amp;quot;ubuntu&amp;quot;: {
+            &amp;quot;ubuntu:16.04&amp;quot;: &amp;quot;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&amp;quot;,
+            &amp;quot;ubuntu@sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8&amp;quot;: &amp;quot;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&amp;quot;
+        }
+    }
+}
+
+# 镜像的元数据
+# 在文件/var/lib/docker/image/graph_dirver/imagedb/content/sha256/[image_id]中可以看到镜像的元数据
+# 命令cat image_id | python -mjson.tool
+
+# 镜像层的元数据
+# 在文件/var/lib/docker/image/graph_dirver/layerdb/sha256/[chain_id]
+# [chain_id]是某一层镜像层的存储索引
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;2 容器(Container)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;容器的实质是进程&lt;/strong&gt;。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，称为“容器存储层”。容器存储层的生命周期与容器一样，容器消亡时，容器存储层也随之消亡。因此，任何保存在容器存储层的信息都会随容器删除而丢失。&lt;/p&gt;
+&lt;p&gt;容器是Docker的核心概念。简单来讲，容器是 &lt;strong&gt;独立运行的一个或一组应用，以它们的运行态环境&lt;/strong&gt;。与之对应的，容易混淆的概念是虚拟机。虚拟机可以理解为 &lt;strong&gt;模拟运行的一整套操作系统(包括运行态环境和其他系统环境)和运行在操作系统上的应用&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;容器的核心为所执行的应用程序，所需要的资源都是应用程序所必需的的。当Docker容器中指定的应用终结时，容器也自动终止。当利用&lt;code&gt;docker run&lt;/code&gt;创建容器时，Docker在后台运行的标准操作包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;检查本地是否存在指定的镜像，不存在就从公有仓库下载  &lt;/li&gt;
+&lt;li&gt;利用镜像创建并启动一个容器  &lt;/li&gt;
+&lt;li&gt;分配一个文件系统，并在只读的镜像层外面挂载一层可读写层  &lt;/li&gt;
+&lt;li&gt;从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中  &lt;/li&gt;
+&lt;li&gt;从地址池配置一个ip地址给容器  &lt;/li&gt;
+&lt;li&gt;执行用户指定的应用程序  &lt;/li&gt;
+&lt;li&gt;执行完毕后容器被终止&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3 仓库(Repository)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;仓库(Repository)是集中存放镜像的地方，每个仓库下面有多个镜像。因此，仓库可以被认为是一个具体的项目或目录。仓库分为公有仓库和本地仓库(私有仓库)，公有仓库Docker Hub由Docker公司或用户维护，主要包括根镜像和用户镜像；而本地仓库可供私人使用。&lt;/p&gt;
+&lt;h3&gt;3.Docker安装&lt;/h3&gt;
+&lt;p&gt;对于Ubuntu系列，Docker CE支持以下三种64位发行版：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Yakkety 16.10&lt;/li&gt;
+&lt;li&gt;Xenial 16.04&lt;/li&gt;
+&lt;li&gt;Trusty 14.04&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;第一步：设置仓库。可以通过&lt;code&gt;lsb_release -cs&lt;/code&gt;命令查看Ubuntu系统版本，然后添加相应的仓库。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get -y install apt-transport-https ca-certificates curl
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg &lt;span class="p"&gt;|&lt;/span&gt; sudo apt-key add -
+$ sudo add-apt-repository &lt;span class="s2"&gt;&amp;quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu &lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;lsb_release -cs&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt; stable&amp;quot;&lt;/span&gt;
+$ sudo apt-get update
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;第二步：获取Docker CE&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get install -y docker-ce
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;第三步：检查Docker版本，查看是否安装成功。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker --version
+&lt;span class="c1"&gt;# Docker version 17.04.0-ce, build 4845c56&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;第四步：建立Docker用户组&lt;/p&gt;
+&lt;p&gt;默认情况下，docker命令使用Unix Socket与Docker Daemon通信，而只有root用户和docker组用户才可以与Docker Daemon的Unix Socket建立通信。因此，出于安全考虑，我们可以将使用docker的用户加入Docker用户组。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# 建立docker用户组
+$ sudo groupadd docker
+# 将当前用户加入docker用户组
+$ sudo usermod -aG docker $USER
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;4.Docker网络&lt;/h3&gt;
+&lt;p&gt;Docker使用-p参数指定网络端口，将宿主主机的端口与容器中的端口形成映射关系。容器的连接(linking)系统是除了端口映射外，另一种与容器中应用的方式。&lt;strong&gt;连接系统可以在源和接收容器之间创建一个隧道，接收容器可以看到源容器指定的信息，而且不用映射容器的端口到宿主主机上&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Docker通过2种方式为容器公开连接信息：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;环境变量  &lt;/li&gt;
+&lt;li&gt;更新/etc/hosts文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;高级网络配置&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当Docker启动时，自动在宿主机上创建一个&lt;code&gt;docker0&lt;/code&gt;虚拟网桥，实际上是Linux的一个网桥，对挂载到它的网口进行数据转发。同时，Docker随机分配一个本地未占用的私有网段中的一个地址给&lt;code&gt;docker0&lt;/code&gt;接口。&lt;/p&gt;
+&lt;p&gt;当创建一个Docker容器的时候，同时会创建一对&lt;code&gt;veth pair&lt;/code&gt;接口(虚拟网络设备对：即一对端口，当数据包发送到一个端口时，另一个端口也可以收到相同的数据包)。这对接口一端在容器内，即&lt;code&gt;eth0&lt;/code&gt;；另一端在本地并被挂载到&lt;code&gt;docker0&lt;/code&gt;网桥，名称以&lt;code&gt;veth&lt;/code&gt;开头。通过这种方式，主机可以跟容器通信，容器之间也可以通信。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Docker网络" src="http://on64c9tla.bkt.clouddn.com/Comput/docker_network.png"&gt;&lt;/p&gt;</content><category term="Cloud"></category><category term="Docker"></category></entry><entry><title>Dynamo分布式键值系统</title><link href="www.subond.com/pages/2017/04/09/dynamo-distributed-systems.html" rel="alternate"></link><published>2017-04-09T00:00:00+08:00</published><updated>2017-04-09T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-04-09:www.subond.com/pages/2017/04/09/dynamo-distributed-systems.html</id><summary type="html">&lt;p&gt;分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 &lt;strong&gt;哈希分布算法&lt;/strong&gt;。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。&lt;/p&gt;</summary><content type="html">&lt;p&gt;分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 &lt;strong&gt;哈希分布算法&lt;/strong&gt;。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。&lt;/p&gt;
 &lt;h3&gt;Amazon Dynamo&lt;/h3&gt;
 &lt;p&gt;Dynamo以简单的键值方式存储数据，且存储的是数据的原始形式，不解析数据的内容。以下是Dynamo设计中面临的问题及解决方案，接下来依次查看。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Dynamo设计" src="http://on64c9tla.bkt.clouddn.com/Comput/dynamo.png"&gt;&lt;/p&gt;
@@ -1290,43 +2769,47 @@ MME是处理UE和核心网络信令交互的控制节点。在UE和核心网络�
 &lt;/ul&gt;
 &lt;p&gt;X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。&lt;/p&gt;</content><category term="architecture"></category><category term="lte"></category></entry><entry><title>Git学习手记</title><link href="www.subond.com/pages/2016/04/29/git-xue-xi-shou-ji.html" rel="alternate"></link><published>2016-04-29T00:00:00+08:00</published><updated>2016-04-29T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-04-29:www.subond.com/pages/2016/04/29/git-xue-xi-shou-ji.html</id><summary type="html">&lt;p&gt;Git版本控制功能很强大，作为程序猿必修掌握。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;一、基础篇&lt;/h2&gt;
 &lt;h3&gt;指令介绍&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git config --global user.name &lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;    &lt;span class="c1"&gt;#配置仓库参数，作为一个标志&lt;/span&gt;
-git config --global user.email &lt;span class="s2"&gt;&amp;quot;useremail&amp;quot;&lt;/span&gt;  &lt;span class="c1"&gt;#配置仓库参数，作为一个标志&lt;/span&gt;
-git init                      &lt;span class="c1"&gt;#把当前目录变成git可管理的仓库&lt;/span&gt;
-git add files          &lt;span class="c1"&gt;#添加文件到暂存区&lt;/span&gt;
-git diff file          &lt;span class="c1"&gt;#查看文件的修改内容&lt;/span&gt;
-git commit -m &lt;span class="s2"&gt;&amp;quot;提交说明信息&amp;quot;&lt;/span&gt;   &lt;span class="c1"&gt;#提交文件到仓库&lt;/span&gt;
-git status                    &lt;span class="c1"&gt;#获取当前仓库中文档的状态&lt;/span&gt;
-git log                       &lt;span class="c1"&gt;#查看历史记录&lt;/span&gt;
-git log -pretty&lt;span class="o"&gt;=&lt;/span&gt;oneline       &lt;span class="c1"&gt;#单行显示历史信息&lt;/span&gt;
-git reflog                    &lt;span class="c1"&gt;#显示版本号&lt;/span&gt;
-git checkout -- file          &lt;span class="c1"&gt;#取出文件&lt;/span&gt;
-git remote add origin &amp;lt;仓库地址&amp;gt;    &lt;span class="c1"&gt;#添加远程仓库地址&lt;/span&gt;
-git push origin &amp;lt;分支名1&amp;gt;          &lt;span class="c1"&gt;#推送本地内容到远程仓库分支1&lt;/span&gt;
-git pull origin &amp;lt;远程主机名&amp;gt; &amp;lt;远程分支名&amp;gt;:&amp;lt;本地分支名&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git config --global user.name &lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;      &lt;span class="c1"&gt;#配置仓库参数，作为一个标志&lt;/span&gt;
+$ git config --global user.email &lt;span class="s2"&gt;&amp;quot;useremail&amp;quot;&lt;/span&gt;    &lt;span class="c1"&gt;#配置仓库参数，作为一个标志&lt;/span&gt;
+$ git init                      &lt;span class="c1"&gt;#把当前目录变成git可管理的仓库&lt;/span&gt;
+$ git add files          &lt;span class="c1"&gt;#添加文件到暂存区&lt;/span&gt;
+$ git diff file          &lt;span class="c1"&gt;#查看文件的修改内容&lt;/span&gt;
+$ git commit -m &lt;span class="s2"&gt;&amp;quot;提交说明信息&amp;quot;&lt;/span&gt;   &lt;span class="c1"&gt;#提交文件到仓库&lt;/span&gt;
+$ git status                    &lt;span class="c1"&gt;#获取当前仓库中文档的状态&lt;/span&gt;
+$ git log                       &lt;span class="c1"&gt;#查看历史记录&lt;/span&gt;
+$ git log -pretty&lt;span class="o"&gt;=&lt;/span&gt;oneline       &lt;span class="c1"&gt;#单行显示历史信息&lt;/span&gt;
+$ git reflog                    &lt;span class="c1"&gt;#显示版本号&lt;/span&gt;
+$ git checkout -- file          &lt;span class="c1"&gt;#取出文件&lt;/span&gt;
+$ git remote add origin &amp;lt;仓库地址&amp;gt;    &lt;span class="c1"&gt;#添加远程仓库地址&lt;/span&gt;
+$ git push origin &amp;lt;分支名1&amp;gt;          &lt;span class="c1"&gt;#推送本地内容到远程仓库分支1&lt;/span&gt;
+$ git pull origin &amp;lt;远程主机名&amp;gt; &amp;lt;远程分支名&amp;gt;:&amp;lt;本地分支名&amp;gt;
                                   &lt;span class="c1"&gt;#取回远程主机某个分支，并与本地指定分支合并&lt;/span&gt;
-git clone &amp;lt;仓库地址&amp;gt;               &lt;span class="c1"&gt;#克隆远程仓库到本地仓库&lt;/span&gt;
-git remote            &lt;span class="c1"&gt;#查看远程仓库信息&lt;/span&gt;
-git remote -v         &lt;span class="c1"&gt;#查看远程仓库详细信息&lt;/span&gt;
+$ git clone &amp;lt;仓库地址&amp;gt;               &lt;span class="c1"&gt;#克隆远程仓库到本地仓库&lt;/span&gt;
+$ git remote            &lt;span class="c1"&gt;#查看远程仓库信息&lt;/span&gt;
+$ git remote -v         &lt;span class="c1"&gt;#查看远程仓库详细信息&lt;/span&gt;
+$ git remote add origin &amp;lt;仓库地址&amp;gt;    &lt;span class="c1"&gt;#添加远程仓库地址&lt;/span&gt;
+&lt;span class="c1"&gt;# 如果需要修改远程仓库地址，先删除地址，再添加&lt;/span&gt;
+$ git remote rm origin
+$ git remote add origin &amp;lt;your_url&amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h3&gt;版本回退&lt;/h3&gt;
 &lt;p&gt;git reset --hard 版本号(即commit_id)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git reset --hard HEAD^      &lt;span class="c1"&gt;#回退至上一版本&lt;/span&gt;
-git reset --hard HEAD^^     &lt;span class="c1"&gt;#回退至上上版本&lt;/span&gt;
-git reset --hard HEAD~10    &lt;span class="c1"&gt;#回退至前10个版本&lt;/span&gt;
-git reset --hard commit_id  &lt;span class="c1"&gt;#结合git reflog;git log使用&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git reset --hard HEAD^      &lt;span class="c1"&gt;#回退至上一版本&lt;/span&gt;
+$ git reset --hard HEAD^^     &lt;span class="c1"&gt;#回退至上上版本&lt;/span&gt;
+$ git reset --hard HEAD~10    &lt;span class="c1"&gt;#回退至前10个版本&lt;/span&gt;
+$ git reset --hard commit_id  &lt;span class="c1"&gt;#结合git reflog;git log使用&lt;/span&gt;
                             &lt;span class="c1"&gt;#git log可以查看提交历史，以便确定回退到哪个版本;&lt;/span&gt;
                             &lt;span class="c1"&gt;#git reflog可以查看命令历史，以便确定回到未来的哪个版本&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h3&gt;分支操作&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git branch                &lt;span class="c1"&gt;#查看分支&lt;/span&gt;
-git checkout &amp;lt;分支名1&amp;gt;       &lt;span class="c1"&gt;#切换至分支名1&lt;/span&gt;
-git checkout -b &amp;lt;分支名1&amp;gt;  &lt;span class="c1"&gt;#创建并切换至分支名1&lt;/span&gt;
-git merge &amp;lt;分支名1&amp;gt;        &lt;span class="c1"&gt;#合并分支名1至当前分支&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git branch                &lt;span class="c1"&gt;#查看分支&lt;/span&gt;
+$ git checkout &amp;lt;分支名1&amp;gt;       &lt;span class="c1"&gt;#切换至分支名1&lt;/span&gt;
+$ git checkout -b &amp;lt;分支名1&amp;gt;  &lt;span class="c1"&gt;#创建并切换至分支名1&lt;/span&gt;
+$ git merge &amp;lt;分支名1&amp;gt;        &lt;span class="c1"&gt;#合并分支名1至当前分支&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1360,30 +2843,30 @@ Remote：远程仓库  &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;指令介绍&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git stash       &lt;span class="c1"&gt;#备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中&lt;/span&gt;
-git pop         &lt;span class="c1"&gt;#从git栈中读取最近一次保存的内容，恢复工作区的相关内容&lt;/span&gt;
-git stash list  &lt;span class="c1"&gt;#显示git栈中所有备份，可以利用列表选择从哪恢复内容&lt;/span&gt;
-git stash apply &amp;lt;版本号&amp;gt;   &lt;span class="c1"&gt;#将制定版本号的内容恢复至当前工作区，配合git stash list使用&lt;/span&gt;
-git stash clear           &lt;span class="c1"&gt;#清空git栈&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git stash       &lt;span class="c1"&gt;#备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中&lt;/span&gt;
+$ git pop         &lt;span class="c1"&gt;#从git栈中读取最近一次保存的内容，恢复工作区的相关内容&lt;/span&gt;
+$ git stash list  &lt;span class="c1"&gt;#显示git栈中所有备份，可以利用列表选择从哪恢复内容&lt;/span&gt;
+$ git stash apply &amp;lt;版本号&amp;gt;   &lt;span class="c1"&gt;#将制定版本号的内容恢复至当前工作区，配合git stash list使用&lt;/span&gt;
+$ git stash clear           &lt;span class="c1"&gt;#清空git栈&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h2&gt;三、gitbook使用指南&lt;/h2&gt;
 &lt;p&gt;gitbook的使用方法和git基本类似，其修改记录，发布版本等相关操作均可参考上面的git指令，略有不同，下面详细介绍：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 初始化书记目录&lt;/span&gt;
-gitbook init
+$ gitbook init
 &lt;span class="c1"&gt;# 编译图书，可在本地查看&lt;/span&gt;
-gitbook serve
+$ gitbook serve
 &lt;span class="c1"&gt;# 克隆远程图书到本地&lt;/span&gt;
-git clone https://git.gitbook.com/user_name/book_name.git
+$ git clone https://git.gitbook.com/user_name/book_name.git
 &lt;span class="c1"&gt;# 添加文件&lt;/span&gt;
-git add file_name
+$ git add file_name
 &lt;span class="c1"&gt;# 提交修改记录&lt;/span&gt;
-git commit -m &lt;span class="s2"&gt;&amp;quot;sth about your changes&amp;quot;&lt;/span&gt;
+$ git commit -m &lt;span class="s2"&gt;&amp;quot;sth about your changes&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# 添加图书的远程地址&lt;/span&gt;
-git remote add gitbook https://git.gitbook.com/user_name/book_name.git
+$ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
 &lt;span class="c1"&gt;# 发布图书至远程仓库&lt;/span&gt;
-git push -u gitbook master  &lt;span class="c1"&gt;#第一次使用-u参数，之后可以不用加-u参数&lt;/span&gt;
+$ git push -u gitbook master  &lt;span class="c1"&gt;#第一次使用-u参数，之后可以不用加-u参数&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="git"></category><category term="gitbook"></category></entry><entry><title>利用Pelican+Github pages搭建个人博客</title><link href="www.subond.com/pages/2016/04/24/pelican-github-chuang-jian-blog.html" rel="alternate"></link><published>2016-04-24T00:00:00+08:00</published><updated>2016-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-04-24:www.subond.com/pages/2016/04/24/pelican-github-chuang-jian-blog.html</id><summary type="html">&lt;p&gt;本教程基于pelican博客引擎和github page的功能，实现个人博客搭建。&lt;/p&gt;</summary><content type="html">&lt;p&gt;说明：本教程使用的系统平台为ubuntu16.04。&lt;/p&gt;
 &lt;h2&gt;Github pages&lt;/h2&gt;
 &lt;p&gt;注册Github，并创建一个名为username.github.io的版本库。注意username为自己的用户名。&lt;/p&gt;
