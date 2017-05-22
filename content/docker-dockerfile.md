@@ -1,4 +1,4 @@
-Title: Docker镜像：Dockerfile的定义与使用
+Title: Docker技术：Dockerfile的定义与使用
 Date: 2017-04-18
 Category: Tech
 Tags: Cloud, Docker
