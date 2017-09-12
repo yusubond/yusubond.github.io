@@ -30,7 +30,7 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 
 <table width="600" height="30" algin="left">
   <tr><td><b>VMware·CMBU</b></td><td>VIO-NFV Team</td><td>08/2017</td></tr>
-</tabel>
+</table>
 <ul>
   <li>Research about the MANO in NFV field, including the service design, service orchestration, policy, App controller, network functions virtualization based on ONAP</li>
 </ul>
