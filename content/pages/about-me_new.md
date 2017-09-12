@@ -16,9 +16,9 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 ## Education
 
 <table width="600" height="30" algin="left">
-  <tr><td><b>Beijing University of Posts and Telecommunications</b></td><td>09/2015-04/2018</td></tr>
-  <tr>M.S. degree in Engineering</tr>
-  <tr>Research Filed: Software Defined Network, Network Functions Virtualization</tr>
+  <tr><td><b>Beijing University of Posts and Telecommunications</b></td><td>2015.09-2018.04</td></tr>
+  <tr><td>M.S. degree in Engineering</td><td></td></tr>
+  <tr><td>Research Filed: Software Defined Network, Network Functions Virtualization</td><td></td></tr>
 </table>
 
 <table width="600" height="30" algin="left">
