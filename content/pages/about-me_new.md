@@ -5,13 +5,6 @@ Tags: about me
 
 ## Bangchao Yu (于邦超)
 
-Title: About Me
-Date: 2017-09-01
-Category: Life
-Tags: about me
-
-## Bangchao Yu (于邦超)
-
 Email:yubc0321@gmail.com  
 Github:[https://github.com/yusubond](https://github.com/yusubond)  
 Blog:[www.subond.com](www.subond.com)
@@ -22,40 +15,53 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 
 ## Education
 
-**Beijing University of Posts and Telecommunications**      09/2015-04/2018  
-M.S. degree in Engineering  
-Research Filed: Software Defined Network, Network Functions Virtualization  
+<table width="600" height="30" algin="left">
+  <tr><td><b>Beijing University of Posts and Telecommunications</b></td><td>09/2015-04/2018</td></tr>
+  <tr>M.S. degree in Engineering</tr>
+  <tr>Research Filed: Software Defined Network, Network Functions Virtualization</tr>
+</table>
 
-**Beijing University of Chemical Technology**			          09/2011-07/2015  
-B.S. degree in Engineering			                              GPA:3.43/4.00  
+<table width="600" height="30" algin="left">
+  <tr><td><b>Beijing University of Chemical Technology</b></td><td>09/2011-07/2015</td></tr>
+  <tr><td>B.S. degree in Engineering</td><td>GPA:3.43/4.00</td></tr>
+</table>
 
 ## Internship
 
-**VMware·CMBU**   VIO-NFV Team                          08/2017
-
-  * Research about the MANO in NFV field, including the service design, service orchestration, policy, App controller, network functions virtualization based on ONAP
+<table width="600" height="30" algin="left">
+  <tr><td><b>VMware·CMBU</b></td><td>VIO-NFV Team</td><td>08/2017</td></tr>
+</tabel>
+<ul>
+  <li>Research about the MANO in NFV field, including the service design, service orchestration, policy, App controller, network functions virtualization based on ONAP</li>
+</ul>
 
 ## Research Projects
 
-**Network Service Management and Orchestrator based on OpenStack**      09/2016-06/2017
+<table width="600" height="30" algin="left">
+  <tr><td><b>Network Service Management and Orchestrator based on OpenStack</b></td><td>09/2016-06/2017</td></tr>
+</table>
+<ul>
+  <li>Research about NFV Architecture, Open Source MANO</li>
+  <li>Proposing and Implementing VNFs lifecycle management, including service design, create, scheduling and monitoring based on Juju Charms</li>
+</ul>
 
-  * Research about NFV Architecture, Open Source MANO  
-  * Proposing and Implementing VNFs lifecycle management, including service design, create, scheduling and monitoring based on   Juju Charms
-
-**LTE & WiFi Network Convergence based on SDN**         01/2016-09/2016
-
-  * Completed the programming task of developing the network communication between LTE eNodeB and SDN Controller   
-  * Designed and Completed the Data Distribution Strategy on PGW  
+<table width="600" height="30" algin="left">
+  <tr><td><b>LTE & WiFi Network Convergence based on SDN</b></td><td>01/2016-09/2016</td></tr>
+</table>
+<ul>
+  <li>Completed the programming task of developing the network communication between LTE eNodeB and SDN Controller</li>
+  <li>Designed and Completed the Data Distribution Strategy on PGW</li>
+</ul>
 
 ## Research Achievement
 
-**Papers**      **Dynamic Resource Orchestration of Service Function Chaining In NFV**           **5GWN(2017)**  
-                **Bangchao Yu**, Wei Zheng, Xiangming Wen, Zhaoming Lu, Luhan Wang, and Lu Ma
-
-                **An efficient and QoS-aware virtual network resource migration algorithm**			 **ICCC(2015)**  
-                Lu Ma; Zhaoming Lu; **Bangchao Yu**; Luhan Wang; Xiangming Wen
-
-**Patent**			A Core Network System based on SDN and its Use（CN105933246Ad）
+<table width="900" height="200" algin="left">
+  <tr><td><b>Papers&nbsp;&nbsp;</b></td><td><b>Dynamic Resource Orchestration of Service Function Chaining In Network Function Virtualization</b></td><td><b>5GWN(2017)</b></td></tr>
+  <tr><td>&nbsp;&nbsp;</td><td colspan=2><i><b>Bangchao Yu</b>, Wei Zheng, Xiangming Wen, Zhaoming Lu, Luhan Wang, and Lu Ma</i></td></tr>
+  <tr><td>&nbsp;&nbsp;</td><td><b>An efficient and QoS-aware virtual network resource migration algorithm</b></td><td><b>ICCC(2015)</b></td></tr>
+  <tr><td>&nbsp;&nbsp;</td><td colspan= 2><i>Lu Ma; Zhaoming Lu; <b>Bangchao Yu</b>; Luhan Wang; Xiangming Wen</i></td></tr>
+  <tr><td><b>Patent</b></td><td colspan=2><b>一种基于SDN的核心网系统及其使用方法(CN105933246A)</b></td></tr>
+</table>
 
 <hr size="3px" color="#00BFF"/>
 <p><font size="4"><b>教育背景</b></font></p>
