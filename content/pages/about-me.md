@@ -52,7 +52,7 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 
 ## Research Achievement
 
-<table width="900" height="200" algin="left">
+<table width="800" height="200" algin="left">
   <tr><td><b>Papers&nbsp;&nbsp;</b></td><td><b>Dynamic Resource Orchestration of Service Function Chaining In Network Function Virtualization</b></td><td><b>5GWN(2017)</b></td></tr>
   <tr><td>&nbsp;&nbsp;</td><td colspan=2><i><b>Bangchao Yu</b>, Wei Zheng, Xiangming Wen, Zhaoming Lu, Luhan Wang, and Lu Ma</i></td></tr>
   <tr><td>&nbsp;&nbsp;</td><td><b>An efficient and QoS-aware virtual network resource migration algorithm</b></td><td><b>ICCC(2015)</b></td></tr>
