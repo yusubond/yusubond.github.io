@@ -15,7 +15,7 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 
 ## Education
 
-<table width="800" algin="left">
+<table width="700" algin="left">
   <tr><td><b>Beijing University of Posts and Telecommunications</b></td><td>2015.09-2018.04</td></tr>
   <tr><td>M.S. degree in Engineering</td><td></td></tr>
   <tr><td>Research Filed: Software Defined Network, Network Functions Virtualization</td><td></td></tr>
@@ -26,7 +26,7 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 
 ## Internship
 
-<table width="600" height="30" algin="left">
+<table width="700" height="30" algin="left">
   <tr><td><b>VMware·CMBU</b></td><td>VIO-NFV Team</td><td>08/2017</td></tr>
 </table>
 <ul>
@@ -35,7 +35,7 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 
 ## Research Projects
 
-<table width="600" height="30" algin="left">
+<table width="700" height="30" algin="left">
   <tr><td><b>Network Service Management and Orchestrator based on OpenStack</b></td><td>09/2016-06/2017</td></tr>
 </table>
 <ul>
@@ -43,7 +43,7 @@ My researches mainly focus on the application of Software-Defined Network and Ne
   <li>Proposing and Implementing VNFs lifecycle management, including service design, create, scheduling and monitoring based on Juju Charms</li>
 </ul>
 
-<table width="600" height="30" algin="left">
+<table width="700" height="30" algin="left">
   <tr><td><b>LTE & WiFi Network Convergence based on SDN</b></td><td>01/2016-09/2016</td></tr>
 </table>
 <ul>
