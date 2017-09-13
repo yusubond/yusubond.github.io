@@ -7,7 +7,7 @@ Tags: about me
 
 Email:yubc0321@gmail.com  
 Github:[https://github.com/yusubond](https://github.com/yusubond)  
-Blog:[www.subond.com](www.subond.com)
+Blog:[www.subond.com](http://www.subond.com)
 
 I am a Master graduate in the School of Information and Communication Engineering of Beijing University of Posts and Telecommunications, advised by Prof. Wei Zheng. I received the B.E. degree from the Beijing University of Chemical Technology.
 
