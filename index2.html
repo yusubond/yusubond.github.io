@@ -61,6 +61,85 @@
  
 
     <div class='article'>
+        <a href="./pages/2017/04/16/docker-xi-tong-jia-gou.html"><h2>Docker技术：Docker系统架构</h2></a>
+        <div class= "well small"> 2017-04-16
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>本文目录：</p>
+<ul>
+<li><a href="#Docker Engine">Docker Engine</a></li>
+<li><a href="#Docker交付内容">Docker交付内容</a></li>
+<li><a href="#Docker系统架构">Docker系统架构</a></li>
+</ul>
+<h3>Docker Engine</h3>
+<p>Docker Engine主要包含三个组件，如下图所示：</p>
+<ul>
+<li>Docker Server：一个长时间运行的守护进程。</li>
+<li>REST API：指定程序可以用来与守护进程通信的接口。</li>
+<li>Client：命令行CLI客户端。</li>
+</ul>
+<p><img alt="Docker全局预览" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-overview.png"></p>
+<p>CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。</p>
+<h3>Docker交付内容</h3>
+<ul>
+<li>快速，一致地交付应用程序</li>
+</ul>
+<p>Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务</p>
+<ul>
+<li>在同一硬件上可允许多个工作流程</li>
+</ul>
+<p>Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。</p>
+<h3>Docker系统架构</h3>
+<p>Docker采用Client/Server架构模式，其系统架构如下图所示 …</p> <a class="btn btn-info xsmall" href="./pages/2017/04/16/docker-xi-tong-jia-gou.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2017/04/14/docker-ren-shi-docker.html"><h2>Docker技术：认识Docker</h2></a>
+        <div class= "well small"> 2017-04-14
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。</p> <a class="btn btn-info xsmall" href="./pages/2017/04/14/docker-ren-shi-docker.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2017/04/09/dynamo-distributed-systems.html"><h2>Dynamo分布式键值系统</h2></a>
+        <div class= "well small"> 2017-04-09
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 <strong>哈希分布算法</strong>。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。</p> <a class="btn btn-info xsmall" href="./pages/2017/04/09/dynamo-distributed-systems.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="./pages/2017/04/06/gfs-distributed-systems.html"><h2>GFS分布式文件系统</h2></a>
         <div class= "well small"> 2017-04-06
 
@@ -88,6 +167,42 @@ by <a class="url fn" href="./author/subond.html">subond</a>
 
  </div>
         <div class="summary"><p>Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a>，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。</p> <a class="btn btn-info xsmall" href="./pages/2017/03/21/learn-paxos-in-distributed-system.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2017/02/21/reading_and_writing.html"><h2>读书写作那点事儿</h2></a>
+        <div class= "well small"> 2017-02-21
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>这是一篇关于读书写作的读书笔记，内容源自李笑来老师知乎Live的《我的读书经验》。</p> <a class="btn btn-info xsmall" href="./pages/2017/02/21/reading_and_writing.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2016/12/15/the_middle_twenties.html"><h2>二十五六岁</h2></a>
+        <div class= "well small"> 2016-12-15
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>当一个人开始怀念少年时光的时候，他的少年时代就已经一去不复返了，此时此刻的他俨然成了一个有责任的青年人。</p> <a class="btn btn-info xsmall" href="./pages/2016/12/15/the_middle_twenties.html">read more</a></div>
     </div>	
 				
 
@@ -144,110 +259,6 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <div class="summary"><p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p> <a class="btn btn-info xsmall" href="./pages/2016/11/10/juju-charm-mechanism.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="./pages/2016/10/07/reply-1988.html"><h2>Reply 1988: 人生是个迷啊</h2></a>
-        <div class= "well small"> 2016-10-07
-
-by <a class="url fn" href="./author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>人，之所以为人，是因为可以享受生命的意义，生活的乐趣。这是一篇关于韩剧《请回答1988》的观后感。这部剧发生在韩国首尔一个叫做“双门洞”的胡同，讲述了五家人的故事，细致生动地再现了80年代邻里街坊小市民的生活面貌。<strong>整部剧以生活为主线，贯穿亲情，友情，爱情以及邻里情，细致地刻画了那个永远回不去的青春岁月</strong>。剧中的生活细节做的很足，处处都可以看到编剧和导演的良苦用心。其实，生活无非就是一日三餐，家长里短，却被演员们表现的淋漓尽致，主要集中在以下几个方面。</p> <a class="btn btn-info xsmall" href="./pages/2016/10/07/reply-1988.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="./pages/2016/07/12/tip-tools.html"><h2>工作中遇到的小技巧</h2></a>
-        <div class= "well small"> 2016-07-12
-
-by <a class="url fn" href="./author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><h3>Ubuntu彻底删除Mysql,重装Mysql</h3>
-<div class="highlight"><pre><span></span><span class="c1"># 删除MySQL</span>
-sudo apt-get autoremove --purge mysql-server-5.0
-sudo apt-get remove mysql-server
-sudo apt-get autoremove mysql-server
-sudo apt-get remove mysql-common  <span class="c1">#很重要</span>
-
-<span class="c1"># 清理残留数据</span>
-dpkg -l <span class="p">|</span> grep ^rc <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="p">|</span> sudo xargs dpkg -P
-<span class="c1"># 安装mysql</span>
-sudo apt-get install mysql-server mysql-client php5-mysql
-<span class="c1"># 启动mysql</span>
-<span class="c1"># sudo /etc/init.d/mysql restart</span>
-<span class="c1"># 安装phpmyadmin</span>
-sudo …</pre></div> <a class="btn btn-info xsmall" href="./pages/2016/07/12/tip-tools.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="./pages/2016/07/03/machinelearning-about-weka-evaluation.html"><h2>机器学习之Weka学习-Evaluation类介绍</h2></a>
-        <div class= "well small"> 2016-07-03
-
-by <a class="url fn" href="./author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p> <a class="btn btn-info xsmall" href="./pages/2016/07/03/machinelearning-about-weka-evaluation.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="./pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
-        <div class= "well small"> 2016-06-29
-
-by <a class="url fn" href="./author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="./pages/2016/06/28/machinelearning-about-weka-classifier.html"><h2>机器学习之Weka学习-简单分类器</h2></a>
-        <div class= "well small"> 2016-06-28
-
-by <a class="url fn" href="./author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="./pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev"><a href="./index.html">&larr; Previous</a></li>
@@ -255,6 +266,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
     <li class=""><a href="./index.html">1</a></li>
     <li class="active"><a href="./index2.html">2</a></li>
     <li class=""><a href="./index3.html">3</a></li>
+    <li class=""><a href="./index4.html">4</a></li>
 
     <li class="next"><a href="./index3.html">Next &rarr;</a></li>
 
@@ -290,7 +302,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
                 Categories
                 </li>
                 
-                <li><a href="./category/life.html">Life</a></li>
+                <li><a href="./category/life.html">life</a></li>
                 <li><a href="./category/note.html">Note</a></li>
                 <li><a href="./category/read.html">Read</a></li>
                 <li><a href="./category/tech.html">Tech</a></li>
@@ -306,10 +318,10 @@ by <a class="url fn" href="./author/subond.html">subond</a>
                 Links
                 </li>
             
-                <li><a href="http://nsq.io/">NSQ</a></li>
-                <li><a href="http://www.infoq.com/cn/">Info</a></li>
+                <li><a href="https://www.ucloud.cn">UCloud</a></li>
+                <li><a href="http://www.infoq.com/cn/">InfoQ</a></li>
                 <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
-                <li><a href="https://bbs.byr.cn/">北邮人论坛</a></li>
+                <li><a href="https://bbs.byr.cn/">BYR</a></li>
             </ul>
             </div>
 
