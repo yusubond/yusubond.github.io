@@ -40,11 +40,13 @@ SITEMAP = {
 }
 
 # Feed generation is usually not desired when developing
-FEED_DOMAIN = SITEURL
-FEED_RSS = 'feeds/all.rss.xml'
+# FEED_DOMAIN = SITEURL
+FEED_DOMAIN = None
+# FEED_RSS = 'feeds/all.rss.xml'
+FEED_RSS = None
 CATEGORY_FEED_RSS = 'feeds/%s.rss.xml'
 #FEED_ALL_ATOM = None
-#CATEGORY_FEED_ATOM = None
+CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
 #TRANSLATION_FEED_ATOM = None
 #AUTHOR_FEED_ATOM = None
 #AUTHOR_FEED_RSS = None
