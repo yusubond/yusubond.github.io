@@ -50,10 +50,10 @@ CATEGORY_FEED_RSS = 'feeds/%s.rss.xml'
 #AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('NSQ', 'http://nsq.io/'),
-         ('Info', 'http://www.infoq.com/cn/'),
+LINKS = (('UCloud', 'https://www.ucloud.cn'),
+         ('InfoQ', 'http://www.infoq.com/cn/'),
          ('SDNLAB', 'http://www.sdnlab.com/'),
-         ('北邮人论坛', 'https://bbs.byr.cn/'),)
+         ('BYR', 'https://bbs.byr.cn/'),)
 
 # Social widget
 SOCIAL = (('Github', 'https://github.com/yusubond'),
