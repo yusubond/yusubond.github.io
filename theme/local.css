@@ -76,3 +76,4 @@ h3 { margin-top: 2.5em; }
 .social a[href*='twitter.com']:before {content: url('./images/icons/twitter.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='weibo.com']:before {content: url('./images/icons/weibo.png'); margin-right: 2px; vertical-align: -3px;}
 .social a[href*='lofter.com']:before {content: url('./images/icons/lofter.png'); margin-right: 2px; vertical-align: -3px;}
+.social a[href*='gitbook.com']:before {content: url('./images/icons/gitbook.ico'); margin-right: 2px; vertical-align: -3px;}
