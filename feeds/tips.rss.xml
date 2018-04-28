@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Milestone - Tips</title><link>www.subond.com/</link><description></description><lastBuildDate>Tue, 12 Jul 2016 00:00:00 +0800</lastBuildDate><item><title>工作中遇到的小技巧</title><link>www.subond.com/pages/2016/07/12/tip-tools.html</link><description>&lt;h3&gt;Ubuntu彻底删除Mysql,重装Mysql&lt;/h3&gt;
+<rss version="2.0"><channel><title>SuperBond - Tips</title><link>www.subond.com/</link><description></description><lastBuildDate>Tue, 12 Jul 2016 00:00:00 +0800</lastBuildDate><item><title>工作中遇到的小技巧</title><link>www.subond.com/pages/2016/07/12/tip-tools.html</link><description>&lt;h3&gt;Ubuntu彻底删除Mysql,重装Mysql&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 删除MySQL&lt;/span&gt;
 sudo apt-get autoremove --purge mysql-server-5.0
 sudo apt-get remove mysql-server

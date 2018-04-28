@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import sitemap
 
 AUTHOR = u'subond'
-SITENAME = u'Milestone'
+SITENAME = u'SuperBond'
 SITEURL = 'www.subond.com'
 
 PATH = 'content'
@@ -57,6 +57,7 @@ LINKS = (('NSQ', 'http://nsq.io/'),
 
 # Social widget
 SOCIAL = (('Github', 'https://github.com/yusubond'),
-          ('Weibo', 'http://weibo.com/ybconly'),)
+          ('Weibo', 'http://weibo.com/ybconly'),
+          ('Lofter', 'http://subond.lofter.com/'),)
 
 DEFAULT_PAGINATION = 10
