@@ -36,7 +36,7 @@ $ cd blog
 $ pelican-quickstart
 ```
 
-执行pelican-quicstart命令后，会提示博客的配置选项，根据提示操作即可，除必填项之外，其他选择默认即可。如果有需要 可以在之后的pelicanconf.py文件进行修改。完成之后，会出现Pelican框架，如下
+执行pelican-quicstart命令后，会提示博客的配置选项，根据提示操作即可，除必填项之外，其他选择默认即可。如果有需要可以在之后的pelicanconf.py文件进行修改。完成之后，会出现Pelican框架，如下
 
 ```shell
 bolg
@@ -101,3 +101,7 @@ $ git remote set-url origin <server>   #修改远程服务器地址
 $ git push origin master      #推送到远程服务器
 $ git status    #查看当前各文件状态
 ```
+
+## Pelican的几点说明
+
+1. 使用`pelican-theme`命令可以安装不同的博客主题风格，`-v`可查看安装路径；使用`pelican-theme`生成主题后，会在博客目录下生成一个`theme`的文件夹(这是依据你所选的主题风格生成的文件，无需修改)。若要修改某个特定主题，需在主题的默认安装路径中进行修改，修改后重新导入主题即可。
