@@ -3,10 +3,10 @@ Date: 2017-09-01
 Category: Life
 Tags: about me
 
-## Bangchao Yu (于邦超)
+## Subond Yu (于邦超)
 
-Email:yubc0321@gmail.com  
-Github:[https://github.com/yusubond](https://github.com/yusubond)  
+Email:yubc0321@gmail.com
+Github:[https://github.com/yusubond](https://github.com/yusubond)
 Blog:[www.subond.com](http://www.subond.com)
 
 I am a Master graduate in the School of Information and Communication Engineering of Beijing University of Posts and Telecommunications, advised by Prof. Wei Zheng. I received the B.E. degree from the Beijing University of Chemical Technology.
@@ -64,14 +64,14 @@ My researches mainly focus on the application of Software-Defined Network and Ne
 <p><font size="4"><b>教育背景</b></font></p>
 <hr size="3px" color="#000000"/>
 <table width="800" algin="left">
-  <tr height="30"><td>2015.09-2018.04(预计)</td><td>北京邮电大学</td><td>电子与通信工程</td><td>硕士研究生</td></tr>
+  <tr height="30"><td>2015.09-2018.04</td><td>北京邮电大学</td><td>电子与通信工程</td><td>硕士研究生</td></tr>
   <tr height="30"><td>2011.09-2015.06</td><td>北京化工大学</td><td>通信工程</td><td>本科</td></tr>
 </table>
 
 <p><font size="4"><b>实习经历</b></font></p>
 <hr size="3px" color="#000000"/>
 <table width="600" height="30" algin="left">
-<tr><td><b>2017.08-至今</b></td><td algin="left"><b>VMware·CMBU</b></td></tr>
+<tr><td><b>2017.08-2017.12</b></td><td algin="left"><b>VMware·CMBU</b></td></tr>
 </table>
 <ul>
   <li>从事 NFV 领域中服务与编排前沿技术的调研与代码开发工作，主要包括资源的编排和管理，服务 的设计与创建，策略的设计，服务的编排和管理等</li>
