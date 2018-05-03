@@ -60,8 +60,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="../pages/2017/05/01/docker-swarm-jin-jie2.html"><h1>Docker进阶：服务配置</h1></a>
-2017-05-01
+            <a href="../pages/2018/05/01/grpc_helloworld.html"><h1>gRPC使用指南</h1></a>
+2018-05-01
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
@@ -70,159 +70,142 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
         </div>
         
-        <div><p>当使用Docker Swarm模式时，我们可以通过命令<code>docker service create</code>向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即<code>docker service</code>，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。</p>
-<p>本文目录：</p>
+        <div><p>gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。</p>
+<h2>1. gRPC概述</h2>
+<p>gRPC允许客户端应用可以像调用本地对象一样直接调用另一台不同机器上的服务端应用，使开发人员更容易地创建分布式应用和服务。</p>
+<p>在gRPC里，首先需要 <strong>定义一个服务</strong>，指定其能够被远程调用的方法(包含参数和返回类型)。然后，服务端将实现这个接口，并运行一个gRPC服务器来处理客户端的调用。客户端则拥有一个 <strong>存根</strong> 能够像服务端一样的方法。</p>
+<p><strong>Protocol Buffers</strong></p>
+<p>gRPC默认使用Protocol Buffers，这是Google开源的一套成熟的结构数据序列化机制。在proto文件中创建gRPC服务，并且用消息类型来定义相关的参数和返回类型都比较方便，这里我们使用<code>proto3</code>版本。</p>
+<h2>2. 安装gRPC和proto</h2>
+<p>安装golang，且版本大于等于1.6；并设置相应的环境变量GOPATH,GOROOT等。</p>
+<p>安装gRPC，gRPC使用golang语言编写的，可以直接使用go命令去下载。</p>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="nx">get</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">google</span><span class="p">.</span><span class="nx">golang</span><span class="p">.</span><span class="nx">org</span><span class="o">/</span><span class="nx">grpc</span>
+</pre></div>
+
+
+<p>安装protobuf，参考<a href="https://github.com/google/protobuf/releases">https://github.com/google/protobuf/releases</a>，依据相应的系统平台选择安装包。</p>
+<p>安装protobuf go插件。</p>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="nx">get</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">golang</span><span class="o">/</span><span class="nx">protobuf</span><span class="o">/</span><span class="nx">protoc</span><span class="o">-</span><span class="nx">gen</span><span class="o">-</span><span class="k">go</span>
+</pre></div>
+
+
+<h2>3. HelloWorld gRPC</h2>
+<p>这个HelloWorld程序位于gRPC源码的<code>examples</code>目录下，它展示了一个简单的客户端-服务端应用。</p>
 <ul>
-<li><a href="#创建服务">创建服务</a></li>
-<li><a href="#配置服务">配置服务</a></li>
+<li>
+<p>通过proto文件定义一个简单的带有HelloWorld方法的gRPC服务</p>
+</li>
+<li>
+<p>创建一个实现这个接口的服务端</p>
+</li>
+<li>
+<p>创建一个客户端来访问你的服务端</p>
+</li>
 </ul>
-<h3>创建服务</h3>
-<p>Swarm集群中最简单创建服务的方式就是指定所要创建的服务镜像就可以，即命令<code>docker service create &lt;IMAGE&gt;</code>。当执行创建服务命令后，Swarm编排器则向可用节点分派服务任务。一个任务其实就是一个基于指定镜像生成的容器。比如，创建一个nginx web服务。</p>
-<div class="highlight"><pre><span></span># 在管理节点上
-# --name参数用于指定服务的名称
-$ docker service create --name myweb nginx
-l3w3x4df6tnia8qql64mkdm1s
-# 查看Swarm集群中的服务
-$ docker service ls
-ID            NAME   MODE        REPLICAS  IMAGE
-l3w3x4df6tni  myweb  replicated  1/1       nginx:latest
+<h3>指定protobuf版本</h3>
+<div class="highlight"><pre><span></span><span class="na">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
 </pre></div>
 
 
-<p>当然，我们也可以在部署服务时指定容器中将要运行的指令，其命令为<code>docker service create &lt;IMAGE&gt; &lt;COMMAND&gt;</code>。</p>
-<div class="highlight"><pre><span></span>$ docker service create --name myalpine ping www.bing.com
+<h3>指定包名</h3>
+<p>这个包名就是生成golang源码后所使用的包名。</p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
 </pre></div>
 
 
-<h3>服务配置</h3>
-<p>当创建一个服务时，我们通过修改配置选项对服务进行限制，命令<code>docker service create --help</code>可以查看创建服务的帮助信息。</p>
-<p><strong>配置服务的运行环境</strong></p>
-<p>我们可以通过以下参数配置服务的运行环境：</p>
-<ul>
-<li>--env参数可以指定环境变量</li>
-<li>--workdir参数可以指定容器中的工作目录</li>
-<li>--user参数可以指定用户名或者UID</li>
-</ul>
-<div class="highlight"><pre><span></span># 通过不同的参数配置服务
-$ docker service create --name myservice \
-  --env MYSERVICE=/usr/local/service
-  --workdir /tmp
-  --user subond
-  alpine ping www.baidu.com
+<h3>定义服务</h3>
+<p>通过<code>service</code>关键字来定义一个服务，并指定其参数和返回类型。参数和返回类型一般通过<code>message</code>关键字进行定义。</p>
+<div class="highlight"><pre><span></span><span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span>
+  <span class="c1">// Sends a greeting</span>
+  <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="c1">// The request message containing the user&#39;s name.</span>
+<span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="na">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// The response message containing the greetings</span>
+<span class="kd">message</span> <span class="nc">HelloReply</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="kd">message</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<p><strong>配置服务规模和位置</strong></p>
-<p>前面的介绍中，我们讲到Swarm模式中有两种服务类型：复制服务(replicated service)和全局服务(global service)。对于复制服务类型，我们可指定--replicas参数来创建一定数量的服务任务，从而将任务分派到可用节点上；而对于全局服务，调度器则在每一个可用节点上均部署一个任务，--mode参数可以指定全局服务。具体如下：</p>
-<div class="highlight"><pre><span></span># 在具有一个管理节点(manager)和一个工作节点(worker1)的Swarm集群中，部署一个具有两个副本的nginx web服务
-# 在节点manger
-$ docker node ls
-ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
-34y77dgnqon4soj2kqyb65a9y *  manager   Ready   Active        Leader
-nxb55hhu8kwp272z21xi9dhyy    worker1   Ready   Active
-$ docker service create --name myweb1 --replicas 3 nginx
-xpmhprvzqtl1fi0mdveowjdoa
-# 创建成功
-# docker service ls
-ID            NAME    MODE        REPLICAS  IMAGE
-xpmhprvzqtl1  myweb1  replicated  2/2       nginx:latest
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED             STATUS              PORTS               NAMES
-27aa642e7786        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   59 seconds ago      Up 58 seconds       80/tcp              myweb1.1.ei5mappmkkcdhbnk6gv3tcgrf
+<p>值得说明的是，在proto文件中定义的service <em>转化</em> 成golang源码中的interface类型；message类型 <em>转化</em> 成struct类型。</p>
+<h3>生成golang源码</h3>
+<p>命令<code>protoc helloworld/helloworld.proto --go_out=plugins=grpc:.</code>可生成proto文件中定义的service和message，文件以<code>.pb.go</code>结尾。</p>
+<h2>4. 服务端应用</h2>
+<p>服务端编程中，需要首先import刚才生成的包，然后定义server类型，并实现SayHello接口。部分代码如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;google.golang.org/grpc&quot;</span>
+<span class="kn">import</span> <span class="nx">pb</span> <span class="s">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>
 
-# 在节点worker1
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
-245a257c56d5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   About a minute ago   Up About a minute   80/tcp              myweb1.2.y2am04ermd2b8d3qevfeyzn67
-# 我们的可以看到在两个节点上均有一个myweb1服务
+<span class="c1">// server is used to implement helloworld.GreeterServer.</span>
+<span class="kd">type</span> <span class="nx">server</span> <span class="kd">struct</span><span class="p">{}</span>
 
-# 接下来，我们再部署一个myweb2服务，与myweb1不同的是，myweb2是全局服务
-# 在manager节点上
-$ docker service create --name myweb2 --mode global nginx
-yfbd525ztbqpa688ego4u0de8
-$ docker service ls
-ID            NAME    MODE        REPLICAS  IMAGE
-xpmhprvzqtl1  myweb1  replicated  2/2       nginx:latest
-yfbd525ztbqp  myweb2  global      2/2       nginx:latest
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
-5a99dca94917        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   About a minute ago   Up About a minute   80/tcp              myweb2.34y77dgnqon4soj2kqyb65a9y.rush02tpvachu294flrklw32p
-27aa642e7786        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   8 minutes ago        Up 8 minutes        80/tcp              myweb1.1.ei5mappmkkcdhbnk6gv3tcgrf
-
-# 在worker1节点上
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
-3a00f5c5ce9b        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   About a minute ago   Up About a minute   80/tcp              myweb2.nxb55hhu8kwp272z21xi9dhyy.on9e6cr8obz3y51e84b3s72z4
-245a257c56d5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   8 minutes ago        Up 8 minutes        80/tcp              myweb1.2.y2am04ermd2b8d3qevfeyzn67
-
-# 接下来，我们将工作节点worker2加入Swarm集群
-$ 在worker2节点上
-$ docker swarm join \
-  --token SWMTKN-1-1omg2k2e92snxv3wlja3komux5wan4hynn80ikkma2s9rd5cxz-9hq2vf8n0jysukytfqpavd8j7 \
-  172.28.128.3:2377
-This node joined a swarm as a worker.
-# 在manager节点上
-$ docker node ls
-ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
-34y77dgnqon4soj2kqyb65a9y *  manager   Ready   Active        Leader
-nxb55hhu8kwp272z21xi9dhyy    worker1   Ready   Active
-v0rmad0igl7xwn8alop33j3fu    worker2   Ready   Active
-
-# 在worker2节点上
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED             STATUS              PORTS               NAMES
-356da4542dd5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   40 seconds ago      Up 39 seconds       80/tcp              myweb2.v0rmad0igl7xwn8alop33j3fu.5wa1pg01i73u3a1feb73ht5p5
-# 可以看到worker2上具有myweb2的服务，而不具备myweb1服务
-# 这是复制服务和全局的模式的重要区别
+<span class="c1">// SayHello implements helloworld.GreeterServer</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">server</span><span class="p">)</span> <span class="nx">SayHello</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">in</span> <span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloReply</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloReply</span><span class="p">{</span><span class="nx">Message</span><span class="p">:</span> <span class="s">&quot;Hello &quot;</span> <span class="o">+</span> <span class="nx">in</span><span class="p">.</span><span class="nx">Name</span><span class="p">},</span> <span class="kc">nil</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<p><strong>配置发布端口</strong></p>
-<p>当创建Swarm服务时，有两个方式将服务的端口发布到Swarm群外的主机端口上：</p>
-<ul>
-<li>依靠路由网络。当我们发布一个服务端口时，无论节点上是否运行着服务的任务，Swarm都会在每个节点的目标端口上访问该服务。</li>
-<li>直接在运行该服务任务的节点上发布服务端口。Docker1.13及其更高版本支持该功能。</li>
-</ul>
-<p>第一种：依靠路由网络发布端口</p>
-<p>我们可以通过参数--publish <target-port>:<service-port>发布服务的端口。Swarm使得服务在每个节点的目标端口均可达。如果外部主机连接到Swarm集群中的任何一个节点，都可以通过路由网络将其路由到服务任务所在的节点上。外部主机不要知道服务任务所在的ip和内部使用的服务端口就可以与服务进行交互。</p>
-<p>例如，我们在一个具有3个节点的Swarm集群中运行一个具有2个副本的nginx web服务，并将发布端口设为8080。那么，在任何一个节点上可以使用8080端口上的nging服务。</p>
-<div class="highlight"><pre><span></span># 在manger节点上部署nginx web服务，并发布8080端口
-$ docker service create --name myweb --replicas 2 --publish 8080:80 nginx
-# 通过检查，我们发现在manager节点和worker2节点均有myweb任务
-# 在worker1节点请求nginx服务
-$ curl localhost:8080
-<span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html&gt;</span>
-<span class="nt">&lt;head&gt;</span>
-<span class="nt">&lt;title&gt;</span>Welcome to nginx!<span class="nt">&lt;/title&gt;</span>
-<span class="nt">&lt;style&gt;</span>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-<span class="nt">&lt;/style&gt;</span>
-<span class="nt">&lt;/head&gt;</span>
-<span class="nt">&lt;body&gt;</span>
-...
-<span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
+<p>main中先生成grpc服务，并注册该服务，部分代码如下：</p>
+<div class="highlight"><pre><span></span><span class="nx">s</span> <span class="o">:=</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">NewServer</span><span class="p">()</span>
+<span class="nx">pb</span><span class="p">.</span><span class="nx">RegisterGreeterServer</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">server</span><span class="p">{})</span>
 </pre></div>
 
 
-<p>外部主机上，使用任何一个节点的ip均可以访问到nginx服务，如下图：</p>
-<p><img alt="nginx服务" src="http://on64c9tla.bkt.clouddn.com/Comput/docker_nginx.png"></p>
-<p>第二种：在Swarm节点上发布端口</p>
-<p>通过指定mode=host来进行参数--publish的设定，我们可以将发布端口指定到每个运行服务任务的Swarm节点上。</p>
-<p>主要注意的是：如果使用mode=host直接在Swarm节点上发布服务的端口，并且还设置published=<PORT>，则会创建一个隐式限制，只能在给定的群组节点上为该服务运行一个任务。 另外，如果使用mode=host，并且在docker服务创建时不使用--mode=global标志，那么将难以知道哪些节点正在运行服务，以便将工作路由到它们。</p>
-<p>接下来，我们创建一个全局服务类型的nginx web服务，并将发布端口指定为8090。</p>
-<div class="highlight"><pre><span></span># 在manager节点上
-$ docker service create --name mynginx --mode global --publish mode=host,target=80,published=8090 nginx
-# 这样我们可以在Swarm任何一个节点上访问到8090端口上的nginx服务，即使新加入的节点。
+<h2>5. 客户端应用</h2>
+<p>同样，客户端编程中也需要import相应的包，然后通过<code>grpc.Dial()</code>建立与server的连接，并根据连接生成客户端，在进行rpc调用。部分代码如下：</p>
+<div class="highlight"><pre><span></span><span class="c1">// import相应的包</span>
+<span class="kn">import</span> <span class="s">&quot;google.golang.org/grpc&quot;</span>
+<span class="kn">import</span> <span class="nx">pb</span> <span class="s">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>
+
+<span class="c1">// 建立与server的连接</span>
+<span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">WithInsecure</span><span class="p">())</span>
+
+<span class="c1">// 生成客户端</span>
+<span class="nx">c</span> <span class="o">:=</span> <span class="nx">pb</span><span class="p">.</span><span class="nx">NewGreeterClient</span><span class="p">(</span><span class="nx">conn</span><span class="p">)</span>
+
+<span class="c1">// 调用server的方法</span>
+<span class="nx">r</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">SayHello</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="nx">name</span><span class="p">})</span>
+</pre></div>
+
+
+<p>值得注意的是，调用结束后连接需要释放。</p>
+<div class="highlight"><pre><span></span><span class="k">defer</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</pre></div>
+
+
+<h2>6. 启动服务端与客户端</h2>
+<div class="highlight"><pre><span></span><span class="c1">// 启动服务端</span>
+<span class="k">go</span> <span class="nx">run</span> <span class="nx">server</span><span class="o">/</span><span class="nx">main</span><span class="p">.</span><span class="k">go</span>
+
+<span class="c1">// 启动客户端</span>
+<span class="k">go</span> <span class="nx">run</span> <span class="nx">client</span><span class="o">/</span><span class="nx">main</span><span class="p">.</span><span class="k">go</span>
 </pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/05/01/docker-swarm-jin-jie2.html"><h2>Docker进阶：服务配置</h2></a>
+        <div class= "well small"> 2017-05-01
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>当使用Docker Swarm模式时，我们可以通过命令<code>docker service create</code>向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即<code>docker service</code>，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。</p> <a class="btn btn-info xsmall" href="../pages/2017/05/01/docker-swarm-jin-jie2.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -406,24 +389,6 @@ by <a class="url fn" href="../author/subond.html">subond</a>
         <div class="summary"><p>Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/14/docker-ren-shi-docker.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/09/dynamo-distributed-systems.html"><h2>Dynamo分布式键值系统</h2></a>
-        <div class= "well small"> 2017-04-09
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 <strong>哈希分布算法</strong>。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/09/dynamo-distributed-systems.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -507,7 +472,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="..">SuperBond</a> &copy; subond 2017</p>
+<p><a href="..">SuperBond</a> &copy; subond 2018</p>
 </footer>
 
 </div> <!-- /container -->

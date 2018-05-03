@@ -60,8 +60,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="../pages/2017/11/19/confident_and_certainty.html"><h1>年轻的自信与成熟的笃定</h1></a>
-2017-11-19
+            <a href="../pages/2018/05/01/grpc_helloworld.html"><h1>gRPC使用指南</h1></a>
+2018-05-01
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
@@ -70,24 +70,142 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
         </div>
         
-        <div><p><strong>当一个年轻人开始逐渐摆脱盲目自信的时候，脚步更加坚定的时候，他迎来的是更加成熟的笃定。</strong></p>
-<p>今天吴晓波频道（微信号公众号：wuxiaobopd）推送了一篇文章，叫做《月入2万，95后还觉得自己活得不如狗？》，文中提到极光大数据发布的<a href="https://www.jiguang.cn/reports/116">《95后群体画像研究报告》</a>，于是便找来看了一番。其中，让我感兴趣的部分是如何看待比自己早生/晚生10年的一代人。</p>
-<p><img alt="9501" src="http://on64c9tla.bkt.clouddn.com/Reads/9501.GIF">
-<img alt="9502" src="http://on64c9tla.bkt.clouddn.com/Reads/9502.GIF"></p>
-<p>数据表明，相比其他年龄群体，95后对85后的评价普遍偏低，同样对“晚辈”（05后）的评价也不高，但是对于自己的评价，42.7%的人认为自己重诚信，尊老爱幼，乐于助人、爱国、孝顺、有礼貌的爱国青年。</p>
-<p><img alt="9503" src="http://on64c9tla.bkt.clouddn.com/Reads/9503.GIF"></p>
-<p>这种种数据表明，<strong>95后是自信的一代</strong>。当然，这并不是没有任何理由。作为90后，我们生活在长期和平的年代，1978年改革开放后，无论是城市还是农村，生活水平都有不同程度的提高。我们的父母都是改革开放的见证者，等到我们出生的时候，温饱问题基本上解决了（除了少数偏远山村）。与此同时，90s年代，又是信息技术发展的快速时期，使我们这一代从小就接触到电脑，互联网。这样良好的成长环境使我们更加自信，</p>
-<p>但是，我想说的是，自信并不属于95后，而是属于年轻人。纳什·沃夏尔·硕得提出的"社会三定律"讲的就是这个道理：</p>
-<blockquote>
-<p>一，任何比我早出生10年及以上的人都是裹步不前的老顽固。<br>
-二，任何出生时间和我相差10年以内的人都是这个社会的精英，中流砥柱。<br>
-三，任何比我晚出生10年及以上的人都是无可救药垮掉的一代。 ​​​​  </p>
-</blockquote>
-<p>所以，自信永远属于年轻人，自命不凡的年轻人。年少无知，无知即无畏。初生牛犊不怕虎，说的正是年轻人。</p>
-<p>正如，当一个人开始怀念少年时光的时候，他的少年时代就已经一去不复返了，此时此刻的他俨然成了一个有责任的青年人。同样，当一个年轻人开始逐渐摆脱盲目自信的时候，脚步更加坚定的时候，他迎来的是更加成熟的笃定。</p></div>
+        <div><p>gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。</p>
+<h2>1. gRPC概述</h2>
+<p>gRPC允许客户端应用可以像调用本地对象一样直接调用另一台不同机器上的服务端应用，使开发人员更容易地创建分布式应用和服务。</p>
+<p>在gRPC里，首先需要 <strong>定义一个服务</strong>，指定其能够被远程调用的方法(包含参数和返回类型)。然后，服务端将实现这个接口，并运行一个gRPC服务器来处理客户端的调用。客户端则拥有一个 <strong>存根</strong> 能够像服务端一样的方法。</p>
+<p><strong>Protocol Buffers</strong></p>
+<p>gRPC默认使用Protocol Buffers，这是Google开源的一套成熟的结构数据序列化机制。在proto文件中创建gRPC服务，并且用消息类型来定义相关的参数和返回类型都比较方便，这里我们使用<code>proto3</code>版本。</p>
+<h2>2. 安装gRPC和proto</h2>
+<p>安装golang，且版本大于等于1.6；并设置相应的环境变量GOPATH,GOROOT等。</p>
+<p>安装gRPC，gRPC使用golang语言编写的，可以直接使用go命令去下载。</p>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="nx">get</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">google</span><span class="p">.</span><span class="nx">golang</span><span class="p">.</span><span class="nx">org</span><span class="o">/</span><span class="nx">grpc</span>
+</pre></div>
+
+
+<p>安装protobuf，参考<a href="https://github.com/google/protobuf/releases">https://github.com/google/protobuf/releases</a>，依据相应的系统平台选择安装包。</p>
+<p>安装protobuf go插件。</p>
+<div class="highlight"><pre><span></span><span class="k">go</span> <span class="nx">get</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">golang</span><span class="o">/</span><span class="nx">protobuf</span><span class="o">/</span><span class="nx">protoc</span><span class="o">-</span><span class="nx">gen</span><span class="o">-</span><span class="k">go</span>
+</pre></div>
+
+
+<h2>3. HelloWorld gRPC</h2>
+<p>这个HelloWorld程序位于gRPC源码的<code>examples</code>目录下，它展示了一个简单的客户端-服务端应用。</p>
+<ul>
+<li>
+<p>通过proto文件定义一个简单的带有HelloWorld方法的gRPC服务</p>
+</li>
+<li>
+<p>创建一个实现这个接口的服务端</p>
+</li>
+<li>
+<p>创建一个客户端来访问你的服务端</p>
+</li>
+</ul>
+<h3>指定protobuf版本</h3>
+<div class="highlight"><pre><span></span><span class="na">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
+</pre></div>
+
+
+<h3>指定包名</h3>
+<p>这个包名就是生成golang源码后所使用的包名。</p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
+</pre></div>
+
+
+<h3>定义服务</h3>
+<p>通过<code>service</code>关键字来定义一个服务，并指定其参数和返回类型。参数和返回类型一般通过<code>message</code>关键字进行定义。</p>
+<div class="highlight"><pre><span></span><span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span>
+  <span class="c1">// Sends a greeting</span>
+  <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="c1">// The request message containing the user&#39;s name.</span>
+<span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="na">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// The response message containing the greetings</span>
+<span class="kd">message</span> <span class="nc">HelloReply</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="kd">message</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>值得说明的是，在proto文件中定义的service <em>转化</em> 成golang源码中的interface类型；message类型 <em>转化</em> 成struct类型。</p>
+<h3>生成golang源码</h3>
+<p>命令<code>protoc helloworld/helloworld.proto --go_out=plugins=grpc:.</code>可生成proto文件中定义的service和message，文件以<code>.pb.go</code>结尾。</p>
+<h2>4. 服务端应用</h2>
+<p>服务端编程中，需要首先import刚才生成的包，然后定义server类型，并实现SayHello接口。部分代码如下：</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;google.golang.org/grpc&quot;</span>
+<span class="kn">import</span> <span class="nx">pb</span> <span class="s">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>
+
+<span class="c1">// server is used to implement helloworld.GreeterServer.</span>
+<span class="kd">type</span> <span class="nx">server</span> <span class="kd">struct</span><span class="p">{}</span>
+
+<span class="c1">// SayHello implements helloworld.GreeterServer</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">server</span><span class="p">)</span> <span class="nx">SayHello</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">in</span> <span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloReply</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloReply</span><span class="p">{</span><span class="nx">Message</span><span class="p">:</span> <span class="s">&quot;Hello &quot;</span> <span class="o">+</span> <span class="nx">in</span><span class="p">.</span><span class="nx">Name</span><span class="p">},</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>main中先生成grpc服务，并注册该服务，部分代码如下：</p>
+<div class="highlight"><pre><span></span><span class="nx">s</span> <span class="o">:=</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">NewServer</span><span class="p">()</span>
+<span class="nx">pb</span><span class="p">.</span><span class="nx">RegisterGreeterServer</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">server</span><span class="p">{})</span>
+</pre></div>
+
+
+<h2>5. 客户端应用</h2>
+<p>同样，客户端编程中也需要import相应的包，然后通过<code>grpc.Dial()</code>建立与server的连接，并根据连接生成客户端，在进行rpc调用。部分代码如下：</p>
+<div class="highlight"><pre><span></span><span class="c1">// import相应的包</span>
+<span class="kn">import</span> <span class="s">&quot;google.golang.org/grpc&quot;</span>
+<span class="kn">import</span> <span class="nx">pb</span> <span class="s">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>
+
+<span class="c1">// 建立与server的连接</span>
+<span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">WithInsecure</span><span class="p">())</span>
+
+<span class="c1">// 生成客户端</span>
+<span class="nx">c</span> <span class="o">:=</span> <span class="nx">pb</span><span class="p">.</span><span class="nx">NewGreeterClient</span><span class="p">(</span><span class="nx">conn</span><span class="p">)</span>
+
+<span class="c1">// 调用server的方法</span>
+<span class="nx">r</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">SayHello</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="nx">name</span><span class="p">})</span>
+</pre></div>
+
+
+<p>值得注意的是，调用结束后连接需要释放。</p>
+<div class="highlight"><pre><span></span><span class="k">defer</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</pre></div>
+
+
+<h2>6. 启动服务端与客户端</h2>
+<div class="highlight"><pre><span></span><span class="c1">// 启动服务端</span>
+<span class="k">go</span> <span class="nx">run</span> <span class="nx">server</span><span class="o">/</span><span class="nx">main</span><span class="p">.</span><span class="k">go</span>
+
+<span class="c1">// 启动客户端</span>
+<span class="k">go</span> <span class="nx">run</span> <span class="nx">client</span><span class="o">/</span><span class="nx">main</span><span class="p">.</span><span class="k">go</span>
+</pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/11/19/confident_and_certainty.html"><h2>年轻的自信与成熟的笃定</h2></a>
+        <div class= "well small"> 2017-11-19
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>当一个年轻人开始逐渐摆脱盲目自信的时候，脚步更加坚定的时候，他迎来的是更加成熟的笃定。</p> <a class="btn btn-info xsmall" href="../pages/2017/11/19/confident_and_certainty.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -246,24 +364,6 @@ FROM python:2.7-slim
 # Set the working directory to /app …</pre></div> <a class="btn btn-info xsmall" href="../pages/2017/04/20/docker-quickstart.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html"><h2>Docker技术：Dockerfile的定义与使用</h2></a>
-        <div class= "well small"> 2017-04-18
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令<code>docker build</code>可以与Dockerfile文件中构建我们自己需要的镜像。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -348,7 +448,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="..">SuperBond</a> &copy; subond 2017</p>
+<p><a href="..">SuperBond</a> &copy; subond 2018</p>
 </footer>
 
 </div> <!-- /container -->

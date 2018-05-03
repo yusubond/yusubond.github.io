@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>www.subond.com/</loc>
-<lastmod>2018-05-03T10:36:41-00:00</lastmod>
+<lastmod>2018-05-03T10:40:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>www.subond.com/archives.html</loc>
-<lastmod>2018-05-03T10:36:41-00:00</lastmod>
+<lastmod>2018-05-03T10:40:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>www.subond.com/tags.html</loc>
-<lastmod>2018-05-03T10:36:41-00:00</lastmod>
+<lastmod>2018-05-03T10:40:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>www.subond.com/categories.html</loc>
-<lastmod>2018-05-03T10:36:41-00:00</lastmod>
+<lastmod>2018-05-03T10:40:09-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -36,6 +36,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <lastmod>2017-09-01T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.3</priority>
+</url>
+
+<url>
+<loc>www.subond.com/pages/2018/05/01/grpc_helloworld.html</loc>
+<lastmod>2018-05-01T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
 </url>
 
 <url>
@@ -299,7 +306,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>www.subond.com/category/tech.html</loc>
-<lastmod>2017-05-01T00:00:00+08:06</lastmod>
+<lastmod>2018-05-01T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -333,15 +340,29 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>www.subond.com/tag/process.html</loc>
+<loc>www.subond.com/tag/ai.html</loc>
+<lastmod>2016-07-03T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>www.subond.com/tag/pthread.html</loc>
 <lastmod>2016-06-19T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>www.subond.com/tag/linux.html</loc>
-<lastmod>2016-06-19T00:00:00+08:06</lastmod>
+<loc>www.subond.com/tag/golang.html</loc>
+<lastmod>2018-05-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>www.subond.com/tag/rpc.html</loc>
+<lastmod>2018-05-01T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -354,7 +375,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>www.subond.com/tag/pthread.html</loc>
+<loc>www.subond.com/tag/linux.html</loc>
 <lastmod>2016-06-19T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
@@ -410,8 +431,8 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>www.subond.com/tag/ai.html</loc>
-<lastmod>2016-07-03T00:00:00+08:06</lastmod>
+<loc>www.subond.com/tag/process.html</loc>
+<lastmod>2016-06-19T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -494,6 +515,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>www.subond.com/tag/tech.html</loc>
+<lastmod>2018-05-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
 <loc>www.subond.com/tag/architecture.html</loc>
 <lastmod>2016-05-10T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
@@ -523,7 +551,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>www.subond.com/author/subond.html</loc>
-<lastmod>2017-11-19T00:00:00+08:06</lastmod>
+<lastmod>2018-05-01T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
