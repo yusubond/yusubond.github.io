@@ -66,13 +66,13 @@ by <a class="url fn" href="../../../../author/subond.html">subond</a>
 	
         <div><p>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。</p>
 <p>其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。</p>
-<h3>Vagrant安装</h3>
+<h2>1.Vagrant安装</h2>
 <p>Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。</p>
-<p><strong>VirtualBox安装</strong></p>
+<h3>VirtualBox安装</h3>
 <p>这是Virtual官网链接<a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a>，可以依据自己的系统选择合适的安装包进行安装。</p>
-<p><strong>Vagrant安装</strong></p>
+<h3>Vagrant安装</h3>
 <p>Vagrant官网<a href="https://www.vagrantup.com/downloads.html">https://www.vagrantup.com/downloads.html</a>，同样需要依据自己的系统选择合适的安装包进行安装。</p>
-<h3>Vagrant配置</h3>
+<h2>2.Vagrant配置</h2>
 <p>Vagrant配置主要在<code>Vagrantfile</code>文件中，通过<code>vagrant init</code>命令可以获得。</p>
 <div class="highlight"><pre><span></span>$ mkdir MyHost
 $ <span class="nb">cd</span> MyHost
@@ -86,7 +86,7 @@ $ vagrant init
 </pre></div>
 
 
-<h3>启动虚拟</h3>
+<h2>3.启动虚拟</h2>
 <p>在MyHost目录下，通过命令<code>vagrant up</code>即可启动在<code>Vagrantfile</code>文件中配置的虚拟。</p>
 <div class="highlight"><pre><span></span>$ vagrant up
 <span class="c1"># 进入虚拟</span>
@@ -94,36 +94,48 @@ $ vagrant ssh
 </pre></div>
 
 
-<h2>Vagrantfile详解</h2>
+<h2>4.Vagrantfile详解</h2>
 <ol>
 <li>语言版本</li>
 </ol>
-<p><code>ruby
-  Vagrant.configure("2") do |config|</code>
-  其中"2"指定Vagrantfile所使用的语言版本，一般为<code>2</code>。</p>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</pre></div>
+
+
+<p>其中"2"指定Vagrantfile所使用的语言版本，一般为<code>2</code>。</p>
 <ol>
 <li>box相关</li>
 </ol>
 <p>指定创建虚机vm所需的box</p>
-<p><code>ruby
-  config.vm.box = "ubuntu/xenial64"</code></p>
+<div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/xenial64&quot;</span>
+</pre></div>
+
+
 <p>设置vm的hostname</p>
-<p><code>ruby
-  config.vm.hostname = "ubuntu64"</code></p>
+<div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;ubuntu64&quot;</span>
+</pre></div>
+
+
 <p>设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。</p>
-<p><code>ruby
-  # 设置私有网络
-  config.vm.network "private_network", ip: "192.168.33.10"
-  # 设置公有网络
-  config.vm.network "public_network"
-  # 设置端口映射，即vm80端口映射到主机8080端口
-  config.vm.network "forwarded_port", guest: 80, host: 8080</code>
-3. 文件同步</p>
+<div class="highlight"><pre><span></span><span class="c1"># 设置私有网络</span>
+<span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.33.10&quot;</span>
+<span class="c1"># 设置公有网络</span>
+<span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;public_network&quot;</span>
+<span class="c1"># 设置端口映射，即vm80端口映射到主机8080端口</span>
+<span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;forwarded_port&quot;</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">8080</span>
+</pre></div>
+
+
+<ol>
+<li>文件同步</li>
+</ol>
 <p>将主机的文件(或目录)挂载到vm中，实现文件同步。<br>
-  第一个参数是主机的文件路径，第二个参数是vm里面的路径。</p>
-<p><code>ruby
-  config.vm.synced_folder "../data", "/vagrant_data"</code></p>
-<h2>Vagrant常用命令</h2>
+第一个参数是主机的文件路径，第二个参数是vm里面的路径。</p>
+<div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">synced_folder</span> <span class="s2">&quot;../data&quot;</span><span class="p">,</span> <span class="s2">&quot;/vagrant_data&quot;</span>
+</pre></div>
+
+
+<h2>5.Vagrant常用命令</h2>
 <ol>
 <li>box管理</li>
 </ol>

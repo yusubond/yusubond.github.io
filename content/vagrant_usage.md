@@ -5,7 +5,7 @@ Tags: vagrant, cloud
 Slug: vagrant_usage
 Author: subond
 
-### 单机配置
+## 1.单机配置
 
 1. 配置一个centos7系统，要求使用私有网络地址`192.168.10.10`，hostname为dbserver。
 
@@ -41,7 +41,7 @@ Vagrant.configure("2") do |centos|
 end
 ```
 
-### 分布式系统配置
+## 2.分布式系统配置
 
 1. 创建两个主机，一个做服务端，hostname为`server`,一个做客户端，hostname为`client`，两个虚拟均设置私有网络，并配置dhcp服务。
 
