@@ -60,6 +60,67 @@
  
 
     <div class='article'>
+        <a href="../pages/2017/04/16/docker-xi-tong-jia-gou.html"><h2>Docker技术：Docker系统架构</h2></a>
+        <div class= "well small"> 2017-04-16
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>本文目录：</p>
+<ul>
+<li><a href="#Docker Engine">Docker Engine</a></li>
+<li><a href="#Docker交付内容">Docker交付内容</a></li>
+<li><a href="#Docker系统架构">Docker系统架构</a></li>
+</ul>
+<h3>Docker Engine</h3>
+<p>Docker Engine主要包含三个组件，如下图所示：</p>
+<ul>
+<li>Docker Server：一个长时间运行的守护进程。</li>
+<li>REST API：指定程序可以用来与守护进程通信的接口。</li>
+<li>Client：命令行CLI客户端。</li>
+</ul>
+<p><img alt="Docker全局预览" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-overview.png"></p>
+<p>CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。</p>
+<h3>Docker交付内容</h3>
+<ul>
+<li>快速，一致地交付应用程序</li>
+</ul>
+<p>Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务</p>
+<ul>
+<li>在同一硬件上可允许多个工作流程</li>
+</ul>
+<p>Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。</p>
+<h3>Docker系统架构</h3>
+<p>Docker采用Client/Server架构模式，其系统架构如下图所示 …</p> <a class="btn btn-info xsmall" href="../pages/2017/04/16/docker-xi-tong-jia-gou.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/14/docker-ren-shi-docker.html"><h2>Docker技术：认识Docker</h2></a>
+        <div class= "well small"> 2017-04-14
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/14/docker-ren-shi-docker.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="../pages/2017/04/09/dynamo-distributed-systems.html"><h2>Dynamo分布式键值系统</h2></a>
         <div class= "well small"> 2017-04-09
 
@@ -197,42 +258,6 @@ by <a class="url fn" href="../author/subond.html">subond</a>
         <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2016/06/19/pthread2-management-in-linux.html"><h2>Linux中的线程管理</h2></a>
-        <div class= "well small"> 2016-06-19
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/19/pthread2-management-in-linux.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2016/06/17/process-management-in-linux.html"><h2>Linux中的进程管理</h2></a>
-        <div class= "well small"> 2016-06-17
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>进程是执行中的程序，是大多数系统的工作单元，是 <strong>活动实体</strong>。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/17/process-management-in-linux.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev"><a href="../category/tech.html">&larr; Previous</a></li>
@@ -306,6 +331,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
                 </li>
            
                 <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="https://www.linkedin.com/in/subond-yu-523281146/">LinkedIn</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
                 <li><a href="http://subond.lofter.com/">Lofter</a></li>
             </ul>

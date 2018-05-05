@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>SuperBond - Cloud</title>
+    <title>SuperBond - cloud</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,8 +60,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="../pages/2017/05/01/docker-swarm-jin-jie2.html"><h1>Docker进阶：服务配置</h1></a>
-2017-05-01
+            <a href="../pages/2017/05/15/vagrant_usage.html"><h1>Vagrant使用案例</h1></a>
+2017-05-15
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
@@ -70,159 +70,132 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
         </div>
         
-        <div><p>当使用Docker Swarm模式时，我们可以通过命令<code>docker service create</code>向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即<code>docker service</code>，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。</p>
-<p>本文目录：</p>
-<ul>
-<li><a href="#创建服务">创建服务</a></li>
-<li><a href="#配置服务">配置服务</a></li>
-</ul>
-<h3>创建服务</h3>
-<p>Swarm集群中最简单创建服务的方式就是指定所要创建的服务镜像就可以，即命令<code>docker service create &lt;IMAGE&gt;</code>。当执行创建服务命令后，Swarm编排器则向可用节点分派服务任务。一个任务其实就是一个基于指定镜像生成的容器。比如，创建一个nginx web服务。</p>
-<div class="highlight"><pre><span></span># 在管理节点上
-# --name参数用于指定服务的名称
-$ docker service create --name myweb nginx
-l3w3x4df6tnia8qql64mkdm1s
-# 查看Swarm集群中的服务
-$ docker service ls
-ID            NAME   MODE        REPLICAS  IMAGE
-l3w3x4df6tni  myweb  replicated  1/1       nginx:latest
+        <div><h3>单机配置</h3>
+<ol>
+<li>配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dbserver</span><span class="o">|</span>
+  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
+  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.10.10&quot;</span>
+  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;dbserver&quot;</span>
+<span class="k">end</span>
 </pre></div>
 
 
-<p>当然，我们也可以在部署服务时指定容器中将要运行的指令，其命令为<code>docker service create &lt;IMAGE&gt; &lt;COMMAND&gt;</code>。</p>
-<div class="highlight"><pre><span></span>$ docker service create --name myalpine ping www.bing.com
+<p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
+<ol>
+<li>配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中，目录为<code>/vagrant/project_data</code>；同时将vm的80端口映射到主机的8080端口。</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ubuntu16</span><span class="o">|</span>
+  <span class="n">ubuntu16</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/xenial64&quot;</span>
+  <span class="n">ubuntu16</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;forwarded_port&quot;</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">8080</span>
+  <span class="n">ubuntu16</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">synced_folder</span> <span class="s2">&quot;/Users/subond/UCloud/VHost/data&quot;</span><span class="p">,</span> <span class="s2">&quot;/project_data&quot;</span>
+<span class="k">end</span>
 </pre></div>
 
 
-<h3>服务配置</h3>
-<p>当创建一个服务时，我们通过修改配置选项对服务进行限制，命令<code>docker service create --help</code>可以查看创建服务的帮助信息。</p>
-<p><strong>配置服务的运行环境</strong></p>
-<p>我们可以通过以下参数配置服务的运行环境：</p>
-<ul>
-<li>--env参数可以指定环境变量</li>
-<li>--workdir参数可以指定容器中的工作目录</li>
-<li>--user参数可以指定用户名或者UID</li>
-</ul>
-<div class="highlight"><pre><span></span># 通过不同的参数配置服务
-$ docker service create --name myservice \
-  --env MYSERVICE=/usr/local/service
-  --workdir /tmp
-  --user subond
-  alpine ping www.baidu.com
+<p>需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的<code>/vagrant</code>目录下。</p>
+<ol>
+<li>配置一个centos7系统，要求设置vm的名字为<code>foobar</code>,内存大小为512M。</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">centos</span><span class="o">|</span>
+  <span class="n">centos</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
+  <span class="n">centos</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="s2">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">vm</span><span class="o">|</span>
+    <span class="n">vm</span><span class="o">.</span><span class="n">customize</span> <span class="o">[</span><span class="s2">&quot;modifyvm&quot;</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="s2">&quot;--name&quot;</span><span class="p">,</span> <span class="s2">&quot;foobar&quot;</span><span class="p">,</span> <span class="s2">&quot;--memory&quot;</span><span class="p">,</span> <span class="s2">&quot;512&quot;</span><span class="o">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 
 
-<p><strong>配置服务规模和位置</strong></p>
-<p>前面的介绍中，我们讲到Swarm模式中有两种服务类型：复制服务(replicated service)和全局服务(global service)。对于复制服务类型，我们可指定--replicas参数来创建一定数量的服务任务，从而将任务分派到可用节点上；而对于全局服务，调度器则在每一个可用节点上均部署一个任务，--mode参数可以指定全局服务。具体如下：</p>
-<div class="highlight"><pre><span></span># 在具有一个管理节点(manager)和一个工作节点(worker1)的Swarm集群中，部署一个具有两个副本的nginx web服务
-# 在节点manger
-$ docker node ls
-ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
-34y77dgnqon4soj2kqyb65a9y *  manager   Ready   Active        Leader
-nxb55hhu8kwp272z21xi9dhyy    worker1   Ready   Active
-$ docker service create --name myweb1 --replicas 3 nginx
-xpmhprvzqtl1fi0mdveowjdoa
-# 创建成功
-# docker service ls
-ID            NAME    MODE        REPLICAS  IMAGE
-xpmhprvzqtl1  myweb1  replicated  2/2       nginx:latest
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED             STATUS              PORTS               NAMES
-27aa642e7786        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   59 seconds ago      Up 58 seconds       80/tcp              myweb1.1.ei5mappmkkcdhbnk6gv3tcgrf
+<h3>分布式系统配置</h3>
+<ol>
+<li>创建两个主机，一个做服务端，hostname为<code>server</code>,一个做客户端，hostname为<code>client</code>，两个虚拟均设置私有网络，并配置dhcp服务。</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">subond</span><span class="o">|</span>
+    <span class="n">subond</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
+    <span class="n">subond</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;server&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">server</span><span class="o">|</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="s2">&quot;dhcp&quot;</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;server&quot;</span>
+    <span class="k">end</span>
 
-# 在节点worker1
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
-245a257c56d5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   About a minute ago   Up About a minute   80/tcp              myweb1.2.y2am04ermd2b8d3qevfeyzn67
-# 我们的可以看到在两个节点上均有一个myweb1服务
-
-# 接下来，我们再部署一个myweb2服务，与myweb1不同的是，myweb2是全局服务
-# 在manager节点上
-$ docker service create --name myweb2 --mode global nginx
-yfbd525ztbqpa688ego4u0de8
-$ docker service ls
-ID            NAME    MODE        REPLICAS  IMAGE
-xpmhprvzqtl1  myweb1  replicated  2/2       nginx:latest
-yfbd525ztbqp  myweb2  global      2/2       nginx:latest
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
-5a99dca94917        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   About a minute ago   Up About a minute   80/tcp              myweb2.34y77dgnqon4soj2kqyb65a9y.rush02tpvachu294flrklw32p
-27aa642e7786        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   8 minutes ago        Up 8 minutes        80/tcp              myweb1.1.ei5mappmkkcdhbnk6gv3tcgrf
-
-# 在worker1节点上
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED              STATUS              PORTS               NAMES
-3a00f5c5ce9b        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   About a minute ago   Up About a minute   80/tcp              myweb2.nxb55hhu8kwp272z21xi9dhyy.on9e6cr8obz3y51e84b3s72z4
-245a257c56d5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   8 minutes ago        Up 8 minutes        80/tcp              myweb1.2.y2am04ermd2b8d3qevfeyzn67
-
-# 接下来，我们将工作节点worker2加入Swarm集群
-$ 在worker2节点上
-$ docker swarm join \
-  --token SWMTKN-1-1omg2k2e92snxv3wlja3komux5wan4hynn80ikkma2s9rd5cxz-9hq2vf8n0jysukytfqpavd8j7 \
-  172.28.128.3:2377
-This node joined a swarm as a worker.
-# 在manager节点上
-$ docker node ls
-ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
-34y77dgnqon4soj2kqyb65a9y *  manager   Ready   Active        Leader
-nxb55hhu8kwp272z21xi9dhyy    worker1   Ready   Active
-v0rmad0igl7xwn8alop33j3fu    worker2   Ready   Active
-
-# 在worker2节点上
-$ docker ps
-CONTAINER ID        IMAGE                                                                           COMMAND                  CREATED             STATUS              PORTS               NAMES
-356da4542dd5        nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6   &quot;nginx -g &#39;daemon ...&quot;   40 seconds ago      Up 39 seconds       80/tcp              myweb2.v0rmad0igl7xwn8alop33j3fu.5wa1pg01i73u3a1feb73ht5p5
-# 可以看到worker2上具有myweb2的服务，而不具备myweb1服务
-# 这是复制服务和全局的模式的重要区别
+    <span class="n">subond</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;client&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">client</span><span class="o">|</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="s2">&quot;dhcp&quot;</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;client&quot;</span>
+    <span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 
 
-<p><strong>配置发布端口</strong></p>
-<p>当创建Swarm服务时，有两个方式将服务的端口发布到Swarm群外的主机端口上：</p>
-<ul>
-<li>依靠路由网络。当我们发布一个服务端口时，无论节点上是否运行着服务的任务，Swarm都会在每个节点的目标端口上访问该服务。</li>
-<li>直接在运行该服务任务的节点上发布服务端口。Docker1.13及其更高版本支持该功能。</li>
-</ul>
-<p>第一种：依靠路由网络发布端口</p>
-<p>我们可以通过参数--publish <target-port>:<service-port>发布服务的端口。Swarm使得服务在每个节点的目标端口均可达。如果外部主机连接到Swarm集群中的任何一个节点，都可以通过路由网络将其路由到服务任务所在的节点上。外部主机不要知道服务任务所在的ip和内部使用的服务端口就可以与服务进行交互。</p>
-<p>例如，我们在一个具有3个节点的Swarm集群中运行一个具有2个副本的nginx web服务，并将发布端口设为8080。那么，在任何一个节点上可以使用8080端口上的nging服务。</p>
-<div class="highlight"><pre><span></span># 在manger节点上部署nginx web服务，并发布8080端口
-$ docker service create --name myweb --replicas 2 --publish 8080:80 nginx
-# 通过检查，我们发现在manager节点和worker2节点均有myweb任务
-# 在worker1节点请求nginx服务
-$ curl localhost:8080
-<span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html&gt;</span>
-<span class="nt">&lt;head&gt;</span>
-<span class="nt">&lt;title&gt;</span>Welcome to nginx!<span class="nt">&lt;/title&gt;</span>
-<span class="nt">&lt;style&gt;</span>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-<span class="nt">&lt;/style&gt;</span>
-<span class="nt">&lt;/head&gt;</span>
-<span class="nt">&lt;body&gt;</span>
-...
-<span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
+<ol>
+<li>创建一个具有三个节点的集群，hostname分别为<code>node1</code>,<code>node2</code>,<code>node3</code>,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">cluster</span><span class="o">|</span>
+  <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span> <span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+    <span class="n">cluster</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;node</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">node</span><span class="o">|</span>
+      <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
+      <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;node</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.10.</span><span class="si">#{</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="s2">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+         <span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;node</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+         <span class="n">v</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="mi">2048</span>
+         <span class="n">v</span><span class="o">.</span><span class="n">cpus</span> <span class="o">=</span> <span class="mi">1</span>
+      <span class="k">end</span>
+      <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;shell&quot;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="o">&lt;&lt;-</span><span class="dl">SHELL</span>
+<span class="sh">        yum install wget -y</span>
+<span class="sh">        wget -P /home/vagrant https://download.docker.com/linux/centos/7/x86_64/stabl    e/Packages/docker-ce-18.03.1.ce-1.el7.centos.x86_64.rpm</span>
+<span class="sh">        yum install /home/vagrant/docker-ce-18.03.1.ce-1.el7.centos.x86_64.rpm -y</span>
+<span class="dl">       SHELL</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
 
 
-<p>外部主机上，使用任何一个节点的ip均可以访问到nginx服务，如下图：</p>
-<p><img alt="nginx服务" src="http://on64c9tla.bkt.clouddn.com/Comput/docker_nginx.png"></p>
-<p>第二种：在Swarm节点上发布端口</p>
-<p>通过指定mode=host来进行参数--publish的设定，我们可以将发布端口指定到每个运行服务任务的Swarm节点上。</p>
-<p>主要注意的是：如果使用mode=host直接在Swarm节点上发布服务的端口，并且还设置published=<PORT>，则会创建一个隐式限制，只能在给定的群组节点上为该服务运行一个任务。 另外，如果使用mode=host，并且在docker服务创建时不使用--mode=global标志，那么将难以知道哪些节点正在运行服务，以便将工作路由到它们。</p>
-<p>接下来，我们创建一个全局服务类型的nginx web服务，并将发布端口指定为8090。</p>
-<div class="highlight"><pre><span></span># 在manager节点上
-$ docker service create --name mynginx --mode global --publish mode=host,target=80,published=8090 nginx
-# 这样我们可以在Swarm任何一个节点上访问到8090端口上的nginx服务，即使新加入的节点。
-</pre></div></div>
+<p>需要的说明的是：如果需要shell功能，最好的方式就是单独写shell脚本，通过文件同步的方式注入虚机；安装包文件也最好使用这种方式，速度会快一些。</p>
+<h2>参考资料</h2>
+<p>[1]. <a href="https://segmentfault.com/a/1190000005875116">使用Vagrant创建多节点虚拟机集群</a><br>
+[2]. <a href="https://docs.docker.com/install/linux/docker-ce/centos/#upgrade-docker-ce">docker安装</a><br>
+[3]. <a href="https://www.vagrantup.com/docs/providers/configuration.html">vagrant provider配置</a><br>
+[4]. <a href="https://www.vagrantup.com/docs/provisioning/">vagrant provision配置</a>  </p></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/05/10/vagrant_startup.html"><h2>Vagrant的快速使用</h2></a>
+        <div class= "well small"> 2017-05-10
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。</p> <a class="btn btn-info xsmall" href="../pages/2017/05/10/vagrant_startup.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/05/01/docker-swarm-jin-jie2.html"><h2>Docker进阶：服务配置</h2></a>
+        <div class= "well small"> 2017-05-01
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>当使用Docker Swarm模式时，我们可以通过命令<code>docker service create</code>向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即<code>docker service</code>，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。</p> <a class="btn btn-info xsmall" href="../pages/2017/05/01/docker-swarm-jin-jie2.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -388,49 +361,14 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 <p>Docker采用Client/Server架构模式，其系统架构如下图所示 …</p> <a class="btn btn-info xsmall" href="../pages/2017/04/16/docker-xi-tong-jia-gou.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/14/docker-ren-shi-docker.html"><h2>Docker技术：认识Docker</h2></a>
-        <div class= "well small"> 2017-04-14
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/14/docker-ren-shi-docker.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2016/11/10/juju-charm-mechanism.html"><h2>云端服务管理工具:Juju</h2></a>
-        <div class= "well small"> 2016-11-10
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Juju是Canonical公司提供的服务编排工具。它是Ubuntu云套件的一部分，与Ubuntu服务器、OpenStack、用于裸机配置的MAAS 、以及用于系统管理和监控的Landscape一起组成Ubuntu云套件。同时，Juju也是 开源的，向用户提供一种面向服务的架构(service oriented architecture)和面向应用的部署(application oriented deployments)的通用模型。Juju可以对云端的服务进行快速可靠的部署，包括拓展云端业务，因此管理员可以很容易地部署Wordpress博客系统，MongoDB大系统管理系统、Mysql数据系统等。目前Juju具有1.25(稳定版)和2.0(升级版)，用户可以自行选择。关于Juju的安装比较简单， 可以参考官网教程。Juju为用户提供了命令行和图形化界面两种方式来进行业务部署，其图形化界面称为"juju-gui"(可利用juju部署到本地系统,juju deploy juju-gui)。</p> <a class="btn btn-info xsmall" href="../pages/2016/11/10/juju-charm-mechanism.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
     <li class="active"><a href="../tag/cloud.html">1</a></li>
+    <li class=""><a href="../tag/cloud2.html">2</a></li>
 
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+    <li class="next"><a href="../tag/cloud2.html">Next &rarr;</a></li>
 
 </ul>
 </div>
@@ -495,6 +433,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
                 </li>
            
                 <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="https://www.linkedin.com/in/subond-yu-523281146/">LinkedIn</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
                 <li><a href="http://subond.lofter.com/">Lofter</a></li>
             </ul>

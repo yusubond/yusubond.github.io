@@ -59,7 +59,8 @@ LINKS = (('UCloud', 'https://www.ucloud.cn'),
 
 # Social widget
 SOCIAL = (('Github', 'https://github.com/yusubond'),
+          ('LinkedIn', 'https://www.linkedin.com/in/subond-yu-523281146/'),
           ('Weibo', 'http://weibo.com/ybconly'),
-          ('Lofter', 'http://subond.lofter.com/'),)
+          ('Lofter', 'http://subond.lofter.com/'))
 
 DEFAULT_PAGINATION = 10

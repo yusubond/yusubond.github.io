@@ -249,6 +249,56 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
 
     <div class='article'>
+        <a href="../pages/2017/05/15/vagrant_usage.html"><h2>Vagrant使用案例</h2></a>
+        <div class= "well small"> 2017-05-15
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><h3>单机配置</h3>
+<ol>
+<li>配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dbserver</span><span class="o">|</span>
+  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
+  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.10.10&quot;</span>
+  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;dbserver&quot;</span>
+<span class="k">end</span>
+</pre></div>
+
+
+<p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
+<ol>
+<li>配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中，目录为<code>/vagrant/project_data …</code></li></ol> <a class="btn btn-info xsmall" href="../pages/2017/05/15/vagrant_usage.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/05/10/vagrant_startup.html"><h2>Vagrant的快速使用</h2></a>
+        <div class= "well small"> 2017-05-10
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。</p> <a class="btn btn-info xsmall" href="../pages/2017/05/10/vagrant_startup.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="../pages/2017/05/01/docker-swarm-jin-jie2.html"><h2>Docker进阶：服务配置</h2></a>
         <div class= "well small"> 2017-05-01
 
@@ -312,56 +362,6 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
  </div>
         <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html"><h2>Docker集群：服务部署</h2></a>
-        <div class= "well small"> 2017-04-22
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/20/docker-quickstart.html"><h2>Docker技术：快速上手教程</h2></a>
-        <div class= "well small"> 2017-04-20
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>本文目录：</p>
-<ul>
-<li><a href="#1.构建容器-Containers">1.构建容器-Containers</a></li>
-<li><a href="#2.组合服务-Compose">2.组合服务-Compose</a></li>
-<li><a href="#3.集群管理-Swarm">3.集群管理-Swarm</a></li>
-<li><a href="#4.应用协作-Stacks">4.应用协作-Stacks</a></li>
-</ul>
-<h3>1.构建容器-Containers</h3>
-<p>Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。</p>
-<p><strong>Dockerfile</strong></p>
-<p>创建一个新的空目录，在目录下创建名为<code>Dockerfile</code>的文件，并写入以下内容。</p>
-<div class="highlight"><pre><span></span># Use an official Python runtime as a base image
-FROM python:2.7-slim
-
-# Set the working directory to /app …</pre></div> <a class="btn btn-info xsmall" href="../pages/2017/04/20/docker-quickstart.html">read more</a></div>
     </div>	
 				
 <div class="pagination">
@@ -438,6 +438,7 @@ FROM python:2.7-slim
                 </li>
            
                 <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="https://www.linkedin.com/in/subond-yu-523281146/">LinkedIn</a></li>
                 <li><a href="http://weibo.com/ybconly">Weibo</a></li>
                 <li><a href="http://subond.lofter.com/">Lofter</a></li>
             </ul>

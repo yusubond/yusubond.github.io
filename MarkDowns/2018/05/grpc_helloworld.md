@@ -83,7 +83,9 @@ message HelloReply {
 
 值得说明的是，在proto文件中定义的service *转化* 成golang源码中的interface类型；message类型 *转化* 成struct类型。
 
-### 生成golang源码
+### 生成server&client源码
+
+接下来，我们需要根据proto文件中定义的service，生成gPRC服务端和客户端的接口。
 
 命令`protoc helloworld/helloworld.proto --go_out=plugins=grpc:.`可生成proto文件中定义的service和message，文件以`.pb.go`结尾。
 
