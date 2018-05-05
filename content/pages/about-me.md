@@ -1,12 +1,13 @@
-Title: Subond Yu
+Title: About Me
 Date: 2017-09-01
 Category: Life
 Tags: about me
 
-<table width="700" height="150" algin="left">
+<p><font size="6"><b>Subond Yu</b></font></p>
+<table width="400" height="150" algin="left">
   <tr><td>Email</td><td>yubc0321@gmail.com</td></tr>
-  <tr><td>Github</td><td><a href="https://github.com/yusubond"></td></tr>
-  <tr><td>HomePage</td><td><a href="http://www.subond.com"></td></tr>
+  <tr><td>Github</td><td><a href="https://github.com/yusubond">https://github.com/yusubond</td></tr>
+  <tr><td>HomePage</td><td><a href="http://www.subond.com">http://www.subond.com</td></tr>
 </table>
 
 <hr size="3px" color="#00RFF"/>
