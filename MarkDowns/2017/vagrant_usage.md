@@ -9,7 +9,7 @@ Author: subond
 
 1. 配置一个centos7系统，要求使用私有网络地址`192.168.10.10`，hostname为dbserver。
 
-```Ruby
+```ruby
 Vagrant.configure("2") do |dbserver|
   dbserver.vm.box = "centos/7"
   dbserver.vm.network "private_network", ip: "192.168.10.10"
@@ -20,7 +20,7 @@ end
 
 2. 配置一个ubuntu xenial64系统，并将工程目录下的`data`目录同步到vm中，目录为`/vagrant/project_data`；同时将vm的80端口映射到主机的8080端口。
 
-```Ruby
+```ruby
 Vagrant.configure("2") do |ubuntu16|
   ubuntu16.vm.box = "ubuntu/xenial64"
   ubuntu16.vm.network "forwarded_port", guest: 80, host: 8080
@@ -32,7 +32,7 @@ end
 
 3. 配置一个centos7系统，要求设置vm的名字为`foobar`,内存大小为512M。
 
-```Ruby
+```ruby
 Vagrant.configure("2") do |centos|
   centos.vm.box = "centos/7"
   centos.vm.provider "virtualbox" do |vm|
@@ -45,7 +45,7 @@ end
 
 1. 创建两个主机，一个做服务端，hostname为`server`,一个做客户端，hostname为`client`，两个虚拟均设置私有网络，并配置dhcp服务。
 
-```Ruby
+```ruby
 Vagrant.configure("2") do |subond|
     subond.vm.box = "centos/7"
     subond.vm.define "server" do |server|
@@ -62,7 +62,7 @@ end
 
 2. 创建一个具有三个节点的集群，hostname分别为`node1`,`node2`,`node3`,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。
 
-```Ruby
+```ruby
 Vagrant.configure("2") do |cluster|
   (1..3). each do |i|
     cluster.vm.define "node#{i}" do |node|

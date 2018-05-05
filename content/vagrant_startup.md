@@ -26,7 +26,7 @@ Vagrant官网[https://www.vagrantup.com/downloads.html](https://www.vagrantup.co
 
 Vagrant配置主要在`Vagrantfile`文件中，通过`vagrant init`命令可以获得。
 
-```sh
+```bash
 $ mkdir MyHost
 $ cd MyHost
 $ vagrant init
@@ -34,7 +34,7 @@ $ vagrant init
 
 在MyHost文件夹下就会出现`Vagrantfile`文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则`Vagrantfile`中进行如下修改：
 
-```Ruby
+```ruby
 config.vm.box = "ubuntu/xenial64"
 config.vm.hostname = "ubuntu64"
 ```
@@ -43,7 +43,7 @@ config.vm.hostname = "ubuntu64"
 
 在MyHost目录下，通过命令`vagrant up`即可启动在`Vagrantfile`文件中配置的虚拟。
 
-```sh
+```bash
 $ vagrant up
 # 进入虚拟
 $ vagrant ssh
@@ -53,7 +53,7 @@ $ vagrant ssh
 
 1. 语言版本
 
-  ```Ruby
+  ```ruby
   Vagrant.configure("2") do |config|
   ```
   其中"2"指定Vagrantfile所使用的语言版本，一般为`2`。
@@ -62,19 +62,19 @@ $ vagrant ssh
 
   指定创建虚机vm所需的box
 
-  ```Ruby
+  ```ruby
   config.vm.box = "ubuntu/xenial64"
   ```
 
   设置vm的hostname
 
-  ```Ruby
+  ```ruby
   config.vm.hostname = "ubuntu64"
   ```
 
   设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。
 
-  ```Ruby
+  ```ruby
   # 设置私有网络
   config.vm.network "private_network", ip: "192.168.33.10"
   # 设置公有网络
@@ -87,7 +87,7 @@ $ vagrant ssh
   将主机的文件(或目录)挂载到vm中，实现文件同步。  
   第一个参数是主机的文件路径，第二个参数是vm里面的路径。
 
-  ```Ruby
+  ```ruby
   config.vm.synced_folder "../data", "/vagrant_data"
   ```
 
@@ -95,11 +95,11 @@ $ vagrant ssh
 
 1. box管理
 
-  包括添加、删除、更新等等。
+包括添加、删除、更新等等。
 
-  ```sh
-  $ vagrant box
-  ```
+```sh
+$ vagrant box
+```
 
 2. 虚机的管理
 

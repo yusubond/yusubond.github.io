@@ -247,20 +247,20 @@ $ vagrant ssh
 &lt;ol&gt;
 &lt;li&gt;语言版本&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;code&gt;Ruby
+&lt;p&gt;&lt;code&gt;ruby
   Vagrant.configure("2") do |config|&lt;/code&gt;
   其中"2"指定Vagrantfile所使用的语言版本，一般为&lt;code&gt;2&lt;/code&gt;。&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;box相关&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;指定创建虚机vm所需的box&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Ruby
+&lt;p&gt;&lt;code&gt;ruby
   config.vm.box = "ubuntu/xenial64"&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;设置vm的hostname&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Ruby
+&lt;p&gt;&lt;code&gt;ruby
   config.vm.hostname = "ubuntu64"&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Ruby
+&lt;p&gt;&lt;code&gt;ruby
   # 设置私有网络
   config.vm.network "private_network", ip: "192.168.33.10"
   # 设置公有网络
@@ -270,15 +270,17 @@ $ vagrant ssh
 3. 文件同步&lt;/p&gt;
 &lt;p&gt;将主机的文件(或目录)挂载到vm中，实现文件同步。&lt;br&gt;
   第一个参数是主机的文件路径，第二个参数是vm里面的路径。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;Ruby
+&lt;p&gt;&lt;code&gt;ruby
   config.vm.synced_folder "../data", "/vagrant_data"&lt;/code&gt;&lt;/p&gt;
 &lt;h2&gt;Vagrant常用命令&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;box管理&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;包括添加、删除、更新等等。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;sh
-  $ vagrant box&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vagrant box
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;ol&gt;
 &lt;li&gt;虚机的管理&lt;/li&gt;
 &lt;/ol&gt;
