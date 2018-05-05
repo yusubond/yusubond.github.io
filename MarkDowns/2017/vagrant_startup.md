@@ -51,14 +51,14 @@ $ vagrant ssh
 
 ## 4.Vagrantfile详解
 
-1. 语言版本
+1) 语言版本
 
 ```ruby
 Vagrant.configure("2") do |config|
 ```
 其中"2"指定Vagrantfile所使用的语言版本，一般为`2`。
 
-2. box相关
+2) box相关
 
 指定创建虚机vm所需的box
 
@@ -82,7 +82,7 @@ config.vm.network "public_network"
 # 设置端口映射，即vm80端口映射到主机8080端口
 config.vm.network "forwarded_port", guest: 80, host: 8080
 ```
-3. 文件同步
+3) 文件同步
 
 将主机的文件(或目录)挂载到vm中，实现文件同步。  
 第一个参数是主机的文件路径，第二个参数是vm里面的路径。
@@ -93,7 +93,7 @@ config.vm.synced_folder "../data", "/vagrant_data"
 
 ## 5.Vagrant常用命令
 
-1. box管理
+1) box管理
 
 包括添加、删除、更新等等。
 
@@ -101,7 +101,7 @@ config.vm.synced_folder "../data", "/vagrant_data"
 $ vagrant box
 ```
 
-2. 虚机的管理
+2) 虚机的管理
 
 包括启动，摧毁、打包，重载等等。
 

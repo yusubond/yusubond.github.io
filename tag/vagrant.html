@@ -71,9 +71,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
         </div>
         
         <div><h2>1.单机配置</h2>
-<ol>
-<li>配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</li>
-</ol>
+<p>1) 配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dbserver</span><span class="o">|</span>
   <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
   <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.10.10&quot;</span>
@@ -83,9 +81,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
 
 <p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
-<ol>
-<li>配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中，目录为<code>/vagrant/project_data</code>；同时将vm的80端口映射到主机的8080端口。</li>
-</ol>
+<p>2) 配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中，目录为<code>/vagrant/project_data</code>；同时将vm的80端口映射到主机的8080端口。</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">ubuntu16</span><span class="o">|</span>
   <span class="n">ubuntu16</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/xenial64&quot;</span>
   <span class="n">ubuntu16</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;forwarded_port&quot;</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">8080</span>
@@ -95,9 +91,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
 
 <p>需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的<code>/vagrant</code>目录下。</p>
-<ol>
-<li>配置一个centos7系统，要求设置vm的名字为<code>foobar</code>,内存大小为512M。</li>
-</ol>
+<p>3) 配置一个centos7系统，要求设置vm的名字为<code>foobar</code>,内存大小为512M。</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">centos</span><span class="o">|</span>
   <span class="n">centos</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
   <span class="n">centos</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="s2">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">vm</span><span class="o">|</span>
@@ -108,9 +102,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
 
 <h2>2.分布式系统配置</h2>
-<ol>
-<li>创建两个主机，一个做服务端，hostname为<code>server</code>,一个做客户端，hostname为<code>client</code>，两个虚拟均设置私有网络，并配置dhcp服务。</li>
-</ol>
+<p>1) 创建两个主机，一个做服务端，hostname为<code>server</code>,一个做客户端，hostname为<code>client</code>，两个虚拟均设置私有网络，并配置dhcp服务。</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">subond</span><span class="o">|</span>
     <span class="n">subond</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
     <span class="n">subond</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;server&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">server</span><span class="o">|</span>
@@ -126,9 +118,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 </pre></div>
 
 
-<ol>
-<li>创建一个具有三个节点的集群，hostname分别为<code>node1</code>,<code>node2</code>,<code>node3</code>,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。</li>
-</ol>
+<p>2) 创建一个具有三个节点的集群，hostname分别为<code>node1</code>,<code>node2</code>,<code>node3</code>,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">cluster</span><span class="o">|</span>
   <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span> <span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
     <span class="n">cluster</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;node</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">node</span><span class="o">|</span>

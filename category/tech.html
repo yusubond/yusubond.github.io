@@ -204,9 +204,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
  </div>
         <div class="summary"><h2>1.单机配置</h2>
-<ol>
-<li>配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</li>
-</ol>
+<p>1) 配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dbserver</span><span class="o">|</span>
   <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
   <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.10.10&quot;</span>
@@ -216,8 +214,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
 
 <p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
-<ol>
-<li>配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中，目录为<code>/vagrant …</code></li></ol> <a class="btn btn-info xsmall" href="../pages/2017/05/15/vagrant_usage.html">read more</a></div>
+<p>2) 配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中 …</p> <a class="btn btn-info xsmall" href="../pages/2017/05/15/vagrant_usage.html">read more</a></div>
     </div>	
 				
 

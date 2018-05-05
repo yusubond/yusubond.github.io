@@ -114,9 +114,7 @@
 &lt;span class="c1"&gt;// 启动客户端&lt;/span&gt;
 &lt;span class="k"&gt;go&lt;/span&gt; &lt;span class="nx"&gt;run&lt;/span&gt; &lt;span class="nx"&gt;client&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;main&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;go&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="tech"></category><category term="golang"></category><category term="rpc"></category></entry><entry><title>Vagrant使用案例</title><link href="www.subond.com/pages/2017/05/15/vagrant_usage.html" rel="alternate"></link><published>2017-05-15T00:00:00+08:00</published><updated>2017-05-15T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2017-05-15:www.subond.com/pages/2017/05/15/vagrant_usage.html</id><summary type="html">&lt;h2&gt;1.单机配置&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;配置一个centos7系统，要求使用私有网络地址&lt;code&gt;192.168.10.10&lt;/code&gt;，hostname为dbserver。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;1) 配置一个centos7系统，要求使用私有网络地址&lt;code&gt;192.168.10.10&lt;/code&gt;，hostname为dbserver。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;dbserver&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
   &lt;span class="n"&gt;dbserver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;centos/7&amp;quot;&lt;/span&gt;
   &lt;span class="n"&gt;dbserver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;private_network&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;192.168.10.10&amp;quot;&lt;/span&gt;
@@ -126,11 +124,8 @@
 
 
 &lt;p&gt;需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;配置一个ubuntu xenial64系统，并将工程目录下的&lt;code&gt;data&lt;/code&gt;目录同步到vm中，目录为&lt;code&gt;/vagrant …&lt;/code&gt;&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;h2&gt;1.单机配置&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;配置一个centos7系统，要求使用私有网络地址&lt;code&gt;192.168.10.10&lt;/code&gt;，hostname为dbserver。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;2) 配置一个ubuntu xenial64系统，并将工程目录下的&lt;code&gt;data&lt;/code&gt;目录同步到vm中 …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;1.单机配置&lt;/h2&gt;
+&lt;p&gt;1) 配置一个centos7系统，要求使用私有网络地址&lt;code&gt;192.168.10.10&lt;/code&gt;，hostname为dbserver。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;dbserver&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
   &lt;span class="n"&gt;dbserver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;centos/7&amp;quot;&lt;/span&gt;
   &lt;span class="n"&gt;dbserver&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;private_network&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;192.168.10.10&amp;quot;&lt;/span&gt;
@@ -140,9 +135,7 @@
 
 
 &lt;p&gt;需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;配置一个ubuntu xenial64系统，并将工程目录下的&lt;code&gt;data&lt;/code&gt;目录同步到vm中，目录为&lt;code&gt;/vagrant/project_data&lt;/code&gt;；同时将vm的80端口映射到主机的8080端口。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;2) 配置一个ubuntu xenial64系统，并将工程目录下的&lt;code&gt;data&lt;/code&gt;目录同步到vm中，目录为&lt;code&gt;/vagrant/project_data&lt;/code&gt;；同时将vm的80端口映射到主机的8080端口。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;ubuntu16&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
   &lt;span class="n"&gt;ubuntu16&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ubuntu/xenial64&amp;quot;&lt;/span&gt;
   &lt;span class="n"&gt;ubuntu16&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;forwarded_port&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;guest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;80&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;host&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8080&lt;/span&gt;
@@ -152,9 +145,7 @@
 
 
 &lt;p&gt;需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的&lt;code&gt;/vagrant&lt;/code&gt;目录下。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;配置一个centos7系统，要求设置vm的名字为&lt;code&gt;foobar&lt;/code&gt;,内存大小为512M。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;3) 配置一个centos7系统，要求设置vm的名字为&lt;code&gt;foobar&lt;/code&gt;,内存大小为512M。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;centos&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
   &lt;span class="n"&gt;centos&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;centos/7&amp;quot;&lt;/span&gt;
   &lt;span class="n"&gt;centos&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;provider&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;virtualbox&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
@@ -165,9 +156,7 @@
 
 
 &lt;h2&gt;2.分布式系统配置&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;创建两个主机，一个做服务端，hostname为&lt;code&gt;server&lt;/code&gt;,一个做客户端，hostname为&lt;code&gt;client&lt;/code&gt;，两个虚拟均设置私有网络，并配置dhcp服务。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;1) 创建两个主机，一个做服务端，hostname为&lt;code&gt;server&lt;/code&gt;,一个做客户端，hostname为&lt;code&gt;client&lt;/code&gt;，两个虚拟均设置私有网络，并配置dhcp服务。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;subond&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
     &lt;span class="n"&gt;subond&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;centos/7&amp;quot;&lt;/span&gt;
     &lt;span class="n"&gt;subond&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;define&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;server&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
@@ -183,9 +172,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;ol&gt;
-&lt;li&gt;创建一个具有三个节点的集群，hostname分别为&lt;code&gt;node1&lt;/code&gt;,&lt;code&gt;node2&lt;/code&gt;,&lt;code&gt;node3&lt;/code&gt;,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;2) 创建一个具有三个节点的集群，hostname分别为&lt;code&gt;node1&lt;/code&gt;,&lt;code&gt;node2&lt;/code&gt;,&lt;code&gt;node3&lt;/code&gt;,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;cluster&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;..&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;each&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
     &lt;span class="n"&gt;cluster&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;define&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;node&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
@@ -244,17 +231,13 @@ $ vagrant ssh
 
 
 &lt;h2&gt;4.Vagrantfile详解&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;语言版本&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;1) 语言版本&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="no"&gt;Vagrant&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;其中"2"指定Vagrantfile所使用的语言版本，一般为&lt;code&gt;2&lt;/code&gt;。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;box相关&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;2) box相关&lt;/p&gt;
 &lt;p&gt;指定创建虚机vm所需的box&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ubuntu/xenial64&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -275,9 +258,7 @@ $ vagrant ssh
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;ol&gt;
-&lt;li&gt;文件同步&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;3) 文件同步&lt;/p&gt;
 &lt;p&gt;将主机的文件(或目录)挂载到vm中，实现文件同步。&lt;br&gt;
 第一个参数是主机的文件路径，第二个参数是vm里面的路径。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;vm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;synced_folder&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;../data&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/vagrant_data&amp;quot;&lt;/span&gt;
@@ -285,17 +266,13 @@ $ vagrant ssh
 
 
 &lt;h2&gt;5.Vagrant常用命令&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;box管理&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;1) box管理&lt;/p&gt;
 &lt;p&gt;包括添加、删除、更新等等。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vagrant box
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;ol&gt;
-&lt;li&gt;虚机的管理&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;2) 虚机的管理&lt;/p&gt;
 &lt;p&gt;包括启动，摧毁、打包，重载等等。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 关掉虚拟&lt;/span&gt;
 $ vagrant halt

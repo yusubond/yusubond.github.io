@@ -95,17 +95,13 @@ $ vagrant ssh
 
 
 <h2>4.Vagrantfile详解</h2>
-<ol>
-<li>语言版本</li>
-</ol>
+<p>1) 语言版本</p>
 <div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 </pre></div>
 
 
 <p>其中"2"指定Vagrantfile所使用的语言版本，一般为<code>2</code>。</p>
-<ol>
-<li>box相关</li>
-</ol>
+<p>2) box相关</p>
 <p>指定创建虚机vm所需的box</p>
 <div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/xenial64&quot;</span>
 </pre></div>
@@ -126,9 +122,7 @@ $ vagrant ssh
 </pre></div>
 
 
-<ol>
-<li>文件同步</li>
-</ol>
+<p>3) 文件同步</p>
 <p>将主机的文件(或目录)挂载到vm中，实现文件同步。<br>
 第一个参数是主机的文件路径，第二个参数是vm里面的路径。</p>
 <div class="highlight"><pre><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">synced_folder</span> <span class="s2">&quot;../data&quot;</span><span class="p">,</span> <span class="s2">&quot;/vagrant_data&quot;</span>
@@ -136,17 +130,13 @@ $ vagrant ssh
 
 
 <h2>5.Vagrant常用命令</h2>
-<ol>
-<li>box管理</li>
-</ol>
+<p>1) box管理</p>
 <p>包括添加、删除、更新等等。</p>
 <div class="highlight"><pre><span></span>$ vagrant box
 </pre></div>
 
 
-<ol>
-<li>虚机的管理</li>
-</ol>
+<p>2) 虚机的管理</p>
 <p>包括启动，摧毁、打包，重载等等。</p>
 <div class="highlight"><pre><span></span><span class="c1"># 关掉虚拟</span>
 $ vagrant halt

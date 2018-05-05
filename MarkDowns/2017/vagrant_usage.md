@@ -7,7 +7,7 @@ Author: subond
 
 ## 1.单机配置
 
-1. 配置一个centos7系统，要求使用私有网络地址`192.168.10.10`，hostname为dbserver。
+1) 配置一个centos7系统，要求使用私有网络地址`192.168.10.10`，hostname为dbserver。
 
 ```ruby
 Vagrant.configure("2") do |dbserver|
@@ -18,7 +18,7 @@ end
 ```
 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
 
-2. 配置一个ubuntu xenial64系统，并将工程目录下的`data`目录同步到vm中，目录为`/vagrant/project_data`；同时将vm的80端口映射到主机的8080端口。
+2) 配置一个ubuntu xenial64系统，并将工程目录下的`data`目录同步到vm中，目录为`/vagrant/project_data`；同时将vm的80端口映射到主机的8080端口。
 
 ```ruby
 Vagrant.configure("2") do |ubuntu16|
@@ -30,7 +30,7 @@ end
 
 需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的`/vagrant`目录下。
 
-3. 配置一个centos7系统，要求设置vm的名字为`foobar`,内存大小为512M。
+3) 配置一个centos7系统，要求设置vm的名字为`foobar`,内存大小为512M。
 
 ```ruby
 Vagrant.configure("2") do |centos|
@@ -43,7 +43,7 @@ end
 
 ## 2.分布式系统配置
 
-1. 创建两个主机，一个做服务端，hostname为`server`,一个做客户端，hostname为`client`，两个虚拟均设置私有网络，并配置dhcp服务。
+1) 创建两个主机，一个做服务端，hostname为`server`,一个做客户端，hostname为`client`，两个虚拟均设置私有网络，并配置dhcp服务。
 
 ```ruby
 Vagrant.configure("2") do |subond|
@@ -60,7 +60,7 @@ Vagrant.configure("2") do |subond|
 end
 ```
 
-2. 创建一个具有三个节点的集群，hostname分别为`node1`,`node2`,`node3`,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。
+2) 创建一个具有三个节点的集群，hostname分别为`node1`,`node2`,`node3`,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。
 
 ```ruby
 Vagrant.configure("2") do |cluster|
