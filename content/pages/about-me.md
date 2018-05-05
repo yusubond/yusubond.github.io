@@ -10,7 +10,7 @@ Tags: about me
   <tr><td>HomePage</td><td><a href="http://www.subond.com">http://www.subond.com</td></tr>
 </table>
 
-<hr size="3px" color="#00RFF"/>
+<hr size="3px" color="#FF0000"/>
 <p><font size="4"><b>Education</b></font></p>
 <hr size="3px" color="#000000"/>
 <table width="800" height="150" algin="left">
