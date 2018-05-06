@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>SuperBond - subond</title>
+    <meta name="description" content="">
+    <meta name="author" content="subond">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+
+    <!-- So Firefox can bookmark->"abo this site" -->
+        <link href="www.subond.com/feeds/all.atom.xml" rel="alternate" title="SuperBond" type="application/atom+xml">
+
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+
+         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+         </a>
+
+        <a class="brand" href="..">SuperBond</a>
+
+        <div class="nav-collapse">
+        <ul class="nav">
+            
+            <li><a href="../pages/about-me.html">About Me</a></li>
+        </ul>
+        </div>
+        
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="content">
+    <div class="row">
+
+        <div class="span9">
+        
+
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html"><h2>Docker集群：服务部署</h2></a>
+        <div class= "well small"> 2017-04-22
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/20/docker-quickstart.html"><h2>Docker技术：快速上手教程</h2></a>
+        <div class= "well small"> 2017-04-20
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>本文目录：</p>
+<ul>
+<li><a href="#1.构建容器-Containers">1.构建容器-Containers</a></li>
+<li><a href="#2.组合服务-Compose">2.组合服务-Compose</a></li>
+<li><a href="#3.集群管理-Swarm">3.集群管理-Swarm</a></li>
+<li><a href="#4.应用协作-Stacks">4.应用协作-Stacks</a></li>
+</ul>
+<h3>1.构建容器-Containers</h3>
+<p>Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。</p>
+<p><strong>Dockerfile</strong></p>
+<p>创建一个新的空目录，在目录下创建名为<code>Dockerfile</code>的文件，并写入以下内容。</p>
+<div class="highlight"><pre><span></span># Use an official Python runtime as a base image
+FROM python:2.7-slim
+
+# Set the working directory to /app …</pre></div> <a class="btn btn-info xsmall" href="../pages/2017/04/20/docker-quickstart.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html"><h2>Docker技术：Dockerfile的定义与使用</h2></a>
+        <div class= "well small"> 2017-04-18
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令<code>docker build</code>可以与Dockerfile文件中构建我们自己需要的镜像。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/16/docker-xi-tong-jia-gou.html"><h2>Docker技术：Docker系统架构</h2></a>
+        <div class= "well small"> 2017-04-16
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>本文目录：</p>
+<ul>
+<li><a href="#Docker Engine">Docker Engine</a></li>
+<li><a href="#Docker交付内容">Docker交付内容</a></li>
+<li><a href="#Docker系统架构">Docker系统架构</a></li>
+</ul>
+<h3>Docker Engine</h3>
+<p>Docker Engine主要包含三个组件，如下图所示：</p>
+<ul>
+<li>Docker Server：一个长时间运行的守护进程。</li>
+<li>REST API：指定程序可以用来与守护进程通信的接口。</li>
+<li>Client：命令行CLI客户端。</li>
+</ul>
+<p><img alt="Docker全局预览" src="http://on64c9tla.bkt.clouddn.com/2017A/Docker-overview.png"></p>
+<p>CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。</p>
+<h3>Docker交付内容</h3>
+<ul>
+<li>快速，一致地交付应用程序</li>
+</ul>
+<p>Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务</p>
+<ul>
+<li>在同一硬件上可允许多个工作流程</li>
+</ul>
+<p>Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。</p>
+<h3>Docker系统架构</h3>
+<p>Docker采用Client/Server架构模式，其系统架构如下图所示 …</p> <a class="btn btn-info xsmall" href="../pages/2017/04/16/docker-xi-tong-jia-gou.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/14/docker-ren-shi-docker.html"><h2>Docker技术：认识Docker</h2></a>
+        <div class= "well small"> 2017-04-14
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/14/docker-ren-shi-docker.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/09/dynamo-distributed-systems.html"><h2>Dynamo分布式键值系统</h2></a>
+        <div class= "well small"> 2017-04-09
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>分布式键值模型是分布式表格模型的一种特例，一般只支持单个key-value的“增、删、查、改”操作，因此适用 <strong>哈希分布算法</strong>。Amazon Dynamo是分布式键值系统，学习Dynamo的设计思想，设计原则，对理解分布式系统理论很有帮助。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/09/dynamo-distributed-systems.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/06/gfs-distributed-systems.html"><h2>GFS分布式文件系统</h2></a>
+        <div class= "well small"> 2017-04-06
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>分布式文件系统主要有两个功能：一个是存储文档，图像，视频之类的Blob类数据；一个是作为分布式表格系统的持久化层。分布式文件系统中最著名的就是Google File System(GFS)，因此，本章通过介绍GFS的内部实现机制来学习分布式文件系统的知识与设计。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/06/gfs-distributed-systems.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/03/21/learn-paxos-in-distributed-system.html"><h2>深入理解Paxos算法</h2></a>
+        <div class= "well small"> 2017-03-21
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a>，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。</p> <a class="btn btn-info xsmall" href="../pages/2017/03/21/learn-paxos-in-distributed-system.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/02/21/reading_and_writing.html"><h2>读书写作那点事儿</h2></a>
+        <div class= "well small"> 2017-02-21
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>这是一篇关于读书写作的读书笔记，内容源自李笑来老师知乎Live的《我的读书经验》。</p> <a class="btn btn-info xsmall" href="../pages/2017/02/21/reading_and_writing.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2016/12/15/the_middle_twenties.html"><h2>二十五六岁</h2></a>
+        <div class= "well small"> 2016-12-15
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>当一个人开始怀念少年时光的时候，他的少年时代就已经一去不复返了，此时此刻的他俨然成了一个有责任的青年人。</p> <a class="btn btn-info xsmall" href="../pages/2016/12/15/the_middle_twenties.html">read more</a></div>
+    </div>	
+				
+<div class="pagination">
+<ul>
+    <li class="prev"><a href="../author/subond.html">&larr; Previous</a></li>
+
+    <li class=""><a href="../author/subond.html">1</a></li>
+    <li class="active"><a href="../author/subond2.html">2</a></li>
+    <li class=""><a href="../author/subond3.html">3</a></li>
+    <li class=""><a href="../author/subond4.html">4</a></li>
+
+    <li class="next"><a href="../author/subond3.html">Next &rarr;</a></li>
+
+</ul>
+</div>
+ 
+  
+        </div>
+        
+        <div class="span3">
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Site
+                </li>
+            
+                <li><a href="../archives.html">Archives</a>
+                <li><a href="../tags.html">Tags</a>
+
+
+
+                <li><a href="www.subond.com/feeds/all.atom.xml" rel="alternate">Atom feed</a></li>
+
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Categories
+                </li>
+                
+                <li><a href="../category/life.html">Life</a></li>
+                <li><a href="../category/note.html">Note</a></li>
+                <li><a href="../category/read.html">Read</a></li>
+                <li><a href="../category/tech.html">Tech</a></li>
+                <li><a href="../category/tips.html">Tips</a></li>
+                   
+            </ul>
+            </div>
+
+
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Links
+                </li>
+            
+                <li><a href="https://www.ucloud.cn">UCloud</a></li>
+                <li><a href="http://www.infoq.com/cn/">InfoQ</a></li>
+                <li><a href="http://www.sdnlab.com/">SDNLAB</a></li>
+                <li><a href="https://bbs.byr.cn/">BYR</a></li>
+            </ul>
+            </div>
+
+
+            <div class="social">
+            <div class="well" style="padding: 8px 0; background-color: #FBFBFB;">
+            <ul class="nav nav-list">
+                <li class="nav-header"> 
+                Social
+                </li>
+           
+                <li><a href="https://github.com/yusubond">Github</a></li>
+                <li><a href="https://www.linkedin.com/in/subond-yu-523281146/">LinkedIn</a></li>
+                <li><a href="http://weibo.com/ybconly">Weibo</a></li>
+                <li><a href="http://subond.lofter.com/">Lofter</a></li>
+            </ul>
+            </div>
+            </div>
+
+        </div>  
+    </div>     </div> 
+<footer>
+<br />
+<p><a href="..">SuperBond</a> &copy; subond 2018</p>
+</footer>
+
+</div> <!-- /container -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="../theme/bootstrap-collapse.js"></script>
+<script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
+ 
+</body>
+</html>
