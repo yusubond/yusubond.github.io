@@ -2,6 +2,8 @@ Title: 我的书单
 Date: 2018-05-01
 Category: Life
 Tags: reading
+Slug: my_reading_list
+Author: subond
 
 #### 2016&2017年书单
 
