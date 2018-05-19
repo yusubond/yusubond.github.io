@@ -61,8 +61,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="../pages/2018/05/01/grpc_helloworld.html"><h1>gRPC使用指南</h1></a>
-2018-05-01
+            <a href="../pages/2018/05/07/p4_helloworld.html"><h1>P4编程实战</h1></a>
+2018-05-07
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
@@ -71,124 +71,129 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
         </div>
         
-        <div><p>gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。</p>
-<h2>1. gRPC概述</h2>
-<p>gRPC允许客户端应用可以像调用本地对象一样直接调用另一台不同机器上的服务端应用，使开发人员更容易地创建分布式应用和服务。</p>
-<p>在gRPC里，首先需要 <strong>定义一个服务</strong>，指定其能够被远程调用的方法(包含参数和返回类型)。然后，服务端将实现这个接口，并运行一个gRPC服务器来处理客户端的调用。客户端则拥有一个 <strong>存根</strong> 能够像服务端一样的方法。</p>
-<p><strong>Protocol Buffers</strong></p>
-<p>gRPC默认使用Protocol Buffers，这是Google开源的一套成熟的结构数据序列化机制。在proto文件中创建gRPC服务，并且用消息类型来定义相关的参数和返回类型都比较方便，这里我们使用<code>proto3</code>版本。</p>
-<h2>2. 安装gRPC和proto</h2>
-<p>安装golang，且版本大于等于1.6；并设置相应的环境变量GOPATH,GOROOT等。</p>
-<p>安装gRPC，gRPC使用golang语言编写的，可以直接使用go命令去下载。</p>
-<div class="highlight"><pre><span></span><span class="k">go</span> <span class="nx">get</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">google</span><span class="p">.</span><span class="nx">golang</span><span class="p">.</span><span class="nx">org</span><span class="o">/</span><span class="nx">grpc</span>
-</pre></div>
-
-
-<p>安装protobuf，参考<a href="https://github.com/google/protobuf/releases">https://github.com/google/protobuf/releases</a>，依据相应的系统平台选择安装包。</p>
-<p>安装protobuf go插件。</p>
-<div class="highlight"><pre><span></span><span class="k">go</span> <span class="nx">get</span> <span class="o">-</span><span class="nx">u</span> <span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">golang</span><span class="o">/</span><span class="nx">protobuf</span><span class="o">/</span><span class="nx">protoc</span><span class="o">-</span><span class="nx">gen</span><span class="o">-</span><span class="k">go</span>
-</pre></div>
-
-
-<h2>3. HelloWorld gRPC</h2>
-<p>这个HelloWorld程序位于gRPC源码的<code>examples</code>目录下，它展示了一个简单的客户端-服务端应用。</p>
-<ul>
-<li>
-<p>通过proto文件定义一个简单的带有HelloWorld方法的gRPC服务</p>
-</li>
-<li>
-<p>创建一个实现这个接口的服务端</p>
-</li>
-<li>
-<p>创建一个客户端来访问你的服务端</p>
-</li>
-</ul>
-<h3>指定protobuf版本</h3>
-<div class="highlight"><pre><span></span><span class="na">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
-</pre></div>
-
-
-<h3>指定包名</h3>
-<p>这个包名就是生成golang源码后所使用的包名。</p>
-<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">helloworld</span><span class="p">;</span>
-</pre></div>
-
-
-<h3>定义服务</h3>
-<p>通过<code>service</code>关键字来定义一个服务，并指定其参数和返回类型。参数和返回类型一般通过<code>message</code>关键字进行定义。</p>
-<div class="highlight"><pre><span></span><span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span>
-  <span class="c1">// Sends a greeting</span>
-  <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{}</span>
+        <div><h3>不同子网的通信</h3>
+<p>利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。</p>
+<p>子网1: 192.168.1.0/24
+子网2: 192.168.2.0/24</p>
+<h3>编程思路</h3>
+<p>采用gre隧道的方式，将两个子网的数据包包裹在gre报文的内部，外部使用gre隧道进行通信。</p>
+<h3>核心代码</h3>
+<div class="highlight"><pre><span></span><span class="err">#</span> <span class="nx">Ingress</span> <span class="nx">pipeline</span>
+<span class="nx">control</span> <span class="nx">dataplane_route</span> <span class="p">{</span>
+    <span class="nx">apply</span><span class="p">(</span><span class="nx">l3_or_l2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">l3_pkt</span> <span class="p">{</span>
+            <span class="nx">apply</span><span class="p">(</span><span class="nx">host</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="c1">// The request message containing the user&#39;s name.</span>
-<span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span>
-  <span class="kt">string</span> <span class="na">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nx">table</span> <span class="nx">l3_or_l2</span> <span class="p">{</span>
+    <span class="nx">reads</span> <span class="p">{</span>
+        <span class="nx">inner_ethernet</span><span class="p">.</span><span class="nx">dstAddr</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
+        <span class="nx">inner_ipv4</span> <span class="p">:</span> <span class="nx">valid</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">actions</span> <span class="p">{</span>
+        <span class="nx">l3_pkt</span><span class="p">;</span>
+        <span class="nx">l2_pkt</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">default_action</span> <span class="p">:</span> <span class="nx">l2_pkt</span><span class="p">();</span>
+    <span class="nx">size</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="c1">// The response message containing the greetings</span>
-<span class="kd">message</span> <span class="nc">HelloReply</span> <span class="p">{</span>
-  <span class="kt">string</span> <span class="kd">message</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nx">table</span> <span class="nx">host</span> <span class="p">{</span>
+    <span class="nx">reads</span> <span class="p">{</span>
+        <span class="nx">gretap</span><span class="p">.</span><span class="nx">tunnelId</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
+        <span class="nx">inner_ipv4</span><span class="p">.</span><span class="nx">dstAddr</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">actions</span> <span class="p">{</span>
+        <span class="nx">on_miss</span><span class="p">;</span>
+        <span class="nx">forward_to</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">default_action</span> <span class="p">:</span> <span class="nx">on_miss</span><span class="p">();</span>
+    <span class="nx">size</span> <span class="p">:</span> <span class="mi">10</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<p>值得说明的是，在proto文件中定义的service <em>转化</em> 成golang源码中的interface类型；message类型 <em>转化</em> 成struct类型。</p>
-<h3>生成golang源码</h3>
-<p>命令<code>protoc helloworld/helloworld.proto --go_out=plugins=grpc:.</code>可生成proto文件中定义的service和message，文件以<code>.pb.go</code>结尾。</p>
-<h2>4. 服务端应用</h2>
-<p>服务端编程中，需要首先import刚才生成的包，然后定义server类型，并实现SayHello接口。部分代码如下：</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="s">&quot;google.golang.org/grpc&quot;</span>
-<span class="kn">import</span> <span class="nx">pb</span> <span class="s">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>
+<div class="highlight"><pre><span></span># Egress
+table mac_info {
+    reads {
+        inner_ethernet.dstAddr : exact;
+    }
 
-<span class="c1">// server is used to implement helloworld.GreeterServer.</span>
-<span class="kd">type</span> <span class="nx">server</span> <span class="kd">struct</span><span class="p">{}</span>
+    actions {
+        forward_data;
+        drop_act;
+    }
 
-<span class="c1">// SayHello implements helloworld.GreeterServer</span>
-<span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">server</span><span class="p">)</span> <span class="nx">SayHello</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">in</span> <span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloReply</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloReply</span><span class="p">{</span><span class="nx">Message</span><span class="p">:</span> <span class="s">&quot;Hello &quot;</span> <span class="o">+</span> <span class="nx">in</span><span class="p">.</span><span class="nx">Name</span><span class="p">},</span> <span class="kc">nil</span>
-<span class="p">}</span>
-</pre></div>
+    default_action : drop_act();
+    size : 10;
+}
 
+table switch_pkt {
+    reads {
+        inner_ethernet.dstAddr : exact;
+        inner_ipv4 : valid;
+    }
 
-<p>main中先生成grpc服务，并注册该服务，部分代码如下：</p>
-<div class="highlight"><pre><span></span><span class="nx">s</span> <span class="o">:=</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">NewServer</span><span class="p">()</span>
-<span class="nx">pb</span><span class="p">.</span><span class="nx">RegisterGreeterServer</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">server</span><span class="p">{})</span>
-</pre></div>
+    actions {
+        is_switch;
+        on_miss;
+    }
 
+    default_action : is_switch();
+    size : 1;
+}
 
-<h2>5. 客户端应用</h2>
-<p>同样，客户端编程中也需要import相应的包，然后通过<code>grpc.Dial()</code>建立与server的连接，并根据连接生成客户端，在进行rpc调用。部分代码如下：</p>
-<div class="highlight"><pre><span></span><span class="c1">// import相应的包</span>
-<span class="kn">import</span> <span class="s">&quot;google.golang.org/grpc&quot;</span>
-<span class="kn">import</span> <span class="nx">pb</span> <span class="s">&quot;google.golang.org/grpc/examples/helloworld/helloworld&quot;</span>
-
-<span class="c1">// 建立与server的连接</span>
-<span class="nx">conn</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">Dial</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">grpc</span><span class="p">.</span><span class="nx">WithInsecure</span><span class="p">())</span>
-
-<span class="c1">// 生成客户端</span>
-<span class="nx">c</span> <span class="o">:=</span> <span class="nx">pb</span><span class="p">.</span><span class="nx">NewGreeterClient</span><span class="p">(</span><span class="nx">conn</span><span class="p">)</span>
-
-<span class="c1">// 调用server的方法</span>
-<span class="nx">r</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">SayHello</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="nx">name</span><span class="p">})</span>
-</pre></div>
-
-
-<p>值得注意的是，调用结束后连接需要释放。</p>
-<div class="highlight"><pre><span></span><span class="k">defer</span> <span class="nx">conn</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-</pre></div>
-
-
-<h2>6. 启动服务端与客户端</h2>
-<div class="highlight"><pre><span></span><span class="c1">// 启动服务端</span>
-<span class="k">go</span> <span class="nx">run</span> <span class="nx">server</span><span class="o">/</span><span class="nx">main</span><span class="p">.</span><span class="k">go</span>
-
-<span class="c1">// 启动客户端</span>
-<span class="k">go</span> <span class="nx">run</span> <span class="nx">client</span><span class="o">/</span><span class="nx">main</span><span class="p">.</span><span class="k">go</span>
+control dataplane_switch {
+    apply(switch_pkt) {
+        is_switch {
+            apply(mac_info);
+        }
+    }
+}
 </pre></div></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2018/05/05/p4_arch.html"><h2>P4:转发平面的编程语言</h2></a>
+        <div class= "well small"> 2018-05-05
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>P4是一种声明性语言，用来表示数据包如何通过网络转发单元的流水线(Pipeline)进行处理，基于抽象转发模型，该模型由解析器(Parser)和一系列匹配+动表(Match+Action Table)组成，分为入口(Ingress)和出口(Egress)两部分。Parser定义了每个传入数据包的包头格式，用于解析数据包。每个Match+Action表对包头字段进行查找和匹配，并在每个表内应用第一个匹配相对应的动作(Action)。</p> <a class="btn btn-info xsmall" href="../pages/2018/05/05/p4_arch.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2018/05/01/grpc_helloworld.html"><h2>gRPC使用指南</h2></a>
+        <div class= "well small"> 2018-05-01
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。</p> <a class="btn btn-info xsmall" href="../pages/2018/05/01/grpc_helloworld.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -324,42 +329,6 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
  </div>
         <div class="summary"><p>Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：创建一个Swarm集群和加入一个已有的Swarm集群。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/28/docker-swarm-jin-jie1.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html"><h2>Docker集群：工作原理</h2></a>
-        <div class= "well small"> 2017-04-26
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html"><h2>Docker集群：服务回滚</h2></a>
-        <div class= "well small"> 2017-04-24
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html">read more</a></div>
     </div>	
 				
 <div class="pagination">

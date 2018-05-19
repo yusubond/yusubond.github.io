@@ -61,6 +61,56 @@
  
 
     <div class='article'>
+        <a href="../pages/2017/04/20/docker-quickstart.html"><h2>Docker技术：快速上手教程</h2></a>
+        <div class= "well small"> 2017-04-20
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>本文目录：</p>
+<ul>
+<li><a href="#1.构建容器-Containers">1.构建容器-Containers</a></li>
+<li><a href="#2.组合服务-Compose">2.组合服务-Compose</a></li>
+<li><a href="#3.集群管理-Swarm">3.集群管理-Swarm</a></li>
+<li><a href="#4.应用协作-Stacks">4.应用协作-Stacks</a></li>
+</ul>
+<h3>1.构建容器-Containers</h3>
+<p>Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。</p>
+<p><strong>Dockerfile</strong></p>
+<p>创建一个新的空目录，在目录下创建名为<code>Dockerfile</code>的文件，并写入以下内容。</p>
+<div class="highlight"><pre><span></span># Use an official Python runtime as a base image
+FROM python:2.7-slim
+
+# Set the working directory to /app …</pre></div> <a class="btn btn-info xsmall" href="../pages/2017/04/20/docker-quickstart.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="../pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html"><h2>Docker技术：Dockerfile的定义与使用</h2></a>
+        <div class= "well small"> 2017-04-18
+
+by <a class="url fn" href="../author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令<code>docker build</code>可以与Dockerfile文件中构建我们自己需要的镜像。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/18/dockerfile-ding-yi-he-shi-yong.html">read more</a></div>
+    </div>	
+				
+
+ 
+        
+
+ 
+
+    <div class='article'>
         <a href="../pages/2017/04/16/docker-xi-tong-jia-gou.html"><h2>Docker技术：Docker系统架构</h2></a>
         <div class= "well small"> 2017-04-16
 
@@ -221,42 +271,6 @@ by <a class="url fn" href="../author/subond.html">subond</a>
 
  </div>
         <div class="summary"><p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p> <a class="btn btn-info xsmall" href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
-        <div class= "well small"> 2016-06-29
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2016/06/28/machinelearning-about-weka-classifier.html"><h2>机器学习之Weka学习-简单分类器</h2></a>
-        <div class= "well small"> 2016-06-28
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
     </div>	
 				
 <div class="pagination">

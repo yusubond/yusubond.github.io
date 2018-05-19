@@ -1,5 +1,278 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>SuperBond</title><link href="www.subond.com/" rel="alternate"></link><link href="www.subond.com/feeds/all.atom.xml" rel="self"></link><id>www.subond.com/</id><updated>2018-05-01T00:00:00+08:00</updated><entry><title>gRPC使用指南</title><link href="www.subond.com/pages/2018/05/01/grpc_helloworld.html" rel="alternate"></link><published>2018-05-01T00:00:00+08:00</published><updated>2018-05-01T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-01:www.subond.com/pages/2018/05/01/grpc_helloworld.html</id><summary type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;</summary><content type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>SuperBond</title><link href="www.subond.com/" rel="alternate"></link><link href="www.subond.com/feeds/all.atom.xml" rel="self"></link><id>www.subond.com/</id><updated>2018-05-07T00:00:00+08:00</updated><entry><title>P4编程实战</title><link href="www.subond.com/pages/2018/05/07/p4_helloworld.html" rel="alternate"></link><published>2018-05-07T00:00:00+08:00</published><updated>2018-05-07T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-07:www.subond.com/pages/2018/05/07/p4_helloworld.html</id><summary type="html">&lt;p&gt;P4编程实战：利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;不同子网的通信&lt;/h3&gt;
+&lt;p&gt;利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。&lt;/p&gt;
+&lt;p&gt;子网1: 192.168.1.0/24
+子网2: 192.168.2.0/24&lt;/p&gt;
+&lt;h3&gt;编程思路&lt;/h3&gt;
+&lt;p&gt;采用gre隧道的方式，将两个子网的数据包包裹在gre报文的内部，外部使用gre隧道进行通信。&lt;/p&gt;
+&lt;h3&gt;核心代码&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="nx"&gt;Ingress&lt;/span&gt; &lt;span class="nx"&gt;pipeline&lt;/span&gt;
+&lt;span class="nx"&gt;control&lt;/span&gt; &lt;span class="nx"&gt;dataplane_route&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;l3_or_l2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;l3_pkt&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nx"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;host&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;table&lt;/span&gt; &lt;span class="nx"&gt;l3_or_l2&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;reads&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;inner_ethernet&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;dstAddr&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;exact&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;inner_ipv4&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;valid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="nx"&gt;actions&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;l3_pkt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;l2_pkt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="nx"&gt;default_action&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;l2_pkt&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="nx"&gt;size&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;table&lt;/span&gt; &lt;span class="nx"&gt;host&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;reads&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;gretap&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;tunnelId&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;exact&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;inner_ipv4&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;dstAddr&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;exact&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="nx"&gt;actions&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;on_miss&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;forward_to&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="nx"&gt;default_action&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;on_miss&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="nx"&gt;size&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Egress
+table mac_info {
+    reads {
+        inner_ethernet.dstAddr : exact;
+    }
+
+    actions {
+        forward_data;
+        drop_act;
+    }
+
+    default_action : drop_act();
+    size : 10;
+}
+
+table switch_pkt {
+    reads {
+        inner_ethernet.dstAddr : exact;
+        inner_ipv4 : valid;
+    }
+
+    actions {
+        is_switch;
+        on_miss;
+    }
+
+    default_action : is_switch();
+    size : 1;
+}
+
+control dataplane_switch {
+    apply(switch_pkt) {
+        is_switch {
+            apply(mac_info);
+        }
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Network"></category><category term="P4lang"></category><category term="L3"></category><category term="L2"></category></entry><entry><title>P4:转发平面的编程语言</title><link href="www.subond.com/pages/2018/05/05/p4_arch.html" rel="alternate"></link><published>2018-05-05T00:00:00+08:00</published><updated>2018-05-05T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-05:www.subond.com/pages/2018/05/05/p4_arch.html</id><summary type="html">&lt;p&gt;P4是一种声明性语言，用来表示数据包如何通过网络转发单元的流水线(Pipeline)进行处理，基于抽象转发模型，该模型由解析器(Parser)和一系列匹配+动表(Match+Action Table)组成，分为入口(Ingress)和出口(Egress)两部分。Parser定义了每个传入数据包的包头格式，用于解析数据包。每个Match+Action表对包头字段进行查找和匹配，并在每个表内应用第一个匹配相对应的动作(Action)。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;1.P4语言介绍&lt;/h3&gt;
+&lt;p&gt;P4是一种 &lt;strong&gt;声明性&lt;/strong&gt; 语言，用来表示数据包如何通过网络转发单元的流水线(Pipeline)进行处理，基于抽象转发模型，该模型由解析器(Parser)和一系列匹配+动表(Match+Action Table)组成，分为入口(Ingress)和出口(Egress)两部分。Parser定义了每个传入数据包的包头格式，用于解析数据包。每个Match+Action表对包头字段进行查找和匹配，并在每个表内应用第一个匹配相对应的动作(Action)。如下图所示：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="p4_abstract_forwarding_model" src="http://on64c9tla.bkt.clouddn.com/subond/p4_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;P4语言本身是协议独立的编程语言，它支持对多种转发平面协议的表达，P4程序为每个转发单元指定以下内容：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Header，定义每个数据包包头的格式，包括字段及其大小&lt;/li&gt;
+&lt;li&gt;Parser Graph，定义数据报包包头的解析顺序&lt;/li&gt;
+&lt;li&gt;Table，定义查找类型，匹配字段，应用动作以及表的大小等&lt;/li&gt;
+&lt;li&gt;Action，定义简单动作和复合动作&lt;/li&gt;
+&lt;li&gt;Pipeline and Control Flow，定义流水线中表格的布局以及流水线中数据包的流向&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;P4通过寻址转发元素的配置，一旦配置完成，就可以利用Table对数据包(Packet)进行处理。&lt;/p&gt;
+&lt;h3&gt;2.转发模型的介绍&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;对于每个数据包，Parser都会生成一个Parsed Representation，用于Match + Action表的匹配字段。  &lt;/li&gt;
+&lt;li&gt;Ingress中的Macthc + Action表将生成一个出口规范，来确定数据包发送到的端口集合以及每个端口的数据包实例数量等。  &lt;/li&gt;
+&lt;li&gt;队列机制处理此Egress规范，生成数据包的必要实例并将每个实例提交给出口管道。  &lt;/li&gt;
+&lt;li&gt;数据包实例的物理目的地址在进入出口管道之前确定。一旦它在Egress Pipeline中，假定这个目的地不会改变（尽管该分组可能被丢弃或者它的头被进一步修改）。  &lt;/li&gt;
+&lt;li&gt;Egress Pipeline完成处理后，数据包实例的包头由Parsed Representation(由Match + Action Table修改)形成，并传输结果数据包。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3.P4语言的基本组件&lt;/h3&gt;
+&lt;p&gt;P4语言支持以下声明和定义：首部(Headers)、解析器(Parsers)、表(Tables)、动作(Action)、流控制程序(Control Flow)。&lt;/p&gt;
+&lt;h4&gt;3.1 首部 &lt;strong&gt;Header&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;首部类型是由成员字段组成的有序列表，每个字段都有其名称和长度，每一种首部类型都有对应的首部实例来存储具体的数据。首部分为两种，一种是包头（Packet Headers），另一种是元数据（Metadata）。&lt;/p&gt;
+&lt;p&gt;对于匹配，动作和控制流来说，我们需要引用包头及其字段，而包头正是通过数据包实例来引用。&lt;/p&gt;
+&lt;p&gt;例如，定义一个ipv4的包头。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;header_type&lt;/span&gt; &lt;span class="nx"&gt;ipv4_t&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;fields&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;version&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;ihl&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;typeofserv&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;totalLen&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;identification&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;flags&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;fragOffset&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;ttl&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;protocol&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;hdrChecksum&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;srcAddr&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="nx"&gt;dstAddr&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;3.2 解析 &lt;strong&gt;Parser&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;Parser可以建模成一种状态机，并根据解析到的有效字节来决定包的处理。它采用状态迁移的方式来表示，如下图所示。&lt;/p&gt;
+&lt;p&gt;其实就是不断剥离数据包的包头，并判断内部数据是哪一种协议类型，然后进行解析。&lt;/p&gt;
+&lt;p&gt;一个解析方法/状态可以以下四种方式结束：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;1）return 一个流控制程序名
+
+2）return一个解析器名
+
+3）发生显式错误
+
+4）发生隐式错误
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;P4语言中流控制程序和解析器的命名空间是共用的，所以在定义解析器和流控制程序的时候需要注意不能重名，否则会导致P4程序错误。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="parser_graph" src="http://on64c9tla.bkt.clouddn.com/subond/p4_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;例如：定义一个二层数据包的解析。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;parser&lt;/span&gt; &lt;span class="nx"&gt;ethernet&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ethernet&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;   &lt;span class="c1"&gt;// Start with the ethernet header&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;ethertype&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="mh"&gt;0x8100&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;     &lt;span class="nx"&gt;vlan&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="mh"&gt;0x0800&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;     &lt;span class="nx"&gt;ipv4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;    &lt;span class="nx"&gt;ingress&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;parser&lt;/span&gt; &lt;span class="nx"&gt;vlan&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;vlan&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;ethertype&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="mh"&gt;0xaaaa&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;     &lt;span class="nx"&gt;mtag&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="mh"&gt;0x0800&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;     &lt;span class="nx"&gt;ipv4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;    &lt;span class="nx"&gt;ingress&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nx"&gt;parser&lt;/span&gt; &lt;span class="nx"&gt;mtag&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;mtag&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;select&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;ethertype&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="mh"&gt;0x800&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;      &lt;span class="nx"&gt;ipv4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;    &lt;span class="nx"&gt;ingress&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;3.3 逆解析 &lt;strong&gt;Deparser&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;在Egress流水线，转发元素将由解析表示转变成可用于传输的串行字节流，这个过程称为Deparsing(逆解析)。P4语言规定 &lt;strong&gt;任何在出口处应该生成的格式都应该由在入口处使用的解析器来表示&lt;/strong&gt;。因此，P4程序中表示的解析图用于确定用于从Parsed Representation生成序列化数据包的算法。Deparing需要注意以下几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只有有效的包头格式才能进行逆解析。   &lt;/li&gt;
+&lt;li&gt;如果解析图是循环的，那么可以生成原始排序（即，尊重解析图的排序的算术平均值），并用它来确定序列化标题的顺序。  &lt;/li&gt;
+&lt;li&gt;一般来说，在对可选标头进行标签解压缩时，可以使用周期数来标记解析图。这些可以被视为解析图中的单个节点，并作为一个组进行序列化。  &lt;/li&gt;
+&lt;li&gt;元数据字段不进行序列化，元数据字段一般在Ingress流水线中进行Match + Action表中复制到包头字段中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;3.4 动作 &lt;strong&gt;Action&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;P4中动作被认为是功能，这些函数名在运行态时填充表格所应用的功能，分为复合动作和基本动作。&lt;/p&gt;
+&lt;p&gt;动作函数运行传输参数，这些参数所传递的值可以被编程为运行态(run-time)table实体的API。当一个table实体被匹配到的时候，这个参数的值就会传递给动作函数。P4的table声明可以被编译成运行态API。&lt;/p&gt;
+&lt;p&gt;例如，对于不确定的数据报，需要上报给cpu，可以定义一下动作。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;action&lt;/span&gt; &lt;span class="nx"&gt;copy_to_cpu&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;cpu_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;bad_pkt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;modify_field&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;local_metadata&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;copy_to_cpu&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="nx"&gt;modify_field&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;local_metadata&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;cpu_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;cpu_code&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="nx"&gt;modify_field&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;local_metadata&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;bad_pkt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;bad_pkt&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;下面这张表格包含了一些基本动作和介绍。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="p4_primitive_actions" src="http://on64c9tla.bkt.clouddn.com/subond/p4_3.png"&gt;
+&lt;img alt="p4_primitive_actions" src="http://on64c9tla.bkt.clouddn.com/subond/p4_4.png"&gt;&lt;/p&gt;
+&lt;h4&gt;3.5 匹配动作表 &lt;strong&gt;Match+Action Table&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;Table是声明性结构，指定了匹配和动作，以及其他可能的属性。Table首先指定了用于匹配数据报的字段列表，字段匹配是对包头的引用，对应包头的相应字段。匹配语义上总是所有字段匹配的和，即AND。&lt;/p&gt;
+&lt;p&gt;例如，定义一个mTag的表，使用精准匹配(exact)。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;table mTag_table {
+    reads {
+        ethernet.dst_addr   : exact;
+        vlan.vid            : exact;
+    }
+    actions {
+        add_mTag;
+        copy_to_cpu;
+        no_op;
+    }
+    max_size                 : 20000;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;其他匹配类型还包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;tenary 三重匹配。&lt;/p&gt;
+&lt;p&gt;表中每个条目都提供了一个掩码。 在进行比较之前，该掩码与字段值进行与运算。 字段值和表项值只需要在条目掩码中设置的位相同。 由于重叠匹配的可能性，必须使用三元匹配将优先级与表中的每个条目相关联。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;lpm 最长掩码匹配&lt;/p&gt;
+&lt;p&gt;这是特殊情况下的匹配。由于在高位中的1和在低位中的0之间进行了划分，所以参数的掩码选择可以被修改。该56个1位的数量给出用作条目优先级的前缀的长度。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;valid 有效性匹配&lt;/p&gt;
+&lt;p&gt;只适用于封装头字段和头部实例（非元数据字段）时，只检查是否有效，结果为true/false。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;rang 范围匹配&lt;/p&gt;
+&lt;p&gt;每个条目为条目指定一个低值和高值，只有在该范围内，该字段才匹配。 范围终点包括在内。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;3.6 包的处理与控制流&lt;/h4&gt;
+&lt;p&gt;P4语言中匹配-动作表中规定需要匹配的字段和需要执行的操作，流控制程序则用来规定匹配-动作表的执行顺序。&lt;/p&gt;
+&lt;p&gt;数据包的处理由一系列的匹配动作表执行，在配置时，控制流程序来指定表的执行顺序。表的执行使用&lt;code&gt;apply&lt;/code&gt;关键字，它有三种操作模式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;顺序：控制无条件的移动到下一语句。  &lt;/li&gt;
+&lt;li&gt;动作选择：包含了决定要执行的动作集合。  &lt;/li&gt;
+&lt;li&gt;Hit/Miss检查：是否找到匹配项确定要执行的指令块。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;例如，Igress的控制流：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;control&lt;/span&gt; &lt;span class="nx"&gt;ingress&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// Verify mTag state and port are consistent&lt;/span&gt;
+    &lt;span class="nx"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;check_mtag&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;identify_port&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="nx"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;select_output_port&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;3.7 状态存储&lt;/h4&gt;
+&lt;p&gt;计数器(counter)，仪表(meter)和寄存器(register)保持状态的时间超过一个数据包,被称为有状态存储。 它们需要目标资源，因此由编译器管理。&lt;/p&gt;
+&lt;p&gt;它们一般用来做QoS保障，通过计算数据报的数量来进行限速处理等操作。&lt;/p&gt;
+&lt;p&gt;例如，定义一个计数器。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;counter&lt;/span&gt; &lt;span class="nx"&gt;ip_pkts_by_dest&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;type&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;packets&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nx"&gt;direct&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;ip_host_table&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;定义一个meter。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;meter customer_meters {
+    type : bytes;
+    instance_count : 1000;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;参考资料&lt;/h3&gt;
+&lt;p&gt;[1].&lt;a href="http://www.023wg.com/message/message/cd_feature_ip_message_format.html"&gt;Ipv4报文格式&lt;/a&gt;
+[2].&lt;a href="https://p4.org/"&gt;p4.org&lt;/a&gt;
+[3].&lt;a href="https://p4.org/p4-spec/p4-14/v1.0.4/tex/p4.pdf"&gt;p4-14&lt;/a&gt;&lt;/p&gt;</content><category term="Network"></category><category term="P4lang"></category><category term="L3"></category><category term="L2"></category></entry><entry><title>gRPC使用指南</title><link href="www.subond.com/pages/2018/05/01/grpc_helloworld.html" rel="alternate"></link><published>2018-05-01T00:00:00+08:00</published><updated>2018-05-01T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-01:www.subond.com/pages/2018/05/01/grpc_helloworld.html</id><summary type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;</summary><content type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;
 &lt;h2&gt;1. gRPC概述&lt;/h2&gt;
 &lt;p&gt;gRPC允许客户端应用可以像调用本地对象一样直接调用另一台不同机器上的服务端应用，使开发人员更容易地创建分布式应用和服务。&lt;/p&gt;
 &lt;p&gt;在gRPC里，首先需要 &lt;strong&gt;定义一个服务&lt;/strong&gt;，指定其能够被远程调用的方法(包含参数和返回类型)。然后，服务端将实现这个接口，并运行一个gRPC服务器来处理客户端的调用。客户端则拥有一个 &lt;strong&gt;存根&lt;/strong&gt; 能够像服务端一样的方法。&lt;/p&gt;
