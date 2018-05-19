@@ -227,6 +227,6 @@ meter customer_meters {
 
 ### 参考资料
 
-[1].[Ipv4报文格式](http://www.023wg.com/message/message/cd_feature_ip_message_format.html)
-[2].[p4.org](https://p4.org/)
-[3].[p4-14](https://p4.org/p4-spec/p4-14/v1.0.4/tex/p4.pdf)
+[1].[Ipv4报文格式](http://www.023wg.com/message/message/cd_feature_ip_message_format.html)  
+[2].[p4.org](https://p4.org/)  
+[3].[p4-14](https://p4.org/p4-spec/p4-14/v1.0.4/tex/p4.pdf)  

@@ -1,1 +1,4 @@
 /tuxlite_tbs
+pelican.pid
+srv.pid
+fabfile.py

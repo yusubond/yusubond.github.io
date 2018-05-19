@@ -270,9 +270,9 @@ control dataplane_switch {
 
 
 &lt;h3&gt;参考资料&lt;/h3&gt;
-&lt;p&gt;[1].&lt;a href="http://www.023wg.com/message/message/cd_feature_ip_message_format.html"&gt;Ipv4报文格式&lt;/a&gt;
-[2].&lt;a href="https://p4.org/"&gt;p4.org&lt;/a&gt;
-[3].&lt;a href="https://p4.org/p4-spec/p4-14/v1.0.4/tex/p4.pdf"&gt;p4-14&lt;/a&gt;&lt;/p&gt;</content><category term="Network"></category><category term="P4lang"></category><category term="L3"></category><category term="L2"></category></entry><entry><title>gRPC使用指南</title><link href="www.subond.com/pages/2018/05/01/grpc_helloworld.html" rel="alternate"></link><published>2018-05-01T00:00:00+08:00</published><updated>2018-05-01T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-01:www.subond.com/pages/2018/05/01/grpc_helloworld.html</id><summary type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;</summary><content type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;
+&lt;p&gt;[1].&lt;a href="http://www.023wg.com/message/message/cd_feature_ip_message_format.html"&gt;Ipv4报文格式&lt;/a&gt;&lt;br&gt;
+[2].&lt;a href="https://p4.org/"&gt;p4.org&lt;/a&gt;&lt;br&gt;
+[3].&lt;a href="https://p4.org/p4-spec/p4-14/v1.0.4/tex/p4.pdf"&gt;p4-14&lt;/a&gt;  &lt;/p&gt;</content><category term="Network"></category><category term="P4lang"></category><category term="L3"></category><category term="L2"></category></entry><entry><title>gRPC使用指南</title><link href="www.subond.com/pages/2018/05/01/grpc_helloworld.html" rel="alternate"></link><published>2018-05-01T00:00:00+08:00</published><updated>2018-05-01T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-01:www.subond.com/pages/2018/05/01/grpc_helloworld.html</id><summary type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;</summary><content type="html">&lt;p&gt;gRPC是一个高性能、开源、通用的RPC框架，面向移动和HTTP/2设计，并且提供多个语言版本支持。本文章基于golang语言，通过概述和一个简单的HelloWorld来介绍gRPC的基本概念和使用方法。&lt;/p&gt;
 &lt;h2&gt;1. gRPC概述&lt;/h2&gt;
 &lt;p&gt;gRPC允许客户端应用可以像调用本地对象一样直接调用另一台不同机器上的服务端应用，使开发人员更容易地创建分布式应用和服务。&lt;/p&gt;
 &lt;p&gt;在gRPC里，首先需要 &lt;strong&gt;定义一个服务&lt;/strong&gt;，指定其能够被远程调用的方法(包含参数和返回类型)。然后，服务端将实现这个接口，并运行一个gRPC服务器来处理客户端的调用。客户端则拥有一个 &lt;strong&gt;存根&lt;/strong&gt; 能够像服务端一样的方法。&lt;/p&gt;

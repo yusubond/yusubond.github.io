@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>SuperBond - AI</title>
+    <title>SuperBond - Tech</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,96 +58,28 @@
 
         
 
-
-    <div class='article'>
-        <div class="content-title">
-            <a href="../pages/2016/07/03/machinelearning-about-weka-evaluation.html"><h1>机器学习之Weka学习-Evaluation类介绍</h1></a>
-2016-07-03
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- 
-        </div>
-        
-        <div><h2>1.Evalution类介绍</h2>
-<p>Evaluation类顾名思义，用来评价各种分类器（包括机器学习模型）的性能。Weka中有两个Evaluation类，分别位于weka.classifiers.evaluation.Evaluation和weka.classifiers.Evaluation 而且这两个类定义了同样的接口，其中evaluation包下的Evaluation类就是把所有的操作交给classifier包下的Evalution类来完成，也许为了能够适配旧版本已经编写的代码，就保留了classifier包下的 Evalution类，我们暂且不需要即可。下面我们就介绍weka.classifier.Evaluation类。</p>
-<div class="highlight"><pre><span></span>public class　Evaluation
-extends java.lang.Object
-implemensts java.io.Serializable, Summarizable, RevisionHandler
-</pre></div>
-
-
-<h2>2.构造函数</h2>
-<p>Evaluation类没有无参的构造函数，一般用Instances对象作为构造函数的参数。例如：</p>
-<div class="highlight"><pre><span></span>Evaluation eval = new Evaluation(data)
-</pre></div>
-
-
-<p>data是训练集的数据，用来获取一些信息，并不用来评价分类器。</p>
-<p><img alt="evaluation-weka" src="http://on64c9tla.bkt.clouddn.com/2016C/Evaluation.jpg"></p>
-<h2>3.主要成员变量</h2>
-<ul>
-<li>evaluationModel(Classifier classifier, Instances data)</li>
-</ul>
-<p>如果训练集和测试集是分开的，可以使用evaluationModel方法，方法中的参数为：第一个参数是训练过的分类器，第二个参数是测试集的数据。</p>
-<ul>
-<li>crossValidationModel()</li>
-</ul>
-<p>crossValidationModel方法的四个参数为：第一个参数是分类器，第二个参数是测试集的数据，第三个参数是交叉检验的次数（比较常见的是10），第四个参数是一个随机数对象。</p>
-<h2>4.应用示例</h2>
-<p>下面这个小程序用同一数据测试了两类方法的评价结果，源码地址如下<a href="https://github.com/yusubond/Machine-Learning/blob/master/Evaluation/Demo_evaluation.java">Demo</a></p>
-<p>结果如下：</p>
-<p><img alt="result-evaluationModel" src="http://on64c9tla.bkt.clouddn.com/2016C/evaluationModel.jpg"></p>
-<p><img alt="result-crossvalidateModel" src="http://on64c9tla.bkt.clouddn.com/2016C/crossvalidateModel.jpg"></p>
-<p><strong>参考资料</strong></p>
-<p>官网资料：<a href="http://10.103.14.28/weka-3-8-0/doc/">Instances类</a><br>
-Weka开发[3]-Evaluation类：<a href="http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/">http://quweiprotoss.blog.163.com/blog/static/408828832008103042734622/</a></p></div>
-        <hr />
-    </div>
-		
-
- 
-        
-
  
 
     <div class='article'>
-        <a href="../pages/2016/06/29/machinelearning-about-weka-instances.html"><h2>机器学习之Weka学习-Instances类介绍</h2></a>
-        <div class= "well small"> 2016-06-29
+        <a href="../pages/2016/04/24/pelican-github-chuang-jian-blog.html"><h2>利用Pelican+Github pages搭建个人博客</h2></a>
+        <div class= "well small"> 2016-04-24
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
 
 
  </div>
-        <div class="summary"><p>Instances类是Weka中进行数据操作的对象，即需将所要处理的数据先存入并转化为Instances类的对象，然后进行其他操作。也就是说Instances类是继承AbstractList类而来，并实了Serializable,RevisionHandler接口。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/29/machinelearning-about-weka-instances.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2016/06/28/machinelearning-about-weka-classifier.html"><h2>机器学习之Weka学习-简单分类器</h2></a>
-        <div class= "well small"> 2016-06-28
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Weka的全名是怀卡托智能分析环境（Waikato Environment for Knowledge Analysis），是一款免费的，非商业化的，基于JAVA环境下开源的机器学习（machine learning）以及数据挖掘（data mining）工具。 它和它的源代码可在其<a href="http://www.cs.waikato.ac.nz/ml/weka/">官方网站</a>下载。</p> <a class="btn btn-info xsmall" href="../pages/2016/06/28/machinelearning-about-weka-classifier.html">read more</a></div>
+        <div class="summary"><p>本教程基于pelican博客引擎和github page的功能，实现个人博客搭建。</p> <a class="btn btn-info xsmall" href="../pages/2016/04/24/pelican-github-chuang-jian-blog.html">read more</a></div>
     </div>	
 				
 <div class="pagination">
 <ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+    <li class="prev"><a href="../category/tech3.html">&larr; Previous</a></li>
 
-    <li class="active"><a href="../tag/ai.html">1</a></li>
+    <li class=""><a href="../category/tech.html">1</a></li>
+    <li class=""><a href="../category/tech2.html">2</a></li>
+    <li class=""><a href="../category/tech3.html">3</a></li>
+    <li class="active"><a href="../category/tech4.html">4</a></li>
 
     <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
@@ -224,7 +156,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="..">SuperBond</a> &copy; subond 2016</p>
+<p><a href="..">SuperBond</a> &copy; subond 2018</p>
 </footer>
 
 </div> <!-- /container -->
