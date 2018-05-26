@@ -51,10 +51,33 @@ $ git reset --hard commit_id  #结合git reflog;git log使用
 ### 分支操作
 
 ```shell
-$ git branch                #查看分支
-$ git checkout <分支名1>       #切换至分支名1
-$ git checkout -b <分支名1>  #创建并切换至分支名1
-$ git merge <分支名1>        #合并分支名1至当前分支
+$ git branch <-a -r>                                #查看分支
+$ git checkout <branch_name>                        #切换至某分支
+$ git checkout -b <branch_name>                     #创建并切换至分支名1
+$ git merge <branch_name>                           #合并分支名1至当前分支
+$ git push origin <local_branch>:<remote_branch>    # 将本地分支提交到远程分支
+$                                                   # -u 参数设置本地分支跟踪远程分支，对git pull/status有效
+$                                                   # 当远程分支不存在时，将会创建同名的远程分支
+$ git push origin :<remote_branch>                  # 提交空分支到远程分支，即删除远程分支
+$ git clone <repository_url> -b <remote_branch_name>  # 直接检出远程分支
+$ git checkout -b <local_name> origin/<remote_branch_name>    # 检出远程分支并创建本地分支
+$                                                             # 注意这个操作会自动设置跟踪，即本地分支会追踪远程分支
+$ git pull origin <remote_branch>:<local_branch>              # 拉去远程分支合并到本地分支
+```
+
+所以，最好的办法就是将本地分支名与远程分支名设为同名，同时查看.git/config中的分支追踪情况。
+
+```
+# .git/config
+[remote "origin"]
+     url = https://github.com/yusubond/gittest.git
+     fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]        # 本地master分支追踪远程master分支
+     remote = origin
+     merge = refs/heads/master
+[branch "dev"]
+     remote = origin     # 本地dev分支追踪远程dev分支
+     merge = refs/heads/dev
 ```
 
 ### 提交文件步骤
@@ -77,6 +100,10 @@ Workspace:工作区
 Index：暂存区  
 Repository：仓库区(本地仓库)  
 Remote：远程仓库  
+
+推荐使用软件[SourceTree](https://www.sourcetreeapp.com/)，可以很方便的查看每次commit细节和分支情况，支持MAC OSX和WINDOWS系统，软件界面如下。
+
+![hero-mac-screenshot](http://on64c9tla.bkt.clouddn.com/www.subond.com/hero-mac-screenshot.png)
 
 ## 二、进阶篇
 
@@ -129,3 +156,7 @@ $ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
 # 发布图书至远程仓库
 $ git push -u gitbook master  #第一次使用-u参数，之后可以不用加-u参数
 ```
+
+## 四、参考资料
+
+[1] [Book](https://git-scm.com/book/zh/v2)
