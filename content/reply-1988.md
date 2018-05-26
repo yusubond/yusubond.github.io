@@ -1,6 +1,6 @@
 Title: Reply 1988: 人生是个迷啊
 Date: 2016-10-07
-Category: Life
+Category: LIFE
 Tags: Life
 Slug: reply-1988
 Author: subond

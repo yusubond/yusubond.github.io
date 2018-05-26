@@ -1,6 +1,6 @@
 Title: Docker技术：Docker系统架构
 Date: 2017-04-16
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-xi-tong-jia-gou
 Author: subond

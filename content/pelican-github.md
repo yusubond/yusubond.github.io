@@ -1,6 +1,6 @@
 Title: 利用Pelican+Github pages搭建个人博客
 Date: 2016-04-24
-Category: Tech
+Category: TECH
 Tags: pelican, blog
 Slug: pelican-github-chuang-jian-blog
 Author: subond

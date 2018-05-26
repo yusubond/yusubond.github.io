@@ -1,6 +1,6 @@
 Title: Docker集群：服务部署
 Date: 2017-04-22
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-swarm-fu-wu-bu-shu
 Author: subond

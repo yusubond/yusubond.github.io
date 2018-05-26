@@ -1,6 +1,6 @@
 Title: Docker技术：Dockerfile的定义与使用
 Date: 2017-04-18
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: dockerfile-ding-yi-he-shi-yong
 Author: subond

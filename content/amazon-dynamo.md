@@ -1,6 +1,6 @@
 Title: Dynamo分布式键值系统
 Date: 2017-04-09
-Category: Tech
+Category: TECH
 Tags: Amazon, Distributed Systems
 Slug: dynamo-distributed-systems
 Author: subond

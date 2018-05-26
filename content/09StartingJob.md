@@ -1,6 +1,6 @@
 Title: 初入职场
 Date: 2017-10-08
-Category: Life
+Category: LIFE
 Tags: carrer, work
 Slug: starting_job
 Author: subond

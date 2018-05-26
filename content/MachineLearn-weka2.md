@@ -1,6 +1,6 @@
 Title: 机器学习之Weka学习-Instances类介绍
 Date: 2016-06-29
-Category: Tech
+Category: TECH
 Tags: MachineLearning, AI
 Slug: machinelearning-about-weka-instances
 Author: subond

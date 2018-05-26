@@ -1,6 +1,6 @@
 Title: 我的书单
 Date: 2018-05-01
-Category: Life
+Category: LIFE
 Tags: reading
 Slug: my_reading_list
 Author: subond

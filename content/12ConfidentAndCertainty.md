@@ -1,6 +1,6 @@
 Title: 年轻的自信与成熟的笃定
 Date: 2017-11-19
-Category: Life
+Category: LIFE
 Tags: reading, work, growth
 Slug: confident_and_certainty
 Author: subond

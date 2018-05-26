@@ -1,6 +1,6 @@
 Title: GFS分布式文件系统
 Date: 2017-04-06
-Category: Tech
+Category: TECH
 Tags: Google, Distributed Systems
 Slug: gfs-distributed-systems
 Author: subond

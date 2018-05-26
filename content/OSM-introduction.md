@@ -1,6 +1,6 @@
 Title: 初识Open Source MANO
 Date: 2016-12-03
-Category: Tech
+Category: TECH
 Tags: NFV, Orchestration, juju
 Slug: introduction-about-osm
 Author: subond

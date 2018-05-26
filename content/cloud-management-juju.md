@@ -1,6 +1,6 @@
 Title: 云端服务管理工具:Juju
 Date: 2016-11-10
-Category: Tech
+Category: TECH
 Tags: Cloud, Orchestration
 Slug: juju-charm-mechanism
 Author: subond

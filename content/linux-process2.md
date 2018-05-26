@@ -1,6 +1,6 @@
 Title: Linux中的线程管理
 Date: 2016-06-19
-Category: Tech
+Category: TECH
 Tags: linux, process, pthread
 Slug: pthread2-management-in-linux
 Author: subond

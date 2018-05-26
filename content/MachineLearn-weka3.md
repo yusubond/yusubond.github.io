@@ -1,6 +1,6 @@
 Title: 机器学习之Weka学习-Evaluation类介绍
 Date: 2016-07-03
-Category: Tech
+Category: TECH
 Tags: MachineLearning, AI
 Slug: machinelearning-about-weka-evaluation
 Author: subond

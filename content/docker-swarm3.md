@@ -1,6 +1,6 @@
 Title: Docker集群：工作原理
 Date: 2017-04-26
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-swarm-gong-zuo-yuan-li
 Author: subond

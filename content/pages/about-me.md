@@ -1,6 +1,6 @@
 Title: About Me
 Date: 2017-09-01
-Category: Life
+Category: LIFE
 Tags: about me
 
 <p><font size="6"><b>Subond Yu</b></font></p>

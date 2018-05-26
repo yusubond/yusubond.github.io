@@ -1,6 +1,6 @@
 Title: LTE系统网络架构
 Date: 2016-05-10
-Category: Tech
+Category: TECH
 Tags: architecture, lte
 Slug: lte-xi-tong-wang-luo-jia-gou
 Author: subond

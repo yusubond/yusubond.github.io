@@ -1,6 +1,6 @@
 Title: Git学习手记
 Date: 2016-04-29
-Category: Tech
+Category: TECH
 Tags: git, gitbook
 Slug: git-xue-xi-shou-ji
 Author: subond

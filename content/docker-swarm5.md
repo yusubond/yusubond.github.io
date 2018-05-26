@@ -1,6 +1,6 @@
 Title: Docker进阶：服务配置
 Date: 2017-05-01
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-swarm-jin-jie2
 Author: subond

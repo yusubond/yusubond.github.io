@@ -1,6 +1,6 @@
 Title: Docker集群：服务回滚
 Date: 2017-04-24
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-swarm-fu-wu-hui-gun
 Author: subond

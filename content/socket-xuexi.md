@@ -1,6 +1,6 @@
 Title: Socket编程之函数学习篇
 Date: 2016-05-17
-Category: Tech
+Category: TECH
 Tags: socket, newtork programming
 Slug: socket-bian-cheng-xue-xi
 Author: subond

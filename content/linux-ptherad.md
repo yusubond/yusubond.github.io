@@ -1,6 +1,6 @@
 Title: Linux中的线程函数
 Date: 2016-06-14
-Category: Tech
+Category: TECH
 Tags: linux, pthread, process
 Slug: pthread-management-in-linux
 Author: subond

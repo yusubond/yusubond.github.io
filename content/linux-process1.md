@@ -1,6 +1,6 @@
 Title: Linux中的进程管理
 Date: 2016-06-17
-Category: Tech
+Category: TECH
 Tags: linux, process
 Slug: process-management-in-linux
 Author: subond

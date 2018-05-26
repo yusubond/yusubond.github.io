@@ -1,6 +1,6 @@
 Title: Docker进阶：以Swarm模式运行Docker引擎
 Date: 2017-04-28
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-swarm-jin-jie1
 Author: subond

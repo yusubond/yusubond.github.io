@@ -1,6 +1,6 @@
 Title: 读书写作那点事儿
 Date: 2016-11-15
-Category: Read
+Category: READ
 Tags: Life, Writing, Reading
 Slug: something-about-reading-and-writing
 Author: subond

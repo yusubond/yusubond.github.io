@@ -1,6 +1,6 @@
 Title: Docker技术：快速上手教程
 Date: 2017-04-20
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-quickstart
 Author: subond

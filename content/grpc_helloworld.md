@@ -1,6 +1,6 @@
 Title: gRPC使用指南
 Date: 2018-05-01
-Category: Tech
+Category: TECH
 Tags: tech, golang, rpc
 Slug: grpc_helloworld
 Author: subond

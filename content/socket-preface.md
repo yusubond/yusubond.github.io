@@ -1,6 +1,6 @@
 Title: Socket编程之基础篇
 Date: 2016-05-14
-Category: Tech
+Category: TECH
 Tags: socket, newtork programming
 Slug: socket-bian-cheng-ji-chu
 Author: subond

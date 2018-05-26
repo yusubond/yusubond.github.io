@@ -1,6 +1,6 @@
 Title: Docker技术：认识Docker
 Date: 2017-04-14
-Category: Tech
+Category: TECH
 Tags: Cloud, Docker
 Slug: docker-ren-shi-docker
 Author: subond

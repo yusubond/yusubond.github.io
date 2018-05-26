@@ -1,6 +1,6 @@
 Title: Vagrant使用案例
 Date: 2017-05-15
-Category: Tech
+Category: TECH
 Tags: vagrant, cloud
 Slug: vagrant_usage
 Author: subond

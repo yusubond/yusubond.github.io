@@ -1,6 +1,6 @@
 Title: 关于找工作的两个基本事实
 Date: 2017-11-08
-Category: Life
+Category: LIFE
 Tags: work, growth
 Slug: two_fundamental_truths_about_work
 Author: subond

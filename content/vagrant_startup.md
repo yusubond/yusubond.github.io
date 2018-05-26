@@ -1,6 +1,6 @@
 Title: Vagrant的快速使用
 Date: 2017-05-10
-Category: Tech
+Category: TECH
 Tags: vagrant, cloud
 Slug: vagrant_startup
 Author: subond

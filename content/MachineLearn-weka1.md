@@ -1,6 +1,6 @@
 Title: 机器学习之Weka学习-简单分类器
 Date: 2016-06-28
-Category: Tech
+Category: TECH
 Tags: MachineLearning, AI
 Slug: machinelearning-about-weka-classifier
 Author: subond

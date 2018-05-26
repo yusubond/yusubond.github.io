@@ -1,6 +1,6 @@
 Title: 深入理解Paxos算法
 Date: 2017-03-21
-Category: Tech
+Category: TECH
 Tags: Algorithm, Distributed Systems
 Slug: learn-paxos-in-distributed-system
 Author: subond

@@ -1,3 +1,3 @@
-# subond.github.io
+# www.subond.com
 
-Yu Bangchao's Tech Blog
+subond's Tech Blog

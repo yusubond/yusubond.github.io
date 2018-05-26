@@ -1,6 +1,6 @@
 Title: 工作中遇到的小技巧
 Date: 2016-07-12
-Category: Tips
+Category: NOTE
 Tags: tools
 Slug: tip-tools
 Author: subond

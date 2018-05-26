@@ -1,6 +1,6 @@
 Title: 二十五六岁
 Date: 2016-12-15
-Category: Life
+Category: LIFE
 Tags: life, work, essay
 Slug: the_middle_twenties
 Author: subond

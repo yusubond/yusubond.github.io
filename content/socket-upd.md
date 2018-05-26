@@ -1,6 +1,6 @@
 Title: Socket编程之基本UDP编程
 Date: 2016-05-24
-Category: Tech
+Category: TECH
 Tags: socket, newtork programming
 Slug: socket-bian-cheng-udp
 Author: subond
