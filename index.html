@@ -61,8 +61,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="./pages/2018/05/07/p4_helloworld.html"><h1>P4编程实战</h1></a>
-2018-05-07
+            <a href="./pages/2018/05/13/atom_configure.html"><h1>Atom个性化设置</h1></a>
+2018-05-13
 
 by <a class="url fn" href="./author/subond.html">subond</a>
  
@@ -71,93 +71,94 @@ by <a class="url fn" href="./author/subond.html">subond</a>
  
         </div>
         
-        <div><h3>不同子网的通信</h3>
-<p>利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。</p>
-<p>子网1: 192.168.1.0/24
-子网2: 192.168.2.0/24</p>
-<h3>编程思路</h3>
-<p>采用gre隧道的方式，将两个子网的数据包包裹在gre报文的内部，外部使用gre隧道进行通信。</p>
-<h3>核心代码</h3>
-<div class="highlight"><pre><span></span><span class="err">#</span> <span class="nx">Ingress</span> <span class="nx">pipeline</span>
-<span class="nx">control</span> <span class="nx">dataplane_route</span> <span class="p">{</span>
-    <span class="nx">apply</span><span class="p">(</span><span class="nx">l3_or_l2</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">l3_pkt</span> <span class="p">{</span>
-            <span class="nx">apply</span><span class="p">(</span><span class="nx">host</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="nx">table</span> <span class="nx">l3_or_l2</span> <span class="p">{</span>
-    <span class="nx">reads</span> <span class="p">{</span>
-        <span class="nx">inner_ethernet</span><span class="p">.</span><span class="nx">dstAddr</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
-        <span class="nx">inner_ipv4</span> <span class="p">:</span> <span class="nx">valid</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="nx">actions</span> <span class="p">{</span>
-        <span class="nx">l3_pkt</span><span class="p">;</span>
-        <span class="nx">l2_pkt</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">default_action</span> <span class="p">:</span> <span class="nx">l2_pkt</span><span class="p">();</span>
-    <span class="nx">size</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="nx">table</span> <span class="nx">host</span> <span class="p">{</span>
-    <span class="nx">reads</span> <span class="p">{</span>
-        <span class="nx">gretap</span><span class="p">.</span><span class="nx">tunnelId</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
-        <span class="nx">inner_ipv4</span><span class="p">.</span><span class="nx">dstAddr</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="nx">actions</span> <span class="p">{</span>
-        <span class="nx">on_miss</span><span class="p">;</span>
-        <span class="nx">forward_to</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">default_action</span> <span class="p">:</span> <span class="nx">on_miss</span><span class="p">();</span>
-    <span class="nx">size</span> <span class="p">:</span> <span class="mi">10</span><span class="p">;</span>
-<span class="p">}</span>
+        <div><h3>1.Packages</h3>
+<p>推荐几个好用的packages.</p>
+<p>1.<strong>Minimap</strong></p>
+<p>Minimap是Atom最流行好用的几个packages之一，它可以提供源码的全局视图。</p>
+<p><a href="https://atom.io/packages/minimap">https://atom.io/packages/minimap</a></p>
+<p><img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675653mini-map.png"></p>
+<p>2.<strong>Highlight Selected</strong></p>
+<p>无需多说，代码高亮也是必备。</p>
+<p><a href="https://atom.io/packages/highlight-selected">https://atom.io/packages/highlight-selected</a></p>
+<p><img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675732highlight-selected.png"></p>
+<p>3.<strong>Linter</strong></p>
+<p><a href="https://atom.io/packages/linter">https://atom.io/packages/linter</a></p>
+<p><img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675975linter.gif"></p>
+<p>4.<strong>atom-beautify</strong></p>
+<p><a href="https://atom.io/packages/atom-beautify">https://atom.io/packages/atom-beautify</a></p>
+<p>5.<strong>file-icons</strong></p>
+<p><a href="https://atom.io/packages/file-icons">https://atom.io/packages/file-icons</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/file-icons.png"></p>
+<p>6.<strong>todo-show</strong></p>
+<p><a href="https://atom.io/packages/todo-show">https://atom.io/packages/todo-show</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/todo-show.png"></p>
+<h3>2.Theme</h3>
+<p>个人比较喜欢的几个theme.</p>
+<p>1.<strong>Dracula</strong></p>
+<p><a href="https://atom.io/themes/dracula-ui">https://atom.io/themes/dracula-ui</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/dracula-ui.png"></p>
+<p><a href="https://atom.io/themes/dracula-syntax">https://atom.io/themes/dracula-syntax</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/dracula-syntax.png"></p>
+<p>2.<strong>Material</strong></p>
+<p><a href="https://atom.io/themes/atom-material-ui">https://atom.io/themes/atom-material-ui</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/material-ui.png"></p>
+<p><a href="https://atom.io/themes/atom-material-syntax">https://atom.io/themes/atom-material-syntax</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/material-syntax.png"></p>
+<p>3.<strong>City-Light</strong></p>
+<p><a href="https://atom.io/themes/city-lights-ui">https://atom.io/themes/city-lights-ui</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/city-light-ui.png"></p>
+<p><a href="https://atom.io/themes/city-lights-syntax">https://atom.io/themes/city-lights-syntax</a></p>
+<p><img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/city-light-syntax.png"></p>
+<h3>3.再高效一些</h3>
+<p>1.快速跳出成对出现符号</p>
+<p>当我们使用atom编辑器时，括号、引号等符号往往是成对出现的。而且，当我们打出成对的符号，光标相应的移动到符号中间，方面书写。但是写完后再跳出右边的符号需要使用<code>-&gt;</code>这个键，移动距离过大，不是很方便。为了快速跳出，可进行如下设置：</p>
+<p>在<code>init.coffee</code>中添加如下代码：</p>
+<div class="highlight"><pre><span></span># move cursor across the ending symbols...
+EndingSymbolRegex = /\s*[)}&gt;\]/&#39;&quot;;:=-]/
+atom.commands.add &#39;atom-text-editor&#39;, &#39;custom:jump-over-symbol&#39;: (event) -&gt;
+  editor = atom.workspace.getActiveTextEditor()
+  cursorMoved = false
+  for cursor in editor.getCursors()
+    range = cursor.getCurrentWordBufferRange(wordRegex: EndingSymbolRegex)
+    unless range.isEmpty()
+      cursor.setBufferPosition(range.end)
+      cursorMoved = true
+  event.abortKeyBinding() unless cursorMoved
 </pre></div>
 
 
-<div class="highlight"><pre><span></span># Egress
-table mac_info {
-    reads {
-        inner_ethernet.dstAddr : exact;
-    }
+<p>然后在<code>config.cson</code>中添加如下代码：</p>
+<div class="highlight"><pre><span></span>&quot;atom-text-editor:not([mini])&quot;:
+  &quot;enter&quot;: &quot;custom:jump-over-symbol&quot;
+</pre></div>
 
-    actions {
-        forward_data;
-        drop_act;
-    }
 
-    default_action : drop_act();
-    size : 10;
-}
-
-table switch_pkt {
-    reads {
-        inner_ethernet.dstAddr : exact;
-        inner_ipv4 : valid;
-    }
-
-    actions {
-        is_switch;
-        on_miss;
-    }
-
-    default_action : is_switch();
-    size : 1;
-}
-
-control dataplane_switch {
-    apply(switch_pkt) {
-        is_switch {
-            apply(mac_info);
-        }
-    }
-}
-</pre></div></div>
+<h3>参考资料</h3>
+<p>[1].<a href="https://www.sitepoint.com/10-essential-atom-add-ons/">10 Essential Atom Add-ons</a></p>
+<p>[2].<a href="https://blog.duojam.com/10-best-atom-themes-of-2017/">10 Best Atom themes of 2017</a></p>
+<p>[3].<a href="https://medium.com/@Dannypaton/the-best-packages-and-themes-for-atom-fee4860a7955">The best Atom packages and themes</a></p>
+<p>[4].<a href="http://stackoverflow.org.cn/front/ask/view?ask_id=607299">用TAB在原子编辑器中跳过括号/括号/引号</a></p></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="./pages/2018/05/07/p4_helloworld.html"><h2>P4编程实战</h2></a>
+        <div class= "well small"> 2018-05-07
+
+by <a class="url fn" href="./author/subond.html">subond</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>P4编程实战：利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。</p> <a class="btn btn-info xsmall" href="./pages/2018/05/07/p4_helloworld.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -313,24 +314,6 @@ by <a class="url fn" href="./author/subond.html">subond</a>
         <div class="summary"><p>当使用Docker Swarm模式时，我们可以通过命令<code>docker service create</code>向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即<code>docker service</code>，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。</p> <a class="btn btn-info xsmall" href="./pages/2017/05/01/docker-swarm-jin-jie2.html">read more</a></div>
     </div>	
 				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="./pages/2017/04/28/docker-swarm-jin-jie1.html"><h2>Docker进阶：以Swarm模式运行Docker引擎</h2></a>
-        <div class= "well small"> 2017-04-28
-
-by <a class="url fn" href="./author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：创建一个Swarm集群和加入一个已有的Swarm集群。</p> <a class="btn btn-info xsmall" href="./pages/2017/04/28/docker-swarm-jin-jie1.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -377,6 +360,7 @@ by <a class="url fn" href="./author/subond.html">subond</a>
                 <li><a href="./category/note.html">NOTE</a></li>
                 <li><a href="./category/read.html">READ</a></li>
                 <li><a href="./category/tech.html">TECH</a></li>
+                <li><a href="./category/tech-note.html">TECH, NOTE</a></li>
                    
             </ul>
             </div>

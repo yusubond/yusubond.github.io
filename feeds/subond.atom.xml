@@ -1,5 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>SuperBond - subond</title><link href="www.subond.com/" rel="alternate"></link><link href="www.subond.com/feeds/subond.atom.xml" rel="self"></link><id>www.subond.com/</id><updated>2018-05-07T00:00:00+08:00</updated><entry><title>P4编程实战</title><link href="www.subond.com/pages/2018/05/07/p4_helloworld.html" rel="alternate"></link><published>2018-05-07T00:00:00+08:00</published><updated>2018-05-07T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-07:www.subond.com/pages/2018/05/07/p4_helloworld.html</id><summary type="html">&lt;p&gt;P4编程实战：利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;不同子网的通信&lt;/h3&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>SuperBond - subond</title><link href="www.subond.com/" rel="alternate"></link><link href="www.subond.com/feeds/subond.atom.xml" rel="self"></link><id>www.subond.com/</id><updated>2018-05-13T00:00:00+08:00</updated><entry><title>Atom个性化设置</title><link href="www.subond.com/pages/2018/05/13/atom_configure.html" rel="alternate"></link><published>2018-05-13T00:00:00+08:00</published><updated>2018-05-13T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-13:www.subond.com/pages/2018/05/13/atom_configure.html</id><summary type="html">&lt;h3&gt;1.Packages&lt;/h3&gt;
+&lt;p&gt;推荐几个好用的packages.&lt;/p&gt;
+&lt;p&gt;1.&lt;strong&gt;Minimap&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Minimap是Atom最流行好用的几个packages之一，它可以提供源码的全局视图。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/minimap"&gt;https://atom.io/packages/minimap&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675653mini-map.png"&gt;&lt;/p&gt;
+&lt;p&gt;2.&lt;strong&gt;Highlight Selected&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;无需多说，代码高亮也是必备。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/highlight-selected"&gt;https://atom.io/packages/highlight-selected&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675732highlight-selected.png"&gt;&lt;/p&gt;
+&lt;p&gt;3.&lt;strong&gt;Linter&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/linter"&gt;https://atom.io/packages/linter&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675975linter.gif"&gt;&lt;/p&gt;
+&lt;p&gt;4.&lt;strong&gt;atom-beautify&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/atom-beautify"&gt;https://atom.io/packages/atom-beautify&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;5.&lt;strong&gt;file-icons&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/file-icons"&gt;https://atom.io/packages/file-icons&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/file-icons.png"&gt;&lt;/p&gt;
+&lt;p&gt;6.&lt;strong&gt;todo-show&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/todo-show"&gt;https://atom.io/packages/todo-show …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;h3&gt;1.Packages&lt;/h3&gt;
+&lt;p&gt;推荐几个好用的packages.&lt;/p&gt;
+&lt;p&gt;1.&lt;strong&gt;Minimap&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Minimap是Atom最流行好用的几个packages之一，它可以提供源码的全局视图。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/minimap"&gt;https://atom.io/packages/minimap&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675653mini-map.png"&gt;&lt;/p&gt;
+&lt;p&gt;2.&lt;strong&gt;Highlight Selected&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;无需多说，代码高亮也是必备。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/highlight-selected"&gt;https://atom.io/packages/highlight-selected&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675732highlight-selected.png"&gt;&lt;/p&gt;
+&lt;p&gt;3.&lt;strong&gt;Linter&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/linter"&gt;https://atom.io/packages/linter&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675975linter.gif"&gt;&lt;/p&gt;
+&lt;p&gt;4.&lt;strong&gt;atom-beautify&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/atom-beautify"&gt;https://atom.io/packages/atom-beautify&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;5.&lt;strong&gt;file-icons&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/file-icons"&gt;https://atom.io/packages/file-icons&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/file-icons.png"&gt;&lt;/p&gt;
+&lt;p&gt;6.&lt;strong&gt;todo-show&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/todo-show"&gt;https://atom.io/packages/todo-show&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/todo-show.png"&gt;&lt;/p&gt;
+&lt;h3&gt;2.Theme&lt;/h3&gt;
+&lt;p&gt;个人比较喜欢的几个theme.&lt;/p&gt;
+&lt;p&gt;1.&lt;strong&gt;Dracula&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/themes/dracula-ui"&gt;https://atom.io/themes/dracula-ui&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/dracula-ui.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/themes/dracula-syntax"&gt;https://atom.io/themes/dracula-syntax&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/dracula-syntax.png"&gt;&lt;/p&gt;
+&lt;p&gt;2.&lt;strong&gt;Material&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/themes/atom-material-ui"&gt;https://atom.io/themes/atom-material-ui&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/material-ui.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/themes/atom-material-syntax"&gt;https://atom.io/themes/atom-material-syntax&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/material-syntax.png"&gt;&lt;/p&gt;
+&lt;p&gt;3.&lt;strong&gt;City-Light&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/themes/city-lights-ui"&gt;https://atom.io/themes/city-lights-ui&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/city-light-ui.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/themes/city-lights-syntax"&gt;https://atom.io/themes/city-lights-syntax&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/city-light-syntax.png"&gt;&lt;/p&gt;
+&lt;h3&gt;3.再高效一些&lt;/h3&gt;
+&lt;p&gt;1.快速跳出成对出现符号&lt;/p&gt;
+&lt;p&gt;当我们使用atom编辑器时，括号、引号等符号往往是成对出现的。而且，当我们打出成对的符号，光标相应的移动到符号中间，方面书写。但是写完后再跳出右边的符号需要使用&lt;code&gt;-&amp;gt;&lt;/code&gt;这个键，移动距离过大，不是很方便。为了快速跳出，可进行如下设置：&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;init.coffee&lt;/code&gt;中添加如下代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# move cursor across the ending symbols...
+EndingSymbolRegex = /\s*[)}&amp;gt;\]/&amp;#39;&amp;quot;;:=-]/
+atom.commands.add &amp;#39;atom-text-editor&amp;#39;, &amp;#39;custom:jump-over-symbol&amp;#39;: (event) -&amp;gt;
+  editor = atom.workspace.getActiveTextEditor()
+  cursorMoved = false
+  for cursor in editor.getCursors()
+    range = cursor.getCurrentWordBufferRange(wordRegex: EndingSymbolRegex)
+    unless range.isEmpty()
+      cursor.setBufferPosition(range.end)
+      cursorMoved = true
+  event.abortKeyBinding() unless cursorMoved
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;然后在&lt;code&gt;config.cson&lt;/code&gt;中添加如下代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;quot;atom-text-editor:not([mini])&amp;quot;:
+  &amp;quot;enter&amp;quot;: &amp;quot;custom:jump-over-symbol&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;参考资料&lt;/h3&gt;
+&lt;p&gt;[1].&lt;a href="https://www.sitepoint.com/10-essential-atom-add-ons/"&gt;10 Essential Atom Add-ons&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2].&lt;a href="https://blog.duojam.com/10-best-atom-themes-of-2017/"&gt;10 Best Atom themes of 2017&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[3].&lt;a href="https://medium.com/@Dannypaton/the-best-packages-and-themes-for-atom-fee4860a7955"&gt;The best Atom packages and themes&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[4].&lt;a href="http://stackoverflow.org.cn/front/ask/view?ask_id=607299"&gt;用TAB在原子编辑器中跳过括号/括号/引号&lt;/a&gt;&lt;/p&gt;</content><category term="Atom"></category></entry><entry><title>P4编程实战</title><link href="www.subond.com/pages/2018/05/07/p4_helloworld.html" rel="alternate"></link><published>2018-05-07T00:00:00+08:00</published><updated>2018-05-07T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2018-05-07:www.subond.com/pages/2018/05/07/p4_helloworld.html</id><summary type="html">&lt;p&gt;P4编程实战：利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。&lt;/p&gt;</summary><content type="html">&lt;h3&gt;不同子网的通信&lt;/h3&gt;
 &lt;p&gt;利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。&lt;/p&gt;
 &lt;p&gt;子网1: 192.168.1.0/24
 子网2: 192.168.2.0/24&lt;/p&gt;
