@@ -110,10 +110,32 @@ $ git reset --hard commit_id  <span class="c1">#结合git reflog;git log使用</
 
 
 <h3>分支操作</h3>
-<div class="highlight"><pre><span></span>$ git branch                <span class="c1">#查看分支</span>
-$ git checkout &lt;分支名1&gt;       <span class="c1">#切换至分支名1</span>
-$ git checkout -b &lt;分支名1&gt;  <span class="c1">#创建并切换至分支名1</span>
-$ git merge &lt;分支名1&gt;        <span class="c1">#合并分支名1至当前分支</span>
+<div class="highlight"><pre><span></span>$ git branch &lt;-a -r&gt;                                <span class="c1">#查看分支</span>
+$ git checkout &lt;branch_name&gt;                        <span class="c1">#切换至某分支</span>
+$ git checkout -b &lt;branch_name&gt;                     <span class="c1">#创建并切换至分支名1</span>
+$ git merge &lt;branch_name&gt;                           <span class="c1">#合并分支名1至当前分支</span>
+$ git push origin &lt;local_branch&gt;:&lt;remote_branch&gt;    <span class="c1"># 将本地分支提交到远程分支</span>
+$                                                   <span class="c1"># -u 参数设置本地分支跟踪远程分支，对git pull/status有效</span>
+$                                                   <span class="c1"># 当远程分支不存在时，将会创建同名的远程分支</span>
+$ git push origin :&lt;remote_branch&gt;                  <span class="c1"># 提交空分支到远程分支，即删除远程分支</span>
+$ git clone &lt;repository_url&gt; -b &lt;remote_branch_name&gt;  <span class="c1"># 直接检出远程分支</span>
+$ git checkout -b &lt;local_name&gt; origin/&lt;remote_branch_name&gt;    <span class="c1"># 检出远程分支并创建本地分支</span>
+$                                                             <span class="c1"># 注意这个操作会自动设置跟踪，即本地分支会追踪远程分支</span>
+$ git pull origin &lt;remote_branch&gt;:&lt;local_branch&gt;              <span class="c1"># 拉去远程分支合并到本地分支</span>
+</pre></div>
+
+
+<p>所以，最好的办法就是将本地分支名与远程分支名设为同名，同时查看.git/config中的分支追踪情况。</p>
+<div class="highlight"><pre><span></span># .git/config
+[remote &quot;origin&quot;]
+     url = https://github.com/yusubond/gittest.git
+     fetch = +refs/heads/*:refs/remotes/origin/*
+[branch &quot;master&quot;]        # 本地master分支追踪远程master分支
+     remote = origin
+     merge = refs/heads/master
+[branch &quot;dev&quot;]
+     remote = origin     # 本地dev分支追踪远程dev分支
+     merge = refs/heads/dev
 </pre></div>
 
 
@@ -129,6 +151,8 @@ $ git merge &lt;分支名1&gt;        <span class="c1">#合并分支名1至当�
 Index：暂存区<br>
 Repository：仓库区(本地仓库)<br>
 Remote：远程仓库  </p>
+<p>推荐使用软件<a href="https://www.sourcetreeapp.com/">SourceTree</a>，可以很方便的查看每次commit细节和分支情况，支持MAC OSX和WINDOWS系统，软件界面如下。</p>
+<p><img alt="hero-mac-screenshot" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/hero-mac-screenshot.png"></p>
 <h2>二、进阶篇</h2>
 <h3>分支管理</h3>
 <p>一般而言，主分支master分支是非常稳定的版本，可以用来直接发布，一般情况下不允许直接在上面进行修改。一般都是新建一个dev分支，在dev分支上进行修改操作，工作完成后可合并到主分支master上。其流程一般如下：
@@ -171,7 +195,11 @@ $ git commit -m <span class="s2">&quot;sth about your changes&quot;</span>
 $ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
 <span class="c1"># 发布图书至远程仓库</span>
 $ git push -u gitbook master  <span class="c1">#第一次使用-u参数，之后可以不用加-u参数</span>
-</pre></div></div>
+</pre></div>
+
+
+<h2>四、参考资料</h2>
+<p>[1] <a href="https://git-scm.com/book/zh/v2">Book</a></p></div>
         <hr />
     </div>
 		

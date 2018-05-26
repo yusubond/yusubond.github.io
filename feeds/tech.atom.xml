@@ -3257,10 +3257,32 @@ $ git reset --hard commit_id  &lt;span class="c1"&gt;#结合git reflog;git log�
 
 
 &lt;h3&gt;分支操作&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git branch                &lt;span class="c1"&gt;#查看分支&lt;/span&gt;
-$ git checkout &amp;lt;分支名1&amp;gt;       &lt;span class="c1"&gt;#切换至分支名1&lt;/span&gt;
-$ git checkout -b &amp;lt;分支名1&amp;gt;  &lt;span class="c1"&gt;#创建并切换至分支名1&lt;/span&gt;
-$ git merge &amp;lt;分支名1&amp;gt;        &lt;span class="c1"&gt;#合并分支名1至当前分支&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git branch &amp;lt;-a -r&amp;gt;                                &lt;span class="c1"&gt;#查看分支&lt;/span&gt;
+$ git checkout &amp;lt;branch_name&amp;gt;                        &lt;span class="c1"&gt;#切换至某分支&lt;/span&gt;
+$ git checkout -b &amp;lt;branch_name&amp;gt;                     &lt;span class="c1"&gt;#创建并切换至分支名1&lt;/span&gt;
+$ git merge &amp;lt;branch_name&amp;gt;                           &lt;span class="c1"&gt;#合并分支名1至当前分支&lt;/span&gt;
+$ git push origin &amp;lt;local_branch&amp;gt;:&amp;lt;remote_branch&amp;gt;    &lt;span class="c1"&gt;# 将本地分支提交到远程分支&lt;/span&gt;
+$                                                   &lt;span class="c1"&gt;# -u 参数设置本地分支跟踪远程分支，对git pull/status有效&lt;/span&gt;
+$                                                   &lt;span class="c1"&gt;# 当远程分支不存在时，将会创建同名的远程分支&lt;/span&gt;
+$ git push origin :&amp;lt;remote_branch&amp;gt;                  &lt;span class="c1"&gt;# 提交空分支到远程分支，即删除远程分支&lt;/span&gt;
+$ git clone &amp;lt;repository_url&amp;gt; -b &amp;lt;remote_branch_name&amp;gt;  &lt;span class="c1"&gt;# 直接检出远程分支&lt;/span&gt;
+$ git checkout -b &amp;lt;local_name&amp;gt; origin/&amp;lt;remote_branch_name&amp;gt;    &lt;span class="c1"&gt;# 检出远程分支并创建本地分支&lt;/span&gt;
+$                                                             &lt;span class="c1"&gt;# 注意这个操作会自动设置跟踪，即本地分支会追踪远程分支&lt;/span&gt;
+$ git pull origin &amp;lt;remote_branch&amp;gt;:&amp;lt;local_branch&amp;gt;              &lt;span class="c1"&gt;# 拉去远程分支合并到本地分支&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;所以，最好的办法就是将本地分支名与远程分支名设为同名，同时查看.git/config中的分支追踪情况。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# .git/config
+[remote &amp;quot;origin&amp;quot;]
+     url = https://github.com/yusubond/gittest.git
+     fetch = +refs/heads/*:refs/remotes/origin/*
+[branch &amp;quot;master&amp;quot;]        # 本地master分支追踪远程master分支
+     remote = origin
+     merge = refs/heads/master
+[branch &amp;quot;dev&amp;quot;]
+     remote = origin     # 本地dev分支追踪远程dev分支
+     merge = refs/heads/dev
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -3276,6 +3298,8 @@ $ git merge &amp;lt;分支名1&amp;gt;        &lt;span class="c1"&gt;#合并分�
 Index：暂存区&lt;br&gt;
 Repository：仓库区(本地仓库)&lt;br&gt;
 Remote：远程仓库  &lt;/p&gt;
+&lt;p&gt;推荐使用软件&lt;a href="https://www.sourcetreeapp.com/"&gt;SourceTree&lt;/a&gt;，可以很方便的查看每次commit细节和分支情况，支持MAC OSX和WINDOWS系统，软件界面如下。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="hero-mac-screenshot" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/hero-mac-screenshot.png"&gt;&lt;/p&gt;
 &lt;h2&gt;二、进阶篇&lt;/h2&gt;
 &lt;h3&gt;分支管理&lt;/h3&gt;
 &lt;p&gt;一般而言，主分支master分支是非常稳定的版本，可以用来直接发布，一般情况下不允许直接在上面进行修改。一般都是新建一个dev分支，在dev分支上进行修改操作，工作完成后可合并到主分支master上。其流程一般如下：
@@ -3318,7 +3342,11 @@ $ git commit -m &lt;span class="s2"&gt;&amp;quot;sth about your changes&amp;quot
 $ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
 &lt;span class="c1"&gt;# 发布图书至远程仓库&lt;/span&gt;
 $ git push -u gitbook master  &lt;span class="c1"&gt;#第一次使用-u参数，之后可以不用加-u参数&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="git"></category><category term="gitbook"></category></entry><entry><title>利用Pelican+Github pages搭建个人博客</title><link href="www.subond.com/pages/2016/04/24/pelican-github-chuang-jian-blog.html" rel="alternate"></link><published>2016-04-24T00:00:00+08:00</published><updated>2016-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-04-24:www.subond.com/pages/2016/04/24/pelican-github-chuang-jian-blog.html</id><summary type="html">&lt;p&gt;本教程基于pelican博客引擎和github page的功能，实现个人博客搭建。&lt;/p&gt;</summary><content type="html">&lt;p&gt;说明：本教程使用的系统平台为ubuntu16.04。&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;四、参考资料&lt;/h2&gt;
+&lt;p&gt;[1] &lt;a href="https://git-scm.com/book/zh/v2"&gt;Book&lt;/a&gt;&lt;/p&gt;</content><category term="git"></category><category term="gitbook"></category></entry><entry><title>利用Pelican+Github pages搭建个人博客</title><link href="www.subond.com/pages/2016/04/24/pelican-github-chuang-jian-blog.html" rel="alternate"></link><published>2016-04-24T00:00:00+08:00</published><updated>2016-04-24T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-04-24:www.subond.com/pages/2016/04/24/pelican-github-chuang-jian-blog.html</id><summary type="html">&lt;p&gt;本教程基于pelican博客引擎和github page的功能，实现个人博客搭建。&lt;/p&gt;</summary><content type="html">&lt;p&gt;说明：本教程使用的系统平台为ubuntu16.04。&lt;/p&gt;
 &lt;h2&gt;Github pages&lt;/h2&gt;
 &lt;p&gt;注册Github，并创建一个名为username.github.io的版本库。注意username为自己的用户名。&lt;/p&gt;
 &lt;h2&gt;配置本地环境&lt;/h2&gt;
