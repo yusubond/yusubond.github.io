@@ -1,6 +1,6 @@
 Title: Atom个性化设置
 Date: 2018-05-13
-Category: TECH, NOTE
+Category: NOTE
 Tags: Atom
 Slug: atom_configure
 Author: subond

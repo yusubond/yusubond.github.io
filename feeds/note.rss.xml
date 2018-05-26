@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>SuperBond - NOTE</title><link>www.subond.com/</link><description></description><lastBuildDate>Tue, 12 Jul 2016 00:00:00 +0800</lastBuildDate><item><title>工作中遇到的小技巧</title><link>www.subond.com/pages/2016/07/12/tip-tools.html</link><description>&lt;h3&gt;Ubuntu彻底删除Mysql,重装Mysql&lt;/h3&gt;
+<rss version="2.0"><channel><title>SuperBond - NOTE</title><link>www.subond.com/</link><description></description><lastBuildDate>Sun, 13 May 2018 00:00:00 +0800</lastBuildDate><item><title>Atom个性化设置</title><link>www.subond.com/pages/2018/05/13/atom_configure.html</link><description>&lt;h3&gt;1.Packages&lt;/h3&gt;
+&lt;p&gt;推荐几个好用的packages.&lt;/p&gt;
+&lt;p&gt;1.&lt;strong&gt;Minimap&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Minimap是Atom最流行好用的几个packages之一，它可以提供源码的全局视图。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/minimap"&gt;https://atom.io/packages/minimap&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675653mini-map.png"&gt;&lt;/p&gt;
+&lt;p&gt;2.&lt;strong&gt;Highlight Selected&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;无需多说，代码高亮也是必备。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/highlight-selected"&gt;https://atom.io/packages/highlight-selected&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675732highlight-selected.png"&gt;&lt;/p&gt;
+&lt;p&gt;3.&lt;strong&gt;Linter&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/linter"&gt;https://atom.io/packages/linter&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2015/08/1438675975linter.gif"&gt;&lt;/p&gt;
+&lt;p&gt;4.&lt;strong&gt;atom-beautify&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/atom-beautify"&gt;https://atom.io/packages/atom-beautify&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;5.&lt;strong&gt;file-icons&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/file-icons"&gt;https://atom.io/packages/file-icons&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="picture" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/file-icons.png"&gt;&lt;/p&gt;
+&lt;p&gt;6.&lt;strong&gt;todo-show&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://atom.io/packages/todo-show"&gt;https://atom.io/packages/todo-show …&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">subond</dc:creator><pubDate>Sun, 13 May 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:None,2018-05-13:www.subond.com/pages/2018/05/13/atom_configure.html</guid><category>Atom</category></item><item><title>工作中遇到的小技巧</title><link>www.subond.com/pages/2016/07/12/tip-tools.html</link><description>&lt;h3&gt;Ubuntu彻底删除Mysql,重装Mysql&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 删除MySQL&lt;/span&gt;
 sudo apt-get autoremove --purge mysql-server-5.0
 sudo apt-get remove mysql-server
