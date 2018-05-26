@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>SuperBond - L3</title>
+    <title>SuperBond - NOTE</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,8 +61,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="../pages/2018/05/07/p4_helloworld.html"><h1>P4编程实战</h1></a>
-2018-05-07
+            <a href="../pages/2016/07/12/tip-tools.html"><h1>工作中遇到的小技巧</h1></a>
+2016-07-12
 
 by <a class="url fn" href="../author/subond.html">subond</a>
  
@@ -71,116 +71,64 @@ by <a class="url fn" href="../author/subond.html">subond</a>
  
         </div>
         
-        <div><h3>不同子网的通信</h3>
-<p>利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。</p>
-<p>子网1: 192.168.1.0/24
-子网2: 192.168.2.0/24</p>
-<h3>编程思路</h3>
-<p>采用gre隧道的方式，将两个子网的数据包包裹在gre报文的内部，外部使用gre隧道进行通信。</p>
-<h3>核心代码</h3>
-<div class="highlight"><pre><span></span><span class="err">#</span> <span class="nx">Ingress</span> <span class="nx">pipeline</span>
-<span class="nx">control</span> <span class="nx">dataplane_route</span> <span class="p">{</span>
-    <span class="nx">apply</span><span class="p">(</span><span class="nx">l3_or_l2</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">l3_pkt</span> <span class="p">{</span>
-            <span class="nx">apply</span><span class="p">(</span><span class="nx">host</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+        <div><h3>Ubuntu彻底删除Mysql,重装Mysql</h3>
+<div class="highlight"><pre><span></span><span class="c1"># 删除MySQL</span>
+sudo apt-get autoremove --purge mysql-server-5.0
+sudo apt-get remove mysql-server
+sudo apt-get autoremove mysql-server
+sudo apt-get remove mysql-common  <span class="c1">#很重要</span>
 
-<span class="nx">table</span> <span class="nx">l3_or_l2</span> <span class="p">{</span>
-    <span class="nx">reads</span> <span class="p">{</span>
-        <span class="nx">inner_ethernet</span><span class="p">.</span><span class="nx">dstAddr</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
-        <span class="nx">inner_ipv4</span> <span class="p">:</span> <span class="nx">valid</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="nx">actions</span> <span class="p">{</span>
-        <span class="nx">l3_pkt</span><span class="p">;</span>
-        <span class="nx">l2_pkt</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">default_action</span> <span class="p">:</span> <span class="nx">l2_pkt</span><span class="p">();</span>
-    <span class="nx">size</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="nx">table</span> <span class="nx">host</span> <span class="p">{</span>
-    <span class="nx">reads</span> <span class="p">{</span>
-        <span class="nx">gretap</span><span class="p">.</span><span class="nx">tunnelId</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
-        <span class="nx">inner_ipv4</span><span class="p">.</span><span class="nx">dstAddr</span> <span class="p">:</span> <span class="nx">exact</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="nx">actions</span> <span class="p">{</span>
-        <span class="nx">on_miss</span><span class="p">;</span>
-        <span class="nx">forward_to</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">default_action</span> <span class="p">:</span> <span class="nx">on_miss</span><span class="p">();</span>
-    <span class="nx">size</span> <span class="p">:</span> <span class="mi">10</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="c1"># 清理残留数据</span>
+dpkg -l <span class="p">|</span> grep ^rc <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> <span class="p">|</span> sudo xargs dpkg -P
+<span class="c1"># 安装mysql</span>
+sudo apt-get install mysql-server mysql-client php5-mysql
+<span class="c1"># 启动mysql</span>
+<span class="c1"># sudo /etc/init.d/mysql restart</span>
+<span class="c1"># 安装phpmyadmin</span>
+sudo apt-get install phpmyadmin
+sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2.conf-available/phpmyadmin.conf
+sudo a2enconf phpmyadmin
+sudo /etc/init.d/apache2 reload
 </pre></div>
 
 
-<div class="highlight"><pre><span></span># Egress
-table mac_info {
-    reads {
-        inner_ethernet.dstAddr : exact;
-    }
+<h3>Ubuntu启动问题以及Grub Rescue修复方法</h3>
+<p>在安装双系统时，或者不小心删除了启动引导项时，启动时系统将进入Grub Rescue模式。在rescue模式下，只用少量的命令可以使用，但是通过一定的操作可以让系统加载正常模块，然后进入正常启动模式，启动后修复grub启动项即可。</p>
+<p>rescue模式下可使用的命令有：set,ls(列出文件),insmod(插入启动模块),root(设置启动分区),prefix(设置启动路径)。</p>
+<p>解决方法如下：</p>
+<pre>
+# 查看系统分区情况
+grub rescue>ls
+# 罗列出所有的磁盘分区信息，比如说：
+(hd0,msdos6) (hd0,msdos5) (hd0,msdos4) (hd0,msdos3)(hd0,msdos2)
+# 查找曾经安装系统的磁盘分区，找到相应的grub
+grub rescue>ls (hd0,X)/        # 查看X磁盘分区/根路径的文件信息
+grub rescue>ls (hd0,X)/boot    # 查看X磁盘分区/boot路径的文件信息
+grub rescue>ls (hd0,X)/grub    # 查看X磁盘分区/grub路径的文件信息
+# 假设找的(hd0,msdos3)时，显示了文件信息，则表明系统安装在这个分区，并记住相应的grub路径
+# 接下来，设置系统的启动项，调用如下命令
+grub rescue>set root=(hd0,msdos3)
+grub rescue>set prefix=(hd0,msdos3)/grub  #这个路径为之前找到的启动项路径
+grub rescue>insmod normal
+# 设置完成后，进行启动即可
+grub rescue>normal</pre>
 
-    actions {
-        forward_data;
-        drop_act;
-    }
+<p>经过以上操作，就可以显示丢失的grub菜单，然后进入自己想进入的系统即可。</p>
+<p><strong>注意</strong>：如果进行重启，问题依旧存在。所以最关键的一步就是对grub进行修复。</b>进入系统后，使用以下命令对grub进行修复。</p>
+<pre>
+sudo update-grub
+sudo grub-install /dev/sda
+# sda是磁盘号码，不是分区号码</pre>
 
-    default_action : drop_act();
-    size : 10;
-}
-
-table switch_pkt {
-    reads {
-        inner_ethernet.dstAddr : exact;
-        inner_ipv4 : valid;
-    }
-
-    actions {
-        is_switch;
-        on_miss;
-    }
-
-    default_action : is_switch();
-    size : 1;
-}
-
-control dataplane_switch {
-    apply(switch_pkt) {
-        is_switch {
-            apply(mac_info);
-        }
-    }
-}
-</pre></div></div>
+<p>grub修复成功后，重启测试即可。<em>说明一下，grub修复成功后，其启动项是由当前系统去引导另一系统启动。</em>你也可以进入另一系统进行grub修复，修改启动引导顺序，或者修改文件/etc/default/grub设定默认启动项(GRUB_DEFAULT从0开始计算)。</p></div>
         <hr />
     </div>
 		
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2018/05/05/p4_arch.html"><h2>P4:转发平面的编程语言</h2></a>
-        <div class= "well small"> 2018-05-05
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>P4是一种声明性语言，用来表示数据包如何通过网络转发单元的流水线(Pipeline)进行处理，基于抽象转发模型，该模型由解析器(Parser)和一系列匹配+动表(Match+Action Table)组成，分为入口(Ingress)和出口(Egress)两部分。Parser定义了每个传入数据包的包头格式，用于解析数据包。每个Match+Action表对包头字段进行查找和匹配，并在每个表内应用第一个匹配相对应的动作(Action)。</p> <a class="btn btn-info xsmall" href="../pages/2018/05/05/p4_arch.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="../tag/l3.html">1</a></li>
+    <li class="active"><a href="../category/note.html">1</a></li>
 
     <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
@@ -257,7 +205,7 @@ by <a class="url fn" href="../author/subond.html">subond</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="..">SuperBond</a> &copy; subond 2018</p>
+<p><a href="..">SuperBond</a> &copy; subond 2016</p>
 </footer>
 
 </div> <!-- /container -->
