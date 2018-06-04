@@ -80,6 +80,20 @@ $ git pull origin <remote_branch>:<local_branch>              # 拉去远程分�
      merge = refs/heads/dev
 ```
 
+**常见问题**
+
+1.gitignore不起作用
+
+.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的
+
+解决办法
+
+```
+git rm -r --cached .
+git add .
+git commit -m "update .gitignore"
+```
+
 ### 提交文件步骤
 
 第一步：`git add file_name`,提交文件到暂存区(Index)
