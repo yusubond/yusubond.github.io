@@ -3584,6 +3584,16 @@ $ git pull origin &amp;lt;remote_branch&amp;gt;:&amp;lt;local_branch&amp;gt;    
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;&lt;strong&gt;常见问题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1.gitignore不起作用&lt;/p&gt;
+&lt;p&gt;.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的&lt;/p&gt;
+&lt;p&gt;解决办法&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git rm -r --cached .
+git add .
+git commit -m &amp;quot;update .gitignore&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;提交文件步骤&lt;/h3&gt;
 &lt;p&gt;第一步：&lt;code&gt;git add file_name&lt;/code&gt;,提交文件到暂存区(Index)&lt;/p&gt;
 &lt;p&gt;第二步：&lt;code&gt;git commit -m "message about file"&lt;/code&gt;,提交文件到本地仓库(Repository)&lt;/p&gt;
