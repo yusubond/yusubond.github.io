@@ -22,9 +22,9 @@ THEME = 'tuxlite_tbs'
 GOOGLE_ANALYTICS = 'UA-45955656-1'
 GOOGLE_CUSTOM_SEARCH_SIDEBAR = '007073422838042852012:lysvmhlibk8'
 
-PLUGINS = [sitemap]
-#PLUGIN_PATH=u'pelican-plugins'
-#PLUGIN = ['sitemap']
+# PLUGINS = [sitemap]
+PLUGIN_PATHS = ['pelican-plugins']
+PLUGINS = ['sitemap']
 SITEMAP = {
     "format":"xml",
     "priorities":{
@@ -40,22 +40,17 @@ SITEMAP = {
 }
 
 # Feed generation is usually not desired when developing
-# FEED_DOMAIN = SITEURL
-FEED_DOMAIN = SITEURL
-# FEED_RSS = 'feeds/all.rss.xml'
-FEED_RSS = None
-CATEGORY_FEED_RSS = 'feeds/%s.rss.xml'
-#FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
-#TRANSLATION_FEED_ATOM = None
-#AUTHOR_FEED_ATOM = None
-#AUTHOR_FEED_RSS = None
+FEED_DOMAIN = '.'
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+FEED_ALL_RSS = None
+CATEGORY_FEED_ATOM = None
+TRANSLATION_FEED_ATOM = None
 
 # Blogroll
 LINKS = (('UCloud', 'https://www.ucloud.cn'),
          ('InfoQ', 'http://www.infoq.com/cn/'),
          ('SDNLAB', 'http://www.sdnlab.com/'),
-         ('BYR', 'https://bbs.byr.cn/'),)
+         ('BYR', 'https://bbs.byr.cn/'))
 
 # Social widget
 SOCIAL = (('Github', 'https://github.com/yusubond'),
