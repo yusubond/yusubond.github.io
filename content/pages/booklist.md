@@ -41,7 +41,7 @@ Author: subond
 <tr><td>《高效能人士的七个习惯》</td><td>史蒂芬·柯维</td><td>职场，自我管理</td></tr>
 <tr><td>《自控力》</td><td>凯利·麦格尼格尔美国</td><td>心理学，自我管理</td></tr>
 <tr><td>《情商》</td><td>丹尼尔·戈尔曼</td><td>心理学，自我管理</td></tr>
-<tr><td>《槽边往事》《你不重要，你的喜欢很重要》</td><td>和菜头</td><td>文集，随笔</td></tr>
+<tr><td><a href="https://www.nextme.vip/2018-nian-wu-yue/cao-bian-wang-shi-bi-ji">《槽边往事》</a>《你不重要，你的喜欢很重要》</td><td>和菜头</td><td>文集，随笔</td></tr>
 <tr><td>《人·地·城》</td><td>徐远</td><td>经济，随笔</td></tr>
 <tr><td><a href="https://www.nextme.vip/2018-nian-liu-yue/bian-ge-zhong-guo-du-shu-bi-ji">《变革中国》</a></td><td>罗纳德·哈里·科斯</td><td>经济</td><tr>
 <tr><td><a href="https://www.nextme.vip/2018-nian-liu-yue/yi-lei-bi-ji">《异类》</a></td><td>马尔科姆·格拉德威尔</td><td>社科类</td></tr>
