@@ -94,6 +94,12 @@ git add .
 git commit -m "update .gitignore"
 ```
 
+2.gitignore忽略自身
+
+编辑.git/info/exclude文件，语法与.gitignore一致。两个文件区别在于，exclude只用于设置本地需要忽略的文件，而.gitignore是公共需要排除的。
+
+需要注意的是：先在.git/info/exclude文件中添加.gitignore，然后在创建.gitignore.
+
 ### 提交文件步骤
 
 第一步：`git add file_name`,提交文件到暂存区(Index)
