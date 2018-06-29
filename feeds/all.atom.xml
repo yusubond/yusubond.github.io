@@ -3594,6 +3594,9 @@ git commit -m &amp;quot;update .gitignore&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;2.gitignore忽略自身&lt;/p&gt;
+&lt;p&gt;编辑.git/info/exclude文件，语法与.gitignore一致。两个文件区别在于，exclude只用于设置本地需要忽略的文件，而.gitignore是公共需要排除的。&lt;/p&gt;
+&lt;p&gt;需要注意的是：先在.git/info/exclude文件中添加.gitignore，然后在创建.gitignore.&lt;/p&gt;
 &lt;h3&gt;提交文件步骤&lt;/h3&gt;
 &lt;p&gt;第一步：&lt;code&gt;git add file_name&lt;/code&gt;,提交文件到暂存区(Index)&lt;/p&gt;
 &lt;p&gt;第二步：&lt;code&gt;git commit -m "message about file"&lt;/code&gt;,提交文件到本地仓库(Repository)&lt;/p&gt;
