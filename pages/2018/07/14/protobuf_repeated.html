@@ -2,21 +2,21 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>SuperBond - tech</title>
+    <title>SuperBond - Protobuf中的repeated关键字的使用</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="../theme/html5.js"></script>
+    <script src="../../../../theme/html5.js"></script>
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="../theme/bootstrap.min.css" rel="stylesheet">
-    <link href="../theme/bootstrap.min.responsive.css" rel="stylesheet">
-    <link href="../theme/local.css" rel="stylesheet">
-    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../../theme/bootstrap.min.responsive.css" rel="stylesheet">
+    <link href="../../../../theme/local.css" rel="stylesheet">
+    <link href="../../../../theme/pygments.css" rel="stylesheet">
 
     <!-- So Firefox can bookmark->"abo this site" -->
         <link href="./feeds/all.atom.xml" rel="alternate" title="SuperBond" type="application/atom+xml">
@@ -35,13 +35,13 @@
              <span class="icon-bar"></span>
          </a>
 
-        <a class="brand" href="..">SuperBond</a>
+        <a class="brand" href="../../../..">SuperBond</a>
 
         <div class="nav-collapse">
         <ul class="nav">
             
-            <li><a href="../pages/about-me.html">About Me</a></li>
-            <li><a href="../pages/my_reading_list.html">我的书单</a></li>
+            <li><a href="../../../../pages/about-me.html">About Me</a></li>
+            <li><a href="../../../../pages/my_reading_list.html">我的书单</a></li>
         </ul>
         </div>
         
@@ -54,23 +54,17 @@
     <div class="row">
 
         <div class="span9">
-        
-
-        
-
-
     <div class='article'>
         <div class="content-title">
-            <a href="../pages/2018/07/14/protobuf_repeated.html"><h1>Protobuf中的repeated关键字的使用</h1></a>
+            <h1>Protobuf中的repeated关键字的使用</h1>
 2018-07-14
 
-by <a class="url fn" href="../author/subond.html">subond</a>
+by <a class="url fn" href="../../../../author/subond.html">subond</a>
  
 
 
- 
         </div>
-        
+	
         <div><p>在protobuf中我们可以使用<code>repeated</code>字段来限定一个字段，其意为可重复，类似std中的vector。当使用cpp版本的protobuf时，若定义repeated字段，则在生成的接口中包含一个名为<code>add_xxx()</code>的api，意味着可以向其中添加数据。但是,<code>add_xxx()</code>并没有生效，即server中设置后，client端读不到，造成的原因是add_xxx()并没有真正地创建一个数组.</p>
 <p>例如：</p>
 <div class="highlight"><pre><span></span>message High {
@@ -114,21 +108,10 @@ message HelloReply {
 
 
 <p>结论：在一个message中如果对一个基本数据类型使用repeated关键字，其生成的api无法添加值；对复杂数据类型使用repeated关键字，其生成的api可以添加值。</p></div>
-        <hr />
+	
+        <hr>
+
     </div>
-		
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="../tag/tech.html">1</a></li>
-
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
-
-</ul>
-</div>
- 
-  
         </div>
         
         <div class="span3">
@@ -139,8 +122,8 @@ message HelloReply {
                 Site
                 </li>
             
-                <li><a href="../archives.html">Archives</a>
-                <li><a href="../tags.html">Tags</a>
+                <li><a href="../../../../archives.html">Archives</a>
+                <li><a href="../../../../tags.html">Tags</a>
 
 
 
@@ -156,10 +139,10 @@ message HelloReply {
                 Categories
                 </li>
                 
-                <li><a href="../category/life.html">LIFE</a></li>
-                <li><a href="../category/note.html">NOTE</a></li>
-                <li><a href="../category/read.html">READ</a></li>
-                <li><a href="../category/tech.html">Tech</a></li>
+                <li><a href="../../../../category/life.html">LIFE</a></li>
+                <li><a href="../../../../category/note.html">NOTE</a></li>
+                <li><a href="../../../../category/read.html">READ</a></li>
+                <li><a href="../../../../category/tech.html">Tech</a></li>
                    
             </ul>
             </div>
@@ -198,12 +181,12 @@ message HelloReply {
     </div>     </div> 
 <footer>
 <br />
-<p><a href="..">SuperBond</a> &copy; subond 2018</p>
+<p><a href="../../../..">SuperBond</a> &copy; subond 2018</p>
 </footer>
 
 </div> <!-- /container -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<script src="../theme/bootstrap-collapse.js"></script>
+<script src="../../../../theme/bootstrap-collapse.js"></script>
 <script>var _gaq=[['_setAccount','UA-45955656-1'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
  
 </body>

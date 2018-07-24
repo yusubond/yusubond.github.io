@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>SuperBond - Tech</title>
+    <title>SuperBond - c++</title>
     <meta name="description" content="">
     <meta name="author" content="subond">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -117,189 +117,13 @@ message HelloReply {
         <hr />
     </div>
 		
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2018/05/07/p4_helloworld.html"><h2>P4编程实战</h2></a>
-        <div class= "well small"> 2018-05-07
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>P4编程实战：利用p4编程强大的数据包处理能力，实现两个子网数据报的通信。</p> <a class="btn btn-info xsmall" href="../pages/2018/05/07/p4_helloworld.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2018/05/05/p4_arch.html"><h2>P4:转发平面的编程语言</h2></a>
-        <div class= "well small"> 2018-05-05
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>P4是一种声明性语言，用来表示数据包如何通过网络转发单元的流水线(Pipeline)进行处理，基于抽象转发模型，该模型由解析器(Parser)和一系列匹配+动表(Match+Action Table)组成，分为入口(Ingress)和出口(Egress)两部分。Parser定义了每个传入数据包的包头格式，用于解析数据包。每个Match+Action表对包头字段进行查找和匹配，并在每个表内应用第一个匹配相对应的动作(Action)。</p> <a class="btn btn-info xsmall" href="../pages/2018/05/05/p4_arch.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/05/15/vagrant_usage.html"><h2>Vagrant使用案例</h2></a>
-        <div class= "well small"> 2017-05-15
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><h2>1.单机配置</h2>
-<p>1) 配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</p>
-<div class="highlight"><pre><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dbserver</span><span class="o">|</span>
-  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;centos/7&quot;</span>
-  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.10.10&quot;</span>
-  <span class="n">dbserver</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&quot;dbserver&quot;</span>
-<span class="k">end</span>
-</pre></div>
-
-
-<p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
-<p>2) 配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中 …</p> <a class="btn btn-info xsmall" href="../pages/2017/05/15/vagrant_usage.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/05/10/vagrant_startup.html"><h2>Vagrant的快速使用</h2></a>
-        <div class= "well small"> 2017-05-10
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。</p> <a class="btn btn-info xsmall" href="../pages/2017/05/10/vagrant_startup.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/05/01/docker-swarm-jin-jie2.html"><h2>Docker进阶：服务配置</h2></a>
-        <div class= "well small"> 2017-05-01
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>当使用Docker Swarm模式时，我们可以通过命令<code>docker service create</code>向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即<code>docker service</code>，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。</p> <a class="btn btn-info xsmall" href="../pages/2017/05/01/docker-swarm-jin-jie2.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/28/docker-swarm-jin-jie1.html"><h2>Docker进阶：以Swarm模式运行Docker引擎</h2></a>
-        <div class= "well small"> 2017-04-28
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：创建一个Swarm集群和加入一个已有的Swarm集群。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/28/docker-swarm-jin-jie1.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html"><h2>Docker集群：工作原理</h2></a>
-        <div class= "well small"> 2017-04-26
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/26/docker-swarm-gong-zuo-yuan-li.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html"><h2>Docker集群：服务回滚</h2></a>
-        <div class= "well small"> 2017-04-24
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/24/docker-swarm-fu-wu-hui-gun.html">read more</a></div>
-    </div>	
-				
-
- 
-        
-
- 
-
-    <div class='article'>
-        <a href="../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html"><h2>Docker集群：服务部署</h2></a>
-        <div class= "well small"> 2017-04-22
-
-by <a class="url fn" href="../author/subond.html">subond</a>
- 
-
-
- </div>
-        <div class="summary"><p>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。</p> <a class="btn btn-info xsmall" href="../pages/2017/04/22/docker-swarm-fu-wu-bu-shu.html">read more</a></div>
-    </div>	
-				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="../category/tech.html">1</a></li>
-    <li class=""><a href="../category/tech2.html">2</a></li>
-    <li class=""><a href="../category/tech3.html">3</a></li>
-    <li class=""><a href="../category/tech4.html">4</a></li>
+    <li class="active"><a href="../tag/c.html">1</a></li>
 
-    <li class="next"><a href="../category/tech2.html">Next &rarr;</a></li>
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
 </ul>
 </div>
