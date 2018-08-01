@@ -3459,25 +3459,28 @@ MME是处理UE和核心网络信令交互的控制节点。在UE和核心网络�
 &lt;/ul&gt;
 &lt;p&gt;X2接口是eNodeB与eNodeB之间的接口，采用了与S1接口一致的原则，其用户平面协议接口与控制平面协议接口均与S1接口类似。&lt;/p&gt;</content><category term="architecture"></category><category term="lte"></category></entry><entry><title>Git学习手记</title><link href="www.subond.com/pages/2016/04/29/git-xue-xi-shou-ji.html" rel="alternate"></link><published>2016-04-29T00:00:00+08:00</published><updated>2016-04-29T00:00:00+08:00</updated><author><name>subond</name></author><id>tag:None,2016-04-29:www.subond.com/pages/2016/04/29/git-xue-xi-shou-ji.html</id><summary type="html">&lt;p&gt;Git版本控制功能很强大，作为程序猿必修掌握。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;一、基础篇&lt;/h2&gt;
 &lt;h3&gt;指令介绍&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git config --global user.name &lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;      &lt;span class="c1"&gt;#配置仓库参数，作为一个标志&lt;/span&gt;
-$ git config --global user.email &lt;span class="s2"&gt;&amp;quot;useremail&amp;quot;&lt;/span&gt;    &lt;span class="c1"&gt;#配置仓库参数，作为一个标志&lt;/span&gt;
-$ git init                      &lt;span class="c1"&gt;#把当前目录变成git可管理的仓库&lt;/span&gt;
-$ git add files          &lt;span class="c1"&gt;#添加文件到暂存区&lt;/span&gt;
-$ git diff file          &lt;span class="c1"&gt;#查看文件的修改内容&lt;/span&gt;
-$ git commit -m &lt;span class="s2"&gt;&amp;quot;提交说明信息&amp;quot;&lt;/span&gt;   &lt;span class="c1"&gt;#提交文件到仓库&lt;/span&gt;
-$ git status                    &lt;span class="c1"&gt;#获取当前仓库中文档的状态&lt;/span&gt;
-$ git log                       &lt;span class="c1"&gt;#查看历史记录&lt;/span&gt;
-$ git log -pretty&lt;span class="o"&gt;=&lt;/span&gt;oneline       &lt;span class="c1"&gt;#单行显示历史信息&lt;/span&gt;
-$ git reflog                    &lt;span class="c1"&gt;#显示版本号&lt;/span&gt;
-$ git checkout -- file          &lt;span class="c1"&gt;#取出文件&lt;/span&gt;
-$ git remote add origin &amp;lt;仓库地址&amp;gt;    &lt;span class="c1"&gt;#添加远程仓库地址&lt;/span&gt;
-$ git push origin &amp;lt;分支名1&amp;gt;          &lt;span class="c1"&gt;#推送本地内容到远程仓库分支1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git config --global user.name &lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;      &lt;span class="c1"&gt;# 配置仓库参数，全局应用该用户名&lt;/span&gt;
+$ git config --global user.email &lt;span class="s2"&gt;&amp;quot;useremail&amp;quot;&lt;/span&gt;    &lt;span class="c1"&gt;# 配置仓库参数，全局应用该用户邮箱&lt;/span&gt;
+$ git config user.name          &lt;span class="c1"&gt;# 配置仓库参数，只应用本仓库&lt;/span&gt;
+$ git config user.email         &lt;span class="c1"&gt;# 配置仓库参数，只应用本仓库&lt;/span&gt;
+$ git init                      &lt;span class="c1"&gt;# 把当前目录变成git可管理的仓库&lt;/span&gt;
+$ git add files          &lt;span class="c1"&gt;# 添加文件到暂存区&lt;/span&gt;
+$ git diff file          &lt;span class="c1"&gt;# 查看文件的修改内容&lt;/span&gt;
+$ git commit -m &lt;span class="s2"&gt;&amp;quot;提交说明信息&amp;quot;&lt;/span&gt;  &lt;span class="c1"&gt;# 提交文件到仓库&lt;/span&gt;
+$ git status                    &lt;span class="c1"&gt;# 获取当前仓库中文档的状态&lt;/span&gt;
+$ git log                       &lt;span class="c1"&gt;# 查看历史记录&lt;/span&gt;
+$ git log --oneline             &lt;span class="c1"&gt;# 单行显示历史信息&lt;/span&gt;
+$ git reflog                    &lt;span class="c1"&gt;# 显示版本号&lt;/span&gt;
+$ git checkout -- file          &lt;span class="c1"&gt;# 取出文件&lt;/span&gt;
+$ git remote add origin &amp;lt;仓库地址&amp;gt;    &lt;span class="c1"&gt;# 添加远程仓库地址&lt;/span&gt;
+$ git push origin &amp;lt;分支名1&amp;gt;           &lt;span class="c1"&gt;# 推送本地内容到远程仓库分支1&lt;/span&gt;
 $ git pull origin &amp;lt;远程主机名&amp;gt; &amp;lt;远程分支名&amp;gt;:&amp;lt;本地分支名&amp;gt;
-                                  &lt;span class="c1"&gt;#取回远程主机某个分支，并与本地指定分支合并&lt;/span&gt;
-$ git clone &amp;lt;仓库地址&amp;gt;               &lt;span class="c1"&gt;#克隆远程仓库到本地仓库&lt;/span&gt;
-$ git remote            &lt;span class="c1"&gt;#查看远程仓库信息&lt;/span&gt;
-$ git remote -v         &lt;span class="c1"&gt;#查看远程仓库详细信息&lt;/span&gt;
+                                      &lt;span class="c1"&gt;# 取回远程主机某个分支，并与本地指定分支合并&lt;/span&gt;
+$ git clone &amp;lt;仓库地址&amp;gt;                &lt;span class="c1"&gt;# 克隆远程仓库到本地仓库&lt;/span&gt;
+$ git remote            &lt;span class="c1"&gt;# 查看远程仓库信息&lt;/span&gt;
+$ git remote -v         &lt;span class="c1"&gt;# 查看远程仓库详细信息&lt;/span&gt;
 $ git remote add origin &amp;lt;仓库地址&amp;gt;    &lt;span class="c1"&gt;#添加远程仓库地址&lt;/span&gt;
+
 &lt;span class="c1"&gt;# 如果需要修改远程仓库地址，先删除地址，再添加&lt;/span&gt;
 $ git remote rm origin
 $ git remote add origin &amp;lt;your_url&amp;gt;
@@ -3486,24 +3489,25 @@ $ git remote add origin &amp;lt;your_url&amp;gt;
 
 &lt;h3&gt;版本回退&lt;/h3&gt;
 &lt;p&gt;git reset --hard 版本号(即commit_id)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git reset --hard HEAD^      &lt;span class="c1"&gt;#回退至上一版本&lt;/span&gt;
-$ git reset --hard HEAD^^     &lt;span class="c1"&gt;#回退至上上版本&lt;/span&gt;
-$ git reset --hard HEAD~10    &lt;span class="c1"&gt;#回退至前10个版本&lt;/span&gt;
-$ git reset --hard commit_id  &lt;span class="c1"&gt;#结合git reflog;git log使用&lt;/span&gt;
-                            &lt;span class="c1"&gt;#git log可以查看提交历史，以便确定回退到哪个版本;&lt;/span&gt;
-                            &lt;span class="c1"&gt;#git reflog可以查看命令历史，以便确定回到未来的哪个版本&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git reset --hard HEAD^      &lt;span class="c1"&gt;# 回退至上一版本&lt;/span&gt;
+$ git reset --hard HEAD^^     &lt;span class="c1"&gt;# 回退至上上版本&lt;/span&gt;
+$ git reset --hard HEAD~10    &lt;span class="c1"&gt;# 回退至前10个版本&lt;/span&gt;
+$ git reset --hard commit_id  &lt;span class="c1"&gt;# 结合git reflog;git log使用&lt;/span&gt;
+                              &lt;span class="c1"&gt;# git log可以查看提交历史，以便确定回退到哪个版本;&lt;/span&gt;
+                              &lt;span class="c1"&gt;# git reflog可以查看命令历史，以便确定回到未来的哪个版本&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h3&gt;分支操作&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git branch &amp;lt;-a -r&amp;gt;                                &lt;span class="c1"&gt;#查看分支&lt;/span&gt;
-$ git checkout &amp;lt;branch_name&amp;gt;                        &lt;span class="c1"&gt;#切换至某分支&lt;/span&gt;
-$ git checkout -b &amp;lt;branch_name&amp;gt;                     &lt;span class="c1"&gt;#创建并切换至分支名1&lt;/span&gt;
-$ git merge &amp;lt;branch_name&amp;gt;                           &lt;span class="c1"&gt;#合并分支名1至当前分支&lt;/span&gt;
-$ git push origin &amp;lt;local_branch&amp;gt;:&amp;lt;remote_branch&amp;gt;    &lt;span class="c1"&gt;# 将本地分支提交到远程分支&lt;/span&gt;
-$                                                   &lt;span class="c1"&gt;# -u 参数设置本地分支跟踪远程分支，对git pull/status有效&lt;/span&gt;
-$                                                   &lt;span class="c1"&gt;# 当远程分支不存在时，将会创建同名的远程分支&lt;/span&gt;
-$ git push origin :&amp;lt;remote_branch&amp;gt;                  &lt;span class="c1"&gt;# 提交空分支到远程分支，即删除远程分支&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git branch &amp;lt;-a -r&amp;gt;                                  &lt;span class="c1"&gt;# 查看分支&lt;/span&gt;
+$ git checkout &amp;lt;branch_name&amp;gt;                          &lt;span class="c1"&gt;# 切换至某分支&lt;/span&gt;
+$ git checkout -b &amp;lt;branch_name&amp;gt;                       &lt;span class="c1"&gt;# 创建并切换至分支名1&lt;/span&gt;
+$ git merge &amp;lt;branch_name&amp;gt;                             &lt;span class="c1"&gt;# 合并分支名1至当前分支&lt;/span&gt;
+$ git push origin &amp;lt;local_branch&amp;gt;:&amp;lt;remote_branch&amp;gt;      &lt;span class="c1"&gt;# 将本地分支提交到远程分支&lt;/span&gt;
+                                                      &lt;span class="c1"&gt;# -u 参数设置本地分支跟踪远程分支，对git pull/status有效&lt;/span&gt;
+                                                      &lt;span class="c1"&gt;# 当远程分支不存在时，将会创建同名的远程分支&lt;/span&gt;
+
+$ git push origin :&amp;lt;remote_branch&amp;gt;                    &lt;span class="c1"&gt;# 提交空分支到远程分支，即删除远程分支&lt;/span&gt;
 $ git clone &amp;lt;repository_url&amp;gt; -b &amp;lt;remote_branch_name&amp;gt;  &lt;span class="c1"&gt;# 直接检出远程分支&lt;/span&gt;
 $ git checkout -b &amp;lt;local_name&amp;gt; origin/&amp;lt;remote_branch_name&amp;gt;    &lt;span class="c1"&gt;# 检出远程分支并创建本地分支&lt;/span&gt;
 $                                                             &lt;span class="c1"&gt;# 注意这个操作会自动设置跟踪，即本地分支会追踪远程分支&lt;/span&gt;
@@ -3570,11 +3574,11 @@ Remote：远程仓库  &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;指令介绍&lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git stash       &lt;span class="c1"&gt;#备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中&lt;/span&gt;
-$ git pop         &lt;span class="c1"&gt;#从git栈中读取最近一次保存的内容，恢复工作区的相关内容&lt;/span&gt;
-$ git stash list  &lt;span class="c1"&gt;#显示git栈中所有备份，可以利用列表选择从哪恢复内容&lt;/span&gt;
-$ git stash apply &amp;lt;版本号&amp;gt;   &lt;span class="c1"&gt;#将制定版本号的内容恢复至当前工作区，配合git stash list使用&lt;/span&gt;
-$ git stash clear           &lt;span class="c1"&gt;#清空git栈&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git stash       &lt;span class="c1"&gt;# 备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中&lt;/span&gt;
+$ git pop         &lt;span class="c1"&gt;# 从git栈中读取最近一次保存的内容，恢复工作区的相关内容&lt;/span&gt;
+$ git stash list  &lt;span class="c1"&gt;# 显示git栈中所有备份，可以利用列表选择从哪恢复内容&lt;/span&gt;
+$ git stash apply &amp;lt;版本号&amp;gt;   &lt;span class="c1"&gt;# 将制定版本号的内容恢复至当前工作区，配合git stash list使用&lt;/span&gt;
+$ git stash clear            &lt;span class="c1"&gt;# 清空git栈&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -3582,18 +3586,24 @@ $ git stash clear           &lt;span class="c1"&gt;#清空git栈&lt;/span&gt;
 &lt;p&gt;gitbook的使用方法和git基本类似，其修改记录，发布版本等相关操作均可参考上面的git指令，略有不同，下面详细介绍：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# 初始化书记目录&lt;/span&gt;
 $ gitbook init
+
 &lt;span class="c1"&gt;# 编译图书，可在本地查看&lt;/span&gt;
 $ gitbook serve
 &lt;span class="c1"&gt;# 克隆远程图书到本地&lt;/span&gt;
+
 $ git clone https://git.gitbook.com/user_name/book_name.git
 &lt;span class="c1"&gt;# 添加文件&lt;/span&gt;
+
 $ git add file_name
 &lt;span class="c1"&gt;# 提交修改记录&lt;/span&gt;
+
 $ git commit -m &lt;span class="s2"&gt;&amp;quot;sth about your changes&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# 添加图书的远程地址&lt;/span&gt;
+
 $ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
 &lt;span class="c1"&gt;# 发布图书至远程仓库&lt;/span&gt;
-$ git push -u gitbook master  &lt;span class="c1"&gt;#第一次使用-u参数，之后可以不用加-u参数&lt;/span&gt;
+
+$ git push -u gitbook master  &lt;span class="c1"&gt;# 第一次使用-u参数，之后可以不用加-u参数&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
