@@ -1,5 +1,5 @@
 Title: 25岁应该学到的25堂课
-Date: 2017-09-08
+Date: 2018-09-08
 Category: Read
 Tags: life, reading, growth
 Slug: 25-lessons-i-wish-i-had-learned-before-25
