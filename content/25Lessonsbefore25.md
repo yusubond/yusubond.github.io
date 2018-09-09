@@ -6,7 +6,8 @@ Slug: 25-lessons-i-wish-i-had-learned-before-25
 Author: subond
 Summary: 这是一篇关于读书写作的读
 
-作者：[Andrew Ferebee](https://www.knowledgeformen.com/author/austinrgillis97gmail-com/)  
+作者：[Andrew Ferebee](https://www.knowledgeformen.com/author/austinrgillis97gmail-com/)
+
 原文：[25 Lessons I Wish I Had Learned Before 25](https://www.knowledgeformen.com/25-lessons-i-wish-i-had-learned-before-25)
 
 几个月前我才30岁。我简直不敢相信我写的那个......
