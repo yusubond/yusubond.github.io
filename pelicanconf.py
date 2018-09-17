@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import sitemap
 
 AUTHOR = u'subond'
-SITENAME = u'SuperBond'
+SITENAME = u'Subond'
 SITEURL = 'www.subond.com'
 
 PATH = 'content'
