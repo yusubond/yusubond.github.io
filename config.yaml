@@ -1,0 +1,22 @@
+baseURL: 'http://www.subond.com/'
+theme: "maupassant"
+title: 'subond'
+author: 'subond'
+
+# Category & Tag
+default_category: uncategorized
+category_map:
+"NextMe": nextme
+"杂谈": essay
+"LIFE": life
+"TECH": tech
+"READ": read
+tag_map:
+
+# menu
+menu:
+  main:
+  - identifier: about
+    name: "关于"
+    url: /about/
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Abouts on subond</title>
+    <link>http://www.subond.com/about/</link>
+    <description>Recent content in Abouts on subond</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 01 Sep 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/about/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About Me</title>
+      <link>http://www.subond.com/about/about_me/</link>
+      <pubDate>Fri, 01 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/about/about_me/</guid>
+      <description> </description>
+    </item>
+    
+  </channel>
+</rss>
