@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TECH on subond</title>
+    <link>http://www.subond.com/categories/tech/</link>
+    <description>Recent content in TECH on subond</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 29 Apr 2016 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Git学习手记</title>
+      <link>http://www.subond.com/post/gitxuexi/</link>
+      <pubDate>Fri, 29 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/gitxuexi/</guid>
+      <description>一、基础篇 指令介绍 $ git config --global user.name &amp;#34;username&amp;#34; # 配置仓库参数，全局应用该用户名 $ git config --global user.email &amp;#34;useremail&amp;#34;	# 配置仓库参数，全局应用该用户邮箱 $ git config user.name # 配置仓库参数，只应用本仓库 $ git config user.email # 配置仓库参数，只应用本仓库 $ git init # 把当前目录变成git可管理的仓库 $ git add files # 添加文件到暂存区 $ git diff file # 查看文件的修改内容 $ git commit -m &amp;#34;提交说明信息&amp;#34; # 提交文件到仓库 $ git status # 获取当前仓库中文档的状态 $ git log # 查看历史记录 $ git log --oneline # 单行显示历史信息 $ git reflog # 显示版本号 $ git checkout -- file # 取出文件 $ git remote add origin &amp;lt;仓库地址&amp;gt; # 添加远程仓库地址 $ git push origin &amp;lt;分支名1&amp;gt; # 推送本地内容到远程仓库分支1 $ git pull origin &amp;lt;远程主机名&amp;gt; &amp;lt;远程分支名&amp;gt;:&amp;lt;本地分支名&amp;gt; # 取回远程主机某个分支，并与本地指定分支合并 $ git clone &amp;lt;仓库地址&amp;gt; # 克隆远程仓库到本地仓库 $ git remote # 查看远程仓库信息 $ git remote -v # 查看远程仓库详细信息 $ git remote add origin &amp;lt;仓库地址&amp;gt; #添加远程仓库地址 # 如果需要修改远程仓库地址，先删除地址，再添加 $ git remote rm origin $ git remote add origin &amp;lt;your_url&amp;gt; 版本回退 git reset &amp;ndash;hard 版本号(即commit_id)</description>
+    </item>
+    
+  </channel>
+</rss>

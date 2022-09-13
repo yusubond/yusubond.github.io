@@ -24,5 +24,32 @@
       <description></description>
     </item>
     
+    <item>
+      <title>READ</title>
+      <link>http://www.subond.com/categories/read/</link>
+      <pubDate>Fri, 03 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/categories/read/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LIFE</title>
+      <link>http://www.subond.com/categories/life/</link>
+      <pubDate>Sun, 19 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/categories/life/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TECH</title>
+      <link>http://www.subond.com/categories/tech/</link>
+      <pubDate>Fri, 29 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/categories/tech/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
