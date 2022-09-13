@@ -4,6 +4,43 @@
     <title>Tags on subond</title>
     <link>http://www.subond.com/tags/</link>
     <description>Recent content in Tags on subond</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://www.subond.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 08 Sep 2018 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>growth</title>
+      <link>http://www.subond.com/tags/growth/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/growth/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>life</title>
+      <link>http://www.subond.com/tags/life/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/life/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>reading</title>
+      <link>http://www.subond.com/tags/reading/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/reading/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>writing</title>
+      <link>http://www.subond.com/tags/writing/</link>
+      <pubDate>Tue, 21 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/writing/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

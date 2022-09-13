@@ -4,6 +4,25 @@
     <title>Categories on subond</title>
     <link>http://www.subond.com/categories/</link>
     <description>Recent content in Categories on subond</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://www.subond.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 13 Sep 2022 17:34:32 +0800</lastBuildDate><atom:link href="http://www.subond.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>杂谈</title>
+      <link>http://www.subond.com/categories/%E6%9D%82%E8%B0%88/</link>
+      <pubDate>Tue, 13 Sep 2022 17:34:32 +0800</pubDate>
+      
+      <guid>http://www.subond.com/categories/%E6%9D%82%E8%B0%88/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>NextMe</title>
+      <link>http://www.subond.com/categories/nextme/</link>
+      <pubDate>Sat, 08 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/categories/nextme/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
