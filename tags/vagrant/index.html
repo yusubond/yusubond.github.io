@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>vagrant | subond</title>
+    <meta property="og:title" content="vagrant - subond">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="vagrant">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://www.subond.com/tags/vagrant/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/vagrant/index.xml" title="subond" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        subond
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">vagrant</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/vagrant_usage/" target="_blank">Vagrant使用案例</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月15日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/tech' target="_blank">TECH</a>
+            
+        </div>
+        
+        <div class="post-content">
+            1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 Vagrant.configure(&#34;2&#34;) do |dbserver| dbserver.vm.box = &#34;centos/7&#34; dbserver.vm.network &#34;private_network&#34;, ip: &#34;192.168.10.10&#34; dbserver.vm.hostname = &#34;dbserver&#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
+配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 Vagrant.configure(&#34;2&#34;) do |ubuntu16| ubuntu16.vm.box = &#34;ubuntu/xenial64&#34; ubuntu16.vm.network &#34;forwarded_port&#34;, guest: 80, host: 8080 ubuntu16.vm.synced_folder &#34;/Users/subond/UCloud/VHost/data&#34;, &#34;/project_data&#34; end 需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的/vagrant目录下。
+配置一个centos7系统，要求设置vm的名字为foobar,内存大小为512M。 Vagrant.configure(&#34;2&#34;) do |centos| centos.vm.box = &#34;centos/7&#34; centos.vm.provider &#34;virtualbox&#34; do |vm| vm.customize [&#34;modifyvm&#34;, :id, &#34;--name&#34;, &#34;foobar&#34;, &#34;--memory&#34;, &#34;512&#34;] end end 2.分布式系统配置 创建两个主机，一个做服务端，hostname为server,一个做客户端，hostname为client，两个虚拟均设置私有网络，并配置dhcp服务。 Vagrant.configure(&#34;2&#34;) do |subond| subond.vm.box = &#34;centos/7&#34; subond.vm.define &#34;server&#34; do |server| server.vm.network &#34;private_network&#34;, type: &#34;dhcp&#34; server.……
+            <p class="readmore"><a href="http://www.subond.com/post/vagrant_usage/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/vagrant_startup/" target="_blank">Vagrant的快速使用</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月10日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/tech' target="_blank">TECH</a>
+            
+        </div>
+        
+        <div class="post-content">
+            Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。
+其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。
+1.Vagrant安装 Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。
+VirtualBox安装 这是Virtual官网链接https://www.virtualbox.org/wiki/Downloads，可以依据自己的系统选择合适的安装包进行安装。
+Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需要依据自己的系统选择合适的安装包进行安装。
+2.Vagrant配置 Vagrant配置主要在Vagrantfile文件中，通过vagrant init命令可以获得。
+$ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
+config.vm.box = &#34;ubuntu/xenial64&#34; config.vm.hostname = &#34;ubuntu64&#34; 3.启动虚拟 在MyHost目录下，通过命令vagrant up即可启动在Vagrantfile文件中配置的虚拟。
+$ vagrant up # 进入虚拟 $ vagrant ssh 4.Vagrantfile详解 语言版本 Vagrant.configure(&#34;2&#34;) do |config| 其中&quot;2&quot;指定Vagrantfile所使用的语言版本，一般为2。
+box相关 指定创建虚机vm所需的box
+config.vm.box = &#34;ubuntu/xenial64&#34; 设置vm的hostname
+config.vm.hostname = &#34;ubuntu64&#34; 设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。
+# 设置私有网络 config.vm.network &#34;private_network&#34;, ip: &#34;192.168.33.10&#34; # 设置公有网络 config.vm.network &#34;public_network&#34; # 设置端口映射，即vm80端口映射到主机8080端口 config.vm.network &#34;forwarded_port&#34;, guest: 80, host: 8080 文件同步 将主机的文件(或目录)挂载到vm中，实现文件同步。……
+            <p class="readmore"><a href="http://www.subond.com/post/vagrant_startup/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (14)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

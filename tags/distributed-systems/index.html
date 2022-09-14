@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>distributed systems | subond</title>
+    <meta property="og:title" content="distributed systems - subond">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="distributed systems">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://www.subond.com/tags/distributed-systems/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/distributed-systems/index.xml" title="subond" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        subond
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">distributed systems</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/learn_paxos/" target="_blank">深入理解Paxos算法</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年3月21日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/tech' target="_blank">TECH</a>
+            
+        </div>
+        
+        <div class="post-content">
+            1.Paxos算法 Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了Paxos Made Simple，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
+Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
+2.基本概念 Paxos算法中有三种角色：Proposer, Acceptor, Learner。每个节点需要同时扮演 两种或两种以上的角色。
+Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提议编号不能冲突　Proposal: 提议　=　提议编号 + 提议的值　Proposer: 提议发起者　Acceptors: 提议接受者　Learners: 提议学习者　需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。
+3.两个原则 1安全原则
+只能(而且必须)允许一个值被选定；
+每个节点只能学习已经被选定的值；
+2存活原则
+只要多数节点存活，并且彼此可以通信，则会达成以下两件事：
+最终会选定某个提议的值　一个被选定的值，其他节点最终会学习到这个值　4.算法过程 第一阶段A，即Prepare阶段
+Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。
+第一阶段B，即Prepare阶段
+Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。
+第二阶段A，即Accept阶段
+Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。
+第二阶段B，即Accept阶段
+Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。
+需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。
+当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。
+5.算法证明 其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。
+Paxso算法原命题
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &lt; n1,v1 != v0。
+Paxso算法原命题加强
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。……
+            <p class="readmore"><a href="http://www.subond.com/post/learn_paxos/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (14)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

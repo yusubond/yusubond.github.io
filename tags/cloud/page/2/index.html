@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>cloud | subond</title>
+    <meta property="og:title" content="cloud - subond">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="cloud">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://www.subond.com/tags/cloud/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/cloud/index.xml" title="subond" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        subond
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">cloud</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_docker/" target="_blank">Docker技术：认识Docker</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月14日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/tech' target="_blank">TECH</a>
+            
+        </div>
+        
+        <div class="post-content">
+            Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
+本文目录：
+1.什么是Docker 2.Docker基本概念 3.Docker安装 4.Docker网络 1.什么是Docker Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对 进程 进行封装隔离，属于 操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。
+Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的 应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
+2.Docker基本概念 Docker包括三个基本概念：镜像、容器、仓库。
+1 镜像(Image)
+众所周知，操作系统分为内核和用户空间。对于Linux而言，内核启动后，会挂载root文件系统为其提供用户空间支持。而Docker镜像，就相当于一个root文件系统。
+Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
+分层存储
+镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
+# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.04 16.04: Pulling from library/ubuntu b6f892c0043b: Pull complete 55010f332b04: Pull complete 2955fb827c94: Pull complete 3deef3fcbd30: Pull complete cf9722e506aa: Pull complete Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8 Status: Downloaded newer image for ubuntu:16.04 # 可以看到，整个ubuntu16.04镜像由五层存储构成 # 仓库的元数据 # 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据 $ cat repositories.json | python -mjson.……
+            <p class="readmore"><a href="http://www.subond.com/post/docker_docker/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="http://www.subond.com/tags/cloud/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="http://www.subond.com/tags/cloud/">1</a>
+    </li>
+    
+    <li  class="current">
+        <a href="http://www.subond.com/tags/cloud/page/2/">2</a>
+    </li>
+    
+
+    
+</ol>
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (14)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

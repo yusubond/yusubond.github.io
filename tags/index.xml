@@ -54,9 +54,18 @@
     <item>
       <title>cloud</title>
       <link>http://www.subond.com/tags/cloud/</link>
-      <pubDate>Mon, 01 May 2017 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/tags/cloud/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vagrant</title>
+      <link>http://www.subond.com/tags/vagrant/</link>
+      <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/vagrant/</guid>
       <description></description>
     </item>
     
@@ -66,6 +75,24 @@
       <pubDate>Mon, 01 May 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>algorithm</title>
+      <link>http://www.subond.com/tags/algorithm/</link>
+      <pubDate>Tue, 21 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>distributed systems</title>
+      <link>http://www.subond.com/tags/distributed-systems/</link>
+      <pubDate>Tue, 21 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/tags/distributed-systems/</guid>
       <description></description>
     </item>
     

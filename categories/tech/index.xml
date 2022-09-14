@@ -5,7 +5,39 @@
     <link>http://www.subond.com/categories/tech/</link>
     <description>Recent content in TECH on subond</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 01 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vagrant使用案例</title>
+      <link>http://www.subond.com/post/vagrant_usage/</link>
+      <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/vagrant_usage/</guid>
+      <description>1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 Vagrant.configure(&amp;#34;2&amp;#34;) do |dbserver| dbserver.vm.box = &amp;#34;centos/7&amp;#34; dbserver.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.10.10&amp;#34; dbserver.vm.hostname = &amp;#34;dbserver&amp;#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
+配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 Vagrant.configure(&amp;#34;2&amp;#34;) do |ubuntu16| ubuntu16.vm.box = &amp;#34;ubuntu/xenial64&amp;#34; ubuntu16.vm.network &amp;#34;forwarded_port&amp;#34;, guest: 80, host: 8080 ubuntu16.vm.synced_folder &amp;#34;/Users/subond/UCloud/VHost/data&amp;#34;, &amp;#34;/project_data&amp;#34; end 需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的/vagrant目录下。
+配置一个centos7系统，要求设置vm的名字为foobar,内存大小为512M。 Vagrant.configure(&amp;#34;2&amp;#34;) do |centos| centos.vm.box = &amp;#34;centos/7&amp;#34; centos.vm.provider &amp;#34;virtualbox&amp;#34; do |vm| vm.customize [&amp;#34;modifyvm&amp;#34;, :id, &amp;#34;--name&amp;#34;, &amp;#34;foobar&amp;#34;, &amp;#34;--memory&amp;#34;, &amp;#34;512&amp;#34;] end end 2.分布式系统配置 创建两个主机，一个做服务端，hostname为server,一个做客户端，hostname为client，两个虚拟均设置私有网络，并配置dhcp服务。 Vagrant.configure(&amp;#34;2&amp;#34;) do |subond| subond.vm.box = &amp;#34;centos/7&amp;#34; subond.vm.define &amp;#34;server&amp;#34; do |server| server.vm.network &amp;#34;private_network&amp;#34;, type: &amp;#34;dhcp&amp;#34; server.</description>
+    </item>
+    
+    <item>
+      <title>Vagrant的快速使用</title>
+      <link>http://www.subond.com/post/vagrant_startup/</link>
+      <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/vagrant_startup/</guid>
+      <description>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。
+其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。
+1.Vagrant安装 Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。
+VirtualBox安装 这是Virtual官网链接https://www.virtualbox.org/wiki/Downloads，可以依据自己的系统选择合适的安装包进行安装。
+Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需要依据自己的系统选择合适的安装包进行安装。
+2.Vagrant配置 Vagrant配置主要在Vagrantfile文件中，通过vagrant init命令可以获得。
+$ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
+config.vm.box = &amp;#34;ubuntu/xenial64&amp;#34; config.vm.hostname = &amp;#34;ubuntu64&amp;#34; 3.启动虚拟 在MyHost目录下，通过命令vagrant up即可启动在Vagrantfile文件中配置的虚拟。
+$ vagrant up # 进入虚拟 $ vagrant ssh 4.Vagrantfile详解 语言版本 Vagrant.configure(&amp;#34;2&amp;#34;) do |config| 其中&amp;quot;2&amp;quot;指定Vagrantfile所使用的语言版本，一般为2。
+box相关 指定创建虚机vm所需的box
+config.vm.box = &amp;#34;ubuntu/xenial64&amp;#34; 设置vm的hostname
+config.vm.hostname = &amp;#34;ubuntu64&amp;#34; 设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。
+# 设置私有网络 config.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.33.10&amp;#34; # 设置公有网络 config.vm.network &amp;#34;public_network&amp;#34; # 设置端口映射，即vm80端口映射到主机8080端口 config.vm.network &amp;#34;forwarded_port&amp;#34;, guest: 80, host: 8080 文件同步 将主机的文件(或目录)挂载到vm中，实现文件同步。</description>
+    </item>
+    
     <item>
       <title>Docker进阶：服务配置</title>
       <link>http://www.subond.com/post/docker_swarm5/</link>
@@ -180,6 +212,38 @@ Docker镜像是一个特殊的文件系统，除了提供容器运行时所需�
 分层存储
 镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
 # 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.04 16.04: Pulling from library/ubuntu b6f892c0043b: Pull complete 55010f332b04: Pull complete 2955fb827c94: Pull complete 3deef3fcbd30: Pull complete cf9722e506aa: Pull complete Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8 Status: Downloaded newer image for ubuntu:16.04 # 可以看到，整个ubuntu16.04镜像由五层存储构成 # 仓库的元数据 # 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据 $ cat repositories.json | python -mjson.</description>
+    </item>
+    
+    <item>
+      <title>深入理解Paxos算法</title>
+      <link>http://www.subond.com/post/learn_paxos/</link>
+      <pubDate>Tue, 21 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/learn_paxos/</guid>
+      <description>1.Paxos算法 Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了Paxos Made Simple，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
+Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
+2.基本概念 Paxos算法中有三种角色：Proposer, Acceptor, Learner。每个节点需要同时扮演 两种或两种以上的角色。
+Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提议编号不能冲突　Proposal: 提议　=　提议编号 + 提议的值　Proposer: 提议发起者　Acceptors: 提议接受者　Learners: 提议学习者　需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。
+3.两个原则 1安全原则
+只能(而且必须)允许一个值被选定；
+每个节点只能学习已经被选定的值；
+2存活原则
+只要多数节点存活，并且彼此可以通信，则会达成以下两件事：
+最终会选定某个提议的值　一个被选定的值，其他节点最终会学习到这个值　4.算法过程 第一阶段A，即Prepare阶段
+Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。
+第一阶段B，即Prepare阶段
+Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。
+第二阶段A，即Accept阶段
+Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。
+第二阶段B，即Accept阶段
+Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。
+需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。
+当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。
+5.算法证明 其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。
+Paxso算法原命题
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &amp;lt; n1,v1 != v0。
+Paxso算法原命题加强
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &amp;lt; n1, v1 != v0。</description>
     </item>
     
     <item>
