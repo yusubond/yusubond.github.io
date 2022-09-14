@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>linux on subond</title>
+    <title>linux on subond&#39;s blog</title>
     <link>http://www.subond.com/tags/linux/</link>
-    <description>Recent content in linux on subond</description>
+    <description>Recent content in linux on subond&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
     <lastBuildDate>Sun, 19 Jun 2016 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux中的线程管理</title>
@@ -40,7 +41,7 @@ Linux系统中并不区分进程和线程，统称为 任务。其系统调用�
 fork():传统复制进程——具备父任务的所有数据的副本
 clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构
 线程小结 线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。
-一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &amp;lt;pthread.</description>
+一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &amp;lt;pthread.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;sys/wait.h&amp;gt; #include &amp;lt;math.h&amp;gt; int n; void *runner(void *param) { if(n &amp;lt;= 1) return(NULL); for(int i = 2; i &amp;lt;= n; i++) { int len = sqrt(i * 1.0); int flag = 1; for(int j = 2; j &amp;lt;= len; j++) { if(i % j == 0) flag = 0; } if(flag == 1) printf(&amp;#34;%d &amp;#34;, i); } pthread_exit(0); } int main() { printf(&amp;#34;Enter a number(&amp;gt;= 0):&amp;#34;); scanf(&amp;#34;%d&amp;#34;, &amp;amp;n); int pid; pthread_t tid; pthread_attr_t attr; pthread_attr_init(&amp;amp;attr); pid = pthread_create(&amp;amp;tid, &amp;amp;attr, runner, NULL); if(pid !</description>
     </item>
     
     <item>
@@ -70,7 +71,15 @@ clone()创建线程(子任务)——根据传递给clone()的标志位，子任�
 值得注意的是，无论是直接通信还是间接通信，通信进程的消息的驻留在临时队列中。队列的实现有三种方式：零容量，有限容量，无限容量。
 共享内存实例
 创建共享内存段shmget()
-//三个参数：标识符，字节数，读写模式 //函数返回整数标识值 segment_id = shmget(IPC_PRIVATE, size, S_IRUSR | S_IWURS); //三个参数：共享内存段的ID，指针，读写模式 //返回初始位置的指针 share_memory = (char *)shmat(id, NULL, 0); //删除共享内存段，释放指针 shmdt(share_memory); shmctl(); 消息传递: Mach</description>
+1 2 3 4 5 6 7 8 9 //三个参数：标识符，字节数，读写模式 //函数返回整数标识值 segment_id = shmget(IPC_PRIVATE, size, S_IRUSR | S_IWURS); //三个参数：共享内存段的ID，指针，读写模式 //返回初始位置的指针 share_memory = (char *)shmat(id, NULL, 0); //删除共享内存段，释放指针 shmdt(share_memory); shmctl(); 消息传递: Mach
+Mach系统主要为分布式系统设计。在Mach系统中，每个任务创建时，同时创建了两个特别的邮箱：内核邮箱 和 通报邮箱。内核使用内核邮箱与任务通信，使用通报邮箱发送事件发生的通知。
+消息传递使用三个系统调用：
+1）msg_send():发送数据；
+2）msg_receive():接收数据；
+3）msg_rpc():发送远程消息，并只等待来自发送者的一个返回消息；
+值得注意的是，Mach可以确保来自同一个发送者额多个消息满足FIFO顺序排队，但不是绝对顺序。即两个发送者的消息可以任意排队。其次，Mach使用的是双重复制机制(发送者&amp;lt;&amp;ndash;复制&amp;ndash;&amp;gt;邮箱&amp;lt;&amp;ndash;复制&amp;ndash;&amp;gt;接收者)。若使用虚拟内存管理技术(即将发送者的地址空间映射到接收者的地址空间，但只适用与系统内部)，可以避免这种双重复制。
+4.进程小结 进程是执行中的程序。随着程序的执行，它改变状态。进程状态由进程当前活动所定义。每个进程可处于：新的，就绪，执行，等待或终止状态。每个进程在操作系统内通过自己的进程控制块PCB来表示。当前不执行的进程放在某个等待队列中。操作系统有两种主要队列：I/O请求队列 和 就绪队列。就绪队列包括所有准备执行或等待CPU的进程。每个都有PCB，PCB链接起来就形成了就绪队列。长期调度通过选择进程来争用CPU。短期调度从就绪队列中选择进程。
+操作系统的执行进程可以是独立进程，也可以是协作进程。协作进程需要进程间有互相通信机制，主要有两种形式：共享内存和消息传递。共享内存 方法通过要求通信进程共享一些变量，进程通过使用共享变量来交换信息；而 消息系统 方法允许进程交换信息。</description>
     </item>
     
     <item>

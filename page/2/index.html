@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
 
-    <title>subond</title>
-    <meta property="og:title" content="subond">
+    <title>subond&#39;s blog</title>
+    <meta property="og:title" content="subond&#39;s blog">
     <meta property="og:type" content="website">
     <meta name="Keywords" content="">
     <meta name="description" content="">
@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/index.xml" title="subond" />
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/index.xml" title="subond's blog" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -37,7 +37,7 @@
                 
                     <h1>
                         <a id="logo" href="http://www.subond.com/">
-                            subond
+                            subond&#39;s blog
                         </a>
                     </h1>
                 
@@ -120,7 +120,7 @@ Swarm模式下有两种服务的部署方式，复制服务 和 全局服务。
 PKI工作原理 Docker引擎中内置的公钥基础设施(Public Key Infrastructure)系统使得容器的部署和编排变得更加简单和安全。Swarm集群中的节点使用传输层安全(TLS)来认证，授权和加密它们与集群中其他节点的通信。
 当我们使用命令docker swarm init创建一个Swarm集群时，Docker引擎则将当前节点视为一个管理节点。默认情况下，管理节点自身生成一个新的跟证书颁发机构(CA)以及密钥对，以保护与加入集群的其他节点的通信。当然，也可以通过配置&ndash;external-ca参数来指定外部的根证书颁发机构。
 与此同时，管理节点还生成两个token值(用于向Swarm集群中加入节点)，一个是工作节点token值，另一个是管理节点token值。每一个token值都包含根CA证书的摘要和随机生成的密钥。当节点加入集群时，它使用摘要来验证远程管理节点的根CA证书，使用密钥来确保该节点是经过批准的节点。
-# 创建一个swarm $ docker swarm init # 查看管理节点和工作节点的加入命令 # 向Swarm中加入管理节点 docker swarm join-token manager # 向Swarm中加入工作节点 docker swarm join-token worker $ docker swarm join-token manager To add a manager to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \ 10.……
+# 创建一个swarm $ docker swarm init # 查看管理节点和工作节点的加入命令 # 向Swarm中加入管理节点 docker swarm join-token manager # 向Swarm中加入工作节点 docker swarm join-token worker $ docker swarm join-token manager To add a manager to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \ 10.0.2.15:2377 $ docker swarm join-token worker To add a worker to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \ 10.0.2.15:2377 # 通过对比可以发现，管理节点和工作节点使用的是不同的token值 # 两个token值的前半部分是一样的，即根证书的摘要是一样的；后半部分是不一样的，即随机生成的密钥 每次当新的节点加入Swarm集群时，管理节点向包含随机生成的节点ID颁发证书，用来标识证书通用名(CN)下的节点和组织名(UN)下的角色。节点ID用来标识Swarm集群中节点寿命的密码安全。……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_swarm3/" target="_blank">阅读全文</a></p>
     </article>
@@ -154,7 +154,7 @@ PKI工作原理 Docker引擎中内置的公钥基础设施(Public Key Infrastruc
 三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。
 # 在manger节点上 $ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6 # --update-delay参数配置服务任务或任务集的更新的时延 # 其格式为T1hT2mT3s，即T1小时T2分钟T3秒 # 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数 # 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。 # 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。 # 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如： # --update-failure-action docker service create # --update-failure-action docker service update # 接下来，我们更新redis的镜像 $ docker service update --image redis:3.0.7 redis 如前所述，默认情况下，更新主要包括以下几个流程：
 停止第一个任务 调度器更新已经停止的任务 为更新过的任务启动容器 若任务更新返回RUNNING状态，则等待设定的时延，并进行下一个任务的更新 若任务更新返回FAILED状态，则停止更新 更新结束后，我们看到如下状态：
-$ docker service ps redis ID NAME IMAGE NODE DESIRED STATE CURRENT STATE ERROR PORTS i9c6xvbopko2 redis.……
+$ docker service ps redis ID NAME IMAGE NODE DESIRED STATE CURRENT STATE ERROR PORTS i9c6xvbopko2 redis.1 redis:3.0.7 ubuntu-xenial Running Running 5 seconds ago mnw258z0j5hg \_ redis.1 redis:3.0.6 ubuntu-xenial Shutdown Shutdown 5 seconds ago iu7yjb7nm345 redis.2 redis:3.0.7 ubuntu-xenial Running Running 53 seconds ago fmgyoq4vladx \_ redis.2 redis:3.0.6 ubuntu-xenial Shutdown Shutdown 54 seconds ago zsliph02ycsf redis.3 redis:3.0.7 ubuntu-xenial Running Running about a minute ago 8j75vwiunh49 \_ redis.3 redis:3.0.6 ubuntu-xenial Shutdown Shutdown about a minute ago 由此我们可以判断，在服务/任务更新的过程中，实质上是 创建了一批新的容器来满足我们的更新时所指定的新的需求。……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_swarm2/" target="_blank">阅读全文</a></p>
     </article>
@@ -191,7 +191,9 @@ Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配
 搭建Swarm集群 搭建Swarm集群过程中，所使用的系统环境环境如下：
 三个节点(manager, worker1, worker2)均为xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 1.创建一个Swarm集群
 在manager所在的主机创建Swarm集群，即创建Swarm管理节点。
-# 在manager节点上 # 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点 $ docker swarm init --advertise-addr 172.28.128.0.3 Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager. To add a worker to this Swarm, run the following command: docker Swarm join \ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ 172.……
+# 在manager节点上 # 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点 $ docker swarm init --advertise-addr 172.28.128.0.3 Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager. To add a worker to this Swarm, run the following command: docker Swarm join \ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ 172.28.128.3:2377 To add a manager to this Swarm, run &#39;docker Swarm join-token manager&#39; and follow the instructions. # docker node ls查看管理节点的状态 $ docker node ls ID HOSTNAME STATUS AVAILABILITY MANAGER STATUS utfwatnlalniyo5glt734m4sj * ubuntu-xenial Ready Active Leader 2.向Swarm中注册工作节点
+在worker[1-2]所在的主机创建Swarm工作节点，并加入到Swarm集群中。
+# 在worker1节点上 $ docker Swarm join \ $ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ $ 172.28.128.3:2377 This node joined a Swarm as a worker. # 在worker2节点上 $ docker Swarm join \ $ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ $ 172.……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_swarm/" target="_blank">阅读全文</a></p>
     </article>
@@ -222,7 +224,10 @@ Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配
 1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
 Dockerfile
 创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
-# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD . /app # Install any needed packages specified in requirements.txt RUN pip install -r requirements.txt # Make port 80 available to the world outside this container EXPOSE 80 # Define environment variable ENV NAME World # Run app.……
+# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD . /app # Install any needed packages specified in requirements.txt RUN pip install -r requirements.txt # Make port 80 available to the world outside this container EXPOSE 80 # Define environment variable ENV NAME World # Run app.py when the container launches CMD [&#34;python&#34;, &#34;app.py&#34;] Dockerfile中用到两个我们还未创建的文件，即requirements.txt和app.py。接下来，创建这两个文件，内容分别如下：
+requirements.txt
+Flask Redis app.py
+from flask import Flask from redis import Redis, RedisError import os import socket # Connect to Redis redis = Redis(host=&#34;redis&#34;, db=0, socket_connect_timeout=2, socket_timeout=2) app = Flask(__name__) @app.route(&#34;/&#34;) def hello(): try: visits = redis.incr(&#34;counter&#34;) except RedisError: visits = &#34;&lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;&#34; html = &#34;&lt;h3&gt;Hello {name}!&lt;/h3&gt;&#34; \ &#34;&lt;b&gt;Hostname:&lt;/b&gt; {hostname}&lt;br/&gt;&#34; \ &#34;&lt;b&gt;Visits:&lt;/b&gt; {visits}&#34; return html.……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_quickstart/" target="_blank">阅读全文</a></p>
     </article>
@@ -278,7 +283,24 @@ COPY指令复制所指向的文件或目录，将其添加至新镜像中，复�
 若以反斜杠/结尾则其指向是目录，否则指向文件。同理。
 若是文件，则的内容被写入中；否则所指向的文件或目录中的内容被复制到目录中。
 当指定多个源时，必须使目录。若不存在，则会被创建。
-CMD 格式：RUN &lt;shell_cmd&gt; # shell格式……
+CMD 格式：RUN &lt;shell_cmd&gt; # shell格式
+或者：RUN [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
+或者：RUN [&ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # 为ENTRYPOINT指令提供参数
+分类：设置指令
+CMD指令为容器运行时指定的操作默认操作。该操作可以是执行自定义脚本，也可以是执行系统命令。该指令只能在文件中存在一次，如果有多个，则只执行最后一条。
+第三种情况时，ENTRYPOINT指定的是一个可执行的脚本或者程序的路径，该指定的脚本或者程序将会以param1和param2作为参数执行。所以如果CMD指令使用上面的形式，那么Dockerfile中必须要有配套的ENTRYPOINT。
+ENTRYPOINT（设置container启动时执行的操作 格式：ENTRYPOINT # shell格式
+或者：ENTRYPOINT [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
+分类：设置指令
+ENTRYPOINT指定容器启动时执行的命令，可以多次设置，但是只有最后一个有效。该指令的使用分为两种情况，一种是独自使用，另一种和CMD指令配合使用。当独自使用时，如果你还使用了CMD命令且CMD是一个完整的可执行的命令，那么CMD指令和ENTRYPOINT会互相覆盖只有最后一个CMD或者ENTRYPOINT有效。
+# CMD指令将不会被执行，只有ENTRYPOINT指令被执行 CMD echo “Hello, World!” ENTRYPOINT ls -l CMD指令配合使用来指定ENTRYPOINT的默认参数，这时CMD指令不是一个完整的可执行命令，仅仅是参数部分；ENTRYPOINT指令只能使用JSON方式指定执行命令，而不能指定参数。
+FROM ubuntu CMD [&#34;-l&#34;] ENTRYPOINT [&#34;/usr/bin/ls&#34;] USER 格式：USER 分类：设置指令
+USER用于设置启动容器的用户，默认是root用户。
+EXPOSE 指定容器需要映射到宿主机器的端口） 格式：EXPOSE [&hellip;]
+分类：设置指令
+EXPOSE用于指定容器需要映射到宿主机器的端口。当你需要访问容器的时候，可以不是用容器的IP地址而是使用宿主机器的IP地址和映射后的端口。要完成整个操作需要两个步骤，首先在Dockerfile使用EXPOSE设置需要映射的容器端口，然后在运行容器的时候指定-p选项加上EXPOSE设置的端口，这样EXPOSE设置的端口号会被随机映射成宿主机器中的一个端口号。也可以指定需要映射到宿主机器的那个端口，这时要确保宿主机器上的端口号没有被使用。EXPOSE指令可以一次设置多个端口号，相应的运行容器的时候，可以配套的多次使用-p选项。
+端口映射是docker比较重要的一个功能，原因在于每次运行容器的时候容器的IP地址不能指定而是在桥接网卡的地址范围内随机生成的。宿主机器的IP地址是固定的，我们可以将容器的端口的映射到宿主机器上的一个端口，免去每次访问容器中的某个服务时都要查看容器的IP的地址。对于一个运行的容器，可以使用docker port加上容器中需要映射的端口和容器的ID来查看该端口号在宿主机器上的映射端口。
+# 映射一个端口 EXPOSE port1 # 相应的运行容器使用的命令 docker run -p port1 image # 映射多个端口 EXPOSE port1 port2 port3 # 相应的运行容器使用的命令 docker run -p port1 -p port2 -p port3 image # 还可以指定需要映射到宿主机器上的某个端口号 docker run -p host_port1:port1 -p host_port2:port2 -p host_port3:port3 image VOLUME（指定挂载点） 格式：VOLUME [&quot;&lt;mountpoint&quot;]……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_dockerfile/" target="_blank">阅读全文</a></p>
     </article>
@@ -351,7 +373,15 @@ Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术�
 Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
 分层存储
 镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
-# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.04 16.04: Pulling from library/ubuntu b6f892c0043b: Pull complete 55010f332b04: Pull complete 2955fb827c94: Pull complete 3deef3fcbd30: Pull complete cf9722e506aa: Pull complete Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8 Status: Downloaded newer image for ubuntu:16.04 # 可以看到，整个ubuntu16.04镜像由五层存储构成 # 仓库的元数据 # 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据 $ cat repositories.json | python -mjson.……
+# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.04 16.04: Pulling from library/ubuntu b6f892c0043b: Pull complete 55010f332b04: Pull complete 2955fb827c94: Pull complete 3deef3fcbd30: Pull complete cf9722e506aa: Pull complete Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8 Status: Downloaded newer image for ubuntu:16.04 # 可以看到，整个ubuntu16.04镜像由五层存储构成 # 仓库的元数据 # 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据 $ cat repositories.json | python -mjson.tool { &#34;Repositories&#34;: { &#34;ubuntu&#34;: { &#34;ubuntu:16.04&#34;: &#34;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&#34;, &#34;ubuntu@sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8&#34;: &#34;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&#34; } } } # 镜像的元数据 # 在文件/var/lib/docker/image/graph_dirver/imagedb/content/sha256/[image_id]中可以看到镜像的元数据 # 命令cat image_id | python -mjson.tool # 镜像层的元数据 # 在文件/var/lib/docker/image/graph_dirver/layerdb/sha256/[chain_id] # [chain_id]是某一层镜像层的存储索引 2 容器(Container)
+容器的实质是进程。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，称为“容器存储层”。容器存储层的生命周期与容器一样，容器消亡时，容器存储层也随之消亡。因此，任何保存在容器存储层的信息都会随容器删除而丢失。
+容器是Docker的核心概念。简单来讲，容器是 独立运行的一个或一组应用，以它们的运行态环境。与之对应的，容易混淆的概念是虚拟机。虚拟机可以理解为 模拟运行的一整套操作系统(包括运行态环境和其他系统环境)和运行在操作系统上的应用。
+容器的核心为所执行的应用程序，所需要的资源都是应用程序所必需的的。当Docker容器中指定的应用终结时，容器也自动终止。当利用docker run创建容器时，Docker在后台运行的标准操作包括：
+检查本地是否存在指定的镜像，不存在就从公有仓库下载 利用镜像创建并启动一个容器 分配一个文件系统，并在只读的镜像层外面挂载一层可读写层 从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中 从地址池配置一个ip地址给容器 执行用户指定的应用程序 执行完毕后容器被终止 3 仓库(Repository)
+仓库(Repository)是集中存放镜像的地方，每个仓库下面有多个镜像。因此，仓库可以被认为是一个具体的项目或目录。仓库分为公有仓库和本地仓库(私有仓库)，公有仓库Docker Hub由Docker公司或用户维护，主要包括根镜像和用户镜像；而本地仓库可供私人使用。
+3.Docker安装 对于Ubuntu系列，Docker CE支持以下三种64位发行版：
+Yakkety 16.10 Xenial 16.04 Trusty 14.04 第一步：设置仓库。可以通过lsb_release -cs命令查看Ubuntu系统版本，然后添加相应的仓库。
+$ sudo apt-get -y install apt-transport-https ca-certificates curl $ curl -fsSL https://download.……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_docker/" target="_blank">阅读全文</a></p>
     </article>
@@ -401,7 +431,26 @@ Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过
 Paxso算法原命题
 如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &lt; n1,v1 != v0。
 Paxso算法原命题加强
-如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。……
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。
+Paxso算法原命题进一步加强
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &lt; n1, v1 != v0。
+归纳法证明
+假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &gt;= m)，对应的值也是v。对n进行归纳假设。
+n = m时，显然结论成立。
+设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。
+当n = k + 1时，若提议k+1不存在，则结论成立。
+接下来，证明提议提议k+1不存问题。
+假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。两个多数派必有交集，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&gt;=m。又因为第一阶段A，t&lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。
+6.示例演示 为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。
+7.小结 通过前面的讨论和学习，我们可以回顾一下协议的细节：
+为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。
+为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。
+为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。
+&ldquo;与其预测未来，不如限制未来&rdquo;,应该是Paxos协议的核心思想。——郑建军(微信工程师)
+参考资料
+Leslie Lanmport:Paxos Made Simple
+Info架构师2017年1月刊:微信PaxsoStore:深入浅出Paxos算法协议
+一步一步理解Paxos算法……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/learn_paxos/" target="_blank">阅读全文</a></p>
     </article>
@@ -529,7 +578,7 @@ Paxso算法原命题加强
 
                     <footer id="footer">
     <div>
-        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        &copy; 2022 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
         
     </div>
     <br />

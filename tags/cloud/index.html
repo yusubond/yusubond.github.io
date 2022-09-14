@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
 
-    <title>cloud | subond</title>
-    <meta property="og:title" content="cloud - subond">
+    <title>cloud | subond&#39;s blog</title>
+    <meta property="og:title" content="cloud - subond&#39;s blog">
     <meta property="og:type" content="article">
         
         
     <meta name="Keywords" content="">
     <meta name="description" content="cloud">
         
-    <meta name="author" content="">
+    <meta name="author" content="subond">
     <meta property="og:url" content="http://www.subond.com/tags/cloud/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/cloud/index.xml" title="subond" />
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/cloud/index.xml" title="subond's blog" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -39,7 +39,7 @@
             <div class="site-name ">
                 
                     <a id="logo" href="http://www.subond.com/">
-                        subond
+                        subond&#39;s blog
                     </a>
                 
                 
@@ -94,9 +94,9 @@
         </div>
         
         <div class="post-content">
-            1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 Vagrant.configure(&#34;2&#34;) do |dbserver| dbserver.vm.box = &#34;centos/7&#34; dbserver.vm.network &#34;private_network&#34;, ip: &#34;192.168.10.10&#34; dbserver.vm.hostname = &#34;dbserver&#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
-配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 Vagrant.configure(&#34;2&#34;) do |ubuntu16| ubuntu16.vm.box = &#34;ubuntu/xenial64&#34; ubuntu16.vm.network &#34;forwarded_port&#34;, guest: 80, host: 8080 ubuntu16.vm.synced_folder &#34;/Users/subond/UCloud/VHost/data&#34;, &#34;/project_data&#34; end 需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的/vagrant目录下。
-配置一个centos7系统，要求设置vm的名字为foobar,内存大小为512M。 Vagrant.configure(&#34;2&#34;) do |centos| centos.vm.box = &#34;centos/7&#34; centos.vm.provider &#34;virtualbox&#34; do |vm| vm.customize [&#34;modifyvm&#34;, :id, &#34;--name&#34;, &#34;foobar&#34;, &#34;--memory&#34;, &#34;512&#34;] end end 2.分布式系统配置 创建两个主机，一个做服务端，hostname为server,一个做客户端，hostname为client，两个虚拟均设置私有网络，并配置dhcp服务。 Vagrant.configure(&#34;2&#34;) do |subond| subond.vm.box = &#34;centos/7&#34; subond.vm.define &#34;server&#34; do |server| server.vm.network &#34;private_network&#34;, type: &#34;dhcp&#34; server.……
+            1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |dbserver| dbserver.vm.box = &#34;centos/7&#34; dbserver.vm.network &#34;private_network&#34;, ip: &#34;192.168.10.10&#34; dbserver.vm.hostname = &#34;dbserver&#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
+配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |ubuntu16| ubuntu16.vm.box = &#34;ubuntu/xenial64&#34; ubuntu16.vm.network &#34;forwarded_port&#34;, guest: 80, host: 8080 ubuntu16.vm.synced_folder &#34;/Users/subond/UCloud/VHost/data&#34;, &#34;/project_data&#34; end 需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的/vagrant目录下。
+配置一个centos7系统，要求设置vm的名字为foobar,内存大小为512M。 1 2 3 4 5 6 Vagrant.configure(&#34;2&#34;) do |centos| centos.vm.box = &#34;centos/7&#34; centos.vm.provider &#34;virtualbox&#34; do |vm| vm.customize [&#34;modifyvm&#34;, :id, &#34;--name&#34;, &#34;foobar&#34;, &#34;--memory&#34;, &#34;512&#34;] end end 2.分布式系统配置 创建两个主机，一个做服务端，hostname为server,一个做客户端，hostname为client，两个虚拟均设置私有网络，并配置dhcp服务。 1 2 3 4 5 6 7 8 9 10 11 12 Vagrant.configure(&#34;2&#34;) do |subond| subond.vm.box = &#34;centos/7&#34; subond.vm.define &#34;server&#34; do |server| server.vm.network &#34;private_network&#34;, type: &#34;dhcp&#34; server.vm.hostname = &#34;server&#34; end subond.vm.define &#34;client&#34; do |client| client.vm.network &#34;private_network&#34;, type: &#34;dhcp&#34; client.vm.hostname = &#34;client&#34; end end 创建一个具有三个节点的集群，hostname分别为node1,node2,node3,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 Vagrant.……
             <p class="readmore"><a href="http://www.subond.com/post/vagrant_usage/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -125,13 +125,17 @@
 VirtualBox安装 这是Virtual官网链接https://www.virtualbox.org/wiki/Downloads，可以依据自己的系统选择合适的安装包进行安装。
 Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需要依据自己的系统选择合适的安装包进行安装。
 2.Vagrant配置 Vagrant配置主要在Vagrantfile文件中，通过vagrant init命令可以获得。
-$ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
-config.vm.box = &#34;ubuntu/xenial64&#34; config.vm.hostname = &#34;ubuntu64&#34; 3.启动虚拟 在MyHost目录下，通过命令vagrant up即可启动在Vagrantfile文件中配置的虚拟。
-$ vagrant up # 进入虚拟 $ vagrant ssh 4.Vagrantfile详解 语言版本 Vagrant.configure(&#34;2&#34;) do |config| 其中&quot;2&quot;指定Vagrantfile所使用的语言版本，一般为2。
+1 2 3 $ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
+1 2 config.vm.box = &#34;ubuntu/xenial64&#34; config.vm.hostname = &#34;ubuntu64&#34; 3.启动虚拟 在MyHost目录下，通过命令vagrant up即可启动在Vagrantfile文件中配置的虚拟。
+1 2 3 $ vagrant up # 进入虚拟 $ vagrant ssh 4.Vagrantfile详解 语言版本 1 Vagrant.configure(&#34;2&#34;) do |config| 其中&quot;2&quot;指定Vagrantfile所使用的语言版本，一般为2。
 box相关 指定创建虚机vm所需的box
-config.vm.box = &#34;ubuntu/xenial64&#34; 设置vm的hostname
-config.vm.hostname = &#34;ubuntu64&#34; 设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。
-# 设置私有网络 config.vm.network &#34;private_network&#34;, ip: &#34;192.168.33.10&#34; # 设置公有网络 config.vm.network &#34;public_network&#34; # 设置端口映射，即vm80端口映射到主机8080端口 config.vm.network &#34;forwarded_port&#34;, guest: 80, host: 8080 文件同步 将主机的文件(或目录)挂载到vm中，实现文件同步。……
+1 config.vm.box = &#34;ubuntu/xenial64&#34; 设置vm的hostname
+1 config.vm.hostname = &#34;ubuntu64&#34; 设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。
+1 2 3 4 5 6 # 设置私有网络 config.vm.network &#34;private_network&#34;, ip: &#34;192.168.33.10&#34; # 设置公有网络 config.vm.network &#34;public_network&#34; # 设置端口映射，即vm80端口映射到主机8080端口 config.vm.network &#34;forwarded_port&#34;, guest: 80, host: 8080 文件同步 将主机的文件(或目录)挂载到vm中，实现文件同步。
+第一个参数是主机的文件路径，第二个参数是vm里面的路径。
+1 config.vm.synced_folder &#34;../data&#34;, &#34;/vagrant_data&#34; 5.Vagrant常用命令 box管理 包括添加、删除、更新等等。
+1 $ vagrant box 虚机的管理 包括启动，摧毁、打包，重载等等。
+1 2 3 4 5 6 7 8 9 10 11 # 关掉虚拟 $ vagrant halt # 重载虚拟，即修改虚拟的配置后(Vagrantfile)需要重载才能生效 $ vagrant reload # 摧毁整个虚拟及其相关文件 $ vagrant destory # 将整个虚拟打包成一个box文件, $ vagrant package 参考资料 [1].……
             <p class="readmore"><a href="http://www.subond.com/post/vagrant_startup/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -161,7 +165,9 @@ config.vm.hostname = &#34;ubuntu64&#34; 设置vm的网络，如果是设置私�
 $ docker service create --name myalpine ping www.bing.com 服务配置 当创建一个服务时，我们通过修改配置选项对服务进行限制，命令docker service create --help可以查看创建服务的帮助信息。
 配置服务的运行环境
 我们可以通过以下参数配置服务的运行环境：
-&ndash;env参数可以指定环境变量 &ndash;workdir参数可以指定容器中的工作目录 &ndash;user参数可以指定用户名或者UID # 通过不同的参数配置服务 $ docker service create --name myservice \ --env MYSERVICE=/usr/local/service --workdir /tmp --user subond alpine ping www.……
+&ndash;env参数可以指定环境变量 &ndash;workdir参数可以指定容器中的工作目录 &ndash;user参数可以指定用户名或者UID # 通过不同的参数配置服务 $ docker service create --name myservice \ --env MYSERVICE=/usr/local/service --workdir /tmp --user subond alpine ping www.baidu.com 配置服务规模和位置
+前面的介绍中，我们讲到Swarm模式中有两种服务类型：复制服务(replicated service)和全局服务(global service)。对于复制服务类型，我们可指定&ndash;replicas参数来创建一定数量的服务任务，从而将任务分派到可用节点上；而对于全局服务，调度器则在每一个可用节点上均部署一个任务，&ndash;mode参数可以指定全局服务。具体如下：
+# 在具有一个管理节点(manager)和一个工作节点(worker1)的Swarm集群中，部署一个具有两个副本的nginx web服务 # 在节点manger $ docker node ls ID HOSTNAME STATUS AVAILABILITY MANAGER STATUS 34y77dgnqon4soj2kqyb65a9y * manager Ready Active Leader nxb55hhu8kwp272z21xi9dhyy worker1 Ready Active $ docker service create --name myweb1 --replicas 3 nginx xpmhprvzqtl1fi0mdveowjdoa # 创建成功 # docker service ls ID NAME MODE REPLICAS IMAGE xpmhprvzqtl1 myweb1 replicated 2/2 nginx:latest $ docker ps CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES 27aa642e7786 nginx@sha256:12d30ce421ad530494d588f87b2328ddc3cae666e77ea1ae5ac3a6661e52cde6 &#34;nginx -g &#39;daemon .……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm5/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -190,7 +196,9 @@ $ docker service create --name myalpine ping www.bing.com 服务配置 当创建
 将当前的模式切换至Swarm模式，并创建一个名为default的Swarm 指定当前节点为Swarm的管理节点，并以当前主机名命名当前节点 配置网络监听端口，端口号为2377 将当前节点设置为Active状态，意味着该节点可以接收调度器分派的任务 启动一个全局分布式数据中心，存储并维护Swarm信息和服务信息 默认情况下，为Swarm集群生成自签名根CA 默认情况下，生成工作节点和管理节点的token(令牌)，用于其他节点加入该Swarm 创建一个名为ingress的overlay网络，用于对外发布服务端口 # 创建一个swarm $ docker swarm init 配置通告地址
 管理节点通过通告地址(advertise address)来允许Swarm集群中的其他节点访问Swarmkit API和覆盖网络。Swarm集群上的其他节点必须能够访问其通告地址(Ip地址)上的管理节点。
 如果不指定通告地址，Docker则通过检查系统IP，设置其中一个为通告地址，并监听2377端口。如果系统有多个Ip，最好通过&ndash;advertise-addr配置通告地址，以便其他节点能够与管理节点进行通信。
-# 设置通告地址 $ docker swarm init --advertise-addr 172.28.128.3:2377 Swarm initialized: current node (34y77dgnqon4soj2kqyb65a9y) is now a manager. To add a worker to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-1omg2k2e92snxv3wlja3komux5wan4hynn80ikkma2s9rd5cxz-9hq2vf8n0jysukytfqpavd8j7 \ 172.28.128.3:2377 To add a manager to this swarm, run &#39;docker swarm join-token manager&#39; and follow the instructions.……
+# 设置通告地址 $ docker swarm init --advertise-addr 172.28.128.3:2377 Swarm initialized: current node (34y77dgnqon4soj2kqyb65a9y) is now a manager. To add a worker to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-1omg2k2e92snxv3wlja3komux5wan4hynn80ikkma2s9rd5cxz-9hq2vf8n0jysukytfqpavd8j7 \ 172.28.128.3:2377 To add a manager to this swarm, run &#39;docker swarm join-token manager&#39; and follow the instructions. 查看节点加入指令
+如前所述，其他节点加入Swarm需要使用正确的token值。对于管理节点和工作节点，其加入Swarm使用的token值是不同的。
+# 向Swarm中加入管理节点 docker swarm join-token manager $ docker swarm join-token manager To add a manager to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \ 10.0.2.15:2377 # 向Swarm中加入工作节点 docker swarm join-token worker $ docker swarm join-token worker To add a worker to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \ 10.……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm4/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -245,7 +253,7 @@ Swarm模式下有两种服务的部署方式，复制服务 和 全局服务。
 PKI工作原理 Docker引擎中内置的公钥基础设施(Public Key Infrastructure)系统使得容器的部署和编排变得更加简单和安全。Swarm集群中的节点使用传输层安全(TLS)来认证，授权和加密它们与集群中其他节点的通信。
 当我们使用命令docker swarm init创建一个Swarm集群时，Docker引擎则将当前节点视为一个管理节点。默认情况下，管理节点自身生成一个新的跟证书颁发机构(CA)以及密钥对，以保护与加入集群的其他节点的通信。当然，也可以通过配置&ndash;external-ca参数来指定外部的根证书颁发机构。
 与此同时，管理节点还生成两个token值(用于向Swarm集群中加入节点)，一个是工作节点token值，另一个是管理节点token值。每一个token值都包含根CA证书的摘要和随机生成的密钥。当节点加入集群时，它使用摘要来验证远程管理节点的根CA证书，使用密钥来确保该节点是经过批准的节点。
-# 创建一个swarm $ docker swarm init # 查看管理节点和工作节点的加入命令 # 向Swarm中加入管理节点 docker swarm join-token manager # 向Swarm中加入工作节点 docker swarm join-token worker $ docker swarm join-token manager To add a manager to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \ 10.……
+# 创建一个swarm $ docker swarm init # 查看管理节点和工作节点的加入命令 # 向Swarm中加入管理节点 docker swarm join-token manager # 向Swarm中加入工作节点 docker swarm join-token worker $ docker swarm join-token manager To add a manager to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \ 10.0.2.15:2377 $ docker swarm join-token worker To add a worker to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \ 10.0.2.15:2377 # 通过对比可以发现，管理节点和工作节点使用的是不同的token值 # 两个token值的前半部分是一样的，即根证书的摘要是一样的；后半部分是不一样的，即随机生成的密钥 每次当新的节点加入Swarm集群时，管理节点向包含随机生成的节点ID颁发证书，用来标识证书通用名(CN)下的节点和组织名(UN)下的角色。节点ID用来标识Swarm集群中节点寿命的密码安全。……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm3/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -275,7 +283,7 @@ PKI工作原理 Docker引擎中内置的公钥基础设施(Public Key Infrastruc
 三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。
 # 在manger节点上 $ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6 # --update-delay参数配置服务任务或任务集的更新的时延 # 其格式为T1hT2mT3s，即T1小时T2分钟T3秒 # 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数 # 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。 # 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。 # 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如： # --update-failure-action docker service create # --update-failure-action docker service update # 接下来，我们更新redis的镜像 $ docker service update --image redis:3.0.7 redis 如前所述，默认情况下，更新主要包括以下几个流程：
 停止第一个任务 调度器更新已经停止的任务 为更新过的任务启动容器 若任务更新返回RUNNING状态，则等待设定的时延，并进行下一个任务的更新 若任务更新返回FAILED状态，则停止更新 更新结束后，我们看到如下状态：
-$ docker service ps redis ID NAME IMAGE NODE DESIRED STATE CURRENT STATE ERROR PORTS i9c6xvbopko2 redis.……
+$ docker service ps redis ID NAME IMAGE NODE DESIRED STATE CURRENT STATE ERROR PORTS i9c6xvbopko2 redis.1 redis:3.0.7 ubuntu-xenial Running Running 5 seconds ago mnw258z0j5hg \_ redis.1 redis:3.0.6 ubuntu-xenial Shutdown Shutdown 5 seconds ago iu7yjb7nm345 redis.2 redis:3.0.7 ubuntu-xenial Running Running 53 seconds ago fmgyoq4vladx \_ redis.2 redis:3.0.6 ubuntu-xenial Shutdown Shutdown 54 seconds ago zsliph02ycsf redis.3 redis:3.0.7 ubuntu-xenial Running Running about a minute ago 8j75vwiunh49 \_ redis.3 redis:3.0.6 ubuntu-xenial Shutdown Shutdown about a minute ago 由此我们可以判断，在服务/任务更新的过程中，实质上是 创建了一批新的容器来满足我们的更新时所指定的新的需求。……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm2/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -310,7 +318,9 @@ Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配
 搭建Swarm集群 搭建Swarm集群过程中，所使用的系统环境环境如下：
 三个节点(manager, worker1, worker2)均为xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 1.创建一个Swarm集群
 在manager所在的主机创建Swarm集群，即创建Swarm管理节点。
-# 在manager节点上 # 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点 $ docker swarm init --advertise-addr 172.28.128.0.3 Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager. To add a worker to this Swarm, run the following command: docker Swarm join \ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ 172.……
+# 在manager节点上 # 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点 $ docker swarm init --advertise-addr 172.28.128.0.3 Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager. To add a worker to this Swarm, run the following command: docker Swarm join \ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ 172.28.128.3:2377 To add a manager to this Swarm, run &#39;docker Swarm join-token manager&#39; and follow the instructions. # docker node ls查看管理节点的状态 $ docker node ls ID HOSTNAME STATUS AVAILABILITY MANAGER STATUS utfwatnlalniyo5glt734m4sj * ubuntu-xenial Ready Active Leader 2.向Swarm中注册工作节点
+在worker[1-2]所在的主机创建Swarm工作节点，并加入到Swarm集群中。
+# 在worker1节点上 $ docker Swarm join \ $ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ $ 172.28.128.3:2377 This node joined a Swarm as a worker. # 在worker2节点上 $ docker Swarm join \ $ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ $ 172.……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -337,7 +347,10 @@ Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配
 1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
 Dockerfile
 创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
-# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD . /app # Install any needed packages specified in requirements.txt RUN pip install -r requirements.txt # Make port 80 available to the world outside this container EXPOSE 80 # Define environment variable ENV NAME World # Run app.……
+# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD . /app # Install any needed packages specified in requirements.txt RUN pip install -r requirements.txt # Make port 80 available to the world outside this container EXPOSE 80 # Define environment variable ENV NAME World # Run app.py when the container launches CMD [&#34;python&#34;, &#34;app.py&#34;] Dockerfile中用到两个我们还未创建的文件，即requirements.txt和app.py。接下来，创建这两个文件，内容分别如下：
+requirements.txt
+Flask Redis app.py
+from flask import Flask from redis import Redis, RedisError import os import socket # Connect to Redis redis = Redis(host=&#34;redis&#34;, db=0, socket_connect_timeout=2, socket_timeout=2) app = Flask(__name__) @app.route(&#34;/&#34;) def hello(): try: visits = redis.incr(&#34;counter&#34;) except RedisError: visits = &#34;&lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;&#34; html = &#34;&lt;h3&gt;Hello {name}!&lt;/h3&gt;&#34; \ &#34;&lt;b&gt;Hostname:&lt;/b&gt; {hostname}&lt;br/&gt;&#34; \ &#34;&lt;b&gt;Visits:&lt;/b&gt; {visits}&#34; return html.……
             <p class="readmore"><a href="http://www.subond.com/post/docker_quickstart/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -389,7 +402,24 @@ COPY指令复制所指向的文件或目录，将其添加至新镜像中，复�
 若以反斜杠/结尾则其指向是目录，否则指向文件。同理。
 若是文件，则的内容被写入中；否则所指向的文件或目录中的内容被复制到目录中。
 当指定多个源时，必须使目录。若不存在，则会被创建。
-CMD 格式：RUN &lt;shell_cmd&gt; # shell格式……
+CMD 格式：RUN &lt;shell_cmd&gt; # shell格式
+或者：RUN [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
+或者：RUN [&ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # 为ENTRYPOINT指令提供参数
+分类：设置指令
+CMD指令为容器运行时指定的操作默认操作。该操作可以是执行自定义脚本，也可以是执行系统命令。该指令只能在文件中存在一次，如果有多个，则只执行最后一条。
+第三种情况时，ENTRYPOINT指定的是一个可执行的脚本或者程序的路径，该指定的脚本或者程序将会以param1和param2作为参数执行。所以如果CMD指令使用上面的形式，那么Dockerfile中必须要有配套的ENTRYPOINT。
+ENTRYPOINT（设置container启动时执行的操作 格式：ENTRYPOINT # shell格式
+或者：ENTRYPOINT [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
+分类：设置指令
+ENTRYPOINT指定容器启动时执行的命令，可以多次设置，但是只有最后一个有效。该指令的使用分为两种情况，一种是独自使用，另一种和CMD指令配合使用。当独自使用时，如果你还使用了CMD命令且CMD是一个完整的可执行的命令，那么CMD指令和ENTRYPOINT会互相覆盖只有最后一个CMD或者ENTRYPOINT有效。
+# CMD指令将不会被执行，只有ENTRYPOINT指令被执行 CMD echo “Hello, World!” ENTRYPOINT ls -l CMD指令配合使用来指定ENTRYPOINT的默认参数，这时CMD指令不是一个完整的可执行命令，仅仅是参数部分；ENTRYPOINT指令只能使用JSON方式指定执行命令，而不能指定参数。
+FROM ubuntu CMD [&#34;-l&#34;] ENTRYPOINT [&#34;/usr/bin/ls&#34;] USER 格式：USER 分类：设置指令
+USER用于设置启动容器的用户，默认是root用户。
+EXPOSE 指定容器需要映射到宿主机器的端口） 格式：EXPOSE [&hellip;]
+分类：设置指令
+EXPOSE用于指定容器需要映射到宿主机器的端口。当你需要访问容器的时候，可以不是用容器的IP地址而是使用宿主机器的IP地址和映射后的端口。要完成整个操作需要两个步骤，首先在Dockerfile使用EXPOSE设置需要映射的容器端口，然后在运行容器的时候指定-p选项加上EXPOSE设置的端口，这样EXPOSE设置的端口号会被随机映射成宿主机器中的一个端口号。也可以指定需要映射到宿主机器的那个端口，这时要确保宿主机器上的端口号没有被使用。EXPOSE指令可以一次设置多个端口号，相应的运行容器的时候，可以配套的多次使用-p选项。
+端口映射是docker比较重要的一个功能，原因在于每次运行容器的时候容器的IP地址不能指定而是在桥接网卡的地址范围内随机生成的。宿主机器的IP地址是固定的，我们可以将容器的端口的映射到宿主机器上的一个端口，免去每次访问容器中的某个服务时都要查看容器的IP的地址。对于一个运行的容器，可以使用docker port加上容器中需要映射的端口和容器的ID来查看该端口号在宿主机器上的映射端口。
+# 映射一个端口 EXPOSE port1 # 相应的运行容器使用的命令 docker run -p port1 image # 映射多个端口 EXPOSE port1 port2 port3 # 相应的运行容器使用的命令 docker run -p port1 -p port2 -p port3 image # 还可以指定需要映射到宿主机器上的某个端口号 docker run -p host_port1:port1 -p host_port2:port2 -p host_port3:port3 image VOLUME（指定挂载点） 格式：VOLUME [&quot;&lt;mountpoint&quot;]……
             <p class="readmore"><a href="http://www.subond.com/post/docker_dockerfile/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -457,7 +487,7 @@ Docker Registries用来管理Docker镜像。……
 
                     <footer id="footer">
     <div>
-        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        &copy; 2022 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
         
     </div>
     <br />

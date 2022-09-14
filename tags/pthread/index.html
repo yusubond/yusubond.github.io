@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
 
-    <title>pthread | subond</title>
-    <meta property="og:title" content="pthread - subond">
+    <title>pthread | subond&#39;s blog</title>
+    <meta property="og:title" content="pthread - subond&#39;s blog">
     <meta property="og:type" content="article">
         
         
     <meta name="Keywords" content="">
     <meta name="description" content="pthread">
         
-    <meta name="author" content="">
+    <meta name="author" content="subond">
     <meta property="og:url" content="http://www.subond.com/tags/pthread/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/pthread/index.xml" title="subond" />
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/pthread/index.xml" title="subond's blog" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -39,7 +39,7 @@
             <div class="site-name ">
                 
                     <a id="logo" href="http://www.subond.com/">
-                        subond
+                        subond&#39;s blog
                     </a>
                 
                 
@@ -122,7 +122,7 @@ Linux系统中并不区分进程和线程，统称为 任务。其系统调用�
 fork():传统复制进程——具备父任务的所有数据的副本
 clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构
 线程小结 线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。
-一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &lt;pthread.……
+一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &lt;pthread.h&gt; #include &lt;stdio.h&gt; #include &lt;sys/types.h&gt; #include &lt;unistd.h&gt; #include &lt;sys/wait.h&gt; #include &lt;math.h&gt; int n; void *runner(void *param) { if(n &lt;= 1) return(NULL); for(int i = 2; i &lt;= n; i++) { int len = sqrt(i * 1.0); int flag = 1; for(int j = 2; j &lt;= len; j++) { if(i % j == 0) flag = 0; } if(flag == 1) printf(&#34;%d &#34;, i); } pthread_exit(0); } int main() { printf(&#34;Enter a number(&gt;= 0):&#34;); scanf(&#34;%d&#34;, &amp;n); int pid; pthread_t tid; pthread_attr_t attr; pthread_attr_init(&amp;attr); pid = pthread_create(&amp;tid, &amp;attr, runner, NULL); if(pid !……
             <p class="readmore"><a href="http://www.subond.com/post/linux_process2/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -171,7 +171,7 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
 
                     <footer id="footer">
     <div>
-        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        &copy; 2022 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
         
     </div>
     <br />

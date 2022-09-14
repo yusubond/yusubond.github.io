@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>pthread on subond</title>
+    <title>pthread on subond&#39;s blog</title>
     <link>http://www.subond.com/tags/pthread/</link>
-    <description>Recent content in pthread on subond</description>
+    <description>Recent content in pthread on subond&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
     <lastBuildDate>Sun, 19 Jun 2016 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/pthread/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux中的线程管理</title>
@@ -40,7 +41,7 @@ Linux系统中并不区分进程和线程，统称为 任务。其系统调用�
 fork():传统复制进程——具备父任务的所有数据的副本
 clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构
 线程小结 线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。
-一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &amp;lt;pthread.</description>
+一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &amp;lt;pthread.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;sys/wait.h&amp;gt; #include &amp;lt;math.h&amp;gt; int n; void *runner(void *param) { if(n &amp;lt;= 1) return(NULL); for(int i = 2; i &amp;lt;= n; i++) { int len = sqrt(i * 1.0); int flag = 1; for(int j = 2; j &amp;lt;= len; j++) { if(i % j == 0) flag = 0; } if(flag == 1) printf(&amp;#34;%d &amp;#34;, i); } pthread_exit(0); } int main() { printf(&amp;#34;Enter a number(&amp;gt;= 0):&amp;#34;); scanf(&amp;#34;%d&amp;#34;, &amp;amp;n); int pid; pthread_t tid; pthread_attr_t attr; pthread_attr_init(&amp;amp;attr); pid = pthread_create(&amp;amp;tid, &amp;amp;attr, runner, NULL); if(pid !</description>
     </item>
     
     <item>

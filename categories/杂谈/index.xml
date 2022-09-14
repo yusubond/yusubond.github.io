@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>杂谈 on subond</title>
+    <title>杂谈 on subond&#39;s blog</title>
     <link>http://www.subond.com/categories/%E6%9D%82%E8%B0%88/</link>
-    <description>Recent content in 杂谈 on subond</description>
+    <description>Recent content in 杂谈 on subond&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
     <lastBuildDate>Tue, 13 Sep 2022 17:34:32 +0800</lastBuildDate><atom:link href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>First Post</title>

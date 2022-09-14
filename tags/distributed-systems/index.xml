@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>distributed systems on subond</title>
+    <title>distributed systems on subond&#39;s blog</title>
     <link>http://www.subond.com/tags/distributed-systems/</link>
-    <description>Recent content in distributed systems on subond</description>
+    <description>Recent content in distributed systems on subond&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
     <lastBuildDate>Tue, 21 Mar 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>深入理解Paxos算法</title>
@@ -35,7 +36,26 @@ Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过
 Paxso算法原命题
 如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &amp;lt; n1,v1 != v0。
 Paxso算法原命题加强
-如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &amp;lt; n1, v1 != v0。</description>
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &amp;lt; n1, v1 != v0。
+Paxso算法原命题进一步加强
+如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &amp;lt; n1, v1 != v0。
+归纳法证明
+假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &amp;gt;= m)，对应的值也是v。对n进行归纳假设。
+n = m时，显然结论成立。
+设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。
+当n = k + 1时，若提议k+1不存在，则结论成立。
+接下来，证明提议提议k+1不存问题。
+假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。两个多数派必有交集，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&amp;gt;=m。又因为第一阶段A，t&amp;lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。
+6.示例演示 为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。
+7.小结 通过前面的讨论和学习，我们可以回顾一下协议的细节：
+为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。
+为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。
+为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。
+&amp;ldquo;与其预测未来，不如限制未来&amp;rdquo;,应该是Paxos协议的核心思想。——郑建军(微信工程师)
+参考资料
+Leslie Lanmport:Paxos Made Simple
+Info架构师2017年1月刊:微信PaxsoStore:深入浅出Paxos算法协议
+一步一步理解Paxos算法</description>
     </item>
     
   </channel>

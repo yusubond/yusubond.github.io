@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
 
-    <title>Vagrant使用案例 | subond</title>
-    <meta property="og:title" content="Vagrant使用案例 - subond">
+    <title>Vagrant使用案例 | subond&#39;s blog</title>
+    <meta property="og:title" content="Vagrant使用案例 - subond&#39;s blog">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content='2017-05-15T00:00:00&#43;08:00'>
@@ -42,7 +42,7 @@
             <div class="site-name ">
                 
                     <a id="logo" href="http://www.subond.com/">
-                        subond
+                        subond&#39;s blog
                     </a>
                 
                 
@@ -95,69 +95,146 @@
 <ol>
 <li>配置一个centos7系统，要求使用私有网络地址<code>192.168.10.10</code>，hostname为dbserver。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>configure(<span style="color:#e6db74">&#34;2&#34;</span>) <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>dbserver<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>  dbserver<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;centos/7&#34;</span>
-</span></span><span style="display:flex;"><span>  dbserver<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;private_network&#34;</span>, <span style="color:#e6db74">ip</span>: <span style="color:#e6db74">&#34;192.168.10.10&#34;</span>
-</span></span><span style="display:flex;"><span>  dbserver<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>hostname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;dbserver&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
-</span></span></code></pre></div><p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#008080">Vagrant</span><span style="color:#000;font-weight:bold">.</span>configure(<span style="color:#d14">&#34;2&#34;</span>) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>dbserver<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>  dbserver<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;centos/7&#34;</span>
+</span></span><span style="display:flex;"><span>  dbserver<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;private_network&#34;</span>, <span style="color:#990073">ip</span>: <span style="color:#d14">&#34;192.168.10.10&#34;</span>
+</span></span><span style="display:flex;"><span>  dbserver<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>hostname <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;dbserver&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。</p>
 <ol start="2">
 <li>配置一个ubuntu xenial64系统，并将工程目录下的<code>data</code>目录同步到vm中，目录为<code>/vagrant/project_data</code>；同时将vm的80端口映射到主机的8080端口。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>configure(<span style="color:#e6db74">&#34;2&#34;</span>) <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>ubuntu16<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>  ubuntu16<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ubuntu/xenial64&#34;</span>
-</span></span><span style="display:flex;"><span>  ubuntu16<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;forwarded_port&#34;</span>, <span style="color:#e6db74">guest</span>: <span style="color:#ae81ff">80</span>, <span style="color:#e6db74">host</span>: <span style="color:#ae81ff">8080</span>
-</span></span><span style="display:flex;"><span>  ubuntu16<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>synced_folder <span style="color:#e6db74">&#34;/Users/subond/UCloud/VHost/data&#34;</span>, <span style="color:#e6db74">&#34;/project_data&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
-</span></span></code></pre></div><p>需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的<code>/vagrant</code>目录下。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#008080">Vagrant</span><span style="color:#000;font-weight:bold">.</span>configure(<span style="color:#d14">&#34;2&#34;</span>) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>ubuntu16<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>  ubuntu16<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;ubuntu/xenial64&#34;</span>
+</span></span><span style="display:flex;"><span>  ubuntu16<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;forwarded_port&#34;</span>, <span style="color:#990073">guest</span>: <span style="color:#099">80</span>, <span style="color:#990073">host</span>: <span style="color:#099">8080</span>
+</span></span><span style="display:flex;"><span>  ubuntu16<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>synced_folder <span style="color:#d14">&#34;/Users/subond/UCloud/VHost/data&#34;</span>, <span style="color:#d14">&#34;/project_data&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>需要说明的是：指定同步文件时，第一个参数既可以当前工程目录的相对目录，也可以是主机上的绝对路径；第二个参数是vm中的绝对路径。默认情况下，当前工程目录下的文件将同步至vm中的<code>/vagrant</code>目录下。</p>
 <ol start="3">
 <li>配置一个centos7系统，要求设置vm的名字为<code>foobar</code>,内存大小为512M。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>configure(<span style="color:#e6db74">&#34;2&#34;</span>) <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>centos<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>  centos<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;centos/7&#34;</span>
-</span></span><span style="display:flex;"><span>  centos<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provider <span style="color:#e6db74">&#34;virtualbox&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>vm<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>    vm<span style="color:#f92672">.</span>customize <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;modifyvm&#34;</span>, <span style="color:#e6db74">:id</span>, <span style="color:#e6db74">&#34;--name&#34;</span>, <span style="color:#e6db74">&#34;foobar&#34;</span>, <span style="color:#e6db74">&#34;--memory&#34;</span>, <span style="color:#e6db74">&#34;512&#34;</span><span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
-</span></span></code></pre></div><h2 id="2分布式系统配置">2.分布式系统配置</h2>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#008080">Vagrant</span><span style="color:#000;font-weight:bold">.</span>configure(<span style="color:#d14">&#34;2&#34;</span>) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>centos<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>  centos<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;centos/7&#34;</span>
+</span></span><span style="display:flex;"><span>  centos<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>provider <span style="color:#d14">&#34;virtualbox&#34;</span> <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>vm<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>    vm<span style="color:#000;font-weight:bold">.</span>customize <span style="color:#000;font-weight:bold">[</span><span style="color:#d14">&#34;modifyvm&#34;</span>, <span style="color:#990073">:id</span>, <span style="color:#d14">&#34;--name&#34;</span>, <span style="color:#d14">&#34;foobar&#34;</span>, <span style="color:#d14">&#34;--memory&#34;</span>, <span style="color:#d14">&#34;512&#34;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2分布式系统配置">2.分布式系统配置</h2>
 <ol>
 <li>创建两个主机，一个做服务端，hostname为<code>server</code>,一个做客户端，hostname为<code>client</code>，两个虚拟均设置私有网络，并配置dhcp服务。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>configure(<span style="color:#e6db74">&#34;2&#34;</span>) <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>subond<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>    subond<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;centos/7&#34;</span>
-</span></span><span style="display:flex;"><span>    subond<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>define <span style="color:#e6db74">&#34;server&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>server<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>        server<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;private_network&#34;</span>, <span style="color:#e6db74">type</span>: <span style="color:#e6db74">&#34;dhcp&#34;</span>
-</span></span><span style="display:flex;"><span>        server<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>hostname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;server&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#008080">Vagrant</span><span style="color:#000;font-weight:bold">.</span>configure(<span style="color:#d14">&#34;2&#34;</span>) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>subond<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>    subond<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;centos/7&#34;</span>
+</span></span><span style="display:flex;"><span>    subond<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>define <span style="color:#d14">&#34;server&#34;</span> <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>server<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>        server<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;private_network&#34;</span>, <span style="color:#990073">type</span>: <span style="color:#d14">&#34;dhcp&#34;</span>
+</span></span><span style="display:flex;"><span>        server<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>hostname <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;server&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">end</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    subond<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>define <span style="color:#e6db74">&#34;client&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>client<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>        client<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;private_network&#34;</span>, <span style="color:#e6db74">type</span>: <span style="color:#e6db74">&#34;dhcp&#34;</span>
-</span></span><span style="display:flex;"><span>        client<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>hostname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;client&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
-</span></span></code></pre></div><ol start="2">
+</span></span><span style="display:flex;"><span>    subond<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>define <span style="color:#d14">&#34;client&#34;</span> <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>client<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>        client<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;private_network&#34;</span>, <span style="color:#990073">type</span>: <span style="color:#d14">&#34;dhcp&#34;</span>
+</span></span><span style="display:flex;"><span>        client<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>hostname <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;client&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
 <li>创建一个具有三个节点的集群，hostname分别为<code>node1</code>,<code>node2</code>,<code>node3</code>,并设置私有网络；节点大小Mem = 2048,CPU = 1；同时将其配置成docker开发环境。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">Vagrant</span><span style="color:#f92672">.</span>configure(<span style="color:#e6db74">&#34;2&#34;</span>) <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>cluster<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#ae81ff">1</span><span style="color:#f92672">..</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">.</span> each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>    cluster<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>define <span style="color:#e6db74">&#34;node</span><span style="color:#e6db74">#{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>node<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>      node<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;centos/7&#34;</span>
-</span></span><span style="display:flex;"><span>      node<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>hostname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;node</span><span style="color:#e6db74">#{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>      node<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>network <span style="color:#e6db74">&#34;private_network&#34;</span>, <span style="color:#e6db74">ip</span>: <span style="color:#e6db74">&#34;192.168.10.</span><span style="color:#e6db74">#{</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">10</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>      node<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provider <span style="color:#e6db74">&#34;virtualbox&#34;</span> <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>v<span style="color:#f92672">|</span>
-</span></span><span style="display:flex;"><span>         v<span style="color:#f92672">.</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;node</span><span style="color:#e6db74">#{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>         v<span style="color:#f92672">.</span>memory <span style="color:#f92672">=</span> <span style="color:#ae81ff">2048</span>
-</span></span><span style="display:flex;"><span>         v<span style="color:#f92672">.</span>cpus <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">end</span>
-</span></span><span style="display:flex;"><span>      node<span style="color:#f92672">.</span>vm<span style="color:#f92672">.</span>provision <span style="color:#e6db74">&#34;shell&#34;</span>, <span style="color:#e6db74">inline</span>: <span style="color:#e6db74">&lt;&lt;-SHELL
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>        yum install wget <span style="color:#f92672">-</span>y
-</span></span><span style="display:flex;"><span>        wget <span style="color:#f92672">-</span>P <span style="color:#e6db74">/home/</span>vagrant <span style="color:#e6db74">https</span>:<span style="color:#e6db74">//</span>download<span style="color:#f92672">.</span>docker<span style="color:#f92672">.</span>com<span style="color:#f92672">/</span>linux<span style="color:#f92672">/</span>centos<span style="color:#f92672">/</span><span style="color:#ae81ff">7</span><span style="color:#f92672">/</span>x86_64<span style="color:#f92672">/</span>stabl    e<span style="color:#f92672">/</span><span style="color:#66d9ef">Packages</span><span style="color:#f92672">/</span>docker<span style="color:#f92672">-</span>ce<span style="color:#f92672">-</span><span style="color:#ae81ff">18</span><span style="color:#f92672">.</span><span style="color:#ae81ff">03</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span>ce<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span>el7<span style="color:#f92672">.</span>centos<span style="color:#f92672">.</span>x86_64<span style="color:#f92672">.</span>rpm
-</span></span><span style="display:flex;"><span>        yum install <span style="color:#e6db74">/home/</span>vagrant<span style="color:#f92672">/</span>docker<span style="color:#f92672">-</span>ce<span style="color:#f92672">-</span><span style="color:#ae81ff">18</span><span style="color:#f92672">.</span><span style="color:#ae81ff">03</span><span style="color:#f92672">.</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span>ce<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span>el7<span style="color:#f92672">.</span>centos<span style="color:#f92672">.</span>x86_64<span style="color:#f92672">.</span>rpm <span style="color:#f92672">-</span>y
-</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">SHELL</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
-</span></span></code></pre></div><p>需要的说明的是：如果需要shell功能，最好的方式就是单独写shell脚本，通过文件同步的方式注入虚机；安装包文件也最好使用这种方式，速度会快一些。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#008080">Vagrant</span><span style="color:#000;font-weight:bold">.</span>configure(<span style="color:#d14">&#34;2&#34;</span>) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>cluster<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>  (<span style="color:#099">1</span><span style="color:#000;font-weight:bold">..</span><span style="color:#099">3</span>)<span style="color:#000;font-weight:bold">.</span> each <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>i<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>    cluster<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>define <span style="color:#d14">&#34;node</span><span style="color:#d14">#{</span>i<span style="color:#d14">}</span><span style="color:#d14">&#34;</span> <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>node<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>      node<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;centos/7&#34;</span>
+</span></span><span style="display:flex;"><span>      node<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>hostname <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;node</span><span style="color:#d14">#{</span>i<span style="color:#d14">}</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span>      node<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;private_network&#34;</span>, <span style="color:#990073">ip</span>: <span style="color:#d14">&#34;192.168.10.</span><span style="color:#d14">#{</span>i<span style="color:#000;font-weight:bold">+</span><span style="color:#099">10</span><span style="color:#d14">}</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span>      node<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>provider <span style="color:#d14">&#34;virtualbox&#34;</span> <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>v<span style="color:#000;font-weight:bold">|</span>
+</span></span><span style="display:flex;"><span>         v<span style="color:#000;font-weight:bold">.</span>name <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;node</span><span style="color:#d14">#{</span>i<span style="color:#d14">}</span><span style="color:#d14">&#34;</span>
+</span></span><span style="display:flex;"><span>         v<span style="color:#000;font-weight:bold">.</span>memory <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">2048</span>
+</span></span><span style="display:flex;"><span>         v<span style="color:#000;font-weight:bold">.</span>cpus <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#000;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>      node<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>provision <span style="color:#d14">&#34;shell&#34;</span>, <span style="color:#990073">inline</span>: <span style="color:#d14">&lt;&lt;-SHELL
+</span></span></span><span style="display:flex;"><span><span style="color:#d14"></span>        yum install wget <span style="color:#000;font-weight:bold">-</span>y
+</span></span><span style="display:flex;"><span>        wget <span style="color:#000;font-weight:bold">-</span>P <span style="color:#009926">/home/</span>vagrant <span style="color:#990073">https</span>:<span style="color:#009926">//</span>download<span style="color:#000;font-weight:bold">.</span>docker<span style="color:#000;font-weight:bold">.</span>com<span style="color:#000;font-weight:bold">/</span>linux<span style="color:#000;font-weight:bold">/</span>centos<span style="color:#000;font-weight:bold">/</span><span style="color:#099">7</span><span style="color:#000;font-weight:bold">/</span>x86_64<span style="color:#000;font-weight:bold">/</span>stabl    e<span style="color:#000;font-weight:bold">/</span><span style="color:#008080">Packages</span><span style="color:#000;font-weight:bold">/</span>docker<span style="color:#000;font-weight:bold">-</span>ce<span style="color:#000;font-weight:bold">-</span><span style="color:#099">18</span><span style="color:#000;font-weight:bold">.</span><span style="color:#099">03</span><span style="color:#000;font-weight:bold">.</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">.</span>ce<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">.</span>el7<span style="color:#000;font-weight:bold">.</span>centos<span style="color:#000;font-weight:bold">.</span>x86_64<span style="color:#000;font-weight:bold">.</span>rpm
+</span></span><span style="display:flex;"><span>        yum install <span style="color:#009926">/home/</span>vagrant<span style="color:#000;font-weight:bold">/</span>docker<span style="color:#000;font-weight:bold">-</span>ce<span style="color:#000;font-weight:bold">-</span><span style="color:#099">18</span><span style="color:#000;font-weight:bold">.</span><span style="color:#099">03</span><span style="color:#000;font-weight:bold">.</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">.</span>ce<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span><span style="color:#000;font-weight:bold">.</span>el7<span style="color:#000;font-weight:bold">.</span>centos<span style="color:#000;font-weight:bold">.</span>x86_64<span style="color:#000;font-weight:bold">.</span>rpm <span style="color:#000;font-weight:bold">-</span>y
+</span></span><span style="display:flex;"><span>       <span style="color:#008080">SHELL</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#000;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>需要的说明的是：如果需要shell功能，最好的方式就是单独写shell脚本，通过文件同步的方式注入虚机；安装包文件也最好使用这种方式，速度会快一些。</p>
 <h2 id="参考资料">参考资料</h2>
 <p>[1]. <a href="https://segmentfault.com/a/1190000005875116">使用Vagrant创建多节点虚拟机集群</a><br>
 [2]. <a href="https://docs.docker.com/install/linux/docker-ce/centos/#upgrade-docker-ce">docker安装</a><br>
@@ -167,6 +244,15 @@
         </div>
 
         
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">subond</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/vagrant_usage/">http://www.subond.com/post/vagrant_usage/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
 
 
         
@@ -213,7 +299,7 @@
 
                     <footer id="footer">
     <div>
-        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        &copy; 2022 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
         
     </div>
     <br />
