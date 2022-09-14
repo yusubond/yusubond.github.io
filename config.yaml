@@ -5,7 +5,7 @@ title: "subond\'s blog"
 author:
   name: "subond"
 
-summaryLength: 140
+summaryLength: 30
 
 # Category & Tag
 default_category: uncategorized
@@ -29,6 +29,13 @@ markup:
     style: "github"
 
 params:
+  author: "subond"
+  subtitle: "专注于云网络，个人成长"
+  keywords: "golang,博客"
+  description: "专注于云网络，个人成长"
+  busuanzi: true #启用不算子网页统计
+  googleAd: ""  #ca-pub-xxxxxxxxxxxxxx
+  localSearch: true # 启用本地搜索
   cc:
     name: "知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议"
     link: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
