@@ -7,6 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Tue, 13 Sep 2022 17:34:32 +0800</lastBuildDate><atom:link href="http://www.subond.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>阅读书单</title>
+      <link>http://www.subond.com/reading/</link>
+      <pubDate>Wed, 14 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/reading/</guid>
+      <description>我的阅读书单</description>
+    </item>
+    
+    <item>
       <title>First Post</title>
       <link>http://www.subond.com/post/first-post/</link>
       <pubDate>Tue, 13 Sep 2022 17:34:32 +0800</pubDate>
