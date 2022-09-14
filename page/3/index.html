@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta name="generator" content="Hugo 0.102.3" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>subond</title>
+    <meta property="og:title" content="subond">
+    <meta property="og:type" content="website">
+    <meta name="Keywords" content="">
+    <meta name="description" content="">
+    <meta property="og:url" content="http://www.subond.com/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/index.xml" title="subond" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <h1>
+                        <a id="logo" href="http://www.subond.com/">
+                            subond
+                        </a>
+                    </h1>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/linux_pthread/" title="Linux中的线程函数" target="_blank">Linux中的线程函数</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年6月14日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。以下内容，主要介绍5个基本线程函数。
+1.pthread_create()函数 当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。
+#include &lt;pthread.h&gt; int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg); //返回：成功为0，出错为正的Exxx值 tid:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。
+attr:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。
+创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。注意 func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。
+2.pthread_join()函数 #include &lt;pthread.h&gt; int pthread_join(pthread_t *tid, void **status); //返回：成功为0，出错为正的Exxx值。 该函数的功能是等待一个给定线程终止
+3.pthread_self()函数 #include &lt;pthread.h&gt; int pthread_self(void) //返回：调用线程的线程ID。 4.pthread_detach()函数 #include &lt;pthread.h&gt; int pthread_detach(pthread_t tid) //返回：成功返回0，出错为正的Exxx值。 一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源 都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。
+5.pthread_exit()函数 #include &lt;pthread.h&gt; int pthread_exit(void *status) //不返回 调用pthread_exit函数可使线程终止。
+一个栗子 利用线程的方法，重新编写基本UDP套接字编程
+其服务端源码地址：https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c
+结果如下图所示：……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/linux_pthread/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/gitxuexi/" title="Git学习手记" target="_blank">Git学习手记</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年4月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            一、基础篇 指令介绍 $ git config --global user.name &#34;username&#34; # 配置仓库参数，全局应用该用户名 $ git config --global user.email &#34;useremail&#34;	# 配置仓库参数，全局应用该用户邮箱 $ git config user.name # 配置仓库参数，只应用本仓库 $ git config user.email # 配置仓库参数，只应用本仓库 $ git init # 把当前目录变成git可管理的仓库 $ git add files # 添加文件到暂存区 $ git diff file # 查看文件的修改内容 $ git commit -m &#34;提交说明信息&#34; # 提交文件到仓库 $ git status # 获取当前仓库中文档的状态 $ git log # 查看历史记录 $ git log --oneline # 单行显示历史信息 $ git reflog # 显示版本号 $ git checkout -- file # 取出文件 $ git remote add origin &lt;仓库地址&gt; # 添加远程仓库地址 $ git push origin &lt;分支名1&gt; # 推送本地内容到远程仓库分支1 $ git pull origin &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt; # 取回远程主机某个分支，并与本地指定分支合并 $ git clone &lt;仓库地址&gt; # 克隆远程仓库到本地仓库 $ git remote # 查看远程仓库信息 $ git remote -v # 查看远程仓库详细信息 $ git remote add origin &lt;仓库地址&gt; #添加远程仓库地址 # 如果需要修改远程仓库地址，先删除地址，再添加 $ git remote rm origin $ git remote add origin &lt;your_url&gt; 版本回退 git reset &ndash;hard 版本号(即commit_id)……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/gitxuexi/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="http://www.subond.com/page/2/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="http://www.subond.com/">1</a>
+    </li>
+    
+    <li >
+        <a href="http://www.subond.com/page/2/">2</a>
+    </li>
+    
+    <li  class="current">
+        <a href="http://www.subond.com/page/3/">3</a>
+    </li>
+    
+
+    
+</ol>
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm3/" title="Docker集群：工作原理" target="_blank">Docker集群：工作原理</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm2/" title="Docker集群：服务回滚" target="_blank">Docker集群：服务回滚</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (11)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

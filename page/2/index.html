@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta name="generator" content="Hugo 0.102.3" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>subond</title>
+    <meta property="og:title" content="subond">
+    <meta property="og:type" content="website">
+    <meta name="Keywords" content="">
+    <meta name="description" content="">
+    <meta property="og:url" content="http://www.subond.com/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/index.xml" title="subond" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <h1>
+                        <a id="logo" href="http://www.subond.com/">
+                            subond
+                        </a>
+                    </h1>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_swarm/" title="Docker集群：服务部署" target="_blank">Docker集群：服务部署</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月22日
+        </date>
+        
+        <div class="post-content">
+            一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
+本文目录：
+核心概念 搭建Swarm集群 核心概念 Swarm
+一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
+节点
+一个节点即是参与Swarm集群的Docker引擎实例。我们可以将其理解为一个Docker节点。虽然，我们可以在同一物理主机或云服务上运行一个或多个节点，但是典型的Swarm生产环境则是在分布式的物理主机或云服务上部署多个Docker节点。
+当部署一个服务到Swarm集群中时，我们需要率先在 管理节点 上注册该服务。然后，管理节点将该服务（称之为 任务）分派给各个 工作节点。
+管理节点(Swarm Manager)负责服务编排和集群管理以保证整个集群的正常运行，并负责选出一个leader进行任务编排工作。
+工作节点(Swarm Agent)负责接收并执行管理节点派发下来的任务。默认情况下，管理节点同时扮演工作节点的角色，即接收并执行任务。当然，我们也可以通过配置让管理节点只负责任务管理的功能，使之成为“只具备管理”的节点。Agent在每个工作节点上运行，并报告分派给它的任务。工作节点向管理节点报告其分派到的任务的当前状态，以便管理节点可以维护每个工作节点所需的状态。
+服务和任务
+一个服务是指运行在工作节点上任务的定义。它是Swarm系统的中心结构，也是用户与Swarm交互的主要根据。当创建一个服务时，我们需要指定容器即将使用的镜像以及容器中要执行的命令。在服务分派模型中，Swarm的管理节点根据我们在所需状态下设置的比例，在工作节点中分配特定数量的任务副本。对于全局服务，Swarm在集群中的每个可用工作节点上为服务运行一个任务。
+一个任务带有一个Docker容器和在容器中执行的命令。任务是Swarm进行服务管理的原子调度单元。管理节点根据服务规模中设置的副本数量将任务分派给工作节点。一旦一个任务分派给某个节点，任务就不能移动到另一个节点，它只能在分配的节点上运行或者失败，这即是任务的原子性。
+负载均衡
+Swarm集群管理使用的是 入口负载均衡 策略来暴露想要从外部访问的服务。Swarm的管理节点可以自动地给服务分配一个PublishedPort，也可以为该服务自行配置一个PublishedPort。如果不指定端口，Swarm管理节点将分配30000-32767之间的某个端口。
+外部组件，像云端负载均衡，可以访问集群中任何一个节点的PublishedPort，无论这个节点当前是否在运行某个服务的任务。Swarm路由中的所有节点都将连接到正在运行任务实例的节点上。
+Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配DNS条目。Swarm管理节点使用内部负载均衡，根据服务的DNS名称在集群内部的服务之间分配请求。
+搭建Swarm集群 搭建Swarm集群过程中，所使用的系统环境环境如下：
+三个节点(manager, worker1, worker2)均为xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 1.创建一个Swarm集群
+在manager所在的主机创建Swarm集群，即创建Swarm管理节点。
+# 在manager节点上 # 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点 $ docker swarm init --advertise-addr 172.28.128.0.3 Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager. To add a worker to this Swarm, run the following command: docker Swarm join \ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ 172.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/docker_swarm/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_quickstart/" title="Docker技术：快速上手教程" target="_blank">Docker技术：快速上手教程</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月20日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            本文目录：
+1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
+Dockerfile
+创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
+# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD . /app # Install any needed packages specified in requirements.txt RUN pip install -r requirements.txt # Make port 80 available to the world outside this container EXPOSE 80 # Define environment variable ENV NAME World # Run app.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/docker_quickstart/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_dockerfile/" title="Docker技术：Dockerfile的定义与使用" target="_blank">Docker技术：Dockerfile的定义与使用</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月18日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            本文目录：
+Dockerfile的使用 Dockerfile指令 Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令docker build可以与Dockerfile文件中构建我们自己需要的镜像。
+Dockerfile的使用 Dockerfile文件描述了构建镜像的步骤，其中每条指定都是单独执行的。除了FROM指令，其他每条指令都会在上一条指令所生成镜像的基础上执行，执行完成后生成一个新的镜像层。新的镜像层覆盖在原来的镜像之上，进而形成新的镜像。Dockerfile文件所生成的最终镜像是在基础镜像上叠加一层层的镜像形成的。
+值得注意的是，Docker引擎在构建镜像的过程中会缓存中间镜像。当从一个已经存在的基础镜像开始构建新镜像时，则将Dockerfile中的下一个指令和基础镜像的所有子镜像进行比较，如果有一个子镜像是由相同的指令生成的，则命中缓存，直接使用该镜像。
+Dockerfile指令 Dockerfile的基本格式如下：
+# 注释信息 INSTRUCTION arguments Dockerfile指令不区分大小写，但是建议使用大写，方便区分；#开头的表示注释行。根据指令的作用可以分分为两种：构建指令和设置指令。构建指令用于构建镜像，其指定的操作不会运行在镜像的容器上；而设置指令用于设置镜像的属性，其指定的操作运行在镜像的容器上。
+FROM 格式：FROM 或FROM :
+分类：构建指令
+FROM指令指定基础镜像，一个有效的Dockerfile文件必须以FROM作为第一条非注释指令。后续的指令都依赖于该指令指定的image。FROM指令指定的基础image可以是官方远程仓库中的，也可以位于本地仓库。
+MAINTAINER 格式：MAINTAINER 分类：构建指令
+用于将image的制作者相关的信息写入到image中。当我们对该image执行docker inspect命令时，输出中有相应的字段记录该信息。
+RUN 格式：RUN &lt;shell_cmd&gt; # shell格式
+或 RUN [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
+分类：构建指令
+RUN可以运行任何被基础image支持的命令。如基础image选择了ubuntu，那么软件管理部分只能使用ubuntu的命令。
+ENV 格式：ENV 分类：构建指令
+ENV指令用于在image中设置一个环境变量。设置完环境变量后，后续的RUN命令都可以使用，container启动后，可以通过docker inspect查看这个环境变量，也可以通过在docker run &ndash;env key=value时设置或修改环境变量。
+WORKDIR 格式：WORKDIR 分类：设置指令
+WORKDIR用于指定工作目录，相当于切换指令，对RUN,CMD,ENTRYPOINT生效，可设置多次。
+ADD 格式：ADD 分类：构建指令
+是相对被构建的源目录的相对路径，可以是文件或目录的路径，也可以是一个远程的文件url
+是container中的绝对路径
+所有复制到容器中的文件和文件夹权限为0755，uid和gid为0；如果是一个目录，那么会将该目录下的所有文件添加到容器中，不包括目录；如果文件是可识别的压缩格式，则Docker引擎会进行解压缩；如果是文件且中不使用斜杠结束，则会将视为文件，的内容会写入；如果是文件且中使用斜杠结束，则会文件拷贝到目录下。
+COPY 格式：COPY 分类：构建指令
+COPY指令复制所指向的文件或目录，将其添加至新镜像中，复制的文件或目录在镜像中的路径是。所指定的源可以是多个，但必须使上下文根目录的相对路径；也可以使用通配符指向所有匹配通配符的文件或目录。
+可以是文件或目录，但必须使镜像中的绝对路径或相对于WORKDIR的相对路径。
+若以反斜杠/结尾则其指向是目录，否则指向文件。同理。
+若是文件，则的内容被写入中；否则所指向的文件或目录中的内容被复制到目录中。
+当指定多个源时，必须使目录。若不存在，则会被创建。
+CMD 格式：RUN &lt;shell_cmd&gt; # shell格式……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/docker_dockerfile/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_docker_arch/" title="Docker技术：Docker系统架构" target="_blank">Docker技术：Docker系统架构</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月16日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            本文目录：
+[Docker Engine](#Docker Engine) Docker交付内容 Docker系统架构 Docker Engine Docker Engine主要包含三个组件，如下图所示：
+Docker Server：一个长时间运行的守护进程。 REST API：指定程序可以用来与守护进程通信的接口。 Client：命令行CLI客户端。 CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。
+Docker交付内容 快速，一致地交付应用程序 Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务
+在同一硬件上可允许多个工作流程 Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。
+Docker系统架构 Docker采用Client/Server架构模式，其系统架构如下图所示。
+Docker客户端与守护进程既可以运行在同一台主机，也运行在不同的主机上，两者利用Unix Socket或网络接口，通过REST API进行通信。
+Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。
+Docker客户端是用户与Docker Daemon进行交互的主要方式。
+Docker Registries用来管理Docker镜像。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/docker_docker_arch/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_docker/" title="Docker技术：认识Docker" target="_blank">Docker技术：认识Docker</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月14日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
+本文目录：
+1.什么是Docker 2.Docker基本概念 3.Docker安装 4.Docker网络 1.什么是Docker Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对 进程 进行封装隔离，属于 操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。
+Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的 应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
+2.Docker基本概念 Docker包括三个基本概念：镜像、容器、仓库。
+1 镜像(Image)
+众所周知，操作系统分为内核和用户空间。对于Linux而言，内核启动后，会挂载root文件系统为其提供用户空间支持。而Docker镜像，就相当于一个root文件系统。
+Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
+分层存储
+镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
+# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.04 16.04: Pulling from library/ubuntu b6f892c0043b: Pull complete 55010f332b04: Pull complete 2955fb827c94: Pull complete 3deef3fcbd30: Pull complete cf9722e506aa: Pull complete Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8 Status: Downloaded newer image for ubuntu:16.04 # 可以看到，整个ubuntu16.04镜像由五层存储构成 # 仓库的元数据 # 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据 $ cat repositories.json | python -mjson.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/docker_docker/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/reading_and_writing/" title="读书写作那点事儿" target="_blank">读书写作那点事儿</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年2月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/nextme' target="_blank">NextMe</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            这是一篇关于读书写作的读书笔记，内容源自李笑来老师知乎Live的《我的读书经验》。
+关于读书路径 知识就是力量，从来都不是一句空话。获取知识的途径有很多，读书无疑是有效的方式之一。那么，有哪些较好的读书路径值得我们参考呢？笑来老师给出了以下几个方法：
+泛读，即广泛地阅读。尤其是开始的时候，应尽得杂一点，漫无目的地读，慢慢地就会发现读书的乐趣，发现自己感兴趣的点，而后就可以着点而入，深入阅读。这是一个广散网，寻找点的过程。
+学会挑书，形成自己的书单。总的来说，挑书应该有这样一个原则：能够帮助我们认清现实并思考未来，且具有 繁殖能力 的书。能够帮组我们认清现实并有所思考的书多为非虚构类的书，这一类书可以往往能够就某一问题，或某一现象，甚至某个学科做较为深入的分析与探讨，是我们了解当下现实的基础，而书中关于这些问题的讨论有可以启发我们对未来的思考。具有繁殖能力的知识，往往是那些能够激发我们阅读欲望，探索问题解决之道；亦或与我们原有的知识形成冲突，或者形成补充的知识，这是一个不断发现其他点，形成星星之火的过程。
+建立检索书库，方便日后查询。选择一款自己喜欢的笔记软件，不断地做好自己的阅读笔记。将阅读过程中发现的亮点和思考，以及相关的书目形成记录。如何做好阅读笔记，可以参考万维刚老师的什么是好的读书笔记。这是一个将点连接成线，进而形成一个面的过程。
+杂读，尽量涉及更多的领域和学科。想要获得一些意外的收获，杂读就是一个很好的方法。用自己原有的专业知识及系统去接触一个相对陌生的领域和学科，往往可以碰撞出不一样的火花。这是一个发现其他面的过程，并产生面与面交集的过程。
+读书的目的 读书，为了改变生活。宋真宗赵恒在《励学篇》言道：安居不用架高楼，书中自有黄金屋；娶妻莫恨无良媒，书中自有颜如玉。虽说有些功利化，但读书就是可以改变我们的生活。这种改变往往并不是直接地改变我们一些什么，而是通过间接的方式。书，带给我们新的知识，新的思维，甚至新的思考方式；带给我们不曾认识或者不能正确认识的专业及领域，潜移默化地影响着我们的生活及工作，慢慢地某些东西就刻在了我们的骨子里，让我们终生受用。
+升级阅读方法 通过前面的介绍，我们认识了读书路径，知道了读书的目的。那么，什么的阅读方法才算有效的阅读呢？关于这一点，以下原则值得参考：
+只字不差，反复阅读。限于我们每个人不同的专业背景及知识阅历，也限于我们现有的水平，我们不太可能，甚至不可能了解所有的行业和学科，所以 一本书，只要必要，即便是读不懂，也要读完。说不定哪一天，书中某个点就激发我们新的思考。
+翻看书评，以书会友。莎士比亚曾言：There are a thousand Hamlets in a thousand people&rsquo;s eyes(一千个读者就有一千个哈姆雷特)。通过阅读他人关于一本书的思考，我们看到另一个角度的阐释。这份阐释也许跟我们自己的理解有所冲突，也许互为补充，也许高于我们的见识，也许低于我们的见识，这不正是读书的意义嘛。
+持续写作，有效输出。写作，是提高阅读能力的有效工具。教，是最有效的学习。当我们能够产生输出的时候，才算是内化到我们自己系统的东西。最初写作的时候，可能写得并不好，也没有那么完善，但是一定要保证它是完整的。之后，再通过不断地完善和补充，形成好的作品。另外，当我们写作的时候，才可以像作者一样阅读，明确自己的写作意图，梳理其中的逻辑关系，补充论据的支撑点。最后，还有更重要的一点：写作，目的只有一个——讲清楚一件事。
+###关于现代阅读的
+如何对待碎片化阅读？
+信息社会的发展，不断涌现的智能终端，几乎可以让我们随时随地地阅读；刷微博，刷微信，几乎也占据了我们大部分的闲暇时间，这样碎片化的信息对我们有多大意义呢？其实，意义不大。建议就是：形成固定的阅读时间。在固定的时间里阅读，与书对话，充分享受思想的碰撞，知识的更新。
+读书带来的价值有多少？
+一个人的价值又有多大？李笑来给出这样一个公式：一个人的价值＝有效集中注意力解决问题的时间×待解决问题被世界所需要的程度。其实，一本书的目的无非也是阐述一件事情而已。因此，我们可以大致用这样的一个公式来判断一本的价值：一本书的价值＝有效解决问题的时间×对于待解决问题书中知识的重要程度。有效解决问题的时间可以理解成我们从书中获取有效知识或者方法，并进行有效应用的时间，所以查看阅读一些知识干货可以节省大量的时间，作为牺牲，我们也错失了从整体把握书的结构，系统，逻辑关系等等。书中知识的重要程度是指该类知识对于解决这类问题的有效程度。有这样一个事实我们不得不承认，那就是：对于某一特定的问题的解决方法不尽相同，所涉及的知识也不尽相同，那么找出其中至关重要的点，才是解决问题的根本。这些至关重要的点正是知识的重要程度。一旦找到那个至关重要的点，问题也就迎刃而解了。
+那么，从工作实践的角度来讲，这种方法类似于采铜在《精进，如何成为一个很厉害的人》所讲的任务分解：让你的工作更高效。
+读书一定需要安静的地方吗？
+不是。阅读需要被锻炼的一个重要能力恰恰是：不被打扰的能力。当处在嘈杂的环境时我们依然可以不被打扰的阅读，这样你就可以发现在火车上，在飞机上，在一切纷杂的地方依然可以保持自己的阅读。
+纸质书还是电子书？依据个人喜好，自行选择。
+一点个人的分享 关于读书路径。可以适当地阅读自己感兴趣的书籍。我第一次听到吴晓波的名字应该是在罗辑思维公众号，而恰巧自己对经济学也颇有兴趣。于是，利用寒假和开学的一段时间读完了吴晓波老师的《激荡三十年》，《历代经济变革得失》和《把生命浪费在美好的事物上》。其中的收获也很多，但是限于自己那个时候并没有良好的阅读写作习惯，没能及时梳理读书笔记，甚是遗憾，后续会整理出来。在我为数不多的阅读经历里，这算是一个有针对性的阅读体验，虽然跟自己本身的专业并不相关，但是读后的收获对一个人的帮助很大。去尝试那些跟自己不相关的领域，仅凭兴趣去阅读，就会发现不一样的世界。当你又一次类似的阅读体验时，你就会爱上它。真的。
+其次，适时地给自己一些随机性阅读。2016年６月份，新世相(微信公众号：thefair2)发起了一场“新世相·图书馆”活动，其目的就是重拾阅读的乐趣。其活动规则是：一个月四本书，随机发送，读完并退回，退还押金。其中，给我印象最深的两本书是《股票大作手回忆录》和《黑客与画家》，让我深刻认识到原来钱还可以这么玩，黑客的精神一直都在。这次的随机阅读之旅也带来了意外的收获，有幸认识了一位优秀的博客作者池建强老师，并拜读了其所作的《MacTalk·人生元编程》和《MacTalk·跨越边界》，感受到技术与人文的魅力，也更加坚定了写作记录的想法。
+关于持续写作。从我最近的实践来看，写作确实可以很好地梳理文章的脉络，整理自己的思考。不过，初步写作也存在不少问题，主要集中在以下两点：1) 用简洁的语言将一件事情说清楚并不是那么容易，能够准确地表达自己更不容易；2) 逻辑思维不够清晰。针对以上两点，我采取的策略是在读书的过程中多注意作者的语言组织及表述技巧，经常反复阅读自己的读书笔记，不断打磨。每一次读，你都会有不一样的发现。算是”复盘”自己的思路。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/reading_and_writing/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/the_middle_twenties/" title="二十五六岁" target="_blank">二十五六岁</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年12月15日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/life' target="_blank">LIFE</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            当一个人开始怀念少年时光的时候，他的少年时代就已经一去不复返了，此时此刻的他俨然成了一个有责任的青年人。
+面对未来，每个人都会或多或少地有些焦虑，尤其是年轻人。对未来既充满了幻想，也充满了渴望。未来，总是有无数的希望吸引着我们，去追逐，去靠近。
+焦虑是年轻人的普遍状态，有焦虑感的是很棒的，因为他们很清楚知道自己应该奔跑，只不过，暂时不知道自己应该选择哪一条跑到罢了。——吴慧超
+二十五六岁的我们，基本上刚刚告别学生时代，开始走上社会，像任何一个“刚上任”的新人一样，在一家公司，做着一些再普通不过的工作。总想获得更多，却又无力支付。欲望与贪婪太多，而自己无力支付，这或许是最大的焦虑吧。
+作为一名农村出来的孩子，我出生在一个普通的家庭，没有任何背景可言，能够完整地接受高等教育，并进行一定程度地深造，已经非常幸运了。所以，在大学毕业的那一天，才忽然明白——从此，我的人生才算是完整的。因为，并不是每个人都有机会能够接受教育，在这个美好的年纪。但是，也必须深刻认识到：在踏入社会的那一刻，“父母的庇护至此结束，未来的一切，都需要自己去挣”。
+在文章《一个人在二十五六岁时，该是什么状态》，作者吴慧超写一部分自己刚参加工作的经历，总结起来就是四个字：不负时光。当我们回望自己过去的时候，如果觉得那些点点滴滴的进步与成长，正慢慢地让自己逐渐变得越来越独立，越自信，成为家人的依靠，成为一个肩负责任的人，那就叫不负时光。
+记得海明威有一句箴言：优于别人，并不高贵，真正的高贵是优于过去的自己。
+达尼·拉费里埃在《还乡之谜》中，写道：”前方总有太多的希望，身后总有太多的失望。生命是一条长长的带子，展开在延绵不断的时光中，展开在柔软的变幻迁移中，交替着希望与失望”。
+二十五六岁的年纪，就是撸起袖子加油干。写给自己，也写给每个为生活更美好而努力的人。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/the_middle_twenties/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/reply-1988/" title="Reply 1988: 人生是个迷啊" target="_blank">Reply 1988: 人生是个迷啊</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年10月7日
+        </date>
+        
+        <div class="post-content">
+            人，之所以为人，是因为可以享受生命的意义，生活的乐趣。
+这是一篇关于韩剧《请回答1988》的观后感。
+这部剧讲了啥？ 这部剧发生在韩国首尔一个叫做“双门洞”的胡同，讲述了五家人的故事，细致生动地再现了80年代邻里街坊小市民的生活面貌。整部剧以生活为主线，贯穿亲情，友情，爱情以及邻里情，细致地刻画了那个永远回不去的青春岁月。剧中的生活细节做的很足，处处都可以看到编剧和导演的良苦用心。其实，生活无非就是一日三餐，家长里短，却被演员们表现的淋漓尽致，主要集中在以下几个方面：
+关于亲情 剧中宝拉的父亲是一个善良，倔强，喜欢把话放在心里的父亲形象，像很多中国的父亲一样。在自己妈妈去世的那一段，宝拉的父亲白天笑脸招呼客人，晚上独自悲伤，静静地守在灵堂前。直到大哥回来，才好像找到了依靠，不必装作坚强，兄弟姐们四人终于忍不住哭了起来。”大人只是在忍，只是在忙着大人的事，只是在用故作坚强来承担年龄的重担。大人们，也会疼。”
+二十几岁的年龄，或多或少也开始意识并接触到周围亲人的年老，甚至离开。突然之间就发现，原来好多的称呼从此再也叫不出口，而关于那个人的记忆却永远地刻在记忆里。我的爷爷在我父亲18岁的时候，生病去世了。所以从小到大，我没有喊过一声&quot;爷爷&quot;，也从来没有体会过爷爷的爱是一种什么样的爱。小时候不懂事，还吵着向父亲母亲“要过”爷爷。现在想来，那时的父亲想必也是凄苦的。随着年龄的增长，那一声”所谓的称呼”也就越发显得弥足珍贵了，真是应了中国那句老话：喊一声，少一声。
+“上帝不能无处不在，因此他创造了母亲”是一句犹太谚语，是赞美母亲的。其实，父母真的就是子女的守护神。无论孩子在外面受了多大的委屈，只要回家就能感受到温暖，找到了依靠。挫折的时候，给我们鼓励与安慰；迷茫的时候，给我们指引与勇气；给我们追逐梦想的力量。每当我们取得一些成绩的时候，或是夸赞，或是小心翼翼地记录着我们的成长，像阿泽爸那样，把报纸上关于儿子的比赛报道一一剪下，做成册子，细数着儿子每一次的成绩。深沉的大地一样的爱，那是父亲的爱。
+剧中的三位母亲，也是那样的平凡而伟大。没有女儿的豹子夫人，却收获了比女儿还细心的&quot;二女儿&quot;金正焕。知道母亲不懂英文，细心地在母亲的护照上标上注音；知道母亲是操心的命，当发现母亲因为外出探亲而父子三人过得还不错而不免有些失落的时候，故意制造小麻烦，让母亲“回归”；知道父母的结婚照是合成的，精心地为二人准备婚礼。这些小小的细节，足见正焕的用心。90年代我国实行”计划生育”政策，导致我们90后这一代几乎都是独生女子，以至于作为儿子的我们，不得不又当儿子又当“闺女”。
+剧中印象很深的还有的阿泽爸爸和善宇妈妈，两人都有一个好儿子。作为单亲家庭的孩子都很懂事，两个儿子都知道父母亲的不容易，更明白人生的意义。人各有命，作为孩子尊重父亲，母亲的决定，作为父母也尊重孩子的想法。渐渐地发现，生命中的每一个出现在身边的人都有存在的意义。有些话只能对固定的人讲，或者选择不说。丈夫，妻子，邻里，儿子，女儿，朋友···每个人扮演的角色不同，所承载的意义也不同。就像香港电台主持人梁继璋在给儿子的一封信中写到的那样：“亲人只有一次的缘分，无论这辈子我和你相处多久，也请好好珍惜共聚的时光，下辈子，无论爱与不爱，都不会再见”。今生有幸为家人是最大的幸福。
+关于爱情 剧中德善的爱情最引人关注。在不知道结局的时候，个人比较倾向于德善和阿泽这一对儿。原因很简单：没有所谓的时机，只有更恳切的心。
+如果今天，我没有被那该死的红绿灯拦住，我可能就会命运般站在她的面前。但是缘分，不是自动找上门的偶然，是带着恳切的盼望做出的无数选择。那家伙更恳切，搞怪的不是红绿灯，而是我数不清的犹豫。
+这是正焕的独白，只可惜明白得太晚了。虽有些让人心疼，可是世事如此。既然喜欢，就要大大方方让对方知道。爱情里，没有尴尬。有些人，总是担心，本来是朋友说破了岂不是很尴尬。其实，今生若不能为爱人，为什么要保持那么亲密的朋友关系呢？为了爱人，失去一个好朋友又怎么样，何况还是异性。爱人，才是我们一生都要守护的那个人。
+关于友情 剧中正焕和阿泽同时喜欢德善，互为情敌。但是有一句台词我很喜欢：
+虽然我和你爱着同一个女人，可是我仍然喜欢你，不愿意让任何不幸发生在你身上。
+没错，这就是友情。
+关于人生 人生的话题好大，可是细说起来也就那么点。每个人都有自己的选择，都有需要自己独自去面对的时刻，为了不让我们孤单，才拥有了家人，朋友。人生更像是一场修行，能帮到你的也只有 我们自己。善待生命中遇到的每一个人，他们看似无关，却与你有着千丝万缕的牵连，来到你的身边，请珍惜。
+剧中的正峰哥哥也是一个神奇的存在，说实话全剧95%的剧情中我都觉着这是一个多余，直到结尾才发现，这是导演的最后一步棋。正峰哥哥用了七年考大学，用了七年考司法考试，直到遇见真爱，才明白：活着，要做自己想做的事情。最终选择了做美食。一个人能够发现自己的擅长，并将其培养成自己的工作或者一生的事业，是多么的不容易！
+人生最难的在于找到自己。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/reply-1988/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/linux_process2/" title="Linux中的线程管理" target="_blank">Linux中的线程管理</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年6月19日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            1.线程 线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。
+2.多线程模型 操作系统中有两种方法提供线程支持：用户层的 用户线程 和 内核层的 内核线程。用户线程受内核内核支持，而无需内核管理；内核线程由系统直接支持和管理。
+1）多对一模型：多个用户线程映射到一个内核线程
+特点：线程管理由线程库在用户空间进行，效率高；一个线程阻塞系统调用，整个进程阻塞；任意时刻，只有一个线程能访问内核(也就是，多线程不能并行运行在多处理器上)
+2）一对一模型：每个用户线程映射到一个内核线程
+特点：一个线程阻塞，其他线程不受影响，具有并发功能；允许多线程运行在多处理器上。
+3）多对多模型：即多路复用，许多用户线程映射到同等数量或较少数量的内核线程
+特点：结合多对一模型和一对一模型的优点，其对应的一个变形是 二级模型 (先允许一个用户线程绑定到一个内核线程上，然后，其他用户线程多路复用)
+3.线程库 线程库为程序员提供创建和管理线程的API函数，主要有两种方法来实现线程库：系统调用和非系统调用
+1）在用户空间提供没有内核支持的库，称为 非系统调用；
+2）由系统支持的内核级库，称为 系统调用
+系统调用fork()和exec()
+exec():如果一个线程调用exec()，则其指定的程序替换整个进程，包括所有线程。
+fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程，因为exec()会替换所有线程；2）fork()之后没有调用exec()，则另一个进程复制所有线程。
+4.线程取消 线程取消是在线程完成之前来终止线程的任务。要取消的线程称为 目标线程。目标线程可以在两种情况下发生：
+1）异步取消: 一个线程立即终止目标线程。 (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)
+2）延迟取消: 目标线程不断检查自己是否应该终止，让线程有机会有序结束自己。 (因为具有 取消点，因此更安全)
+5.信号处理 信号是用来通知进程某个事件已发生，可分为 异步接收 和 同步接收。所有的信号具有同样的模式：
+1）信号是由特定事件发生；2）信号发送至进程；3）一旦发送，信号必须加以处理。
+同步信号: 指发送信号到执行操作的同一进程(例如，非法访问，被0除)
+异步信号: 指信号由进程外事件产生，发送到另一个进程。(例如，特定键(ctrl+c))
+标准发送信号的函数:1) kill(pid_t id, int signal)指定信号的发送进程；2）pthread_kill(pthread_t id, int signal)允许信号被传送到一个指定的线程。
+6.线程池 其思想是：进程开始时，创建一定数量的线程，放入线程池等待工作。其优点有，1）不必创建新线程，响应时间更快；2）可以限制线程数量，有效利用系统资源。
+Linux线程
+Linux系统中并不区分进程和线程，统称为 任务。其系统调用包括：fork()和clone()。
+fork():传统复制进程——具备父任务的所有数据的副本
+clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构
+线程小结 线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。
+一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &lt;pthread.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/linux_process2/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/linux_process/" title="Linux中的进程管理" target="_blank">Linux中的进程管理</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年6月17日
+        </date>
+        
+        <div class="post-content">
+            1.进程 进程是执行中的程序，是大多数系统的工作单元，是 活动实体。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。
+进程调度
+进程调度是指选择一个可用的进程到CPU上执行的过程，由相应的 调度程序 来执行。进程进入系统后，进入 作业队列 (包含系统中的所有队列)；驻留在内存中就绪，等待执行的进程位于 就绪队列。就绪队列通常用链表实现，其头节点指向链表的第一个和最后一个PCB块的指针；每个PCB包括一个指向就绪队列的下一个的PCB的指针域。
+调度程序分为 长期调度程序, 中期调度程序 和 短期调度程序。长期调度(高级调度)，又称为 作业调度，是指从池中选择进程，并装入内存准备执行，其使用频率比较低，主要用来控制内存中进程的数量；中期调度(中级调度)，又称为 交换调度，是指将进程中内存或CPU竞争中移出，从而降低多道程序设计的程度，之后进程被重新装入内存；短期调度(低级调度)，又称为 进程调度，是指按照一定的策略和算法，将CPU分配给一个处于就绪的进程，分为 抢占式 和 非抢占式。
+上下文切换
+将CPU切换找另一个进程需要保存当前进程的状态，并恢复另一个进程的状态，这个过程称为上下文切换。
+2.进程操作 进程创建 和 进程终止
+进程创建新进程时，有两种执行可能：
+1）父进程与子进程并发执行；2）父进程等待，直到某个子进程或全部子进程执行完毕。
+同样，新进程的地址空间也有两种可能：
+1）子进程是父进程的复制品（具有父进程相同的程序和数据）；2）子进程装入一个新程序。
+在linux系统，使用fork()函数可以创建一个新进程，相关内容参考fork()函数。
+当进程完成执行最后的语句病使用系统调用exit()请求操作系统删除自身时，进程终止。进程终止时，可以返回状态值(整数)到父进程(通过系统调用wait())，所有进程资源将会被操作系统回收。
+3.进程间通信 进程间通信(IPC)有两种基本模式：共享内存 和 消息传递。进程间通信可以调用send()和receive()来进行，其可分为 阻塞 或 非阻塞——也称为 同步 和 异步。
+阻塞send: 发送进程阻塞，直到消息被进程或邮箱所接收；
+非阻塞send: 发送进程发送消息并继续操作；
+阻塞receive: 接收进程阻塞，直到有消息可用；
+非阻塞receive: 接收进程接收到一个有用消息或空消息；
+值得注意的是，无论是直接通信还是间接通信，通信进程的消息的驻留在临时队列中。队列的实现有三种方式：零容量，有限容量，无限容量。
+共享内存实例
+创建共享内存段shmget()
+//三个参数：标识符，字节数，读写模式 //函数返回整数标识值 segment_id = shmget(IPC_PRIVATE, size, S_IRUSR | S_IWURS); //三个参数：共享内存段的ID，指针，读写模式 //返回初始位置的指针 share_memory = (char *)shmat(id, NULL, 0); //删除共享内存段，释放指针 shmdt(share_memory); shmctl(); 消息传递: Mach……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/linux_process/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+
+
+
+<ol class="page-navigator">
+    
+    <li class="prev">
+        <a href="http://www.subond.com/">上一页</a>
+    </li>
+    
+
+    
+    <li >
+        <a href="http://www.subond.com/">1</a>
+    </li>
+    
+    <li  class="current">
+        <a href="http://www.subond.com/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="http://www.subond.com/page/3/">3</a>
+    </li>
+    
+
+    
+    <li class="next">
+        <a href="http://www.subond.com/page/3/">下一页</a>
+    </li>
+    
+</ol>
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm3/" title="Docker集群：工作原理" target="_blank">Docker集群：工作原理</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm2/" title="Docker集群：服务回滚" target="_blank">Docker集群：服务回滚</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (11)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

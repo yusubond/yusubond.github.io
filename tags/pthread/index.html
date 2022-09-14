@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title>pthread | subond</title>
+    <meta property="og:title" content="pthread - subond">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="pthread">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://www.subond.com/tags/pthread/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/pthread/index.xml" title="subond" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        subond
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">pthread</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/linux_process2/" target="_blank">Linux中的线程管理</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年6月19日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/tech' target="_blank">TECH</a>
+            
+        </div>
+        
+        <div class="post-content">
+            1.线程 线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。
+2.多线程模型 操作系统中有两种方法提供线程支持：用户层的 用户线程 和 内核层的 内核线程。用户线程受内核内核支持，而无需内核管理；内核线程由系统直接支持和管理。
+1）多对一模型：多个用户线程映射到一个内核线程
+特点：线程管理由线程库在用户空间进行，效率高；一个线程阻塞系统调用，整个进程阻塞；任意时刻，只有一个线程能访问内核(也就是，多线程不能并行运行在多处理器上)
+2）一对一模型：每个用户线程映射到一个内核线程
+特点：一个线程阻塞，其他线程不受影响，具有并发功能；允许多线程运行在多处理器上。
+3）多对多模型：即多路复用，许多用户线程映射到同等数量或较少数量的内核线程
+特点：结合多对一模型和一对一模型的优点，其对应的一个变形是 二级模型 (先允许一个用户线程绑定到一个内核线程上，然后，其他用户线程多路复用)
+3.线程库 线程库为程序员提供创建和管理线程的API函数，主要有两种方法来实现线程库：系统调用和非系统调用
+1）在用户空间提供没有内核支持的库，称为 非系统调用；
+2）由系统支持的内核级库，称为 系统调用
+系统调用fork()和exec()
+exec():如果一个线程调用exec()，则其指定的程序替换整个进程，包括所有线程。
+fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程，因为exec()会替换所有线程；2）fork()之后没有调用exec()，则另一个进程复制所有线程。
+4.线程取消 线程取消是在线程完成之前来终止线程的任务。要取消的线程称为 目标线程。目标线程可以在两种情况下发生：
+1）异步取消: 一个线程立即终止目标线程。 (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)
+2）延迟取消: 目标线程不断检查自己是否应该终止，让线程有机会有序结束自己。 (因为具有 取消点，因此更安全)
+5.信号处理 信号是用来通知进程某个事件已发生，可分为 异步接收 和 同步接收。所有的信号具有同样的模式：
+1）信号是由特定事件发生；2）信号发送至进程；3）一旦发送，信号必须加以处理。
+同步信号: 指发送信号到执行操作的同一进程(例如，非法访问，被0除)
+异步信号: 指信号由进程外事件产生，发送到另一个进程。(例如，特定键(ctrl+c))
+标准发送信号的函数:1) kill(pid_t id, int signal)指定信号的发送进程；2）pthread_kill(pthread_t id, int signal)允许信号被传送到一个指定的线程。
+6.线程池 其思想是：进程开始时，创建一定数量的线程，放入线程池等待工作。其优点有，1）不必创建新线程，响应时间更快；2）可以限制线程数量，有效利用系统资源。
+Linux线程
+Linux系统中并不区分进程和线程，统称为 任务。其系统调用包括：fork()和clone()。
+fork():传统复制进程——具备父任务的所有数据的副本
+clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构
+线程小结 线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。
+一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &lt;pthread.……
+            <p class="readmore"><a href="http://www.subond.com/post/linux_process2/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/linux_pthread/" target="_blank">Linux中的线程函数</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年6月14日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/tech' target="_blank">TECH</a>
+            
+        </div>
+        
+        <div class="post-content">
+            线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。以下内容，主要介绍5个基本线程函数。
+1.pthread_create()函数 当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。
+#include &lt;pthread.h&gt; int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg); //返回：成功为0，出错为正的Exxx值 tid:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。
+attr:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。
+创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。注意 func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。
+2.pthread_join()函数 #include &lt;pthread.h&gt; int pthread_join(pthread_t *tid, void **status); //返回：成功为0，出错为正的Exxx值。 该函数的功能是等待一个给定线程终止
+3.pthread_self()函数 #include &lt;pthread.h&gt; int pthread_self(void) //返回：调用线程的线程ID。 4.pthread_detach()函数 #include &lt;pthread.h&gt; int pthread_detach(pthread_t tid) //返回：成功返回0，出错为正的Exxx值。 一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源 都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。
+5.pthread_exit()函数 #include &lt;pthread.h&gt; int pthread_exit(void *status) //不返回 调用pthread_exit函数可使线程终止。
+一个栗子 利用线程的方法，重新编写基本UDP套接字编程
+其服务端源码地址：https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c
+结果如下图所示：……
+            <p class="readmore"><a href="http://www.subond.com/post/linux_pthread/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm3/" title="Docker集群：工作原理" target="_blank">Docker集群：工作原理</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/docker_swarm2/" title="Docker集群：服务回滚" target="_blank">Docker集群：服务回滚</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (11)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
