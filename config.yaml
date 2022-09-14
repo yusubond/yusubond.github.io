@@ -1,0 +1,31 @@
+baseURL: 'http://www.subond.com/'
+theme: "maupassant"
+title: 'subond'
+author: 'subond'
+
+# Category & Tag
+default_category: uncategorized
+category_map:
+"NextMe": nextme
+"杂谈": essay
+"LIFE": life
+"TECH": tech
+"READ": read
+tag_map:
+
+# Directory
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+
+# menu
+menu:
+  main:
+  - identifier: "archives"
+    name: "归档"
+    url: /archives/
+    weight: 2
+  - identifier: "about"
+    name: "关于"
+    url: /about/
+    weight: 3
