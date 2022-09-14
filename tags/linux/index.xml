@@ -28,20 +28,7 @@
 exec():如果一个线程调用exec()，则其指定的程序替换整个进程，包括所有线程。
 fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程，因为exec()会替换所有线程；2）fork()之后没有调用exec()，则另一个进程复制所有线程。
 4.线程取消 线程取消是在线程完成之前来终止线程的任务。要取消的线程称为 目标线程。目标线程可以在两种情况下发生：
-1）异步取消: 一个线程立即终止目标线程。 (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)
-2）延迟取消: 目标线程不断检查自己是否应该终止，让线程有机会有序结束自己。 (因为具有 取消点，因此更安全)
-5.信号处理 信号是用来通知进程某个事件已发生，可分为 异步接收 和 同步接收。所有的信号具有同样的模式：
-1）信号是由特定事件发生；2）信号发送至进程；3）一旦发送，信号必须加以处理。
-同步信号: 指发送信号到执行操作的同一进程(例如，非法访问，被0除)
-异步信号: 指信号由进程外事件产生，发送到另一个进程。(例如，特定键(ctrl+c))
-标准发送信号的函数:1) kill(pid_t id, int signal)指定信号的发送进程；2）pthread_kill(pthread_t id, int signal)允许信号被传送到一个指定的线程。
-6.线程池 其思想是：进程开始时，创建一定数量的线程，放入线程池等待工作。其优点有，1）不必创建新线程，响应时间更快；2）可以限制线程数量，有效利用系统资源。
-Linux线程
-Linux系统中并不区分进程和线程，统称为 任务。其系统调用包括：fork()和clone()。
-fork():传统复制进程——具备父任务的所有数据的副本
-clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构
-线程小结 线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。
-一个小栗子 /* *Author:subond * Time: 2016-06-19 * Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数 */ #include &amp;lt;pthread.h&amp;gt; #include &amp;lt;stdio.h&amp;gt; #include &amp;lt;sys/types.h&amp;gt; #include &amp;lt;unistd.h&amp;gt; #include &amp;lt;sys/wait.h&amp;gt; #include &amp;lt;math.h&amp;gt; int n; void *runner(void *param) { if(n &amp;lt;= 1) return(NULL); for(int i = 2; i &amp;lt;= n; i++) { int len = sqrt(i * 1.0); int flag = 1; for(int j = 2; j &amp;lt;= len; j++) { if(i % j == 0) flag = 0; } if(flag == 1) printf(&amp;#34;%d &amp;#34;, i); } pthread_exit(0); } int main() { printf(&amp;#34;Enter a number(&amp;gt;= 0):&amp;#34;); scanf(&amp;#34;%d&amp;#34;, &amp;amp;n); int pid; pthread_t tid; pthread_attr_t attr; pthread_attr_init(&amp;amp;attr); pid = pthread_create(&amp;amp;tid, &amp;amp;attr, runner, NULL); if(pid !</description>
+1）异步取消: 一个线程立即终止目标线程。 (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)</description>
     </item>
     
     <item>
@@ -59,27 +46,7 @@ clone()创建线程(子任务)——根据传递给clone()的标志位，子任�
 2.进程操作 进程创建 和 进程终止
 进程创建新进程时，有两种执行可能：
 1）父进程与子进程并发执行；2）父进程等待，直到某个子进程或全部子进程执行完毕。
-同样，新进程的地址空间也有两种可能：
-1）子进程是父进程的复制品（具有父进程相同的程序和数据）；2）子进程装入一个新程序。
-在linux系统，使用fork()函数可以创建一个新进程，相关内容参考fork()函数。
-当进程完成执行最后的语句病使用系统调用exit()请求操作系统删除自身时，进程终止。进程终止时，可以返回状态值(整数)到父进程(通过系统调用wait())，所有进程资源将会被操作系统回收。
-3.进程间通信 进程间通信(IPC)有两种基本模式：共享内存 和 消息传递。进程间通信可以调用send()和receive()来进行，其可分为 阻塞 或 非阻塞——也称为 同步 和 异步。
-阻塞send: 发送进程阻塞，直到消息被进程或邮箱所接收；
-非阻塞send: 发送进程发送消息并继续操作；
-阻塞receive: 接收进程阻塞，直到有消息可用；
-非阻塞receive: 接收进程接收到一个有用消息或空消息；
-值得注意的是，无论是直接通信还是间接通信，通信进程的消息的驻留在临时队列中。队列的实现有三种方式：零容量，有限容量，无限容量。
-共享内存实例
-创建共享内存段shmget()
-1 2 3 4 5 6 7 8 9 //三个参数：标识符，字节数，读写模式 //函数返回整数标识值 segment_id = shmget(IPC_PRIVATE, size, S_IRUSR | S_IWURS); //三个参数：共享内存段的ID，指针，读写模式 //返回初始位置的指针 share_memory = (char *)shmat(id, NULL, 0); //删除共享内存段，释放指针 shmdt(share_memory); shmctl(); 消息传递: Mach
-Mach系统主要为分布式系统设计。在Mach系统中，每个任务创建时，同时创建了两个特别的邮箱：内核邮箱 和 通报邮箱。内核使用内核邮箱与任务通信，使用通报邮箱发送事件发生的通知。
-消息传递使用三个系统调用：
-1）msg_send():发送数据；
-2）msg_receive():接收数据；
-3）msg_rpc():发送远程消息，并只等待来自发送者的一个返回消息；
-值得注意的是，Mach可以确保来自同一个发送者额多个消息满足FIFO顺序排队，但不是绝对顺序。即两个发送者的消息可以任意排队。其次，Mach使用的是双重复制机制(发送者&amp;lt;&amp;ndash;复制&amp;ndash;&amp;gt;邮箱&amp;lt;&amp;ndash;复制&amp;ndash;&amp;gt;接收者)。若使用虚拟内存管理技术(即将发送者的地址空间映射到接收者的地址空间，但只适用与系统内部)，可以避免这种双重复制。
-4.进程小结 进程是执行中的程序。随着程序的执行，它改变状态。进程状态由进程当前活动所定义。每个进程可处于：新的，就绪，执行，等待或终止状态。每个进程在操作系统内通过自己的进程控制块PCB来表示。当前不执行的进程放在某个等待队列中。操作系统有两种主要队列：I/O请求队列 和 就绪队列。就绪队列包括所有准备执行或等待CPU的进程。每个都有PCB，PCB链接起来就形成了就绪队列。长期调度通过选择进程来争用CPU。短期调度从就绪队列中选择进程。
-操作系统的执行进程可以是独立进程，也可以是协作进程。协作进程需要进程间有互相通信机制，主要有两种形式：共享内存和消息传递。共享内存 方法通过要求通信进程共享一些变量，进程通过使用共享变量来交换信息；而 消息系统 方法允许进程交换信息。</description>
+同样，新进程的地址空间也有两种可能：</description>
     </item>
     
     <item>
@@ -93,12 +60,7 @@ Mach系统主要为分布式系统设计。在Mach系统中，每个任务创建
 #include &amp;lt;pthread.h&amp;gt; int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg); //返回：成功为0，出错为正的Exxx值 tid:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。
 attr:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。
 创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。注意 func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。
-2.pthread_join()函数 #include &amp;lt;pthread.h&amp;gt; int pthread_join(pthread_t *tid, void **status); //返回：成功为0，出错为正的Exxx值。 该函数的功能是等待一个给定线程终止
-3.pthread_self()函数 #include &amp;lt;pthread.h&amp;gt; int pthread_self(void) //返回：调用线程的线程ID。 4.pthread_detach()函数 #include &amp;lt;pthread.h&amp;gt; int pthread_detach(pthread_t tid) //返回：成功返回0，出错为正的Exxx值。 一个线程或是可汇合的(joinable,默认值)，或是脱离的(detached)。当一个可汇合的线程终止时，它的线程ID和退出状态将留存到另一个线程对它的调用pthread_join。脱离的线程却像守护进程，当它们终止时，所有相关的资源 都被释放，我们不能等待它们终止。pthread_detach函数就是把指定的线程转变为脱离状态。
-5.pthread_exit()函数 #include &amp;lt;pthread.h&amp;gt; int pthread_exit(void *status) //不返回 调用pthread_exit函数可使线程终止。
-一个栗子 利用线程的方法，重新编写基本UDP套接字编程
-其服务端源码地址：https://github.com/yusubond/Socket-Programming/blob/master/udp_demo/serverv0.3.c
-结果如下图所示：</description>
+2.pthread_join()函数 #include &amp;lt;pthread.h&amp;gt; int pthread_join(pthread_t *tid, void **status); //返回：成功为0，出错为正的Exxx值。 该函数的功能是等待一个给定线程终止</description>
     </item>
     
   </channel>

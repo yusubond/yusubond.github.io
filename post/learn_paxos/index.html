@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>深入理解Paxos算法 | subond&#39;s blog</title>
     <meta property="og:title" content="深入理解Paxos算法 - subond&#39;s blog">
@@ -16,7 +18,7 @@
         
     <meta property="article:modified_time" content='2017-03-21T00:00:00&#43;08:00'>
         
-    <meta name="Keywords" content="">
+    <meta name="Keywords" content="golang,博客">
     <meta name="description" content="Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了[Paxos Made Simple](http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf)，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。">
         <meta name="author" content="subond">
         
@@ -45,7 +47,7 @@
                         subond&#39;s blog
                     </a>
                 
-                
+                <p class="description">专注于云网络，个人成长</p>
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
@@ -88,6 +90,11 @@
             
         </div>
         
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
         
         
         <div class="post-content">
@@ -197,6 +204,23 @@
 
 
         
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/reading_and_writing/">读书写作那点事儿</a></li>
+        
+        <li><a href="/post/the_middle_twenties/">二十五六岁</a></li>
+        
+        <li><a href="/post/reply-1988/">Reply 1988: 人生是个迷啊</a></li>
+        
+        <li><a href="/post/linux_process2/">Linux中的线程管理</a></li>
+        
+        <li><a href="/post/linux_process/">Linux中的进程管理</a></li>
+        
+    </ul>
+</div>
 
 
         <div class="post-meta meta-tags">
@@ -331,6 +355,8 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 </script>
 
 
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
 
 
 
@@ -338,7 +364,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="http://www.subond.com/">

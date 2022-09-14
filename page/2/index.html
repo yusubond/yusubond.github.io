@@ -7,12 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
-    <title>subond&#39;s blog</title>
-    <meta property="og:title" content="subond&#39;s blog">
+    <title>subond&#39;s blog | 专注于云网络，个人成长</title>
+    <meta property="og:title" content="subond&#39;s blog | 专注于云网络，个人成长">
     <meta property="og:type" content="website">
-    <meta name="Keywords" content="">
-    <meta name="description" content="">
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="专注于云网络，个人成长">
     <meta property="og:url" content="http://www.subond.com/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
@@ -41,7 +43,7 @@
                         </a>
                     </h1>
                 
-                
+                <p class="description">专注于云网络，个人成长</p>
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
@@ -102,25 +104,7 @@ Swarm模式下节点分为两种：管理节点 和 工作节点。
 为了防止服务调度器在具有多个节点的Swarm集群中，将任务布置到管理节点上，可以将管理节点的可用性设置为Drain。这样，服务调度器就不会将任务部署到Drain状态的节点上，而只将任务分派到Active状态的节点。
 角色转换
 Docker Swarm模式中，允许我们将工作节点提升为管理节点以保证整个Swarm集群的正常运行，尤其是在管理节点出现故障时。相关命令可以参考docker node promote。
-同样的道理，我们也可以将管理节点变为工作节点。相关命令可以参考docker node demote。
-服务的工作原理 在Swarm模式下，Docker允许我们通过创建服务的方式来部署应用镜像。通常情况下，服务是某些更大应用程序的上下文中为服务器的镜像。比如，服务包括HTTP服务器，数据库，或者希望在分布式环境中运行的任何类型的可执行程序。
-当创建一个服务的时候，我们需要制定服务需要的镜像(即运行环境)和即将在容器中运行的命令(即应用程序)。当然，也包括其他选项：
-端口:在Swarm集群外提供服务的端口 网络方式:用于连接到Swarm集群中其他服务的网络环境 系统限制:CPU和内存限制及预留 更新操作:更新时延策略 副本数量:Swarm中镜像的副本数量 服务，任务与容器
-当我们向Swarm集群中部署服务时，管理节点将服务定义为服务所需的状态。然后，将服务以任务副本的方式分派到Swarm集群中的各个节点上。这些任务在Swarm集群中的节点上独立运行。
-一个容器就是一个独立的进程。Swarm集群中，每个任务调用一个容器。一个任务类似调度器放置在容器里面的一个”插槽“。一旦容器处于运行状态，调度器能够识别任务处于运行状态。如果容器出现问题或终止，则任务终止。
-任务与调度
-任务是 Swarm集群中调度的基本单元，具有 原子性，即一个任务在容器中要么运行成功，要么失败。当我们创建或更新一个服务所需要的服务状态时，调度器通过调度任务来满足服务所需的状态。比如，我们创建一个包括三个HTTP监听的服务，调度器则通过创建三个任务来做出响应。每个任务都是调度器通过创建一个容器并填充一个”插槽“来实现。简单来讲就是，容器是任务的实例化。如果其中一个HTTP监听服务失败或崩溃，调度器将创建一个新容器并执行新的任务副本。
-任务采用的是 单向机制。它通过一系列状态单独运行：分配，准备，运行等。如果任务失败，调度器将删除该任务及其容器，然后根据服务所需的状态创建一个新任务来替代原来的任务。
-Swarm集群的基础逻辑包括 通用调度器 和 编排器。服务和任务均具有抽象性，而将其类型是不可知。假设我们要实现其他类型的任务，比如虚拟机任务或非容器化任务。调度器和编排器对于任务的类型是不可知的。但是，目前Docker只支持容器任务。
-Swarm模式下如何接受服务并创建任务，以及将任务分派到其他节点，如下图所示。
-复制及全局服务
-Swarm模式下有两种服务的部署方式，复制服务 和 全局服务。
-复制服务模式下，我们需要制定将要运行的任务副本的数量。比如，部署一个具有三个任务副本的HTTP监控服务，每个任务都具有相同的内容。
-全局服务模式下，每个节点均运行一个服务的任务副本，不需要指定任务副本的数量。当新的节点加入Swarm集群后，编排器则创建新的任务并将其分派到该节点。监控服务，反病毒扫描程序或者其他类型的容器都是比较好的全局服务的对象。
-PKI工作原理 Docker引擎中内置的公钥基础设施(Public Key Infrastructure)系统使得容器的部署和编排变得更加简单和安全。Swarm集群中的节点使用传输层安全(TLS)来认证，授权和加密它们与集群中其他节点的通信。
-当我们使用命令docker swarm init创建一个Swarm集群时，Docker引擎则将当前节点视为一个管理节点。默认情况下，管理节点自身生成一个新的跟证书颁发机构(CA)以及密钥对，以保护与加入集群的其他节点的通信。当然，也可以通过配置&ndash;external-ca参数来指定外部的根证书颁发机构。
-与此同时，管理节点还生成两个token值(用于向Swarm集群中加入节点)，一个是工作节点token值，另一个是管理节点token值。每一个token值都包含根CA证书的摘要和随机生成的密钥。当节点加入集群时，它使用摘要来验证远程管理节点的根CA证书，使用密钥来确保该节点是经过批准的节点。
-# 创建一个swarm $ docker swarm init # 查看管理节点和工作节点的加入命令 # 向Swarm中加入管理节点 docker swarm join-token manager # 向Swarm中加入工作节点 docker swarm join-token worker $ docker swarm join-token manager To add a manager to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-86w02153sf0kbncz42aoa41p9 \ 10.0.2.15:2377 $ docker swarm join-token worker To add a worker to this swarm, run the following command: docker swarm join \ --token SWMTKN-1-35n1uqy8q7si9lvkapojdkxjcntl5uixtdg1xo0ib3b2sg9t8g-6t4a6w0shlr78nc55hh9si3ll \ 10.0.2.15:2377 # 通过对比可以发现，管理节点和工作节点使用的是不同的token值 # 两个token值的前半部分是一样的，即根证书的摘要是一样的；后半部分是不一样的，即随机生成的密钥 每次当新的节点加入Swarm集群时，管理节点向包含随机生成的节点ID颁发证书，用来标识证书通用名(CN)下的节点和组织名(UN)下的角色。节点ID用来标识Swarm集群中节点寿命的密码安全。……
+同样的道理，我们也可以将管理节点变为工作节点。相关命令可以参考docker node demote。……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_swarm3/" target="_blank">阅读全文</a></p>
     </article>
@@ -152,9 +136,7 @@ PKI工作原理 Docker引擎中内置的公钥基础设施(Public Key Infrastruc
 服务更新与回滚 路由网络 服务更新与回滚 Docker Swarm集群管理中支持服务的版本更新及回滚操作，具体演示如下：
 所使用的系统环境环境如下：
 三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。
-# 在manger节点上 $ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6 # --update-delay参数配置服务任务或任务集的更新的时延 # 其格式为T1hT2mT3s，即T1小时T2分钟T3秒 # 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数 # 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。 # 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。 # 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如： # --update-failure-action docker service create # --update-failure-action docker service update # 接下来，我们更新redis的镜像 $ docker service update --image redis:3.0.7 redis 如前所述，默认情况下，更新主要包括以下几个流程：
-停止第一个任务 调度器更新已经停止的任务 为更新过的任务启动容器 若任务更新返回RUNNING状态，则等待设定的时延，并进行下一个任务的更新 若任务更新返回FAILED状态，则停止更新 更新结束后，我们看到如下状态：
-$ docker service ps redis ID NAME IMAGE NODE DESIRED STATE CURRENT STATE ERROR PORTS i9c6xvbopko2 redis.1 redis:3.0.7 ubuntu-xenial Running Running 5 seconds ago mnw258z0j5hg \_ redis.1 redis:3.0.6 ubuntu-xenial Shutdown Shutdown 5 seconds ago iu7yjb7nm345 redis.2 redis:3.0.7 ubuntu-xenial Running Running 53 seconds ago fmgyoq4vladx \_ redis.2 redis:3.0.6 ubuntu-xenial Shutdown Shutdown 54 seconds ago zsliph02ycsf redis.3 redis:3.0.7 ubuntu-xenial Running Running about a minute ago 8j75vwiunh49 \_ redis.3 redis:3.0.6 ubuntu-xenial Shutdown Shutdown about a minute ago 由此我们可以判断，在服务/任务更新的过程中，实质上是 创建了一批新的容器来满足我们的更新时所指定的新的需求。……
+# 在manger节点上 $ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6 # --update-delay参数配置服务任务或任务集的更新的时延 # 其格式为T1hT2mT3s，即T1小时T2分钟T3秒 # 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数 # 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。 # 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。 # 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如： # --update-failure-action docker service create # --update-failure-action docker service update # 接下来，我们更新redis的镜像 $ docker service update --image redis:3.……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_swarm2/" target="_blank">阅读全文</a></p>
     </article>
@@ -189,11 +171,7 @@ Swarm集群管理使用的是 入口负载均衡 策略来暴露想要从外部�
 外部组件，像云端负载均衡，可以访问集群中任何一个节点的PublishedPort，无论这个节点当前是否在运行某个服务的任务。Swarm路由中的所有节点都将连接到正在运行任务实例的节点上。
 Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配DNS条目。Swarm管理节点使用内部负载均衡，根据服务的DNS名称在集群内部的服务之间分配请求。
 搭建Swarm集群 搭建Swarm集群过程中，所使用的系统环境环境如下：
-三个节点(manager, worker1, worker2)均为xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 1.创建一个Swarm集群
-在manager所在的主机创建Swarm集群，即创建Swarm管理节点。
-# 在manager节点上 # 使用docker swarm init --advertise-addr &lt;manager-ip&gt;命令创建Swarm的管理节点 $ docker swarm init --advertise-addr 172.28.128.0.3 Swarm initialized: current node (utfwatnlalniyo5glt734m4sj) is now a manager. To add a worker to this Swarm, run the following command: docker Swarm join \ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ 172.28.128.3:2377 To add a manager to this Swarm, run &#39;docker Swarm join-token manager&#39; and follow the instructions. # docker node ls查看管理节点的状态 $ docker node ls ID HOSTNAME STATUS AVAILABILITY MANAGER STATUS utfwatnlalniyo5glt734m4sj * ubuntu-xenial Ready Active Leader 2.向Swarm中注册工作节点
-在worker[1-2]所在的主机创建Swarm工作节点，并加入到Swarm集群中。
-# 在worker1节点上 $ docker Swarm join \ $ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ $ 172.28.128.3:2377 This node joined a Swarm as a worker. # 在worker2节点上 $ docker Swarm join \ $ --token SWMTKN-1-3pa0dv3m2spedchgfrt2zuv9x2ykuxdj3liegogxub9fijimy1-4xrv3f26wk7lkrrf2q672ew3m \ $ 172.……
+三个节点(manager, worker1, worker2)均为xenial64系统 节点的IP分布，manager(172.……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_swarm/" target="_blank">阅读全文</a></p>
     </article>
@@ -224,10 +202,7 @@ Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配
 1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
 Dockerfile
 创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
-# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD . /app # Install any needed packages specified in requirements.txt RUN pip install -r requirements.txt # Make port 80 available to the world outside this container EXPOSE 80 # Define environment variable ENV NAME World # Run app.py when the container launches CMD [&#34;python&#34;, &#34;app.py&#34;] Dockerfile中用到两个我们还未创建的文件，即requirements.txt和app.py。接下来，创建这两个文件，内容分别如下：
-requirements.txt
-Flask Redis app.py
-from flask import Flask from redis import Redis, RedisError import os import socket # Connect to Redis redis = Redis(host=&#34;redis&#34;, db=0, socket_connect_timeout=2, socket_timeout=2) app = Flask(__name__) @app.route(&#34;/&#34;) def hello(): try: visits = redis.incr(&#34;counter&#34;) except RedisError: visits = &#34;&lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;&#34; html = &#34;&lt;h3&gt;Hello {name}!&lt;/h3&gt;&#34; \ &#34;&lt;b&gt;Hostname:&lt;/b&gt; {hostname}&lt;br/&gt;&#34; \ &#34;&lt;b&gt;Visits:&lt;/b&gt; {visits}&#34; return html.……
+# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD .……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_quickstart/" target="_blank">阅读全文</a></p>
     </article>
@@ -265,42 +240,7 @@ FROM 格式：FROM 或FROM :
 FROM指令指定基础镜像，一个有效的Dockerfile文件必须以FROM作为第一条非注释指令。后续的指令都依赖于该指令指定的image。FROM指令指定的基础image可以是官方远程仓库中的，也可以位于本地仓库。
 MAINTAINER 格式：MAINTAINER 分类：构建指令
 用于将image的制作者相关的信息写入到image中。当我们对该image执行docker inspect命令时，输出中有相应的字段记录该信息。
-RUN 格式：RUN &lt;shell_cmd&gt; # shell格式
-或 RUN [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
-分类：构建指令
-RUN可以运行任何被基础image支持的命令。如基础image选择了ubuntu，那么软件管理部分只能使用ubuntu的命令。
-ENV 格式：ENV 分类：构建指令
-ENV指令用于在image中设置一个环境变量。设置完环境变量后，后续的RUN命令都可以使用，container启动后，可以通过docker inspect查看这个环境变量，也可以通过在docker run &ndash;env key=value时设置或修改环境变量。
-WORKDIR 格式：WORKDIR 分类：设置指令
-WORKDIR用于指定工作目录，相当于切换指令，对RUN,CMD,ENTRYPOINT生效，可设置多次。
-ADD 格式：ADD 分类：构建指令
-是相对被构建的源目录的相对路径，可以是文件或目录的路径，也可以是一个远程的文件url
-是container中的绝对路径
-所有复制到容器中的文件和文件夹权限为0755，uid和gid为0；如果是一个目录，那么会将该目录下的所有文件添加到容器中，不包括目录；如果文件是可识别的压缩格式，则Docker引擎会进行解压缩；如果是文件且中不使用斜杠结束，则会将视为文件，的内容会写入；如果是文件且中使用斜杠结束，则会文件拷贝到目录下。
-COPY 格式：COPY 分类：构建指令
-COPY指令复制所指向的文件或目录，将其添加至新镜像中，复制的文件或目录在镜像中的路径是。所指定的源可以是多个，但必须使上下文根目录的相对路径；也可以使用通配符指向所有匹配通配符的文件或目录。
-可以是文件或目录，但必须使镜像中的绝对路径或相对于WORKDIR的相对路径。
-若以反斜杠/结尾则其指向是目录，否则指向文件。同理。
-若是文件，则的内容被写入中；否则所指向的文件或目录中的内容被复制到目录中。
-当指定多个源时，必须使目录。若不存在，则会被创建。
-CMD 格式：RUN &lt;shell_cmd&gt; # shell格式
-或者：RUN [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
-或者：RUN [&ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # 为ENTRYPOINT指令提供参数
-分类：设置指令
-CMD指令为容器运行时指定的操作默认操作。该操作可以是执行自定义脚本，也可以是执行系统命令。该指令只能在文件中存在一次，如果有多个，则只执行最后一条。
-第三种情况时，ENTRYPOINT指定的是一个可执行的脚本或者程序的路径，该指定的脚本或者程序将会以param1和param2作为参数执行。所以如果CMD指令使用上面的形式，那么Dockerfile中必须要有配套的ENTRYPOINT。
-ENTRYPOINT（设置container启动时执行的操作 格式：ENTRYPOINT # shell格式
-或者：ENTRYPOINT [&ldquo;exec&rdquo;, &ldquo;param1&rdquo;, &ldquo;param2&rdquo;] # exec格式
-分类：设置指令
-ENTRYPOINT指定容器启动时执行的命令，可以多次设置，但是只有最后一个有效。该指令的使用分为两种情况，一种是独自使用，另一种和CMD指令配合使用。当独自使用时，如果你还使用了CMD命令且CMD是一个完整的可执行的命令，那么CMD指令和ENTRYPOINT会互相覆盖只有最后一个CMD或者ENTRYPOINT有效。
-# CMD指令将不会被执行，只有ENTRYPOINT指令被执行 CMD echo “Hello, World!” ENTRYPOINT ls -l CMD指令配合使用来指定ENTRYPOINT的默认参数，这时CMD指令不是一个完整的可执行命令，仅仅是参数部分；ENTRYPOINT指令只能使用JSON方式指定执行命令，而不能指定参数。
-FROM ubuntu CMD [&#34;-l&#34;] ENTRYPOINT [&#34;/usr/bin/ls&#34;] USER 格式：USER 分类：设置指令
-USER用于设置启动容器的用户，默认是root用户。
-EXPOSE 指定容器需要映射到宿主机器的端口） 格式：EXPOSE [&hellip;]
-分类：设置指令
-EXPOSE用于指定容器需要映射到宿主机器的端口。当你需要访问容器的时候，可以不是用容器的IP地址而是使用宿主机器的IP地址和映射后的端口。要完成整个操作需要两个步骤，首先在Dockerfile使用EXPOSE设置需要映射的容器端口，然后在运行容器的时候指定-p选项加上EXPOSE设置的端口，这样EXPOSE设置的端口号会被随机映射成宿主机器中的一个端口号。也可以指定需要映射到宿主机器的那个端口，这时要确保宿主机器上的端口号没有被使用。EXPOSE指令可以一次设置多个端口号，相应的运行容器的时候，可以配套的多次使用-p选项。
-端口映射是docker比较重要的一个功能，原因在于每次运行容器的时候容器的IP地址不能指定而是在桥接网卡的地址范围内随机生成的。宿主机器的IP地址是固定的，我们可以将容器的端口的映射到宿主机器上的一个端口，免去每次访问容器中的某个服务时都要查看容器的IP的地址。对于一个运行的容器，可以使用docker port加上容器中需要映射的端口和容器的ID来查看该端口号在宿主机器上的映射端口。
-# 映射一个端口 EXPOSE port1 # 相应的运行容器使用的命令 docker run -p port1 image # 映射多个端口 EXPOSE port1 port2 port3 # 相应的运行容器使用的命令 docker run -p port1 -p port2 -p port3 image # 还可以指定需要映射到宿主机器上的某个端口号 docker run -p host_port1:port1 -p host_port2:port2 -p host_port3:port3 image VOLUME（指定挂载点） 格式：VOLUME [&quot;&lt;mountpoint&quot;]……
+RUN 格式：RUN &lt;shell_cmd&gt; # shell格式……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_dockerfile/" target="_blank">阅读全文</a></p>
     </article>
@@ -334,9 +274,7 @@ Docker交付内容 快速，一致地交付应用程序 Docker允许开发人员
 在同一硬件上可允许多个工作流程 Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。
 Docker系统架构 Docker采用Client/Server架构模式，其系统架构如下图所示。
 Docker客户端与守护进程既可以运行在同一台主机，也运行在不同的主机上，两者利用Unix Socket或网络接口，通过REST API进行通信。
-Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。
-Docker客户端是用户与Docker Daemon进行交互的主要方式。
-Docker Registries用来管理Docker镜像。……
+Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_docker_arch/" target="_blank">阅读全文</a></p>
     </article>
@@ -373,15 +311,7 @@ Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术�
 Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
 分层存储
 镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
-# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.04 16.04: Pulling from library/ubuntu b6f892c0043b: Pull complete 55010f332b04: Pull complete 2955fb827c94: Pull complete 3deef3fcbd30: Pull complete cf9722e506aa: Pull complete Digest: sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8 Status: Downloaded newer image for ubuntu:16.04 # 可以看到，整个ubuntu16.04镜像由五层存储构成 # 仓库的元数据 # 在文件/var/lib/docker/image/graph_dirver/repositories.json中可以看到仓库的元数据 $ cat repositories.json | python -mjson.tool { &#34;Repositories&#34;: { &#34;ubuntu&#34;: { &#34;ubuntu:16.04&#34;: &#34;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&#34;, &#34;ubuntu@sha256:382452f82a8bbd34443b2c727650af46aced0f94a44463c62a9848133ecb1aa8&#34;: &#34;sha256:ebcd9d4fca80e9e8afc525d8a38e7c56825dfb4a220ed77156f9fb13b14d4ab7&#34; } } } # 镜像的元数据 # 在文件/var/lib/docker/image/graph_dirver/imagedb/content/sha256/[image_id]中可以看到镜像的元数据 # 命令cat image_id | python -mjson.tool # 镜像层的元数据 # 在文件/var/lib/docker/image/graph_dirver/layerdb/sha256/[chain_id] # [chain_id]是某一层镜像层的存储索引 2 容器(Container)
-容器的实质是进程。每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，称为“容器存储层”。容器存储层的生命周期与容器一样，容器消亡时，容器存储层也随之消亡。因此，任何保存在容器存储层的信息都会随容器删除而丢失。
-容器是Docker的核心概念。简单来讲，容器是 独立运行的一个或一组应用，以它们的运行态环境。与之对应的，容易混淆的概念是虚拟机。虚拟机可以理解为 模拟运行的一整套操作系统(包括运行态环境和其他系统环境)和运行在操作系统上的应用。
-容器的核心为所执行的应用程序，所需要的资源都是应用程序所必需的的。当Docker容器中指定的应用终结时，容器也自动终止。当利用docker run创建容器时，Docker在后台运行的标准操作包括：
-检查本地是否存在指定的镜像，不存在就从公有仓库下载 利用镜像创建并启动一个容器 分配一个文件系统，并在只读的镜像层外面挂载一层可读写层 从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中 从地址池配置一个ip地址给容器 执行用户指定的应用程序 执行完毕后容器被终止 3 仓库(Repository)
-仓库(Repository)是集中存放镜像的地方，每个仓库下面有多个镜像。因此，仓库可以被认为是一个具体的项目或目录。仓库分为公有仓库和本地仓库(私有仓库)，公有仓库Docker Hub由Docker公司或用户维护，主要包括根镜像和用户镜像；而本地仓库可供私人使用。
-3.Docker安装 对于Ubuntu系列，Docker CE支持以下三种64位发行版：
-Yakkety 16.10 Xenial 16.04 Trusty 14.04 第一步：设置仓库。可以通过lsb_release -cs命令查看Ubuntu系统版本，然后添加相应的仓库。
-$ sudo apt-get -y install apt-transport-https ca-certificates curl $ curl -fsSL https://download.……
+# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/docker_docker/" target="_blank">阅读全文</a></p>
     </article>
@@ -411,46 +341,7 @@ $ sudo apt-get -y install apt-transport-https ca-certificates curl $ curl -fsSL 
             1.Paxos算法 Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了Paxos Made Simple，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
 Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
 2.基本概念 Paxos算法中有三种角色：Proposer, Acceptor, Learner。每个节点需要同时扮演 两种或两种以上的角色。
-Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提议编号不能冲突　Proposal: 提议　=　提议编号 + 提议的值　Proposer: 提议发起者　Acceptors: 提议接受者　Learners: 提议学习者　需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。
-3.两个原则 1安全原则
-只能(而且必须)允许一个值被选定；
-每个节点只能学习已经被选定的值；
-2存活原则
-只要多数节点存活，并且彼此可以通信，则会达成以下两件事：
-最终会选定某个提议的值　一个被选定的值，其他节点最终会学习到这个值　4.算法过程 第一阶段A，即Prepare阶段
-Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。
-第一阶段B，即Prepare阶段
-Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。
-第二阶段A，即Accept阶段
-Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。
-第二阶段B，即Accept阶段
-Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。
-需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。
-当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。
-5.算法证明 其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。
-Paxso算法原命题
-如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &lt; n1,v1 != v0。
-Paxso算法原命题加强
-如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。
-Paxso算法原命题进一步加强
-如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &lt; n1, v1 != v0。
-归纳法证明
-假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &gt;= m)，对应的值也是v。对n进行归纳假设。
-n = m时，显然结论成立。
-设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。
-当n = k + 1时，若提议k+1不存在，则结论成立。
-接下来，证明提议提议k+1不存问题。
-假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。两个多数派必有交集，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&gt;=m。又因为第一阶段A，t&lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。
-6.示例演示 为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。
-7.小结 通过前面的讨论和学习，我们可以回顾一下协议的细节：
-为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。
-为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。
-为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。
-&ldquo;与其预测未来，不如限制未来&rdquo;,应该是Paxos协议的核心思想。——郑建军(微信工程师)
-参考资料
-Leslie Lanmport:Paxos Made Simple
-Info架构师2017年1月刊:微信PaxsoStore:深入浅出Paxos算法协议
-一步一步理解Paxos算法……
+Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提议编号不能冲突　Proposal: 提议　=　提议编号 + 提议的值　Proposer: 提议发起者　Acceptors: 提议接受者　Learners: 提议学习者　需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/learn_paxos/" target="_blank">阅读全文</a></p>
     </article>
@@ -491,15 +382,7 @@ Info架构师2017年1月刊:微信PaxsoStore:深入浅出Paxos算法协议
 ###关于现代阅读的
 如何对待碎片化阅读？
 信息社会的发展，不断涌现的智能终端，几乎可以让我们随时随地地阅读；刷微博，刷微信，几乎也占据了我们大部分的闲暇时间，这样碎片化的信息对我们有多大意义呢？其实，意义不大。建议就是：形成固定的阅读时间。在固定的时间里阅读，与书对话，充分享受思想的碰撞，知识的更新。
-读书带来的价值有多少？
-一个人的价值又有多大？李笑来给出这样一个公式：一个人的价值＝有效集中注意力解决问题的时间×待解决问题被世界所需要的程度。其实，一本书的目的无非也是阐述一件事情而已。因此，我们可以大致用这样的一个公式来判断一本的价值：一本书的价值＝有效解决问题的时间×对于待解决问题书中知识的重要程度。有效解决问题的时间可以理解成我们从书中获取有效知识或者方法，并进行有效应用的时间，所以查看阅读一些知识干货可以节省大量的时间，作为牺牲，我们也错失了从整体把握书的结构，系统，逻辑关系等等。书中知识的重要程度是指该类知识对于解决这类问题的有效程度。有这样一个事实我们不得不承认，那就是：对于某一特定的问题的解决方法不尽相同，所涉及的知识也不尽相同，那么找出其中至关重要的点，才是解决问题的根本。这些至关重要的点正是知识的重要程度。一旦找到那个至关重要的点，问题也就迎刃而解了。
-那么，从工作实践的角度来讲，这种方法类似于采铜在《精进，如何成为一个很厉害的人》所讲的任务分解：让你的工作更高效。
-读书一定需要安静的地方吗？
-不是。阅读需要被锻炼的一个重要能力恰恰是：不被打扰的能力。当处在嘈杂的环境时我们依然可以不被打扰的阅读，这样你就可以发现在火车上，在飞机上，在一切纷杂的地方依然可以保持自己的阅读。
-纸质书还是电子书？依据个人喜好，自行选择。
-一点个人的分享 关于读书路径。可以适当地阅读自己感兴趣的书籍。我第一次听到吴晓波的名字应该是在罗辑思维公众号，而恰巧自己对经济学也颇有兴趣。于是，利用寒假和开学的一段时间读完了吴晓波老师的《激荡三十年》，《历代经济变革得失》和《把生命浪费在美好的事物上》。其中的收获也很多，但是限于自己那个时候并没有良好的阅读写作习惯，没能及时梳理读书笔记，甚是遗憾，后续会整理出来。在我为数不多的阅读经历里，这算是一个有针对性的阅读体验，虽然跟自己本身的专业并不相关，但是读后的收获对一个人的帮助很大。去尝试那些跟自己不相关的领域，仅凭兴趣去阅读，就会发现不一样的世界。当你又一次类似的阅读体验时，你就会爱上它。真的。
-其次，适时地给自己一些随机性阅读。2016年６月份，新世相(微信公众号：thefair2)发起了一场“新世相·图书馆”活动，其目的就是重拾阅读的乐趣。其活动规则是：一个月四本书，随机发送，读完并退回，退还押金。其中，给我印象最深的两本书是《股票大作手回忆录》和《黑客与画家》，让我深刻认识到原来钱还可以这么玩，黑客的精神一直都在。这次的随机阅读之旅也带来了意外的收获，有幸认识了一位优秀的博客作者池建强老师，并拜读了其所作的《MacTalk·人生元编程》和《MacTalk·跨越边界》，感受到技术与人文的魅力，也更加坚定了写作记录的想法。
-关于持续写作。从我最近的实践来看，写作确实可以很好地梳理文章的脉络，整理自己的思考。不过，初步写作也存在不少问题，主要集中在以下两点：1) 用简洁的语言将一件事情说清楚并不是那么容易，能够准确地表达自己更不容易；2) 逻辑思维不够清晰。针对以上两点，我采取的策略是在读书的过程中多注意作者的语言组织及表述技巧，经常反复阅读自己的读书笔记，不断打磨。每一次读，你都会有不一样的发现。算是”复盘”自己的思路。……
+读书带来的价值有多少？……
         </div>
         <p class="readmore"><a href="http://www.subond.com/post/reading_and_writing/" target="_blank">阅读全文</a></p>
     </article>
@@ -601,6 +484,8 @@ Info架构师2017年1月刊:微信PaxsoStore:深入浅出Paxos算法协议
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
 
 
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
 
 
 
@@ -608,7 +493,7 @@ Info架构师2017年1月刊:微信PaxsoStore:深入浅出Paxos算法协议
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="http://www.subond.com/">

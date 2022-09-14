@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>Docker进阶：服务配置 | subond&#39;s blog</title>
     <meta property="og:title" content="Docker进阶：服务配置 - subond&#39;s blog">
@@ -16,7 +18,7 @@
         
     <meta property="article:modified_time" content='2017-05-01T00:00:00&#43;08:00'>
         
-    <meta name="Keywords" content="">
+    <meta name="Keywords" content="golang,博客">
     <meta name="description" content="当使用Docker Swarm模式时，我们可以通过命令`docker service create`向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即`docker service`，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。">
         <meta name="author" content="subond">
         
@@ -45,7 +47,7 @@
                         subond&#39;s blog
                     </a>
                 
-                
+                <p class="description">专注于云网络，个人成长</p>
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
@@ -88,6 +90,11 @@
             
         </div>
         
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
         
         
         <div class="post-content">
@@ -394,6 +401,8 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 </script>
 
 
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
 
 
 
@@ -401,7 +410,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="http://www.subond.com/">

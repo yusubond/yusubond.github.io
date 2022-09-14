@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>Docker技术：认识Docker | subond&#39;s blog</title>
     <meta property="og:title" content="Docker技术：认识Docker - subond&#39;s blog">
@@ -16,7 +18,7 @@
         
     <meta property="article:modified_time" content='2017-04-14T00:00:00&#43;08:00'>
         
-    <meta name="Keywords" content="">
+    <meta name="Keywords" content="golang,博客">
     <meta name="description" content="Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。">
         <meta name="author" content="subond">
         
@@ -45,7 +47,7 @@
                         subond&#39;s blog
                     </a>
                 
-                
+                <p class="description">专注于云网络，个人成长</p>
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
@@ -88,6 +90,11 @@
             
         </div>
         
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
         
         
         <div class="post-content">
@@ -210,6 +217,23 @@ $ sudo usermod -aG docker $USER
 
 
         
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/learn_paxos/">深入理解Paxos算法</a></li>
+        
+        <li><a href="/post/reading_and_writing/">读书写作那点事儿</a></li>
+        
+        <li><a href="/post/the_middle_twenties/">二十五六岁</a></li>
+        
+        <li><a href="/post/reply-1988/">Reply 1988: 人生是个迷啊</a></li>
+        
+        <li><a href="/post/linux_process2/">Linux中的线程管理</a></li>
+        
+    </ul>
+</div>
 
 
         <div class="post-meta meta-tags">
@@ -344,6 +368,8 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 </script>
 
 
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
 
 
 
@@ -351,7 +377,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 
                 <div id="secondary">
     <section class="widget">
-        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="http://www.subond.com/">
