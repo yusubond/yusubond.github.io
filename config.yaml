@@ -25,7 +25,11 @@ menu:
     name: "归档"
     url: /archives/
     weight: 2
+  - identifier: "reading"
+    name: "阅读"
+    url: /reading/
+    weight: 3
   - identifier: "about"
     name: "关于"
     url: /about/
-    weight: 3
+    weight: 4
