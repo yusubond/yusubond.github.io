@@ -1,7 +1,11 @@
 baseURL: 'http://www.subond.com/'
+languageCode: "zh-CN"
 theme: "maupassant"
-title: 'subond'
-author: 'subond'
+title: "subond\'s blog"
+author:
+  name: "subond"
+
+summaryLength: 140
 
 # Category & Tag
 default_category: uncategorized
@@ -17,6 +21,17 @@ tag_map:
 tag_dir: tags
 archive_dir: archives
 category_dir: categories
+
+# 配置代码高亮
+markup:
+  highlight:
+    lineNos: true
+    style: "github"
+
+params:
+  cc:
+    name: "知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议"
+    link: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
 
 # menu
 menu:
