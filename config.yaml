@@ -15,6 +15,7 @@ category_map:
 "LIFE": life
 "TECH": tech
 "READ": read
+"Go高性能编程": gohigh
 tag_map:
 
 # Directory
