@@ -20,6 +20,33 @@
     <loc>http://www.subond.com/categories/%E6%9D%82%E8%B0%88/</loc>
     <lastmod>2022-09-13T17:34:32+08:00</lastmod>
   </url><url>
+    <loc>http://www.subond.com/tags/go/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/post/003_golang_array_and_slice/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/post/002_golang_struct_skill/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/tags/slice/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/tags/struct/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/tags/</loc>
+    <lastmod>2022-09-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/tags/alignment/</loc>
+    <lastmod>2022-09-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/post/001_golang_struct_memory_alignment/</loc>
+    <lastmod>2022-09-07T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://www.subond.com/post/25lessonsbefore25/</loc>
     <lastmod>2018-09-08T00:00:00+00:00</lastmod>
   </url><url>
@@ -33,9 +60,6 @@
     <lastmod>2018-09-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://www.subond.com/tags/reading/</loc>
-    <lastmod>2018-09-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://www.subond.com/tags/</loc>
     <lastmod>2018-09-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://www.subond.com/categories/read/</loc>
@@ -163,6 +187,12 @@
   </url><url>
     <loc>http://www.subond.com/post/gitxuexi/</loc>
     <lastmod>2016-04-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://www.subond.com/tags/escape/</loc>
+  </url><url>
+    <loc>http://www.subond.com/post/004_golang_stack_or_heap/</loc>
+  </url><url>
+    <loc>http://www.subond.com/tags/memory/</loc>
   </url><url>
     <loc>http://www.subond.com/archives/</loc>
   </url>

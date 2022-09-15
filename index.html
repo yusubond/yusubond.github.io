@@ -100,6 +100,95 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="http://www.subond.com/post/003_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            Go中Slice性能与技巧 一个数组中的所有元素均存放在此数组的直接部分，一个切片的所有元素均存放在此切片的间接部分。
+slice是Go语言中一个重要的数据类型，而且很好用，但是也有一些坑，需要我们对slice有深入的理解。
+slice跟数组array很类似，可以使用下标进行访问，如果越界则会产生panic。
+1、slice到底是个啥 为了更好地理解切片类型和和切片值，我们需要对切片内部结构有一个基本的认识。在Go语言中，切片类型的内部定义大致如下：
+1 2 3 4 5 6 // runtime/slice.go type slice struct { array unsafe.Pointer // 引用着底层存储在间接部分上的元素 len int // 长度 cap int // 容量 } 通过定义我们可以看到slice有三个属性，分别：……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/003_golang_array_and_slice/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月13日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            Go 空struct的使用技巧 1、空struct{}不占用内存空间 Go语言中，使用unsafe.Sizeof()可以计算一个数据类型实例所占用的字节数。
+1 2 3 4 5 6 7 8 9 10 package main import ( &#34;fmt&#34; &#34;unsafe&#34; ) func main() { fmt.Printf(&#34;struct{} %d\n&#34;, unsafe.Sizeof(struct {}{})) // struct{} 0 } 通过上面的结果可以看到，Go中空结构体struct{}是不占用内存空间。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/002_golang_struct_skill/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月7日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问，而是以字长来访问。字长是指在同一时间内处理二进制数的位数。32位系统的字长为32位，即4字节，64位系统的字长为64位，即8字节。
+CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位系统为例，访问一个8字节的数据，一次读取4个字节，只需要访问2次。
+2 如何计算结构体的内存空间 在Go中，可以使用unsafe.Sizeof()来计算一个数据类型实例所占用的内存大小。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 type Person struct { name string age int address string } func main() { var s1 int var str string var f1 float64 var p Person fmt.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
             </h1>
         </header>
@@ -309,101 +398,6 @@
     
     
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年5月10日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/tech' target="_blank">TECH</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。
-其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。
-1.Vagrant安装 Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。
-VirtualBox安装 这是Virtual官网链接https://www.virtualbox.org/wiki/Downloads，可以依据自己的系统选择合适的安装包进行安装。
-Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需要依据自己的系统选择合适的安装包进行安装。
-2.Vagrant配置 Vagrant配置主要在Vagrantfile文件中，通过vagrant init命令可以获得。
-1 2 3 $ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
-1 2 config.vm.box = &#34;ubuntu/xenial64&#34; config.……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/vagrant_startup/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年5月1日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/tech' target="_blank">TECH</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            当使用Docker Swarm模式时，我们可以通过命令docker service create向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即docker service，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。
-本文目录：
-创建服务 配置服务 创建服务 Swarm集群中最简单创建服务的方式就是指定所要创建的服务镜像就可以，即命令docker service create &lt;IMAGE&gt;。当执行创建服务命令后，Swarm编排器则向可用节点分派服务任务。一个任务其实就是一个基于指定镜像生成的容器。比如，创建一个nginx web服务。
-# 在管理节点上 # --name参数用于指定服务的名称 $ docker service create --name myweb nginx l3w3x4df6tnia8qql64mkdm1s # 查看Swarm集群中的服务 $ docker service ls ID NAME MODE REPLICAS IMAGE l3w3x4df6tni myweb replicated 1/1 nginx:latest 当然，我们也可以在部署服务时指定容器中将要运行的指令，其命令为docker service create &lt;IMAGE&gt; &lt;COMMAND&gt;。……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/docker_swarm5/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年4月28日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/tech' target="_blank">TECH</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：
-创建一个Swarm集群 加入一个已有的Swarm集群 本文目录：
-创建Swarm 加入Swarm 节点管理 创建Swarm 当我们使用命令行创建一个Swarm集群时，Docker引擎将启用Swarm模式。当执行docker swarm init命令时，Docker引擎将启动一个Swarm集群，主要过程如下：
-将当前的模式切换至Swarm模式，并创建一个名为default的Swarm 指定当前节点为Swarm的管理节点，并以当前主机名命名当前节点 配置网络监听端口，端口号为2377 将当前节点设置为Active状态，意味着该节点可以接收调度器分派的任务 启动一个全局分布式数据中心，存储并维护Swarm信息和服务信息 默认情况下，为Swarm集群生成自签名根CA 默认情况下，生成工作节点和管理节点的token(令牌)，用于其他节点加入该Swarm 创建一个名为ingress的overlay网络，用于对外发布服务端口 # 创建一个swarm $ docker swarm init 配置通告地址
-管理节点通过通告地址(advertise address)来允许Swarm集群中的其他节点访问Swarmkit API和覆盖网络。Swarm集群上的其他节点必须能够访问其通告地址(Ip地址)上的管理节点。……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/docker_swarm4/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
 
 
 
@@ -486,6 +480,18 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
     </li>
     
     <li>
+        <a href="http://www.subond.com/post/003_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
     </li>
     
@@ -509,18 +515,6 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
         <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
     </li>
     
-    <li>
-        <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -529,6 +523,8 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
     <section class="widget">
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (4)</a></li>
     
     <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
     
@@ -549,6 +545,8 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
     
     <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
     
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
     <a href="http://www.subond.com/tags/carrer/">carrer</a>
     
     <a href="http://www.subond.com/tags/cloud/">cloud</a>
@@ -557,11 +555,15 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
+    <a href="http://www.subond.com/tags/escape/">escape</a>
+    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
     
     <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
     
     <a href="http://www.subond.com/tags/growth/">growth</a>
     
@@ -569,11 +571,17 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
     
+    <a href="http://www.subond.com/tags/memory/">memory</a>
+    
     <a href="http://www.subond.com/tags/process/">process</a>
     
     <a href="http://www.subond.com/tags/pthread/">pthread</a>
     
     <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
     
     <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
     

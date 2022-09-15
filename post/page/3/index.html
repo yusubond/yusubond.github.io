@@ -74,6 +74,112 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="http://www.subond.com/post/learn_paxos/" title="深入理解Paxos算法" target="_blank">深入理解Paxos算法</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年3月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            1.Paxos算法 Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了Paxos Made Simple，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
+Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
+2.基本概念 Paxos算法中有三种角色：Proposer, Acceptor, Learner。每个节点需要同时扮演 两种或两种以上的角色。
+Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提议编号不能冲突　Proposal: 提议　=　提议编号 + 提议的值　Proposer: 提议发起者　Acceptors: 提议接受者　Learners: 提议学习者　需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/learn_paxos/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/reading_and_writing/" title="读书写作那点事儿" target="_blank">读书写作那点事儿</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年2月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/nextme' target="_blank">NextMe</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            这是一篇关于读书写作的读书笔记，内容源自李笑来老师知乎Live的《我的读书经验》。
+关于读书路径 知识就是力量，从来都不是一句空话。获取知识的途径有很多，读书无疑是有效的方式之一。那么，有哪些较好的读书路径值得我们参考呢？笑来老师给出了以下几个方法：
+泛读，即广泛地阅读。尤其是开始的时候，应尽得杂一点，漫无目的地读，慢慢地就会发现读书的乐趣，发现自己感兴趣的点，而后就可以着点而入，深入阅读。这是一个广散网，寻找点的过程。
+学会挑书，形成自己的书单。总的来说，挑书应该有这样一个原则：能够帮助我们认清现实并思考未来，且具有 繁殖能力 的书。能够帮组我们认清现实并有所思考的书多为非虚构类的书，这一类书可以往往能够就某一问题，或某一现象，甚至某个学科做较为深入的分析与探讨，是我们了解当下现实的基础，而书中关于这些问题的讨论有可以启发我们对未来的思考。具有繁殖能力的知识，往往是那些能够激发我们阅读欲望，探索问题解决之道；亦或与我们原有的知识形成冲突，或者形成补充的知识，这是一个不断发现其他点，形成星星之火的过程。
+建立检索书库，方便日后查询。选择一款自己喜欢的笔记软件，不断地做好自己的阅读笔记。将阅读过程中发现的亮点和思考，以及相关的书目形成记录。如何做好阅读笔记，可以参考万维刚老师的什么是好的读书笔记。这是一个将点连接成线，进而形成一个面的过程。
+杂读，尽量涉及更多的领域和学科。想要获得一些意外的收获，杂读就是一个很好的方法。用自己原有的专业知识及系统去接触一个相对陌生的领域和学科，往往可以碰撞出不一样的火花。这是一个发现其他面的过程，并产生面与面交集的过程。
+读书的目的 读书，为了改变生活。宋真宗赵恒在《励学篇》言道：安居不用架高楼，书中自有黄金屋；娶妻莫恨无良媒，书中自有颜如玉。虽说有些功利化，但读书就是可以改变我们的生活。这种改变往往并不是直接地改变我们一些什么，而是通过间接的方式。书，带给我们新的知识，新的思维，甚至新的思考方式；带给我们不曾认识或者不能正确认识的专业及领域，潜移默化地影响着我们的生活及工作，慢慢地某些东西就刻在了我们的骨子里，让我们终生受用。
+升级阅读方法 通过前面的介绍，我们认识了读书路径，知道了读书的目的。那么，什么的阅读方法才算有效的阅读呢？关于这一点，以下原则值得参考：
+只字不差，反复阅读。限于我们每个人不同的专业背景及知识阅历，也限于我们现有的水平，我们不太可能，甚至不可能了解所有的行业和学科，所以 一本书，只要必要，即便是读不懂，也要读完。说不定哪一天，书中某个点就激发我们新的思考。
+翻看书评，以书会友。莎士比亚曾言：There are a thousand Hamlets in a thousand people&rsquo;s eyes(一千个读者就有一千个哈姆雷特)。通过阅读他人关于一本书的思考，我们看到另一个角度的阐释。这份阐释也许跟我们自己的理解有所冲突，也许互为补充，也许高于我们的见识，也许低于我们的见识，这不正是读书的意义嘛。
+持续写作，有效输出。写作，是提高阅读能力的有效工具。教，是最有效的学习。当我们能够产生输出的时候，才算是内化到我们自己系统的东西。最初写作的时候，可能写得并不好，也没有那么完善，但是一定要保证它是完整的。之后，再通过不断地完善和补充，形成好的作品。另外，当我们写作的时候，才可以像作者一样阅读，明确自己的写作意图，梳理其中的逻辑关系，补充论据的支撑点。最后，还有更重要的一点：写作，目的只有一个——讲清楚一件事。
+###关于现代阅读的
+如何对待碎片化阅读？
+信息社会的发展，不断涌现的智能终端，几乎可以让我们随时随地地阅读；刷微博，刷微信，几乎也占据了我们大部分的闲暇时间，这样碎片化的信息对我们有多大意义呢？其实，意义不大。建议就是：形成固定的阅读时间。在固定的时间里阅读，与书对话，充分享受思想的碰撞，知识的更新。
+读书带来的价值有多少？……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/reading_and_writing/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/the_middle_twenties/" title="二十五六岁" target="_blank">二十五六岁</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年12月15日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/life' target="_blank">LIFE</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            当一个人开始怀念少年时光的时候，他的少年时代就已经一去不复返了，此时此刻的他俨然成了一个有责任的青年人。
+面对未来，每个人都会或多或少地有些焦虑，尤其是年轻人。对未来既充满了幻想，也充满了渴望。未来，总是有无数的希望吸引着我们，去追逐，去靠近。
+焦虑是年轻人的普遍状态，有焦虑感的是很棒的，因为他们很清楚知道自己应该奔跑，只不过，暂时不知道自己应该选择哪一条跑到罢了。——吴慧超
+二十五六岁的我们，基本上刚刚告别学生时代，开始走上社会，像任何一个“刚上任”的新人一样，在一家公司，做着一些再普通不过的工作。总想获得更多，却又无力支付。欲望与贪婪太多，而自己无力支付，这或许是最大的焦虑吧。
+作为一名农村出来的孩子，我出生在一个普通的家庭，没有任何背景可言，能够完整地接受高等教育，并进行一定程度地深造，已经非常幸运了。所以，在大学毕业的那一天，才忽然明白——从此，我的人生才算是完整的。因为，并不是每个人都有机会能够接受教育，在这个美好的年纪。但是，也必须深刻认识到：在踏入社会的那一刻，“父母的庇护至此结束，未来的一切，都需要自己去挣”。
+在文章《一个人在二十五六岁时，该是什么状态》，作者吴慧超写一部分自己刚参加工作的经历，总结起来就是四个字：不负时光。当我们回望自己过去的时候，如果觉得那些点点滴滴的进步与成长，正慢慢地让自己逐渐变得越来越独立，越自信，成为家人的依靠，成为一个肩负责任的人，那就叫不负时光。
+记得海明威有一句箴言：优于别人，并不高贵，真正的高贵是优于过去的自己。
+达尼·拉费里埃在《还乡之谜》中，写道：”前方总有太多的希望，身后总有太多的失望。生命是一条长长的带子，展开在延绵不断的时光中，展开在柔软的变幻迁移中，交替着希望与失望”。
+二十五六岁的年纪，就是撸起袖子加油干。写给自己，也写给每个为生活更美好而努力的人。……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/the_middle_twenties/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="http://www.subond.com/post/reply-1988/" title="Reply 1988: 人生是个迷啊" target="_blank">Reply 1988: 人生是个迷啊</a>
             </h1>
         </header>
@@ -233,6 +339,44 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     
     
     
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/004_golang_stack_or_heap/" title="Go逃逸分析与性能" target="_blank">Go逃逸分析与性能</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            1年1月1日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            Go 逃逸分析与性能 1、变量与内存 通常每种编程语言都有自己的内存模型，每个变量，常量都存储在内存的某个物理位置上，并通过内存指针来访问。
+我们都知道，程序运行时所使用的的内存分为两个区：堆和栈。那我们怎么知道变量是分配在堆还是栈上呢？Go 语言实现了垃圾回收机制，其内存是自动管理的，所以通常作为开发者并不需要关心内存分配在栈还堆上。但是站在性能的角度，在栈上分配内存和堆上分配内存，两者的性能却非常大。因为分配在栈上的内存，函数直接结束就能自动回收；而分配在堆上的内存，需要等待垃圾回收才能被回收释放。
+在 Go 官网的FAQ上有个变量分配的问题如下：
+如何知道变量是分配在堆上还是栈上？
+从正确性的角度来看，你不需要知道。只要有对它的引用，Go 中的每个变量就存在，而且变量选择的存储位置与语言的语义无关。
+存储位置确实对程序性能有影响。如果可能，Go 编译器将在函数的栈上分配该函数的本地变量。但是，如果函数返回后无法保证该变量不再被引用，那么编译器必须在垃圾回收的堆上分配该变量以避免悬空指针错误。此外，如果局部变量非常大，将其存储在堆上而不是栈上可能更有意义。
+在当前的编译器中，如果一个变量的地址被占用，那么该变量就是在堆上分配的候选者。但是，基本的逃逸分析会识别某些情况，将函数返回后不再存活的变量分配在栈上。
+由此我们可以发现，变量逃逸一般发生在以下几种情况：
+函数返回地址 函数返回引用 函数返回值类型不确定，或者说不确定其大小 变量过大 变量大小不确定 那么，知道变量逃逸的原因后，我们就可以有意识地将变量控制在栈上，减少堆变量的分配，降低GC成本，提高程序性能。
+2、逃逸分析 Go 语言内存分配是由编译器决定的，编译器会跨越函数和包的边界进行全局的分析，检查是否需要在堆上为一个变量分配内存，还是在栈本身的内存对其进行管理，这个过程称为逃逸分析(escape analysis)。
+2.1 变量大小逃逸 举个例子，我们模拟一个变量大小不确定的情况：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 package main func main() { num := 10 s1 := make([]int, 0, num) for i := 0; i &lt; num; i++ { s1 = append(s1, i) } s2 := make([]int, 0, 10) for i := 0; i &lt; num; i++ { s2 = append(s2, i) } } 编译时，指定编译参数-gcflags=&quot;-m&quot;可以查看逃逸分析，结果如下：……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/004_golang_stack_or_heap/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
 
 
 
@@ -315,6 +459,18 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     </li>
     
     <li>
+        <a href="http://www.subond.com/post/003_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
     </li>
     
@@ -338,18 +494,6 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
         <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
     </li>
     
-    <li>
-        <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/docker_swarm5/" title="Docker进阶：服务配置" target="_blank">Docker进阶：服务配置</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/docker_swarm4/" title="Docker进阶：以Swarm模式运行Docker引擎" target="_blank">Docker进阶：以Swarm模式运行Docker引擎</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -358,6 +502,8 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     <section class="widget">
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (4)</a></li>
     
     <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
     
@@ -378,6 +524,8 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     
     <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
     
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
     <a href="http://www.subond.com/tags/carrer/">carrer</a>
     
     <a href="http://www.subond.com/tags/cloud/">cloud</a>
@@ -386,11 +534,15 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
+    <a href="http://www.subond.com/tags/escape/">escape</a>
+    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
     
     <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
     
     <a href="http://www.subond.com/tags/growth/">growth</a>
     
@@ -398,11 +550,17 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
     
+    <a href="http://www.subond.com/tags/memory/">memory</a>
+    
     <a href="http://www.subond.com/tags/process/">process</a>
     
     <a href="http://www.subond.com/tags/pthread/">pthread</a>
     
     <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
     
     <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
     

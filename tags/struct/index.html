@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>struct | subond&#39;s blog</title>
+    <meta property="og:title" content="struct - subond&#39;s blog">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="struct">
+        
+    <meta name="author" content="subond">
+    <meta property="og:url" content="http://www.subond.com/tags/struct/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/tags/struct/index.xml" title="subond's blog" />
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        subond&#39;s blog
+                    </a>
+                
+                <p class="description">专注于云网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <h3 class="archive-title">
+        包含标签
+        <span class="keyword">struct</span>
+        的文章
+    </h3>
+    
+
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/002_golang_struct_skill/" target="_blank">Go 空struct的使用技巧</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月13日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            
+        </div>
+        
+        <div class="post-content">
+            Go 空struct的使用技巧 1、空struct{}不占用内存空间 Go语言中，使用unsafe.Sizeof()可以计算一个数据类型实例所占用的字节数。
+1 2 3 4 5 6 7 8 9 10 package main import ( &#34;fmt&#34; &#34;unsafe&#34; ) func main() { fmt.Printf(&#34;struct{} %d\n&#34;, unsafe.Sizeof(struct {}{})) // struct{} 0 } 通过上面的结果可以看到，Go中空结构体struct{}是不占用内存空间。……
+            <p class="readmore"><a href="http://www.subond.com/post/002_golang_struct_skill/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" target="_blank">Go Struct内存对齐</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月7日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            
+        </div>
+        
+        <div class="post-content">
+            Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问，而是以字长来访问。字长是指在同一时间内处理二进制数的位数。32位系统的字长为32位，即4字节，64位系统的字长为64位，即8字节。
+CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位系统为例，访问一个8字节的数据，一次读取4个字节，只需要访问2次。
+2 如何计算结构体的内存空间 在Go中，可以使用unsafe.Sizeof()来计算一个数据类型实例所占用的内存大小。
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 type Person struct { name string age int address string } func main() { var s1 int var str string var f1 float64 var p Person fmt.……
+            <p class="readmore"><a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+
+    
+
+
+
+
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/003_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (4)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/nextme/">NextMe (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/read/">READ (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/tech/">TECH (14)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/escape/">escape</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/memory/">memory</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">yusubond</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
