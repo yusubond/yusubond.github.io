@@ -74,6 +74,34 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月15日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |dbserver| dbserver.vm.box = &#34;centos/7&#34; dbserver.vm.network &#34;private_network&#34;, ip: &#34;192.168.10.10&#34; dbserver.vm.hostname = &#34;dbserver&#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
+配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |ubuntu16| ubuntu16.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/vagrant_usage/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="http://www.subond.com/post/vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
             </h1>
         </header>
@@ -377,43 +405,6 @@ Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的
     
     
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/docker_docker/" title="Docker技术：认识Docker" target="_blank">Docker技术：认识Docker</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年4月14日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/tech' target="_blank">TECH</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
-本文目录：
-1.什么是Docker 2.Docker基本概念 3.Docker安装 4.Docker网络 1.什么是Docker Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对 进程 进行封装隔离，属于 操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。
-Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的 应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
-2.Docker基本概念 Docker包括三个基本概念：镜像、容器、仓库。
-1 镜像(Image)
-众所周知，操作系统分为内核和用户空间。对于Linux而言，内核启动后，会挂载root文件系统为其提供用户空间支持。而Docker镜像，就相当于一个root文件系统。
-Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
-分层存储
-镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
-# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/docker_docker/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
 
 
 
@@ -496,6 +487,10 @@ Docker镜像是一个特殊的文件系统，除了提供容器运行时所需�
 <ul class="widget-list">
     
     <li>
+        <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
     </li>
     
@@ -531,10 +526,6 @@ Docker镜像是一个特殊的文件系统，除了提供容器运行时所需�
         <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
     </li>
     
-    <li>
-        <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -543,6 +534,8 @@ Docker镜像是一个特殊的文件系统，除了提供容器运行时所需�
     <section class="widget">
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (1)</a></li>
     
     <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (4)</a></li>
     
@@ -570,6 +563,8 @@ Docker镜像是一个特殊的文件系统，除了提供容器运行时所需�
     <a href="http://www.subond.com/tags/carrer/">carrer</a>
     
     <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
     
     <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
     

@@ -74,6 +74,35 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月26日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/go%E7%AC%94%E8%AE%B0' target="_blank">Go笔记</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            Golang Defer的调用顺序 1、在defer语句声明时进行估值 我们都知道go中defer是延时调用，一般在return语句结束后调用。但是如果defer语句中包含变量呢，那变量该如何计算？
+看这样一个例子
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 type ( su struct {} ) func (s *su) add(i int) *su { fmt.……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/golang_defer/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
             </h1>
         </header>
@@ -371,34 +400,6 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
     
     
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年5月15日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/tech' target="_blank">TECH</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |dbserver| dbserver.vm.box = &#34;centos/7&#34; dbserver.vm.network &#34;private_network&#34;, ip: &#34;192.168.10.10&#34; dbserver.vm.hostname = &#34;dbserver&#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
-配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |ubuntu16| ubuntu16.……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/vagrant_usage/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
 
 
 
@@ -477,6 +478,10 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
 <ul class="widget-list">
     
     <li>
+        <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/first-post/" title="First Post" target="_blank">First Post</a>
     </li>
     
@@ -512,10 +517,6 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
         <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
     </li>
     
-    <li>
-        <a href="http://www.subond.com/post/vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -524,6 +525,8 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
     <section class="widget">
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (1)</a></li>
     
     <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (4)</a></li>
     
@@ -551,6 +554,8 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
     <a href="http://www.subond.com/tags/carrer/">carrer</a>
     
     <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
     
     <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
     
