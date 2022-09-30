@@ -81,6 +81,60 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="http://www.subond.com/post/005_golang_mutex/" target="_blank">互斥锁与读写锁的性能对比</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月29日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            
+        </div>
+        
+        <div class="post-content">
+            互斥锁与读写锁 Go 语言标准包 sync 中提供了两种锁，互斥锁 Mutex 和读写锁 RWMutex ，那两者有什么样的区别和差异呢？
+互斥锁（sync.Mutex) 互斥意味着加锁的多个代码块不可能同时执行。只有抢到锁的 goroutine 才可以执行，其他 goroutine 只能等待（阻塞在 Lock()方法）锁释放后，获得互斥锁才能继续执行。
+互斥锁提供了两种操作：
+Lock()，即上锁 Unlock()，即解锁 通常我们将Unlock() 放到 defer函数中执行，确保退出代码块时一定会解锁。
+读写锁（sync.RWMutex） 读写锁是为了解决这样的场景：只要保证写操作安全就可，读操作可以并行执行，从而提高读的效率。
+读写锁也称为 多读单写锁，它包括读锁和写锁，读写可以同时执行，但是写锁是互斥的。通常有下面三中场景：
+在没有写锁的情况下，读锁是不互斥的，允许多个同时执行 写锁之间是互斥的，只能一个写锁工作，其他写锁阻塞 读锁和写锁是互斥的，如果存在读锁，写锁阻塞；如果存在写锁，读锁阻塞 从这三种场景可以看到，读写锁主要是为了解决读多写少的性能问题。……
+            <p class="readmore"><a href="http://www.subond.com/post/005_golang_mutex/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
+                <a href="http://www.subond.com/post/006_golang_string_join/" target="_blank">Go字符串拼接性能对比</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2022年9月23日
+        </date>
+        
+        <div class="post-meta meta-category">
+            |
+            
+            <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+            
+        </div>
+        
+        <div class="post-content">
+            Go字符串拼接性能对比 Go 语言中提供了基础数据结构类型 string，在实际使用中我们经常遇到将字符串拼接的问题，即需要将多个字符串拼接在一起，形成新的字符串。那么 go 语言有哪些方式可以完成字符串拼接，以及它们的性能如何，我们一起研究下。
+1. 操作符+ 最简单的一种方式就是通过操作符+来完成拼接，例如下面这段小代码，字符串 s3 就是直接将s1和s2拼接在一起，其值等于foobar
+1 2 3 s1 := &#34;foo&#34; s2 := &#34;bar&#34; s3 := s1 + s2 2. 通过strings.join函数 strings 库中的strings.join 函数可以拼接多个字符串，并且还能指定字符串之间的分隔符。……
+            <p class="readmore"><a href="http://www.subond.com/post/006_golang_string_join/" target="_blank">阅读全文</a></p>
+        </div>
+    </article>
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="http://www.subond.com/post/003_golang_array_and_slice/" target="_blank">Go Slice性能与技巧</a>
             </h1>
         </header>
@@ -245,7 +299,15 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
 <ul class="widget-list">
     
     <li>
+        <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
     </li>
     
     <li>
@@ -276,14 +338,6 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
         <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
     </li>
     
-    <li>
-        <a href="http://www.subond.com/post/two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/starting_jog/" title="初入职场" target="_blank">初入职场</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -295,7 +349,7 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
     
     <li><a href="http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (1)</a></li>
     
-    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (4)</a></li>
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (6)</a></li>
     
     <li><a href="http://www.subond.com/categories/life/">LIFE (5)</a></li>
     
@@ -346,6 +400,8 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
     
     <a href="http://www.subond.com/tags/memory/">memory</a>
     
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
     <a href="http://www.subond.com/tags/process/">process</a>
     
     <a href="http://www.subond.com/tags/pthread/">pthread</a>
@@ -353,6 +409,8 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
     <a href="http://www.subond.com/tags/reading/">reading</a>
     
     <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
     
     <a href="http://www.subond.com/tags/struct/">struct</a>
     

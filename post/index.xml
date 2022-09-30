@@ -6,7 +6,22 @@
     <description>Recent content in Posts on subond&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 26 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>互斥锁与读写锁的性能对比</title>
+      <link>http://www.subond.com/post/005_golang_mutex/</link>
+      <pubDate>Thu, 29 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/005_golang_mutex/</guid>
+      <description>互斥锁与读写锁 Go 语言标准包 sync 中提供了两种锁，互斥锁 Mutex 和读写锁 RWMutex ，那两者有什么样的区别和差异呢？
+互斥锁（sync.Mutex) 互斥意味着加锁的多个代码块不可能同时执行。只有抢到锁的 goroutine 才可以执行，其他 goroutine 只能等待（阻塞在 Lock()方法）锁释放后，获得互斥锁才能继续执行。
+互斥锁提供了两种操作：
+Lock()，即上锁 Unlock()，即解锁 通常我们将Unlock() 放到 defer函数中执行，确保退出代码块时一定会解锁。
+读写锁（sync.RWMutex） 读写锁是为了解决这样的场景：只要保证写操作安全就可，读操作可以并行执行，从而提高读的效率。
+读写锁也称为 多读单写锁，它包括读锁和写锁，读写可以同时执行，但是写锁是互斥的。通常有下面三中场景：
+在没有写锁的情况下，读锁是不互斥的，允许多个同时执行 写锁之间是互斥的，只能一个写锁工作，其他写锁阻塞 读锁和写锁是互斥的，如果存在读锁，写锁阻塞；如果存在写锁，读锁阻塞 从这三种场景可以看到，读写锁主要是为了解决读多写少的性能问题。</description>
+    </item>
+    
     <item>
       <title>go defer的调用顺序</title>
       <link>http://www.subond.com/post/golang_defer/</link>
@@ -16,6 +31,17 @@
       <description>Golang Defer的调用顺序 1、在defer语句声明时进行估值 我们都知道go中defer是延时调用，一般在return语句结束后调用。但是如果defer语句中包含变量呢，那变量该如何计算？
 看这样一个例子
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 type ( su struct {} ) func (s *su) add(i int) *su { fmt.</description>
+    </item>
+    
+    <item>
+      <title>Go字符串拼接性能对比</title>
+      <link>http://www.subond.com/post/006_golang_string_join/</link>
+      <pubDate>Fri, 23 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/006_golang_string_join/</guid>
+      <description>Go字符串拼接性能对比 Go 语言中提供了基础数据结构类型 string，在实际使用中我们经常遇到将字符串拼接的问题，即需要将多个字符串拼接在一起，形成新的字符串。那么 go 语言有哪些方式可以完成字符串拼接，以及它们的性能如何，我们一起研究下。
+1. 操作符+ 最简单的一种方式就是通过操作符+来完成拼接，例如下面这段小代码，字符串 s3 就是直接将s1和s2拼接在一起，其值等于foobar
+1 2 3 s1 := &amp;#34;foo&amp;#34; s2 := &amp;#34;bar&amp;#34; s3 := s1 + s2 2. 通过strings.join函数 strings 库中的strings.join 函数可以拼接多个字符串，并且还能指定字符串之间的分隔符。</description>
     </item>
     
     <item>
