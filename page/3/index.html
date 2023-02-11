@@ -73,6 +73,37 @@
     <article class="post">
         <header>
             <h1 class="post-title">
+                <a href="http://www.subond.com/post/docker_quickstart/" title="Docker技术：快速上手教程" target="_blank">Docker技术：快速上手教程</a>
+            </h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年4月20日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/tech' target="_blank">TECH</a>
+            </span>
+            
+        </div>
+        
+        <div class="post-content">
+            本文目录：
+1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
+Dockerfile
+创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
+# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD .……
+        </div>
+        <p class="readmore"><a href="http://www.subond.com/post/docker_quickstart/" target="_blank">阅读全文</a></p>
+    </article>
+    
+    
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">
                 <a href="http://www.subond.com/post/docker_dockerfile/" title="Docker技术：Dockerfile的定义与使用" target="_blank">Docker技术：Dockerfile的定义与使用</a>
             </h1>
         </header>
@@ -388,38 +419,6 @@ fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程�
     
     
     
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/linux_pthread/" title="Linux中的线程函数" target="_blank">Linux中的线程函数</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2016年6月14日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/tech' target="_blank">TECH</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。以下内容，主要介绍5个基本线程函数。
-1.pthread_create()函数 当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。
-#include &lt;pthread.h&gt; int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg); //返回：成功为0，出错为正的Exxx值 tid:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。
-attr:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。
-创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。注意 func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。
-2.pthread_join()函数 #include &lt;pthread.h&gt; int pthread_join(pthread_t *tid, void **status); //返回：成功为0，出错为正的Exxx值。 该函数的功能是等待一个给定线程终止……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/linux_pthread/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
 
 
 
@@ -461,7 +460,7 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
 
                     <footer id="footer">
     <div>
-        &copy; 2022 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
+        &copy; 2023 <a href="http://www.subond.com/">subond&#39;s blog By subond</a>
         
     </div>
     <br />
@@ -506,6 +505,10 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
 <ul class="widget-list">
     
     <li>
+        <a href="http://www.subond.com/post/01letter/" title="2023, 启航" target="_blank">2023, 启航</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
     </li>
     
@@ -541,10 +544,6 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
         <a href="http://www.subond.com/post/create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
     </li>
     
-    <li>
-        <a href="http://www.subond.com/post/confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -567,6 +566,8 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     <li><a href="http://www.subond.com/categories/tech/">TECH (14)</a></li>
     
     <li><a href="http://www.subond.com/categories/%E6%9D%82%E8%B0%88/">杂谈 (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (1)</a></li>
     
 </ul>
     </section>
@@ -626,6 +627,8 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
     <a href="http://www.subond.com/tags/work/">work</a>
     
     <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
     
 </div>
     </section>

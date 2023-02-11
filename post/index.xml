@@ -6,7 +6,29 @@
     <description>Recent content in Posts on subond&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 29 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 11 Feb 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023, 启航</title>
+      <link>http://www.subond.com/post/01letter/</link>
+      <pubDate>Sat, 11 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/01letter/</guid>
+      <description>你好，我是 Kevin，见字如面，这是为你寄来的第 1 封信。
+新年新开始 22年6月份我重拾了几年前的博客和写作，23年为了更好地将写作这件事做下去，重新找回了自己的公众号「一个人的活法」，并正式更名为「凯文的生活随想」。新的一年，我准备在这里书写自己对于生活，阅读，学习，工作以及理财的思考和实践。
+古时候，鸿雁作为传递书信的使者，取其含义，我把这部分写作命名为「鸿雁传书」，本质上就是 Newsletter。
+为什么是它 答案是为了更好的表达和思考。写作可以说是普通人锻炼思考和逻辑的最好方式，当然还有很多其他益处，后面我会单独写一篇，今天先按下不表。
+今天主要讲一下书写的形式和内容。没有一种形式适合所有人，找到适合自己的才是最好的。
+我的核心诉求就是表达，提高文字组织能力，所以选择了 Newsletter 的这种形式，每周一篇。
+书信内容主要围绕生活展开，以我感兴趣的领域方向为主，书写自己的所思所想。这样既可以督促自己保证一定的输入和输出，同时又可以兼顾生活和工作，不会有很大压力。
+其次，对于需要长篇阐述的话题，我依然会写作长文，只是不定期更新。
+鸿雁传书会发布哪些内容 对生活，工作，技术的思考和成长 对投资理财的学习时间，尤其是家庭理财 对运动，身体健康的探索 我读过的好书和文章推荐 我在其他社交媒体上的有意义的输出 总之，鸿雁传书就是以自己的视角去发现和认识这个世界，不求深刻和全面，但求有所思考和收获。
+谢谢你的关注，让我们以书信会友。
+如何订阅 「鸿雁传书」每周一发布，同步更新在微信公众号和博客。
+本周日常 上周休假在家，这周才正式复工，到公司第一件事就是深度清理键盘，作为程序员，上战场必须擦亮自己的武器🎉
+编程创造美好未来~
+对了，文章的排版采用也树开发的一款极简公众号排版工具，欢迎体验使用~</description>
+    </item>
+    
     <item>
       <title>互斥锁与读写锁的性能对比</title>
       <link>http://www.subond.com/post/005_golang_mutex/</link>
