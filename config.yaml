@@ -5,6 +5,7 @@ title: "subond\'s blog"
 author:
   name: "subond"
 
+hasCJKLanguage: true
 summaryLength: 30
 
 # Category & Tag
