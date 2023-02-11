@@ -13,13 +13,7 @@
       <pubDate>Thu, 29 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/005_golang_mutex/</guid>
-      <description>互斥锁与读写锁 Go 语言标准包 sync 中提供了两种锁，互斥锁 Mutex 和读写锁 RWMutex ，那两者有什么样的区别和差异呢？
-互斥锁（sync.Mutex) 互斥意味着加锁的多个代码块不可能同时执行。只有抢到锁的 goroutine 才可以执行，其他 goroutine 只能等待（阻塞在 Lock()方法）锁释放后，获得互斥锁才能继续执行。
-互斥锁提供了两种操作：
-Lock()，即上锁 Unlock()，即解锁 通常我们将Unlock() 放到 defer函数中执行，确保退出代码块时一定会解锁。
-读写锁（sync.RWMutex） 读写锁是为了解决这样的场景：只要保证写操作安全就可，读操作可以并行执行，从而提高读的效率。
-读写锁也称为 多读单写锁，它包括读锁和写锁，读写可以同时执行，但是写锁是互斥的。通常有下面三中场景：
-在没有写锁的情况下，读锁是不互斥的，允许多个同时执行 写锁之间是互斥的，只能一个写锁工作，其他写锁阻塞 读锁和写锁是互斥的，如果存在读锁，写锁阻塞；如果存在写锁，读锁阻塞 从这三种场景可以看到，读写锁主要是为了解决读多写少的性能问题。</description>
+      <description>互斥锁与读写锁 Go 语言标准包 sync 中提供了两种锁，互斥锁 Mutex 和读写锁</description>
     </item>
     
     <item>
@@ -28,9 +22,7 @@ Lock()，即上锁 Unlock()，即解锁 通常我们将Unlock() 放到 defer函�
       <pubDate>Fri, 23 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/006_golang_string_join/</guid>
-      <description>Go字符串拼接性能对比 Go 语言中提供了基础数据结构类型 string，在实际使用中我们经常遇到将字符串拼接的问题，即需要将多个字符串拼接在一起，形成新的字符串。那么 go 语言有哪些方式可以完成字符串拼接，以及它们的性能如何，我们一起研究下。
-1. 操作符+ 最简单的一种方式就是通过操作符+来完成拼接，例如下面这段小代码，字符串 s3 就是直接将s1和s2拼接在一起，其值等于foobar
-1 2 3 s1 := &amp;#34;foo&amp;#34; s2 := &amp;#34;bar&amp;#34; s3 := s1 + s2 2. 通过strings.join函数 strings 库中的strings.join 函数可以拼接多个字符串，并且还能指定字符串之间的分隔符。</description>
+      <description>Go字符串拼接性能对比 Go 语言中提供了基础数据结构类型 stri</description>
     </item>
     
     <item>
@@ -39,11 +31,7 @@ Lock()，即上锁 Unlock()，即解锁 通常我们将Unlock() 放到 defer函�
       <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/003_golang_array_and_slice/</guid>
-      <description>Go中Slice性能与技巧 一个数组中的所有元素均存放在此数组的直接部分，一个切片的所有元素均存放在此切片的间接部分。
-slice是Go语言中一个重要的数据类型，而且很好用，但是也有一些坑，需要我们对slice有深入的理解。
-slice跟数组array很类似，可以使用下标进行访问，如果越界则会产生panic。
-1、slice到底是个啥 为了更好地理解切片类型和和切片值，我们需要对切片内部结构有一个基本的认识。在Go语言中，切片类型的内部定义大致如下：
-1 2 3 4 5 6 // runtime/slice.go type slice struct { array unsafe.Pointer // 引用着底层存储在间接部分上的元素 len int // 长度 cap int // 容量 } 通过定义我们可以看到slice有三个属性，分别：</description>
+      <description>Go中Slice性能与技巧 一个数组中的所有元素均存放在此数组</description>
     </item>
     
     <item>
@@ -52,8 +40,7 @@ slice跟数组array很类似，可以使用下标进行访问，如果越界则�
       <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/002_golang_struct_skill/</guid>
-      <description>Go 空struct的使用技巧 1、空struct{}不占用内存空间 Go语言中，使用unsafe.Sizeof()可以计算一个数据类型实例所占用的字节数。
-1 2 3 4 5 6 7 8 9 10 package main import ( &amp;#34;fmt&amp;#34; &amp;#34;unsafe&amp;#34; ) func main() { fmt.Printf(&amp;#34;struct{} %d\n&amp;#34;, unsafe.Sizeof(struct {}{})) // struct{} 0 } 通过上面的结果可以看到，Go中空结构体struct{}是不占用内存空间。</description>
+      <description>Go 空struct的使用技巧 1、空struct{}不占用内存空</description>
     </item>
     
     <item>
@@ -62,10 +49,7 @@ slice跟数组array很类似，可以使用下标进行访问，如果越界则�
       <pubDate>Wed, 07 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/001_golang_struct_memory_alignment/</guid>
-      <description>Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问，而是以字长来访问。字长是指在同一时间内处理二进制数的位数。32位系统的字长为32位，即4字节，64位系统的字长为64位，即8字节。
-CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位系统为例，访问一个8字节的数据，一次读取4个字节，只需要访问2次。
-2 如何计算结构体的内存空间 在Go中，可以使用unsafe.Sizeof()来计算一个数据类型实例所占用的内存大小。
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 type Person struct { name string age int address string } func main() { var s1 int var str string var f1 float64 var p Person fmt.</description>
+      <description>Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存</description>
     </item>
     
     <item>
@@ -74,18 +58,7 @@ CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/004_golang_stack_or_heap/</guid>
-      <description>Go 逃逸分析与性能 1、变量与内存 通常每种编程语言都有自己的内存模型，每个变量，常量都存储在内存的某个物理位置上，并通过内存指针来访问。
-我们都知道，程序运行时所使用的的内存分为两个区：堆和栈。那我们怎么知道变量是分配在堆还是栈上呢？Go 语言实现了垃圾回收机制，其内存是自动管理的，所以通常作为开发者并不需要关心内存分配在栈还堆上。但是站在性能的角度，在栈上分配内存和堆上分配内存，两者的性能却非常大。因为分配在栈上的内存，函数直接结束就能自动回收；而分配在堆上的内存，需要等待垃圾回收才能被回收释放。
-在 Go 官网的FAQ上有个变量分配的问题如下：
-如何知道变量是分配在堆上还是栈上？
-从正确性的角度来看，你不需要知道。只要有对它的引用，Go 中的每个变量就存在，而且变量选择的存储位置与语言的语义无关。
-存储位置确实对程序性能有影响。如果可能，Go 编译器将在函数的栈上分配该函数的本地变量。但是，如果函数返回后无法保证该变量不再被引用，那么编译器必须在垃圾回收的堆上分配该变量以避免悬空指针错误。此外，如果局部变量非常大，将其存储在堆上而不是栈上可能更有意义。
-在当前的编译器中，如果一个变量的地址被占用，那么该变量就是在堆上分配的候选者。但是，基本的逃逸分析会识别某些情况，将函数返回后不再存活的变量分配在栈上。
-由此我们可以发现，变量逃逸一般发生在以下几种情况：
-函数返回地址 函数返回引用 函数返回值类型不确定，或者说不确定其大小 变量过大 变量大小不确定 那么，知道变量逃逸的原因后，我们就可以有意识地将变量控制在栈上，减少堆变量的分配，降低GC成本，提高程序性能。
-2、逃逸分析 Go 语言内存分配是由编译器决定的，编译器会跨越函数和包的边界进行全局的分析，检查是否需要在堆上为一个变量分配内存，还是在栈本身的内存对其进行管理，这个过程称为逃逸分析(escape analysis)。
-2.1 变量大小逃逸 举个例子，我们模拟一个变量大小不确定的情况：
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 package main func main() { num := 10 s1 := make([]int, 0, num) for i := 0; i &amp;lt; num; i++ { s1 = append(s1, i) } s2 := make([]int, 0, 10) for i := 0; i &amp;lt; num; i++ { s2 = append(s2, i) } } 编译时，指定编译参数-gcflags=&amp;quot;-m&amp;quot;可以查看逃逸分析，结果如下：</description>
+      <description>Go 逃逸分析与性能 1、变量与内存 通常每种编程语言都有自己的内存</description>
     </item>
     
   </channel>

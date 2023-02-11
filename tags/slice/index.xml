@@ -13,11 +13,7 @@
       <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/003_golang_array_and_slice/</guid>
-      <description>Go中Slice性能与技巧 一个数组中的所有元素均存放在此数组的直接部分，一个切片的所有元素均存放在此切片的间接部分。
-slice是Go语言中一个重要的数据类型，而且很好用，但是也有一些坑，需要我们对slice有深入的理解。
-slice跟数组array很类似，可以使用下标进行访问，如果越界则会产生panic。
-1、slice到底是个啥 为了更好地理解切片类型和和切片值，我们需要对切片内部结构有一个基本的认识。在Go语言中，切片类型的内部定义大致如下：
-1 2 3 4 5 6 // runtime/slice.go type slice struct { array unsafe.Pointer // 引用着底层存储在间接部分上的元素 len int // 长度 cap int // 容量 } 通过定义我们可以看到slice有三个属性，分别：</description>
+      <description>Go中Slice性能与技巧 一个数组中的所有元素均存放在此数组</description>
     </item>
     
   </channel>

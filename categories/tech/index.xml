@@ -13,8 +13,7 @@
       <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/vagrant_usage/</guid>
-      <description>1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 1 2 3 4 5 Vagrant.configure(&amp;#34;2&amp;#34;) do |dbserver| dbserver.vm.box = &amp;#34;centos/7&amp;#34; dbserver.vm.network &amp;#34;private_network&amp;#34;, ip: &amp;#34;192.168.10.10&amp;#34; dbserver.vm.hostname = &amp;#34;dbserver&amp;#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
-配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 1 2 3 4 5 Vagrant.configure(&amp;#34;2&amp;#34;) do |ubuntu16| ubuntu16.</description>
+      <description>1.单机配置 配置一个centos7系统，要求使用私有网络地址</description>
     </item>
     
     <item>
@@ -23,14 +22,7 @@
       <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/vagrant_startup/</guid>
-      <description>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。
-其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。
-1.Vagrant安装 Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。
-VirtualBox安装 这是Virtual官网链接https://www.virtualbox.org/wiki/Downloads，可以依据自己的系统选择合适的安装包进行安装。
-Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需要依据自己的系统选择合适的安装包进行安装。
-2.Vagrant配置 Vagrant配置主要在Vagrantfile文件中，通过vagrant init命令可以获得。
-1 2 3 $ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
-1 2 config.vm.box = &amp;#34;ubuntu/xenial64&amp;#34; config.</description>
+      <description>Vagrant是为了方便的实现虚拟化环境而设计的，使用Rub</description>
     </item>
     
     <item>
@@ -39,10 +31,7 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
       <pubDate>Mon, 01 May 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_swarm5/</guid>
-      <description>当使用Docker Swarm模式时，我们可以通过命令docker service create向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即docker service，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。
-本文目录：
-创建服务 配置服务 创建服务 Swarm集群中最简单创建服务的方式就是指定所要创建的服务镜像就可以，即命令docker service create &amp;lt;IMAGE&amp;gt;。当执行创建服务命令后，Swarm编排器则向可用节点分派服务任务。一个任务其实就是一个基于指定镜像生成的容器。比如，创建一个nginx web服务。
-# 在管理节点上 # --name参数用于指定服务的名称 $ docker service create --name myweb nginx l3w3x4df6tnia8qql64mkdm1s # 查看Swarm集群中的服务 $ docker service ls ID NAME MODE REPLICAS IMAGE l3w3x4df6tni myweb replicated 1/1 nginx:latest 当然，我们也可以在部署服务时指定容器中将要运行的指令，其命令为docker service create &amp;lt;IMAGE&amp;gt; &amp;lt;COMMAND&amp;gt;。</description>
+      <description>当使用Docker Swarm模式时，我们可以通过命令dock</description>
     </item>
     
     <item>
@@ -51,11 +40,7 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
       <pubDate>Fri, 28 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_swarm4/</guid>
-      <description>Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：
-创建一个Swarm集群 加入一个已有的Swarm集群 本文目录：
-创建Swarm 加入Swarm 节点管理 创建Swarm 当我们使用命令行创建一个Swarm集群时，Docker引擎将启用Swarm模式。当执行docker swarm init命令时，Docker引擎将启动一个Swarm集群，主要过程如下：
-将当前的模式切换至Swarm模式，并创建一个名为default的Swarm 指定当前节点为Swarm的管理节点，并以当前主机名命名当前节点 配置网络监听端口，端口号为2377 将当前节点设置为Active状态，意味着该节点可以接收调度器分派的任务 启动一个全局分布式数据中心，存储并维护Swarm信息和服务信息 默认情况下，为Swarm集群生成自签名根CA 默认情况下，生成工作节点和管理节点的token(令牌)，用于其他节点加入该Swarm 创建一个名为ingress的overlay网络，用于对外发布服务端口 # 创建一个swarm $ docker swarm init 配置通告地址
-管理节点通过通告地址(advertise address)来允许Swarm集群中的其他节点访问Swarmkit API和覆盖网络。Swarm集群上的其他节点必须能够访问其通告地址(Ip地址)上的管理节点。</description>
+      <description>Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两</description>
     </item>
     
     <item>
@@ -64,21 +49,7 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
       <pubDate>Wed, 26 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_swarm3/</guid>
-      <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
-本文目录：
-节点的工作原理 服务的工作原理 PKI工作原理 节点的工作原理 Docker1.12及其以后版本中引入的Swarm模式，即允许创建一个Docker集群。一个Swarm集群包含一个或多个节点，既可以是物理节点，也可以是虚拟节点。但是，需要保证的是节点上要安装Docker1.12或高于1.12的Docker引擎。
-Swarm模式下节点分为两种：管理节点 和 工作节点。
-管理节点
-管理节点负责集群的管理任务：
-维护集群状态信息 服务调度 处理Swarm模式下的API请求 通过Raft原理，管理节点负责维护整个Swarm集群的内部一致状态以及其上运行的所有服务。为了测试其功能，我们可以运行单个管理节点的Swarm集群。为了保证服务的正常运行，如果单个管理节点的Swarm集群失败，则需要创建一个新的Swarm集群来接管原来的服务。
-为了很好的利用Swarm集群的容错功能，Docker建议部署奇数个节点以保证整个Swarm集群的高可用性。与此同时，当采用多个管理节点时，Swarm系统可以保证管理节点的故障恢复，而不会导致服务停机。
-一个具有三个管理节点的Swarm集群，最多可允许一个管理节点出现故障。 一个具有五个管理节点的Swarm集群，最多可允许两个管理节点出现故障。 一个具有N个管理节点的Swarm集群，最多可允许(N-1)/2个管理节点出现故障。 在一个Swarm集群中，Docker推荐最多部署七个管理节点。因为，更多的管理节点并不一定意味着高可用性和高伸缩性，有时恰恰相反。
-工作节点
-工作节点也是Docker引擎的实例，主要负责运行容器实例。工作节点不参与Raft分布式状态维护，调度决策的制定以及服务Swarm模式下的API请求。我们可以创建单个管理节点的Swarm集群，但却不能创建具有单个工作节点的Swarm集群。模式情况下，所有的管理节点也是工作节点。当然，也可以通过配置，让管理节点仅负责“管理功能”。
-为了防止服务调度器在具有多个节点的Swarm集群中，将任务布置到管理节点上，可以将管理节点的可用性设置为Drain。这样，服务调度器就不会将任务部署到Drain状态的节点上，而只将任务分派到Active状态的节点。
-角色转换
-Docker Swarm模式中，允许我们将工作节点提升为管理节点以保证整个Swarm集群的正常运行，尤其是在管理节点出现故障时。相关命令可以参考docker node promote。
-同样的道理，我们也可以将管理节点变为工作节点。相关命令可以参考docker node demote。</description>
+      <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集</description>
     </item>
     
     <item>
@@ -87,12 +58,7 @@ Docker Swarm模式中，允许我们将工作节点提升为管理节点以保�
       <pubDate>Mon, 24 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_swarm2/</guid>
-      <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
-本文目录：
-服务更新与回滚 路由网络 服务更新与回滚 Docker Swarm集群管理中支持服务的版本更新及回滚操作，具体演示如下：
-所使用的系统环境环境如下：
-三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。
-# 在manger节点上 $ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6 # --update-delay参数配置服务任务或任务集的更新的时延 # 其格式为T1hT2mT3s，即T1小时T2分钟T3秒 # 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数 # 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。 # 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。 # 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如： # --update-failure-action docker service create # --update-failure-action docker service update # 接下来，我们更新redis的镜像 $ docker service update --image redis:3.</description>
+      <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集</description>
     </item>
     
     <item>
@@ -101,11 +67,7 @@ Docker Swarm模式中，允许我们将工作节点提升为管理节点以保�
       <pubDate>Thu, 20 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_quickstart/</guid>
-      <description>本文目录：
-1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
-Dockerfile
-创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
-# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD .</description>
+      <description>本文目录： 1.构建容器-Containers 2.组合服务-C</description>
     </item>
     
     <item>
@@ -114,18 +76,7 @@ Dockerfile
       <pubDate>Tue, 18 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_dockerfile/</guid>
-      <description>本文目录：
-Dockerfile的使用 Dockerfile指令 Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令docker build可以与Dockerfile文件中构建我们自己需要的镜像。
-Dockerfile的使用 Dockerfile文件描述了构建镜像的步骤，其中每条指定都是单独执行的。除了FROM指令，其他每条指令都会在上一条指令所生成镜像的基础上执行，执行完成后生成一个新的镜像层。新的镜像层覆盖在原来的镜像之上，进而形成新的镜像。Dockerfile文件所生成的最终镜像是在基础镜像上叠加一层层的镜像形成的。
-值得注意的是，Docker引擎在构建镜像的过程中会缓存中间镜像。当从一个已经存在的基础镜像开始构建新镜像时，则将Dockerfile中的下一个指令和基础镜像的所有子镜像进行比较，如果有一个子镜像是由相同的指令生成的，则命中缓存，直接使用该镜像。
-Dockerfile指令 Dockerfile的基本格式如下：
-# 注释信息 INSTRUCTION arguments Dockerfile指令不区分大小写，但是建议使用大写，方便区分；#开头的表示注释行。根据指令的作用可以分分为两种：构建指令和设置指令。构建指令用于构建镜像，其指定的操作不会运行在镜像的容器上；而设置指令用于设置镜像的属性，其指定的操作运行在镜像的容器上。
-FROM 格式：FROM 或FROM :
-分类：构建指令
-FROM指令指定基础镜像，一个有效的Dockerfile文件必须以FROM作为第一条非注释指令。后续的指令都依赖于该指令指定的image。FROM指令指定的基础image可以是官方远程仓库中的，也可以位于本地仓库。
-MAINTAINER 格式：MAINTAINER 分类：构建指令
-用于将image的制作者相关的信息写入到image中。当我们对该image执行docker inspect命令时，输出中有相应的字段记录该信息。
-RUN 格式：RUN &amp;lt;shell_cmd&amp;gt; # shell格式</description>
+      <description>本文目录： Dockerfile的使用 Dockerfile指令</description>
     </item>
     
     <item>
@@ -134,14 +85,7 @@ RUN 格式：RUN &amp;lt;shell_cmd&amp;gt; # shell格式</description>
       <pubDate>Sun, 16 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_docker_arch/</guid>
-      <description>本文目录：
-[Docker Engine](#Docker Engine) Docker交付内容 Docker系统架构 Docker Engine Docker Engine主要包含三个组件，如下图所示：
-Docker Server：一个长时间运行的守护进程。 REST API：指定程序可以用来与守护进程通信的接口。 Client：命令行CLI客户端。 CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。
-Docker交付内容 快速，一致地交付应用程序 Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务
-在同一硬件上可允许多个工作流程 Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。
-Docker系统架构 Docker采用Client/Server架构模式，其系统架构如下图所示。
-Docker客户端与守护进程既可以运行在同一台主机，也运行在不同的主机上，两者利用Unix Socket或网络接口，通过REST API进行通信。
-Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。</description>
+      <description>本文目录： [Docker Engine](#Docker Engine) Docker交付内容 Docker系统架构 Docker Engine</description>
     </item>
     
     <item>
@@ -150,17 +94,7 @@ Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的
       <pubDate>Fri, 14 Apr 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/docker_docker/</guid>
-      <description>Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
-本文目录：
-1.什么是Docker 2.Docker基本概念 3.Docker安装 4.Docker网络 1.什么是Docker Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对 进程 进行封装隔离，属于 操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。
-Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的 应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
-2.Docker基本概念 Docker包括三个基本概念：镜像、容器、仓库。
-1 镜像(Image)
-众所周知，操作系统分为内核和用户空间。对于Linux而言，内核启动后，会挂载root文件系统为其提供用户空间支持。而Docker镜像，就相当于一个root文件系统。
-Docker镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件，也包含一些为应用运行时准备的配置参数。镜像不包含任何动态数据，其内容在构建之后也不会被改变。
-分层存储
-镜像在构建时，一层层构建，前一层是后一层的基础。每一层构建完成后就不会再发生改变，后一层上的任何改变值发生在自己这一层。当我们使用命令docker pull ubuntu:14.04获取ubuntu14.04镜像时，可以看到每一层的镜像，及其相互依赖关系。
-# 获取DockerHub中的ubuntu14.04镜像 $ docker pull ubuntu:16.</description>
+      <description>Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术</description>
     </item>
     
     <item>
@@ -169,10 +103,7 @@ Docker镜像是一个特殊的文件系统，除了提供容器运行时所需�
       <pubDate>Tue, 21 Mar 2017 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/learn_paxos/</guid>
-      <description>1.Paxos算法 Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了Paxos Made Simple，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。
-Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。
-2.基本概念 Paxos算法中有三种角色：Proposer, Acceptor, Learner。每个节点需要同时扮演 两种或两种以上的角色。
-Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提议编号不能冲突　Proposal: 提议　=　提议编号 + 提议的值　Proposer: 提议发起者　Acceptors: 提议接受者　Learners: 提议学习者　需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。</description>
+      <description>1.Paxos算法 Paxos算法是Leslie Lanmpor</description>
     </item>
     
     <item>
@@ -181,22 +112,7 @@ Proposal Value: 提议的值　Proposal Number: 提议编号，并且要求提�
       <pubDate>Sun, 19 Jun 2016 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/linux_process2/</guid>
-      <description>1.线程 线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。
-2.多线程模型 操作系统中有两种方法提供线程支持：用户层的 用户线程 和 内核层的 内核线程。用户线程受内核内核支持，而无需内核管理；内核线程由系统直接支持和管理。
-1）多对一模型：多个用户线程映射到一个内核线程
-特点：线程管理由线程库在用户空间进行，效率高；一个线程阻塞系统调用，整个进程阻塞；任意时刻，只有一个线程能访问内核(也就是，多线程不能并行运行在多处理器上)
-2）一对一模型：每个用户线程映射到一个内核线程
-特点：一个线程阻塞，其他线程不受影响，具有并发功能；允许多线程运行在多处理器上。
-3）多对多模型：即多路复用，许多用户线程映射到同等数量或较少数量的内核线程
-特点：结合多对一模型和一对一模型的优点，其对应的一个变形是 二级模型 (先允许一个用户线程绑定到一个内核线程上，然后，其他用户线程多路复用)
-3.线程库 线程库为程序员提供创建和管理线程的API函数，主要有两种方法来实现线程库：系统调用和非系统调用
-1）在用户空间提供没有内核支持的库，称为 非系统调用；
-2）由系统支持的内核级库，称为 系统调用
-系统调用fork()和exec()
-exec():如果一个线程调用exec()，则其指定的程序替换整个进程，包括所有线程。
-fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程，因为exec()会替换所有线程；2）fork()之后没有调用exec()，则另一个进程复制所有线程。
-4.线程取消 线程取消是在线程完成之前来终止线程的任务。要取消的线程称为 目标线程。目标线程可以在两种情况下发生：
-1）异步取消: 一个线程立即终止目标线程。 (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)</description>
+      <description>1.线程 线程是CPU使用的基本单元，由线程ID，程序计数器，</description>
     </item>
     
     <item>
@@ -205,12 +121,7 @@ fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程�
       <pubDate>Tue, 14 Jun 2016 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/linux_pthread/</guid>
-      <description>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。以下内容，主要介绍5个基本线程函数。
-1.pthread_create()函数 当一个程序由exec启动执行时，称为初始线程或主线程的单个线程就创建了。其余线程则由pthread_create函数创建。
-#include &amp;lt;pthread.h&amp;gt; int pthread_create(pthread_t *tid, const pthread_attr_t *attr, void *(*func)(void *), void *arg); //返回：成功为0，出错为正的Exxx值 tid:一个进程内的每个线程都有一个线程ID标识，其数据类型为pthread_t(unsigned long int,即％lu)。如果新的线程创建成功，其ID通过tid指针返回。
-attr:属性，每个线程都有许多属性（优先级，初始栈大小，是否成为一个守护线程等等）。若采用默认设置，可置attr参数为空指针（NULL）。
-创建一个线程时最后指定的参数就是由该线程执行的函数func及其参数arg。注意 func和arg的声明。func所指函数作为参数接受一个通用指针 (void *)，又作为返回值返回一个通用指针(void *)。另外该函数的唯一调用参数是指针arg，如果需要给函数传递多个参数，可以打包成一个结构，然后将结构的地址作为单个参数传递给函数。
-2.pthread_join()函数 #include &amp;lt;pthread.h&amp;gt; int pthread_join(pthread_t *tid, void **status); //返回：成功为0，出错为正的Exxx值。 该函数的功能是等待一个给定线程终止</description>
+      <description>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和</description>
     </item>
     
     <item>
@@ -219,7 +130,7 @@ attr:属性，每个线程都有许多属性（优先级，初始栈大小，是
       <pubDate>Fri, 29 Apr 2016 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/gitxuexi/</guid>
-      <description>一、基础篇 指令介绍 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 $ git config --global user.</description>
+      <description>一、基础篇 指令介绍 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21</description>
     </item>
     
   </channel>

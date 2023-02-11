@@ -96,8 +96,7 @@
         </div>
         
         <div class="post-content">
-            Go 空struct的使用技巧 1、空struct{}不占用内存空间 Go语言中，使用unsafe.Sizeof()可以计算一个数据类型实例所占用的字节数。
-1 2 3 4 5 6 7 8 9 10 package main import ( &#34;fmt&#34; &#34;unsafe&#34; ) func main() { fmt.Printf(&#34;struct{} %d\n&#34;, unsafe.Sizeof(struct {}{})) // struct{} 0 } 通过上面的结果可以看到，Go中空结构体struct{}是不占用内存空间。……
+            Go 空struct的使用技巧 1、空struct{}不占用内存空……
             <p class="readmore"><a href="http://www.subond.com/post/002_golang_struct_skill/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -120,10 +119,7 @@
         </div>
         
         <div class="post-content">
-            Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问，而是以字长来访问。字长是指在同一时间内处理二进制数的位数。32位系统的字长为32位，即4字节，64位系统的字长为64位，即8字节。
-CPU以字长访问内存，可以减少访问次数，增加吞吐量。以32位系统为例，访问一个8字节的数据，一次读取4个字节，只需要访问2次。
-2 如何计算结构体的内存空间 在Go中，可以使用unsafe.Sizeof()来计算一个数据类型实例所占用的内存大小。
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 type Person struct { name string age int address string } func main() { var s1 int var str string var f1 float64 var p Person fmt.……
+            Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存……
             <p class="readmore"><a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" target="_blank">阅读全文</a></p>
         </div>
     </article>

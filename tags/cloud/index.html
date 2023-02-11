@@ -96,8 +96,7 @@
         </div>
         
         <div class="post-content">
-            1.单机配置 配置一个centos7系统，要求使用私有网络地址192.168.10.10，hostname为dbserver。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |dbserver| dbserver.vm.box = &#34;centos/7&#34; dbserver.vm.network &#34;private_network&#34;, ip: &#34;192.168.10.10&#34; dbserver.vm.hostname = &#34;dbserver&#34; end 需要说明的是：使用私有地址，vm的私有ip只能在各vm间互访，而不能访问Internet，即HOST_ONLY模式；使用公有地址，vm的公有地址将于主机某个网卡(启动vm时需指定)的地址同一网段，vm能够使用该地址访问Internet。
-配置一个ubuntu xenial64系统，并将工程目录下的data目录同步到vm中，目录为/vagrant/project_data；同时将vm的80端口映射到主机的8080端口。 1 2 3 4 5 Vagrant.configure(&#34;2&#34;) do |ubuntu16| ubuntu16.……
+            1.单机配置 配置一个centos7系统，要求使用私有网络地址……
             <p class="readmore"><a href="http://www.subond.com/post/vagrant_usage/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -120,14 +119,7 @@
         </div>
         
         <div class="post-content">
-            Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。
-其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。
-1.Vagrant安装 Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。
-VirtualBox安装 这是Virtual官网链接https://www.virtualbox.org/wiki/Downloads，可以依据自己的系统选择合适的安装包进行安装。
-Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需要依据自己的系统选择合适的安装包进行安装。
-2.Vagrant配置 Vagrant配置主要在Vagrantfile文件中，通过vagrant init命令可以获得。
-1 2 3 $ mkdir MyHost $ cd MyHost $ vagrant init 在MyHost文件夹下就会出现Vagrantfile文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则Vagrantfile中进行如下修改：
-1 2 config.vm.box = &#34;ubuntu/xenial64&#34; config.……
+            Vagrant是为了方便的实现虚拟化环境而设计的，使用Rub……
             <p class="readmore"><a href="http://www.subond.com/post/vagrant_startup/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -150,10 +142,7 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
         </div>
         
         <div class="post-content">
-            当使用Docker Swarm模式时，我们可以通过命令docker service create向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即docker service，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。
-本文目录：
-创建服务 配置服务 创建服务 Swarm集群中最简单创建服务的方式就是指定所要创建的服务镜像就可以，即命令docker service create &lt;IMAGE&gt;。当执行创建服务命令后，Swarm编排器则向可用节点分派服务任务。一个任务其实就是一个基于指定镜像生成的容器。比如，创建一个nginx web服务。
-# 在管理节点上 # --name参数用于指定服务的名称 $ docker service create --name myweb nginx l3w3x4df6tnia8qql64mkdm1s # 查看Swarm集群中的服务 $ docker service ls ID NAME MODE REPLICAS IMAGE l3w3x4df6tni myweb replicated 1/1 nginx:latest 当然，我们也可以在部署服务时指定容器中将要运行的指令，其命令为docker service create &lt;IMAGE&gt; &lt;COMMAND&gt;。……
+            当使用Docker Swarm模式时，我们可以通过命令dock……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm5/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -176,11 +165,7 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
         </div>
         
         <div class="post-content">
-            Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：
-创建一个Swarm集群 加入一个已有的Swarm集群 本文目录：
-创建Swarm 加入Swarm 节点管理 创建Swarm 当我们使用命令行创建一个Swarm集群时，Docker引擎将启用Swarm模式。当执行docker swarm init命令时，Docker引擎将启动一个Swarm集群，主要过程如下：
-将当前的模式切换至Swarm模式，并创建一个名为default的Swarm 指定当前节点为Swarm的管理节点，并以当前主机名命名当前节点 配置网络监听端口，端口号为2377 将当前节点设置为Active状态，意味着该节点可以接收调度器分派的任务 启动一个全局分布式数据中心，存储并维护Swarm信息和服务信息 默认情况下，为Swarm集群生成自签名根CA 默认情况下，生成工作节点和管理节点的token(令牌)，用于其他节点加入该Swarm 创建一个名为ingress的overlay网络，用于对外发布服务端口 # 创建一个swarm $ docker swarm init 配置通告地址
-管理节点通过通告地址(advertise address)来允许Swarm集群中的其他节点访问Swarmkit API和覆盖网络。Swarm集群上的其他节点必须能够访问其通告地址(Ip地址)上的管理节点。……
+            Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm4/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -203,21 +188,7 @@ Vagrant安装 Vagrant官网https://www.vagrantup.com/downloads.html，同样需�
         </div>
         
         <div class="post-content">
-            一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
-本文目录：
-节点的工作原理 服务的工作原理 PKI工作原理 节点的工作原理 Docker1.12及其以后版本中引入的Swarm模式，即允许创建一个Docker集群。一个Swarm集群包含一个或多个节点，既可以是物理节点，也可以是虚拟节点。但是，需要保证的是节点上要安装Docker1.12或高于1.12的Docker引擎。
-Swarm模式下节点分为两种：管理节点 和 工作节点。
-管理节点
-管理节点负责集群的管理任务：
-维护集群状态信息 服务调度 处理Swarm模式下的API请求 通过Raft原理，管理节点负责维护整个Swarm集群的内部一致状态以及其上运行的所有服务。为了测试其功能，我们可以运行单个管理节点的Swarm集群。为了保证服务的正常运行，如果单个管理节点的Swarm集群失败，则需要创建一个新的Swarm集群来接管原来的服务。
-为了很好的利用Swarm集群的容错功能，Docker建议部署奇数个节点以保证整个Swarm集群的高可用性。与此同时，当采用多个管理节点时，Swarm系统可以保证管理节点的故障恢复，而不会导致服务停机。
-一个具有三个管理节点的Swarm集群，最多可允许一个管理节点出现故障。 一个具有五个管理节点的Swarm集群，最多可允许两个管理节点出现故障。 一个具有N个管理节点的Swarm集群，最多可允许(N-1)/2个管理节点出现故障。 在一个Swarm集群中，Docker推荐最多部署七个管理节点。因为，更多的管理节点并不一定意味着高可用性和高伸缩性，有时恰恰相反。
-工作节点
-工作节点也是Docker引擎的实例，主要负责运行容器实例。工作节点不参与Raft分布式状态维护，调度决策的制定以及服务Swarm模式下的API请求。我们可以创建单个管理节点的Swarm集群，但却不能创建具有单个工作节点的Swarm集群。模式情况下，所有的管理节点也是工作节点。当然，也可以通过配置，让管理节点仅负责“管理功能”。
-为了防止服务调度器在具有多个节点的Swarm集群中，将任务布置到管理节点上，可以将管理节点的可用性设置为Drain。这样，服务调度器就不会将任务部署到Drain状态的节点上，而只将任务分派到Active状态的节点。
-角色转换
-Docker Swarm模式中，允许我们将工作节点提升为管理节点以保证整个Swarm集群的正常运行，尤其是在管理节点出现故障时。相关命令可以参考docker node promote。
-同样的道理，我们也可以将管理节点变为工作节点。相关命令可以参考docker node demote。……
+            一个Swarm是一组Docker引擎或节点的集群，并在这个集……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm3/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -240,12 +211,7 @@ Docker Swarm模式中，允许我们将工作节点提升为管理节点以保�
         </div>
         
         <div class="post-content">
-            一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
-本文目录：
-服务更新与回滚 路由网络 服务更新与回滚 Docker Swarm集群管理中支持服务的版本更新及回滚操作，具体演示如下：
-所使用的系统环境环境如下：
-三个节点(manager, worker1, worker2)均为Ubuntu16.04，即xenial64系统 节点的IP分布，manager(172.28.128.3), worker1(172.28.128.4), worker2(172.28.128.5) 首先，我们将Redis 3.0.6版本部署到Swarm集群中，并指定10s的更新时延。
-# 在manger节点上 $ docker service create --replicas 3 --name redis --update-delay 10s redis:3.0.6 # --update-delay参数配置服务任务或任务集的更新的时延 # 其格式为T1hT2mT3s，即T1小时T2分钟T3秒 # 默认情况下，更新调度程序一次更新一个任务。但是，可以配置--update-parallelism参数指定同时更新的最大服务任数 # 默认情况下，当一个任务更新并返回RUNNING状态后，更新调度程序才调度另一个任务进行更新，直到所有的任务更新完成。 # 如果某个任务更新返回FAILED状态，更新调度程序则停止更新。 # 当然，也可以通过配置--update-failure-action参数指定服务创建和更新，例如： # --update-failure-action docker service create # --update-failure-action docker service update # 接下来，我们更新redis的镜像 $ docker service update --image redis:3.……
+            一个Swarm是一组Docker引擎或节点的集群，并在这个集……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm2/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -261,24 +227,7 @@ Docker Swarm模式中，允许我们将工作节点提升为管理节点以保�
         </date>
         
         <div class="post-content">
-            一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
-本文目录：
-核心概念 搭建Swarm集群 核心概念 Swarm
-一个Swarm是一组Docker引擎或节点的集群，并在这个集群之上部署服务和应用。我们可以使用Docker命令行工具或者API管理集群中的节点，并且还可以通过Swarm部署和编排相应的服务。当我们没有使用Swarm模式的时候，我们只是简单地对容器进行操作；而在Swarm模式下，我们就可以对服务进行编排。值得注意的是，在同一个Docker实例上既可以运行Swarm的服务，也可以运行独立的容器。
-节点
-一个节点即是参与Swarm集群的Docker引擎实例。我们可以将其理解为一个Docker节点。虽然，我们可以在同一物理主机或云服务上运行一个或多个节点，但是典型的Swarm生产环境则是在分布式的物理主机或云服务上部署多个Docker节点。
-当部署一个服务到Swarm集群中时，我们需要率先在 管理节点 上注册该服务。然后，管理节点将该服务（称之为 任务）分派给各个 工作节点。
-管理节点(Swarm Manager)负责服务编排和集群管理以保证整个集群的正常运行，并负责选出一个leader进行任务编排工作。
-工作节点(Swarm Agent)负责接收并执行管理节点派发下来的任务。默认情况下，管理节点同时扮演工作节点的角色，即接收并执行任务。当然，我们也可以通过配置让管理节点只负责任务管理的功能，使之成为“只具备管理”的节点。Agent在每个工作节点上运行，并报告分派给它的任务。工作节点向管理节点报告其分派到的任务的当前状态，以便管理节点可以维护每个工作节点所需的状态。
-服务和任务
-一个服务是指运行在工作节点上任务的定义。它是Swarm系统的中心结构，也是用户与Swarm交互的主要根据。当创建一个服务时，我们需要指定容器即将使用的镜像以及容器中要执行的命令。在服务分派模型中，Swarm的管理节点根据我们在所需状态下设置的比例，在工作节点中分配特定数量的任务副本。对于全局服务，Swarm在集群中的每个可用工作节点上为服务运行一个任务。
-一个任务带有一个Docker容器和在容器中执行的命令。任务是Swarm进行服务管理的原子调度单元。管理节点根据服务规模中设置的副本数量将任务分派给工作节点。一旦一个任务分派给某个节点，任务就不能移动到另一个节点，它只能在分配的节点上运行或者失败，这即是任务的原子性。
-负载均衡
-Swarm集群管理使用的是 入口负载均衡 策略来暴露想要从外部访问的服务。Swarm的管理节点可以自动地给服务分配一个PublishedPort，也可以为该服务自行配置一个PublishedPort。如果不指定端口，Swarm管理节点将分配30000-32767之间的某个端口。
-外部组件，像云端负载均衡，可以访问集群中任何一个节点的PublishedPort，无论这个节点当前是否在运行某个服务的任务。Swarm路由中的所有节点都将连接到正在运行任务实例的节点上。
-Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配DNS条目。Swarm管理节点使用内部负载均衡，根据服务的DNS名称在集群内部的服务之间分配请求。
-搭建Swarm集群 搭建Swarm集群过程中，所使用的系统环境环境如下：
-三个节点(manager, worker1, worker2)均为xenial64系统 节点的IP分布，manager(172.……
+            一个Swarm是一组Docker引擎或节点的集群，并在这个集……
             <p class="readmore"><a href="http://www.subond.com/post/docker_swarm/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -301,11 +250,7 @@ Swarm中还有一个内部DNS组件，可自动为集群中的每个服务分配
         </div>
         
         <div class="post-content">
-            本文目录：
-1.构建容器-Containers 2.组合服务-Compose 3.集群管理-Swarm 4.应用协作-Stacks 1.构建容器-Containers Dockerfile将定义容器中环境的内容。通过将访问资源（例如，网络接口和磁盘驱动器）进行虚拟化处理，实现与宿主机系统的隔离。为此，我们需要将端口映射到外部宿主系统环境中，并说明将要把那些文件“复制”到隔离的环境中，即容器。这样之后，我们就可以期望在Dockerfile中定义的应用程序可以在任何地方运行。
-Dockerfile
-创建一个新的空目录，在目录下创建名为Dockerfile的文件，并写入以下内容。
-# Use an official Python runtime as a base image FROM python:2.7-slim # Set the working directory to /app WORKDIR /app # Copy the current directory contents into the container at /app ADD .……
+            本文目录： 1.构建容器-Containers 2.组合服务-C……
             <p class="readmore"><a href="http://www.subond.com/post/docker_quickstart/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -328,18 +273,7 @@ Dockerfile
         </div>
         
         <div class="post-content">
-            本文目录：
-Dockerfile的使用 Dockerfile指令 Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令docker build可以与Dockerfile文件中构建我们自己需要的镜像。
-Dockerfile的使用 Dockerfile文件描述了构建镜像的步骤，其中每条指定都是单独执行的。除了FROM指令，其他每条指令都会在上一条指令所生成镜像的基础上执行，执行完成后生成一个新的镜像层。新的镜像层覆盖在原来的镜像之上，进而形成新的镜像。Dockerfile文件所生成的最终镜像是在基础镜像上叠加一层层的镜像形成的。
-值得注意的是，Docker引擎在构建镜像的过程中会缓存中间镜像。当从一个已经存在的基础镜像开始构建新镜像时，则将Dockerfile中的下一个指令和基础镜像的所有子镜像进行比较，如果有一个子镜像是由相同的指令生成的，则命中缓存，直接使用该镜像。
-Dockerfile指令 Dockerfile的基本格式如下：
-# 注释信息 INSTRUCTION arguments Dockerfile指令不区分大小写，但是建议使用大写，方便区分；#开头的表示注释行。根据指令的作用可以分分为两种：构建指令和设置指令。构建指令用于构建镜像，其指定的操作不会运行在镜像的容器上；而设置指令用于设置镜像的属性，其指定的操作运行在镜像的容器上。
-FROM 格式：FROM 或FROM :
-分类：构建指令
-FROM指令指定基础镜像，一个有效的Dockerfile文件必须以FROM作为第一条非注释指令。后续的指令都依赖于该指令指定的image。FROM指令指定的基础image可以是官方远程仓库中的，也可以位于本地仓库。
-MAINTAINER 格式：MAINTAINER 分类：构建指令
-用于将image的制作者相关的信息写入到image中。当我们对该image执行docker inspect命令时，输出中有相应的字段记录该信息。
-RUN 格式：RUN &lt;shell_cmd&gt; # shell格式……
+            本文目录： Dockerfile的使用 Dockerfile指令……
             <p class="readmore"><a href="http://www.subond.com/post/docker_dockerfile/" target="_blank">阅读全文</a></p>
         </div>
     </article>
@@ -362,14 +296,7 @@ RUN 格式：RUN &lt;shell_cmd&gt; # shell格式……
         </div>
         
         <div class="post-content">
-            本文目录：
-[Docker Engine](#Docker Engine) Docker交付内容 Docker系统架构 Docker Engine Docker Engine主要包含三个组件，如下图所示：
-Docker Server：一个长时间运行的守护进程。 REST API：指定程序可以用来与守护进程通信的接口。 Client：命令行CLI客户端。 CLI利用脚本或直接输入命令的方式，通过REST API与Docker Daemon(守护进程)进行通信，并完成相关操作。Docker Damemon是负责容器对象的主体，例如镜像，容器实例，网络管理以及数据卷等。
-Docker交付内容 快速，一致地交付应用程序 Docker允许开发人员通过提供本地容器标准化环境，从而简化应用程序和服务的开发生命周期。容器可以适用于连续集成和持续开发的工作流程。Docker的便携性和轻量级性质使得轻松实现动态管理工作负载，按照业务需求来实现扩展或拆除应用程序和服务
-在同一硬件上可允许多个工作流程 Docker重量轻，速度快。它为基于虚拟机管理程序的虚拟机提供了可行的，具有成本效益的替代方案，因此可以使用更多的计算能力来实现业务目标。Docker是高密度环境和中小型部署的理想选择，您需要用更少的资源来做更多的事情。
-Docker系统架构 Docker采用Client/Server架构模式，其系统架构如下图所示。
-Docker客户端与守护进程既可以运行在同一台主机，也运行在不同的主机上，两者利用Unix Socket或网络接口，通过REST API进行通信。
-Docker Daemon监听Docker API来相应客户端的请求，完成Docker对象的管理。……
+            本文目录： [Docker Engine](#Docker Engine) Docker交付内容 Docker系统架构 Docker Engine……
             <p class="readmore"><a href="http://www.subond.com/post/docker_docker_arch/" target="_blank">阅读全文</a></p>
         </div>
     </article>
