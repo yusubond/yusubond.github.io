@@ -17,6 +17,15 @@
     </item>
     
     <item>
+      <title>关于我</title>
+      <link>http://www.subond.com/about/</link>
+      <pubDate>Sat, 11 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/about/</guid>
+      <description>我是凯文，一枚90后程序员，专注于云计算网络的设计和研发，钟</description>
+    </item>
+    
+    <item>
       <title>互斥锁与读写锁的性能对比</title>
       <link>http://www.subond.com/post/005_golang_mutex/</link>
       <pubDate>Thu, 29 Sep 2022 00:00:00 +0000</pubDate>
@@ -131,15 +140,6 @@
       
       <guid>http://www.subond.com/post/starting_jog/</guid>
       <description>“如何有机会让现在的你遇到刚毕业初入职场的你，你会对他说什么</description>
-    </item>
-    
-    <item>
-      <title>About Me</title>
-      <link>http://www.subond.com/about/about_me/</link>
-      <pubDate>Fri, 01 Sep 2017 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.subond.com/about/about_me/</guid>
-      <description></description>
     </item>
     
     <item>
