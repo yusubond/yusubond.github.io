@@ -32,7 +32,7 @@ markup:
 
 params:
   author: "subond"
-  subtitle: "专注于云网络，个人成长"
+  subtitle: "专注于云计算网络，个人成长"
   keywords: "golang,博客"
   description: "专注于云网络，个人成长"
   busuanzi: true #启用不算子网页统计
@@ -43,8 +43,11 @@ params:
     link: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
   links:
   - title: "github"
-    name: "yusubond"
+    name: "Github"
     url: "http://github.com/yusubond"
+  - title: "微博"
+    name: "微博"
+    url: "https://weibo.cn/u/2746421033"
 
 # menu
 menu:
