@@ -1,6 +1,6 @@
 ---
 title: "Go逃逸分析与性能"
-data: 2022-09-15
+Date: 2022-09-15
 Categories: ["Go高性能编程"]
 Tags: ["go", "escape", "memory"]
 ---
