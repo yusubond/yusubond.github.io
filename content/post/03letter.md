@@ -38,3 +38,5 @@ Tags: ["人生信念"]
 
 
 *这里是凯文的生活随想，如果文章对你有帮助，欢迎转发分享。*
+
+![qccode_for_wechat](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/qccode_for_wechat.png)

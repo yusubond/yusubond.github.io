@@ -56,3 +56,5 @@ Tags: ["写作"]
 ![OGt1n5](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/OGt1n5.png)
 
 对了，文章的排版采用也树开发的一款极简[公众号排版工具](https://markdowns.yeshu.cloud/)，欢迎体验使用~
+
+![qccode_for_wechat](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/qccode_for_wechat.png)
