@@ -230,6 +230,9 @@
     <loc>http://www.subond.com/post/gitxuexi/</loc>
     <lastmod>2016-04-29T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://www.subond.com/qccode_wechat/</loc>
+    <priority>0</priority>
+  </url><url>
     <loc>http://www.subond.com/archives/</loc>
   </url>
 </urlset>
