@@ -1,9 +1,9 @@
 baseURL: 'http://www.subond.com/'
 languageCode: "zh-CN"
 theme: "maupassant"
-title: "subond\'s blog"
+title: "凯文的个人博客"
 author:
-  name: "subond"
+  name: "Kevin"
 
 hasCJKLanguage: true
 summaryLength: 30
@@ -31,7 +31,7 @@ markup:
     style: "github"
 
 params:
-  author: "subond"
+  author: "Kevin"
   subtitle: "专注于云计算网络，个人成长"
   keywords: "golang,博客"
   description: "专注于云网络，个人成长"
