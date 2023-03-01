@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Go高性能编程 on subond&#39;s blog</title>
+    <title>Go高性能编程 on 凯文的个人博客</title>
     <link>http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/</link>
-    <description>Recent content in Go高性能编程 on subond&#39;s blog</description>
+    <description>Recent content in Go高性能编程 on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 29 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>distributed systems on subond&#39;s blog</title>
+    <title>distributed systems on 凯文的个人博客</title>
     <link>http://www.subond.com/tags/distributed-systems/</link>
-    <description>Recent content in distributed systems on subond&#39;s blog</description>
+    <description>Recent content in distributed systems on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 21 Mar 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
