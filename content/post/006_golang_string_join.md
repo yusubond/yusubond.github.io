@@ -1,11 +1,9 @@
 ---
-Title: "Go字符串拼接性能对比"
-Date: 2022-09-23
-Categories: ["Go高性能编程"]
-Tags: ["go", "string"]
+title: "Go字符串拼接性能对比"
+date: 2022-06-17
+categories: ["Go高性能编程"]
+tags: ["go", "string"]
 ---
-
-## Go字符串拼接性能对比
 
 Go 语言中提供了基础数据结构类型 `string`，在实际使用中我们经常遇到将字符串拼接的问题，即需要将多个字符串拼接在一起，形成新的字符串。那么 go 语言有哪些方式可以完成字符串拼接，以及它们的性能如何，我们一起研究下。
 
@@ -23,7 +21,7 @@ s3 := s1 + s2
 
 
 
-### 2. 通过strings.join函数
+## 2. 通过strings.join函数
 
 `strings` 库中的`strings.join` 函数可以拼接多个字符串，并且还能指定字符串之间的分隔符。
 
@@ -34,7 +32,7 @@ s3 := strings.join(s1, s2, "")
 
 
 
-### 3. 通过strings.Builder
+## 3. 通过strings.Builder
 
 `strings.Builder` 有 `WriteString` 方法，可以直接写入，同时还有`Grow`方法，即预先申请内存大小空间
 
@@ -50,7 +48,7 @@ _, _ = str.WriteString(s3
 
 
 
-### 4. 通过bytes.Buffer
+## 4. 通过bytes.Buffer
 
 `bytes.Buffer` 有 `WriteString` 方法，可以直接写入：
 
@@ -65,7 +63,7 @@ s3 := buf.String
 
 
 
-### 5. 通过[]byte切片
+## 5. 通过[]byte切片
 
 像下面这段代码就是通过`[]byte`，将s1和s2拼接在一起，并存入s3。
 
