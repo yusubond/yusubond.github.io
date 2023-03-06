@@ -13,10 +13,10 @@
     <meta property="og:title" content="Go字符串拼接性能对比 - 凯文的个人博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2022-09-23T00:00:00&#43;08:00'>
+    <meta property="article:published_time" content='2022-06-17T00:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2022-09-23T00:00:00&#43;08:00'>
+    <meta property="article:modified_time" content='2022-06-17T00:00:00&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
     <meta name="description" content="Go字符串拼接性能对比">
@@ -78,7 +78,7 @@
             <h1 class="post-title">Go字符串拼接性能对比</h1>
         </header>
         <date class="post-meta meta-date">
-            2022年9月23日
+            2022年6月17日
         </date>
         
         <div class="post-meta">
@@ -98,8 +98,7 @@
         
         
         <div class="post-content">
-            <h2 id="go字符串拼接性能对比">Go字符串拼接性能对比</h2>
-<p>Go 语言中提供了基础数据结构类型 <code>string</code>，在实际使用中我们经常遇到将字符串拼接的问题，即需要将多个字符串拼接在一起，形成新的字符串。那么 go 语言有哪些方式可以完成字符串拼接，以及它们的性能如何，我们一起研究下。</p>
+            <p>Go 语言中提供了基础数据结构类型 <code>string</code>，在实际使用中我们经常遇到将字符串拼接的问题，即需要将多个字符串拼接在一起，形成新的字符串。那么 go 语言有哪些方式可以完成字符串拼接，以及它们的性能如何，我们一起研究下。</p>
 <h2 id="1-操作符">1. 操作符+</h2>
 <p>最简单的一种方式就是通过操作符<code>+</code>来完成拼接，例如下面这段小代码，字符串 <code>s3</code> 就是直接将s1和s2拼接在一起，其值等于<code>foobar</code></p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
@@ -114,7 +113,7 @@
 </span></span><span style="display:flex;"><span>s3 <span style="color:#000;font-weight:bold">:=</span> s1 <span style="color:#000;font-weight:bold">+</span> s2
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="2-通过stringsjoin函数">2. 通过strings.join函数</h3>
+</div><h2 id="2-通过stringsjoin函数">2. 通过strings.join函数</h2>
 <p><code>strings</code> 库中的<code>strings.join</code> 函数可以拼接多个字符串，并且还能指定字符串之间的分隔符。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -126,7 +125,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>s3 <span style="color:#000;font-weight:bold">:=</span> strings.<span style="color:#900;font-weight:bold">join</span>(s1, s2, <span style="color:#d14">&#34;&#34;</span>)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="3-通过stringsbuilder">3. 通过strings.Builder</h3>
+</div><h2 id="3-通过stringsbuilder">3. 通过strings.Builder</h2>
 <p><code>strings.Builder</code> 有 <code>WriteString</code> 方法，可以直接写入，同时还有<code>Grow</code>方法，即预先申请内存大小空间</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -148,7 +147,7 @@
 </span></span><span style="display:flex;"><span>_, _ = str.<span style="color:#900;font-weight:bold">WriteString</span>(s3
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="4-通过bytesbuffer">4. 通过bytes.Buffer</h3>
+</div><h2 id="4-通过bytesbuffer">4. 通过bytes.Buffer</h2>
 <p><code>bytes.Buffer</code> 有 <code>WriteString</code> 方法，可以直接写入：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -168,7 +167,7 @@
 </span></span><span style="display:flex;"><span>s3 <span style="color:#000;font-weight:bold">:=</span> buf.String
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="5-通过byte切片">5. 通过[]byte切片</h3>
+</div><h2 id="5-通过byte切片">5. 通过[]byte切片</h2>
 <p>像下面这段代码就是通过<code>[]byte</code>，将s1和s2拼接在一起，并存入s3。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -409,15 +408,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
+        <li><a href="/post/005_golang_mutex/">Go 互斥锁与读写锁</a></li>
+        
         <li><a href="/post/004_golang_stack_or_heap/">Go逃逸分析与性能</a></li>
         
-        <li><a href="/post/003_golang_array_and_slice/">Go Slice性能与技巧</a></li>
+        <li><a href="/post/25lessonsbefore25/">25岁应该学到的25堂课</a></li>
         
-        <li><a href="/post/002_golang_struct_skill/">Go 空struct的使用技巧</a></li>
+        <li><a href="/post/create_habits/">高创造性人士的7个习惯</a></li>
         
-        <li><a href="/post/001_golang_struct_memory_alignment/">Go Struct内存对齐</a></li>
-        
-        <li><a href="/reading/">阅读书单</a></li>
+        <li><a href="/post/confiden_and_certainty/">年轻的自信与成熟的笃定</a></li>
         
     </ul>
 </div>
@@ -593,19 +592,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
-    </li>
-    
-    <li>
         <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/004_golang_stack_or_heap/" title="Go逃逸分析与性能" target="_blank">Go逃逸分析与性能</a>
     </li>
     
     <li>
@@ -614,6 +601,18 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <li>
         <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/005_golang_mutex/" title="Go 互斥锁与读写锁" target="_blank">Go 互斥锁与读写锁</a>
     </li>
     
 </ul>
@@ -660,8 +659,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
-    <a href="http://www.subond.com/tags/escape/">escape</a>
-    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
@@ -675,8 +672,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     <a href="http://www.subond.com/tags/life/">life</a>
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
-    
-    <a href="http://www.subond.com/tags/memory/">memory</a>
     
     <a href="http://www.subond.com/tags/mutex/">mutex</a>
     

@@ -9,17 +9,17 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>互斥锁与读写锁的性能对比 | 凯文的个人博客</title>
-    <meta property="og:title" content="互斥锁与读写锁的性能对比 - 凯文的个人博客">
+    <title>Go 互斥锁与读写锁 | 凯文的个人博客</title>
+    <meta property="og:title" content="Go 互斥锁与读写锁 - 凯文的个人博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2022-09-29T00:00:00&#43;08:00'>
+    <meta property="article:published_time" content='2022-06-07T00:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2022-09-29T00:00:00&#43;08:00'>
+    <meta property="article:modified_time" content='2022-06-07T00:00:00&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
-    <meta name="description" content="互斥锁与读写锁的性能对比">
+    <meta name="description" content="Go 互斥锁与读写锁">
         
     <meta name="author" content="Kevin">
     <meta property="og:url" content="http://www.subond.com/post/005_golang_mutex/">
@@ -75,10 +75,10 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title">互斥锁与读写锁的性能对比</h1>
+            <h1 class="post-title">Go 互斥锁与读写锁</h1>
         </header>
         <date class="post-meta meta-date">
-            2022年9月29日
+            2022年6月7日
         </date>
         
         <div class="post-meta">
@@ -98,9 +98,8 @@
         
         
         <div class="post-content">
-            <h2 id="互斥锁与读写锁">互斥锁与读写锁</h2>
-<p><code>Go</code> 语言标准包 <code>sync</code> 中提供了两种锁，互斥锁 <code>Mutex</code> 和读写锁 <code>RWMutex</code> ，那两者有什么样的区别和差异呢？</p>
-<h3 id="互斥锁syncmutex">互斥锁（sync.Mutex)</h3>
+            <p><code>Go</code> 语言标准包 <code>sync</code> 中提供了两种锁，互斥锁 <code>Mutex</code> 和读写锁 <code>RWMutex</code> ，那两者有什么样的区别和差异呢？</p>
+<h2 id="互斥锁syncmutex">互斥锁（sync.Mutex)</h2>
 <p>互斥意味着加锁的多个代码块不可能同时执行。只有抢到锁的 <code>goroutine</code> 才可以执行，其他 <code>goroutine</code> 只能等待（阻塞在 <code>Lock()</code>方法）锁释放后，获得互斥锁才能继续执行。</p>
 <p>互斥锁提供了两种操作：</p>
 <ul>
@@ -108,7 +107,7 @@
 <li>Unlock()，即解锁</li>
 </ul>
 <p>通常我们将<code>Unlock()</code> 放到 <code>defer</code>函数中执行，确保退出代码块时一定会解锁。</p>
-<h3 id="读写锁syncrwmutex">读写锁（sync.RWMutex）</h3>
+<h2 id="读写锁syncrwmutex">读写锁（sync.RWMutex）</h2>
 <p>读写锁是为了解决这样的场景：只要保证写操作安全就可，读操作可以并行执行，从而提高读的效率。</p>
 <p>读写锁也称为 <code>多读单写锁</code>，它包括读锁和写锁，读写可以同时执行，但是写锁是互斥的。通常有下面三中场景：</p>
 <ul>
@@ -132,7 +131,7 @@
 <p>RUnlock()，解读锁</p>
 </li>
 </ul>
-<h3 id="互斥锁和读写锁的性能对比">互斥锁和读写锁的性能对比</h3>
+<h2 id="互斥锁和读写锁的性能对比">互斥锁和读写锁的性能对比</h2>
 <p>下面我们分三种场景，对比下互斥锁和读写锁的性能差异。</p>
 <ul>
 <li>读多写少，读900次，写100次</li>
@@ -208,15 +207,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/golang_defer/">go defer的调用顺序</a></li>
-        
-        <li><a href="/post/006_golang_string_join/">Go字符串拼接性能对比</a></li>
-        
         <li><a href="/post/004_golang_stack_or_heap/">Go逃逸分析与性能</a></li>
         
-        <li><a href="/reading/">阅读书单</a></li>
+        <li><a href="/post/25lessonsbefore25/">25岁应该学到的25堂课</a></li>
         
-        <li><a href="/post/003_golang_array_and_slice/">Go Slice性能与技巧</a></li>
+        <li><a href="/post/create_habits/">高创造性人士的7个习惯</a></li>
+        
+        <li><a href="/post/confiden_and_certainty/">年轻的自信与成熟的笃定</a></li>
+        
+        <li><a href="/post/two_fundamental_truths/">关于找工作的两个基本事实</a></li>
         
     </ul>
 </div>
@@ -226,7 +225,7 @@
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/go' target="_blank">Go</a></li>
+                <li><a href='/tags/go' target="_blank">go</a></li>
                 
                 <li><a href='/tags/mutex' target="_blank">mutex</a></li>
                 
@@ -392,19 +391,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
-    </li>
-    
-    <li>
         <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/004_golang_stack_or_heap/" title="Go逃逸分析与性能" target="_blank">Go逃逸分析与性能</a>
     </li>
     
     <li>
@@ -413,6 +400,18 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <li>
         <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/005_golang_mutex/" title="Go 互斥锁与读写锁" target="_blank">Go 互斥锁与读写锁</a>
     </li>
     
 </ul>
@@ -459,8 +458,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
-    <a href="http://www.subond.com/tags/escape/">escape</a>
-    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
@@ -474,8 +471,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     <a href="http://www.subond.com/tags/life/">life</a>
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
-    
-    <a href="http://www.subond.com/tags/memory/">memory</a>
     
     <a href="http://www.subond.com/tags/mutex/">mutex</a>
     

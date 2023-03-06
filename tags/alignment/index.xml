@@ -13,7 +13,7 @@
       <pubDate>Wed, 07 Sep 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/001_golang_struct_memory_alignment/</guid>
-      <description>Go Struct内存对齐 1 为什么需要考虑内存对齐 CPU访问内存</description>
+      <description>1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问</description>
     </item>
     
   </channel>

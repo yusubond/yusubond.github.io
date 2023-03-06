@@ -98,8 +98,7 @@
         
         
         <div class="post-content">
-            <h2 id="go-空struct的使用技巧">Go 空struct的使用技巧</h2>
-<h3 id="1空struct不占用内存空间">1、空struct{}不占用内存空间</h3>
+            <h2 id="1空struct不占用内存空间">1、空struct{}不占用内存空间</h2>
 <p>Go语言中，使用<code>unsafe.Sizeof()</code>可以计算一个数据类型实例所占用的字节数。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -129,7 +128,7 @@
 </div>
 </div><p>通过上面的结果可以看到，Go中空结构体<code>struct{}</code>是不占用内存空间。</p>
 <p>因为空结构体不占用内存空间，所以在各种场景下被广泛使用，一是能够节省内存，二是空结构体本身没有任何实际意义，也不需要任何值，仅作为占位符，能够达到代码即注释的效果。</p>
-<h3 id="2实现集合">2、实现集合</h3>
+<h2 id="2实现集合">2、实现集合</h2>
 <p>Go语言中没有标准的Set的实现，一般用map来替代。因为对于集合来说，只需要<code>map</code>的key，而不需要值，所以将值设置为空结构体，能够节省内存。</p>
 <p>以下是一个简单的Set实现，仅做参考：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
@@ -170,7 +169,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="3作为信号量">3、作为信号量</h3>
+</div><h2 id="3作为信号量">3、作为信号量</h2>
 <p>有时候我们需要通知子协程执行任务或者结束任务，仅作为信号量在<code>channel</code>中传递。因为不需要在<code>changnel</code>中传递任何数据，所以<code>struct{}</code>作为信号量就非常合适。</p>
 <p>举个例子，主协程main通知任务协程task开始工作。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
@@ -217,7 +216,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="4仅包含方法的结构体">4、仅包含方法的结构体</h3>
+</div><h2 id="4仅包含方法的结构体">4、仅包含方法的结构体</h2>
 <p>有些场景下，我们只需要实现某些方法，而不需要任何字段。那这种情况下用空结构体<code>struct{}</code>作为方法的接受者很合适。</p>
 <p>举个例子：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
@@ -261,11 +260,11 @@
         
         <li><a href="/post/003_golang_array_and_slice/">Go Slice性能与技巧</a></li>
         
-        <li><a href="/post/25lessonsbefore25/">25岁应该学到的25堂课</a></li>
+        <li><a href="/post/006_golang_string_join/">Go字符串拼接性能对比</a></li>
         
-        <li><a href="/post/create_habits/">高创造性人士的7个习惯</a></li>
+        <li><a href="/post/005_golang_mutex/">Go 互斥锁与读写锁</a></li>
         
-        <li><a href="/post/confiden_and_certainty/">年轻的自信与成熟的笃定</a></li>
+        <li><a href="/post/004_golang_stack_or_heap/">Go逃逸分析与性能</a></li>
         
     </ul>
 </div>
@@ -441,19 +440,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
-    </li>
-    
-    <li>
         <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/004_golang_stack_or_heap/" title="Go逃逸分析与性能" target="_blank">Go逃逸分析与性能</a>
     </li>
     
     <li>
@@ -462,6 +449,18 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <li>
         <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/005_golang_mutex/" title="Go 互斥锁与读写锁" target="_blank">Go 互斥锁与读写锁</a>
     </li>
     
 </ul>
@@ -508,8 +507,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
-    <a href="http://www.subond.com/tags/escape/">escape</a>
-    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
@@ -523,8 +520,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     <a href="http://www.subond.com/tags/life/">life</a>
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
-    
-    <a href="http://www.subond.com/tags/memory/">memory</a>
     
     <a href="http://www.subond.com/tags/mutex/">mutex</a>
     

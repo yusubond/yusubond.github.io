@@ -6,14 +6,14 @@
     <description>Recent content in string on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 23 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/string/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 17 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/string/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go字符串拼接性能对比</title>
       <link>http://www.subond.com/post/006_golang_string_join/</link>
-      <pubDate>Fri, 23 Sep 2022 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 17 Jun 2022 00:00:00 +0000</pubDate>
       
       <guid>http://www.subond.com/post/006_golang_string_join/</guid>
-      <description>Go字符串拼接性能对比 Go 语言中提供了基础数据结构类型 stri</description>
+      <description>Go 语言中提供了基础数据结构类型 string，在实际使用中我们</description>
     </item>
     
   </channel>

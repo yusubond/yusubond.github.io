@@ -98,11 +98,10 @@
         
         
         <div class="post-content">
-            <h2 id="go中slice性能与技巧">Go中Slice性能与技巧</h2>
-<p>一个数组中的所有元素均存放在此数组的直接部分，一个切片的所有元素均存放在此切片的间接部分。</p>
+            <h2 id="go-slice性能与技巧">Go Slice性能与技巧</h2>
 <p><code>slice</code>是Go语言中一个重要的数据类型，而且很好用，但是也有一些坑，需要我们对<code>slice</code>有深入的理解。</p>
-<p><code>slice</code>跟数组<code>array</code>很类似，可以使用下标进行访问，如果越界则会产生panic。</p>
-<h3 id="1slice到底是个啥">1、slice到底是个啥</h3>
+<p><code>slice</code>跟数组<code>array</code>很类似，可以使用下标进行访问，如果越界则会产生panic。但是两者却有很大的区别，一个数组中的所有元素都存放在此数组的直接部分，而一个切片的所有元素存放在此切片的间接部分。</p>
+<h3 id="1切片到底是个啥">1、切片到底是个啥</h3>
 <p>为了更好地理解切片类型和和切片值，我们需要对切片内部结构有一个基本的认识。在Go语言中，切片类型的内部定义大致如下：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -126,9 +125,10 @@
 <ul>
 <li>指针：指向底层数据</li>
 <li>长度：表示此切片当前元素的个数</li>
-<li>容量：表示底层数组元素的个数，容量&gt;=长度</li>
+<li>容量：表示此切片的容量，即底层数组可容纳的元素个数，容量&gt;=长度</li>
 </ul>
-<p><strong>注意</strong>：底层数组<code>array</code>可以被多个slice引用，所以对一个slice的元素进行操作，可能会影响到其他slice。</p>
+<p><strong>注意</strong>：底层数组<code>array</code>可以被多个<code>slice</code>引用，所以对一个<code>slice</code>的元素进行操作，可能会影响到其他slice。</p>
+<p>举个例子</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
@@ -152,21 +152,23 @@
 </span></span><span style="display:flex;"><span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;a %d\n&#34;</span>, a)    <span style="color:#998;font-style:italic">// [1,2,3,4,5,6,7]
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;s1 %d\n&#34;</span>, s1)  <span style="color:#998;font-style:italic">// [1,2,3,4]
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;s2 %d\n&#34;</span>, s2)  <span style="color:#998;font-style:italic">// [2]
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	s2 = <span style="color:#0086b3">append</span>(s2, <span style="color:#099">50</span>)
-</span></span><span style="display:flex;"><span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;a %d\n&#34;</span>, a)    <span style="color:#998;font-style:italic">// [1,2,50,4,5,6,7]
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	s2 = <span style="color:#0086b3">append</span>(s2, <span style="color:#099">50</span>)        <span style="color:#998;font-style:italic">// 对切片2进行追加操作
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;a %d\n&#34;</span>, a)    <span style="color:#998;font-style:italic">// [1,2,50,4,5,6,7]
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;s1 %d\n&#34;</span>, s1)  <span style="color:#998;font-style:italic">// [1,2,50,4]
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#d14">&#34;s2 %d\n&#34;</span>, s2)  <span style="color:#998;font-style:italic">// [2, 50]
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>}
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>因为s1和s2共享底层数据，所以对s2进行追加操作，影响了底层数组a[2]位置上的元素，导致a[2], s1[2]都变成了50。</p>
-<p>由此可以发现：</p>
+</div><p>从最终的输出结果我们可以看到切片<code>a[2]</code>和切片<code>s1[2]</code>都变成了50，这是因为切片<code>s1</code>，<code>s2</code>以及<code>a</code>共享底层数据，所以对<code>s2</code>进行追加操作，影响了底层数组a[2]位置上的元素，导致<code>a[2]</code>, <code>s1[2]</code>都变成了50。</p>
+<p>据此我们可以知道：</p>
 <p>1）slice 的底层数据就是数组，slice是对数组的封装，描述一个数组的片段</p>
 <p>2）slice 和 array 都可以通过下标访问</p>
 <p>3）slice 更加灵活，可以动态扩容</p>
-<h3 id="2slice的创建">2、slice的创建</h3>
-<p>创建slice有几种方式：</p>
-<p>1，直接声明</p>
+<h3 id="2切片的创建">2、切片的创建</h3>
+<p>通常创建<code>slice</code>有下面几种方式：</p>
+<ol>
+<li>直接声明</li>
+</ol>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -175,7 +177,9 @@
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">var</span> s []<span style="color:#458;font-weight:bold">int</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>2，通过make内置函数，函数定义如下</p>
+</div><ol start="2">
+<li>通过make内置函数，函数定义如下</li>
+</ol>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -184,8 +188,9 @@
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#0086b3">make</span>([]T, len, cap) []T
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>第一个参数是<code>[]T</code>，T表示元素类型，第二个参数是长度len，即初始化的切片拥有多少个元素，第三个参数是容量cap，容量是可选参数，默认等于长度，即指定切片的容量。</p>
-<p>容量是当前切片已经预分配的内存能够容纳的元素个数，如果不断想切片中增加元素，超过了当前切片的容量，就需要分配新的内存，将当前切片所有的元素拷贝到新的内存上，这就是扩容。</p>
+</div><p>第一个参数是<code>[]T</code>，<code>T</code>表示元素类型，第二个参数是长度len，即初始化的切片拥有多少个元素，第三个参数是容量cap，容量是可选参数，默认等于长度，即指定切片的容量。</p>
+<p>深入研究可以发现，其实<code>make</code>函数创建了一个无名数组，并返回了它的一个切片，而且该数组只能通过这个切片来访问。</p>
+<p>容量是当前切片已经预分配的内存能够容纳的元素个数，如果不断向切片中增加元素，超过了当前切片的容量，就需要分配新的内存，将当前切片所有的元素拷贝到新的内存上，这就是扩容。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -196,7 +201,9 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>s <span style="color:#000;font-weight:bold">:=</span> <span style="color:#0086b3">make</span>([]<span style="color:#458;font-weight:bold">int</span>, <span style="color:#099">0</span>, <span style="color:#099">1024</span>)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>3，字面量</p>
+</div><ol start="3">
+<li>字面量</li>
+</ol>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -205,7 +212,9 @@
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>s <span style="color:#000;font-weight:bold">:=</span> []<span style="color:#458;font-weight:bold">int</span>{<span style="color:#099">1</span>,<span style="color:#099">2</span>,<span style="color:#099">3</span>,<span style="color:#099">4</span>}
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>4，从切片或者数组中截取</p>
+</div><ol start="4">
+<li>从切片或者数组中截取</li>
+</ol>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -214,8 +223,8 @@
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>s = a[:<span style="color:#0086b3">len</span>(a)]
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="3slice的操作">3、slice的操作</h3>
-<p>3.1 Copy</p>
+</div><h3 id="3切片的操作">3、切片的操作</h3>
+<h4 id="31-copy">3.1 Copy</h4>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -237,13 +246,25 @@
 </span></span><span style="display:flex;"><span>b = <span style="color:#0086b3">append</span>(a[:<span style="color:#099">0</span>:<span style="color:#099">0</span>], a<span style="color:#000;font-weight:bold">...</span>)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>3.2 Append</p>
+</div><h4 id="32-append">3.2 Append</h4>
+<p><code>append</code>是内置函数，用于向切片中追加元素，其函数原型为：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>b = <span style="color:#0086b3">append</span>(b, a<span style="color:#000;font-weight:bold">...</span>)
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#000;font-weight:bold">func</span> <span style="color:#0086b3">append</span>(slice []Type, elems <span style="color:#000;font-weight:bold">...</span>Type) []Type
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到<code>append</code>函数的参数是可变的，也就是说允许追加多个值到切片中，也可以使用<code>...</code>传入切片，追加一个切片到目标切片。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>b = <span style="color:#0086b3">append</span>(b, s1, s2)
+</span></span><span style="display:flex;"><span>b = <span style="color:#0086b3">append</span>(b, s3<span style="color:#000;font-weight:bold">...</span>)
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>append</code>有两个场景：</p>
@@ -251,7 +272,8 @@
 <li>当append之后的长度小于等于容量时，直接利用此此切片原有的底层数组</li>
 <li>当append之后的长度大于容量时，则会分配更大的内存来存储新的底层数组</li>
 </ul>
-<p>3.3 Delete</p>
+<p><strong>需要知道的是</strong>：<code>append</code>函数的返回值是一个新的切片，Go 编译器不允许调用了<code>append</code>函数后不使用返回值。</p>
+<h4 id="33-delete">3.3 Delete</h4>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -301,7 +323,7 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>a = a[:<span style="color:#0086b3">len</span>(a)<span style="color:#000;font-weight:bold">-</span><span style="color:#099">1</span>]
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>3.4 Expand</p>
+</div><h4 id="34-expand">3.4 Expand</h4>
 <p>在位置<code>i</code>插入<code>n</code>个元素：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -333,7 +355,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>3.5 Insert</p>
+</div><h4 id="35-insert">3.5 Insert</h4>
 <p>方式1：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -352,7 +374,7 @@ copy(s[i+1:], s[i:])
 s[i] = x
 </code></pre><p>方式2先在后面追加一个零值元素，然后将<code>a[i:]</code>元素拷贝到位置<code>a[i+1]</code>，空出<code>a[i]</code>位置，最后对<code>a[i]</code>赋值完成插入操作。</p>
 <p>此方式没有产生内存垃圾，<strong>更值得推荐</strong></p>
-<p>3.6 Filter, in place</p>
+<h4 id="36-filter-in-place">3.6 Filter, in place</h4>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -375,7 +397,7 @@ s[i] = x
 </span></span><span style="display:flex;"><span>a = a[:j]
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>3.7 Push</p>
+</div><h4 id="37-push">3.7 Push</h4>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -393,7 +415,7 @@ s[i] = x
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>a = <span style="color:#0086b3">append</span>([]T{x}, a<span style="color:#000;font-weight:bold">...</span>)
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>3.8 Pop</p>
+</div><h4 id="38-pop">3.8 Pop</h4>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
@@ -416,7 +438,7 @@ s[i] = x
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="4-性能陷阱">4 性能陷阱</h3>
-<p>4.1 部分场景中大量内存得不到释放</p>
+<h3 id="41-部分场景中大量内存得不到释放">4.1 部分场景中大量内存得不到释放</h3>
 <p>在已有的切片上进行切片操作，如果没有超过切片的容量，那么其底层数组就不会发生变化，内存一直占用着。所以很可能出现这样一种情况：原切片有大量的元素，但某个时刻我们在原切片的基础上进行切片，只是用很小的一段，但底层数组在内存中依然占据着很大的内存，得不到释放，从而造成内存浪费。</p>
 <p>这种情况下我们可以使用<code>copy</code>替代<code>re-slice</code>确保不再需要的数据能够及时得到释放。</p>
 <p>下面我们验证下这个情况：</p>
@@ -619,11 +641,11 @@ s[i] = x
         
         <li><a href="/post/001_golang_struct_memory_alignment/">Go Struct内存对齐</a></li>
         
-        <li><a href="/post/25lessonsbefore25/">25岁应该学到的25堂课</a></li>
+        <li><a href="/post/006_golang_string_join/">Go字符串拼接性能对比</a></li>
         
-        <li><a href="/post/create_habits/">高创造性人士的7个习惯</a></li>
+        <li><a href="/post/005_golang_mutex/">Go 互斥锁与读写锁</a></li>
         
-        <li><a href="/post/confiden_and_certainty/">年轻的自信与成熟的笃定</a></li>
+        <li><a href="/post/004_golang_stack_or_heap/">Go逃逸分析与性能</a></li>
         
     </ul>
 </div>
@@ -799,19 +821,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
-    </li>
-    
-    <li>
         <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/004_golang_stack_or_heap/" title="Go逃逸分析与性能" target="_blank">Go逃逸分析与性能</a>
     </li>
     
     <li>
@@ -820,6 +830,18 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <li>
         <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/005_golang_mutex/" title="Go 互斥锁与读写锁" target="_blank">Go 互斥锁与读写锁</a>
     </li>
     
 </ul>
@@ -866,8 +888,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
-    <a href="http://www.subond.com/tags/escape/">escape</a>
-    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
@@ -881,8 +901,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     <a href="http://www.subond.com/tags/life/">life</a>
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
-    
-    <a href="http://www.subond.com/tags/memory/">memory</a>
     
     <a href="http://www.subond.com/tags/mutex/">mutex</a>
     

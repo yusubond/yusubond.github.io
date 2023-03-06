@@ -13,10 +13,6 @@
     <meta property="og:title" content="Go逃逸分析与性能 - 凯文的个人博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2022-09-15T00:00:00&#43;08:00'>
-        
-        
-    <meta property="article:modified_time" content='2022-09-15T00:00:00&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
     <meta name="description" content="Go逃逸分析与性能">
@@ -78,7 +74,7 @@
             <h1 class="post-title">Go逃逸分析与性能</h1>
         </header>
         <date class="post-meta meta-date">
-            2022年9月15日
+            1年1月1日
         </date>
         
         <div class="post-meta">
@@ -98,8 +94,7 @@
         
         
         <div class="post-content">
-            <h2 id="go-逃逸分析与性能">Go 逃逸分析与性能</h2>
-<h3 id="1变量与内存">1、变量与内存</h3>
+            <h2 id="1变量与内存">1、变量与内存</h2>
 <p>通常每种编程语言都有自己的内存模型，每个变量，常量都存储在内存的某个物理位置上，并通过内存指针来访问。</p>
 <p>我们都知道，程序运行时所使用的的内存分为两个区：堆和栈。那我们怎么知道变量是分配在堆还是栈上呢？Go 语言实现了垃圾回收机制，其内存是自动管理的，所以通常作为开发者并不需要关心内存分配在栈还堆上。但是站在性能的角度，在栈上分配内存和堆上分配内存，两者的性能却非常大。因为分配在栈上的内存，函数直接结束就能自动回收；而分配在堆上的内存，需要等待垃圾回收才能被回收释放。</p>
 <p>在 Go 官网的FAQ上有个变量分配的问题如下：</p>
@@ -118,9 +113,9 @@
 <li>变量大小不确定</li>
 </ul>
 <p>那么，知道变量逃逸的原因后，我们就可以有意识地将变量控制在栈上，减少堆变量的分配，降低GC成本，提高程序性能。</p>
-<h3 id="2逃逸分析">2、逃逸分析</h3>
+<h2 id="2逃逸分析">2、逃逸分析</h2>
 <p>Go 语言内存分配是由编译器决定的，编译器会跨越函数和包的边界进行全局的分析，检查是否需要在堆上为一个变量分配内存，还是在栈本身的内存对其进行管理，这个过程称为逃逸分析(escape analysis)。</p>
-<h4 id="21-变量大小逃逸">2.1 变量大小逃逸</h4>
+<h3 id="21-变量大小逃逸">2.1 变量大小逃逸</h3>
 <p>举个例子，我们模拟一个变量大小不确定的情况：</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
 <table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -175,7 +170,7 @@
 </div>
 </div><p>通过上面的结果我们可以看到，使用变量(非常量)来指定切片的容量，会发生逃逸，将切片分配在堆上；而使用常量指定切片的容量，没有发生逃逸。</p>
 <p><strong>所以，如果使用局部切片，已知切片的长度和容量，请尽量使用常量或数值字面量来定义。</strong></p>
-<h4 id="22-返回值-vs-返回指针">2.2 返回值 vs 返回指针</h4>
+<h3 id="22-返回值-vs-返回指针">2.2 返回值 vs 返回指针</h3>
 <p>函数返回值，如果是值传递方式会拷贝整个对象；如果返回指针只会拷贝地址，指向的对象是同一个。指针传递可以减少值的拷贝，但是内存分配在堆上，增加了垃圾回收(GC)的负担。在对象频繁创建和删除的场景中，返回指针导致的GC可能会严重影响性能。</p>
 <p>所以，一般情况下，对于需要修改原对象，或者占用内存比较大的对象，返回指针更合适；对于只读，或者占用内存很小的对象，返回值更合适。</p>
 <p>下面举个例子，一种方式是返回指针，一种是返回值，看下两者的性能差异。</p>
@@ -258,7 +253,7 @@
 </span></span><span style="display:flex;"><span>PASS
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h4 id="23-小的拷贝好过引用">2.3 小的拷贝好过引用</h4>
+</div><h3 id="23-小的拷贝好过引用">2.3 小的拷贝好过引用</h3>
 <p>小的拷贝好过引用，什么意思呢？就是说尽量使用栈变量，而不是堆变量。</p>
 <p>Go 语言中数组是通过<code>pass-by-value</code>方式传递的，下面我们来比较下数组的值拷贝和切片的引用，哪个更好。</p>
 <div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
@@ -363,7 +358,7 @@
 </span></span><span style="display:flex;"><span>.<span style="color:#000;font-weight:bold">/</span>copy.<span style="color:#000;font-weight:bold">go</span>:<span style="color:#099">13</span>:<span style="color:#099">6</span>: can inline sliceNums
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="3总结">3、总结</h3>
+</div><h2 id="3总结">3、总结</h2>
 <ul>
 <li>局部切片尽量确定长度或容量</li>
 <li>大对象返回指针更合适，小对象返回值更合适</li>
@@ -392,15 +387,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
+        <li><a href="/post/golang_defer/">go defer的调用顺序</a></li>
+        
         <li><a href="/post/003_golang_array_and_slice/">Go Slice性能与技巧</a></li>
         
         <li><a href="/post/002_golang_struct_skill/">Go 空struct的使用技巧</a></li>
         
         <li><a href="/post/001_golang_struct_memory_alignment/">Go Struct内存对齐</a></li>
         
-        <li><a href="/reading/">阅读书单</a></li>
-        
-        <li><a href="/post/25lessonsbefore25/">25岁应该学到的25堂课</a></li>
+        <li><a href="/post/006_golang_string_join/">Go字符串拼接性能对比</a></li>
         
     </ul>
 </div>
@@ -411,10 +406,6 @@
             <ul class="clearfix">
                 
                 <li><a href='/tags/go' target="_blank">go</a></li>
-                
-                <li><a href='/tags/escape' target="_blank">escape</a></li>
-                
-                <li><a href='/tags/memory' target="_blank">memory</a></li>
                 
             </ul>
             
@@ -578,19 +569,7 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/005_golang_mutex/" title="互斥锁与读写锁的性能对比" target="_blank">互斥锁与读写锁的性能对比</a>
-    </li>
-    
-    <li>
         <a href="http://www.subond.com/post/golang_defer/" title="go defer的调用顺序" target="_blank">go defer的调用顺序</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/004_golang_stack_or_heap/" title="Go逃逸分析与性能" target="_blank">Go逃逸分析与性能</a>
     </li>
     
     <li>
@@ -599,6 +578,18 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <li>
         <a href="http://www.subond.com/post/002_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/001_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/006_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/005_golang_mutex/" title="Go 互斥锁与读写锁" target="_blank">Go 互斥锁与读写锁</a>
     </li>
     
 </ul>
@@ -645,8 +636,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     
     <a href="http://www.subond.com/tags/docker/">docker</a>
     
-    <a href="http://www.subond.com/tags/escape/">escape</a>
-    
     <a href="http://www.subond.com/tags/essay/">essay</a>
     
     <a href="http://www.subond.com/tags/git/">git</a>
@@ -660,8 +649,6 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     <a href="http://www.subond.com/tags/life/">life</a>
     
     <a href="http://www.subond.com/tags/linux/">linux</a>
-    
-    <a href="http://www.subond.com/tags/memory/">memory</a>
     
     <a href="http://www.subond.com/tags/mutex/">mutex</a>
     
