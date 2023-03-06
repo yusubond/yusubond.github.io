@@ -8,6 +8,15 @@
     <language>zh-CN</language>
     <lastBuildDate>Mon, 26 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Go defer如何调用</title>
+      <link>http://www.subond.com/post/007_golang_defer/</link>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/007_golang_defer/</guid>
+      <description>1、在defer语句声明时进行估值 我们都知道go中defer</description>
+    </item>
+    
+    <item>
       <title>go defer的调用顺序</title>
       <link>http://www.subond.com/post/golang_defer/</link>
       <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
