@@ -49,6 +49,9 @@ params:
     name: "微博"
     url: "https://weibo.cn/u/2746421033"
 
+frontmatter:
+  lastmod: [":fileModTime", "lastmod"]
+
 # menu
 menu:
   main:

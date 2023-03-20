@@ -4,9 +4,9 @@ date: 2017-04-14
 categories: ["TECH"]
 tags: ["cloud", "docker"]
 author: subond
-description: "Docker是使用Go语言进行开发实现，基于Linux内核的cgroup, namespace, 以及AUFS类的Union FS等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。由于隔离的进程独立于宿主和其他隔离的进程，因此成为容器。"
-author: subond
 ---
+
+
 
 Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术是虚拟出一套硬件，在其上运行一个完整操作系统，再在该系统之上再运行所需的应用进程；而容器内的应用进程直接运行于宿主的内核，容器内没有自己的内核，而且也没有进行硬件虚拟。
 
