@@ -1,10 +1,8 @@
 ---
 title: "Docker技术：Dockerfile的定义与使用"
 date: 2017-04-18
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["cloud", "docker"]
-description: "Dockerfile是Docker用来构建镜像的文本文件，包括自定义指令和格式。命令`docker build`可以与Dockerfile文件中构建我们自己需要的镜像。"
-author: subond
 ---
 
 本文目录：

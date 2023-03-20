@@ -1,11 +1,8 @@
 ---
 title: "Vagrant的快速使用"
 date: 2017-05-10
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["vagrant", "cloud"]
-author: subond
-description: "Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。"
-author: subond
 ---
 
 Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。

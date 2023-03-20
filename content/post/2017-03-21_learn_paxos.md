@@ -1,10 +1,8 @@
 ---
 title: "深入理解Paxos算法"
 date: 2017-03-21
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["algorithm", "distributed systems"]
-description: "Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了[Paxos Made Simple](http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf)，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。"
-author: subond
 ---
 
 ## 1.Paxos算法

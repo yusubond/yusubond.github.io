@@ -1,7 +1,7 @@
 ---
 title: "Docker技术：认识Docker"
 date: 2017-04-14
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["cloud", "docker"]
 author: subond
 ---

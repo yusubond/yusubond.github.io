@@ -1,7 +1,7 @@
 ---
 title: "Go Struct内存对齐"
 date: 2022-09-07
-categories: ["Go高性能编程"]
+categories: ["技术","Go高性能编程"]
 tags: ["go", "struct", "alignment"]
 ---
 

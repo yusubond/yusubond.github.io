@@ -1,9 +1,8 @@
 ---
 title: "Docker技术：快速上手教程"
 date: 2017-04-20
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["cloud", "docker"]
-author: subond
 ---
 
 本文目录：

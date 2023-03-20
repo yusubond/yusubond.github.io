@@ -1,10 +1,8 @@
 ---
 title: "Docker进阶：服务配置"
 date: 2017-05-01
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["cloud", "docker"]
-description: "当使用Docker Swarm模式时，我们可以通过命令`docker service create`向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即`docker service`，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。"
-author: subond
 ---
 
 当使用Docker Swarm模式时，我们可以通过命令`docker service create`向Swarm集群部署应用服务。Swarm集群中的管理节点将服务描述视为应用服务所需的状态。其次，所有服务相关的命令，即`docker service`，一定要在管理节点上运行(管理节点负责Swarm集群中的服务管理和任务编排)。

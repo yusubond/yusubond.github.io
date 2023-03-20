@@ -1,7 +1,7 @@
 ---
 Title: "Go Slice性能与技巧"
 Date: 2022-09-13
-Categories: ["Go高性能编程"]
+Categories: ["技术","Go高性能编程"]
 Tags: ["go", "slice"]
 ---
 

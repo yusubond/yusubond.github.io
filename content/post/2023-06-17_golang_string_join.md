@@ -1,7 +1,7 @@
 ---
 title: "Go字符串拼接性能对比"
 date: 2022-06-17
-categories: ["Go高性能编程"]
+categories: ["Go高性能编程", "技术"]
 tags: ["go", "string"]
 ---
 

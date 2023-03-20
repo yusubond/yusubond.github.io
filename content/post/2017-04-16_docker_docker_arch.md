@@ -1,9 +1,8 @@
 ---
 title: "Docker技术：Docker系统架构"
 date: 2017-04-16
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["cloud", "docker"]
-author: subond
 ---
 
 本文目录：

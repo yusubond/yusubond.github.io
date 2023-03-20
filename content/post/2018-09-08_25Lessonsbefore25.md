@@ -1,9 +1,8 @@
 ---
 title: "25岁应该学到的25堂课"
 date: 2018-09-08
-categories: ["NextMe"]
+categories: ["生活"]
 tags: ["life", "reading", "growth"]
-author: "subond"
 ---
 
 

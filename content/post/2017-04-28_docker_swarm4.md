@@ -1,9 +1,8 @@
 ---
 title: "Docker进阶：以Swarm模式运行Docker引擎"
 date: 2017-04-28
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["cloud","docker"]
-author: subond
 ---
 
 Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两种方式开始Swarm模式：

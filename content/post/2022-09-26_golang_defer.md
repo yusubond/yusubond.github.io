@@ -1,7 +1,7 @@
 ---
 Title: "Go defer如何调用"
 Date: 2022-09-26
-Categories: ["Go高性能编程"]
+Categories: ["Go高性能编程", "技术"]
 Tags: ["go", "defer"]
 ---
 

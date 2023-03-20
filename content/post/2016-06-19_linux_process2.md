@@ -1,10 +1,8 @@
 ---
 title: "Linux中的线程管理"
 date: 2016-06-19
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["linux", "process", "pthread"]
-description: "线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。"
-author: subond
 ---
 
 ### 1.线程

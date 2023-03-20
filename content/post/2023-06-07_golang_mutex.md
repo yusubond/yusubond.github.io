@@ -1,7 +1,7 @@
 ---
 title: "Go 互斥锁与读写锁"
 date: 2022-06-07
-categories: ["Go高性能编程"]
+categories: ["Go高性能编程","技术"]
 tags: ["go", "mutex"]
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Vagrant使用案例"
 date: 2017-05-15
-categories: ["TECH"]
+categories: ["技术"]
 tags: ["vagrant", "cloud"]
 author: subond
 ---

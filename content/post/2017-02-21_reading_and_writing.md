@@ -2,8 +2,7 @@
 title: "读书写作那点事儿"
 date: 2017-02-21
 tags: ["life", "reading", "writing"]
-categories: ["NextMe"]
-author: subond
+categories: ["生活"]
 ---
 
 
