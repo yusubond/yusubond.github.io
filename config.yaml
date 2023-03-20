@@ -11,11 +11,10 @@ summaryLength: 30
 # Category & Tag
 default_category: uncategorized
 category_map:
-"NextMe": nextme
 "杂谈": essay
 "生活": life
-"TECH": tech
-"READ": read
+"技术": tech
+"阅读": read
 "Go高性能编程": gohigh
 tag_map:
 
