@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>深入理解Paxos算法 | 凯文的个人博客</title>
+    <meta property="og:title" content="深入理解Paxos算法 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-03-21T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-03-20T12:04:28&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="深入理解Paxos算法">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2017-03-21_learn_paxos/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
+                
+                <p class="description">专注于云计算网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于我">关于我</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">深入理解Paxos算法</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年3月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h2 id="1paxos算法">1.Paxos算法</h2>
+<p>Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a>，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。</p>
+<p>Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。</p>
+<h2 id="2基本概念">2.基本概念</h2>
+<p>Paxos算法中有三种角色：<em>Proposer</em>, <em>Acceptor</em>, <em>Learner</em>。每个节点需要同时扮演 <strong>两种或两种以上的角色</strong>。</p>
+<ul>
+<li>Proposal Value: 提议的值　　</li>
+<li>Proposal Number: 提议编号，并且要求提议编号不能冲突　　</li>
+<li>Proposal: 提议　=　提议编号 + 提议的值　　</li>
+<li>Proposer: 提议发起者　　</li>
+<li>Acceptors: 提议接受者　　</li>
+<li>Learners: 提议学习者　　</li>
+</ul>
+<p>需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。</p>
+<h2 id="3两个原则">3.两个原则</h2>
+<p><strong>1安全原则</strong></p>
+<ol>
+<li>
+<p>只能(而且必须)允许一个值被选定；</p>
+</li>
+<li>
+<p>每个节点只能学习已经被选定的值；</p>
+</li>
+</ol>
+<p><strong>2存活原则</strong></p>
+<p>只要多数节点存活，并且彼此可以通信，则会达成以下两件事：</p>
+<ol>
+<li>最终会选定某个提议的值　　</li>
+<li>一个被选定的值，其他节点最终会学习到这个值　　</li>
+</ol>
+<h2 id="4算法过程">4.算法过程</h2>
+<p><strong>第一阶段A</strong>，即Prepare阶段</p>
+<p>Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。</p>
+<p><strong>第一阶段B</strong>，即Prepare阶段</p>
+<p>Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。</p>
+<p><strong>第二阶段A</strong>，即Accept阶段</p>
+<p>Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。</p>
+<p><strong>第二阶段B</strong>，即Accept阶段</p>
+<p>Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。</p>
+<p>
+        <img class="mx-auto" alt="paxos-protocolflow" src="http://on64c9tla.bkt.clouddn.com/2017A/paxos.png" />   
+    </p>
+<p>需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。</p>
+<p>当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。</p>
+<h2 id="5算法证明">5.算法证明</h2>
+<p>其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。</p>
+<p><strong>Paxso算法原命题</strong></p>
+<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &lt; n1,v1 != v0。</p>
+<p><strong>Paxso算法原命题加强</strong></p>
+<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。</p>
+<p><strong>Paxso算法原命题进一步加强</strong></p>
+<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &lt; n1, v1 != v0。</p>
+<p><strong>归纳法证明</strong></p>
+<p>假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &gt;= m)，对应的值也是v。对n进行归纳假设。</p>
+<ol>
+<li>
+<p>n = m时，显然结论成立。</p>
+</li>
+<li>
+<p>设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。</p>
+</li>
+<li>
+<p>当n = k + 1时，若提议k+1不存在，则结论成立。</p>
+</li>
+</ol>
+<p>接下来，证明提议提议k+1不存问题。</p>
+<p>假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。<strong>两个多数派必有交集</strong>，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&gt;=m。又因为第一阶段A，t&lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。</p>
+<h2 id="6示例演示">6.示例演示</h2>
+<p>为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。</p>
+<p>
+        <img class="mx-auto" alt="simple-paxos" src="http://on64c9tla.bkt.clouddn.com/2017A/simple-paxos.png" />   
+    </p>
+<h2 id="7小结">7.小结</h2>
+<p>通过前面的讨论和学习，我们可以回顾一下协议的细节：</p>
+<ol>
+<li>
+<p>为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。</p>
+</li>
+<li>
+<p>为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。</p>
+</li>
+<li>
+<p>为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。</p>
+</li>
+</ol>
+<p><strong>&ldquo;与其预测未来，不如限制未来&rdquo;</strong>,应该是Paxos协议的核心思想。——郑建军(微信工程师)</p>
+<p><strong>参考资料</strong></p>
+<p>Leslie Lanmport:<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a></p>
+<p>Info架构师2017年1月刊:<a href="http://www.infoq.com/cn/minibooks/architect-201701">微信PaxsoStore:深入浅出Paxos算法协议</a></p>
+<p><a href="http://www.cnblogs.com/zhengran/p/4212502.html">一步一步理解Paxos算法</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2017-03-21_learn_paxos/">http://www.subond.com/post/2017-03-21_learn_paxos/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2017-02-21_reading_and_writing/">读书写作那点事儿</a></li>
+        
+        <li><a href="/post/2016-12-15_the_middle_twenties/">二十五六岁</a></li>
+        
+        <li><a href="/post/2016-10-07_reply-1988/">Reply 1988: 人生是个迷啊</a></li>
+        
+        <li><a href="/post/2016-06-19_linux_process2/">Linux中的线程管理</a></li>
+        
+        <li><a href="/post/2016-06-17_linux_process/">Linux中的进程管理</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/algorithm' target="_blank">algorithm</a></li>
+                
+                <li><a href='/tags/distributed-systems' target="_blank">distributed systems</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="http://www.subond.com/">凯文的个人博客 By Kevin</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-20_06letter/" title="No.6 写在31岁" target="_blank">No.6 写在31岁</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-13_05letter/" title="No.5 聊聊个人养老金" target="_blank">No.5 聊聊个人养老金</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-06_04letter/" title="No.4 关于读书" target="_blank">No.4 关于读书</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-27_03letter/" title="No.3 尽情地去生活" target="_blank">No.3 尽情地去生活</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-20_02letter/" title="No.2 内在记分牌" target="_blank">No.2 内在记分牌</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-13_01letter/" title="No.1 2023, 启航" target="_blank">No.1 2023, 启航</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-26_golang_defer/" title="Go defer如何调用" target="_blank">Go defer如何调用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-09-13_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-03_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (21)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E7%94%9F%E6%B4%BB/">生活 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%98%85%E8%AF%BB/">阅读 (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (6)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E4%BA%BA%E7%94%9F%E4%BF%A1%E5%BF%B5/">人生信念</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%9C%A8%E8%AE%B0%E5%88%86%E7%89%8C/">内在记分牌</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="http://www.subond.com/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+    
+    <a href="http://www.subond.com/tags/%E9%98%85%E8%AF%BB/">阅读</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">Github</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://weibo.cn/u/2746421033" title="微博">微博</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

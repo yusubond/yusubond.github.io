@@ -9,10 +9,10 @@
     <lastBuildDate>Tue, 21 Mar 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/distributed-systems/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>深入理解Paxos算法</title>
-      <link>http://www.subond.com/post/learn_paxos/</link>
+      <link>http://www.subond.com/post/2017-03-21_learn_paxos/</link>
       <pubDate>Tue, 21 Mar 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/learn_paxos/</guid>
+      <guid>http://www.subond.com/post/2017-03-21_learn_paxos/</guid>
       <description>1.Paxos算法 Paxos算法是Leslie Lanmpor</description>
     </item>
     

@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Vagrant的快速使用 | 凯文的个人博客</title>
+    <meta property="og:title" content="Vagrant的快速使用 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2017-05-10T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-03-20T11:58:55&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="Vagrant的快速使用">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2017-05-10_vagrant_startup/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
+                
+                <p class="description">专注于云计算网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于我">关于我</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Vagrant的快速使用</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2017年5月10日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p>Vagrant是为了方便的实现虚拟化环境而设计的，使用Ruby语言开发，基于VirtualBox等虚拟机管理软件的接口，提供了一个可配置、轻量级的便携式虚拟开发环境。使用Vagrant可以很方便的就建立起来一个虚拟环境，而且可以模拟多台虚拟机，形成分布式系统。</p>
+<p>其次，Vagrant还可以实现文件共享，即用于主机和虚拟之间共享文件，方便开发人员在主机上写程序，再往虚拟里拷贝的麻烦。而且，Vagrant的package功能还可以将完整的开发环境进行打包，供其他人使用，极大地提高了工作效率。</p>
+<h2 id="1vagrant安装">1.Vagrant安装</h2>
+<p>Vagrant只是一个方便创建，管理虚拟的便携式工具，底层支持由VirtualBox、VMware等虚拟机系统支持。本文以VirtualBox为例，主机系统为Mac OSX。</p>
+<h3 id="virtualbox安装">VirtualBox安装</h3>
+<p>这是Virtual官网链接<a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a>，可以依据自己的系统选择合适的安装包进行安装。</p>
+<h3 id="vagrant安装">Vagrant安装</h3>
+<p>Vagrant官网<a href="https://www.vagrantup.com/downloads.html">https://www.vagrantup.com/downloads.html</a>，同样需要依据自己的系统选择合适的安装包进行安装。</p>
+<h2 id="2vagrant配置">2.Vagrant配置</h2>
+<p>Vagrant配置主要在<code>Vagrantfile</code>文件中，通过<code>vagrant init</code>命令可以获得。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ mkdir MyHost
+</span></span><span style="display:flex;"><span>$ <span style="color:#0086b3">cd</span> MyHost
+</span></span><span style="display:flex;"><span>$ vagrant init
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在MyHost文件夹下就会出现<code>Vagrantfile</code>文件，该文件是配置虚机的主要的文件。例如，我们想要创建一个Ubuntu Xenial 64位的虚机，并设置虚机的hostname为ubuntu64，则<code>Vagrantfile</code>中进行如下修改：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;ubuntu/xenial64&#34;</span>
+</span></span><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>hostname <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;ubuntu64&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3启动虚拟">3.启动虚拟</h2>
+<p>在MyHost目录下，通过命令<code>vagrant up</code>即可启动在<code>Vagrantfile</code>文件中配置的虚拟。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ vagrant up
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 进入虚拟</span>
+</span></span><span style="display:flex;"><span>$ vagrant ssh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="4vagrantfile详解">4.Vagrantfile详解</h2>
+<ol>
+<li>语言版本</li>
+</ol>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#008080">Vagrant</span><span style="color:#000;font-weight:bold">.</span>configure(<span style="color:#d14">&#34;2&#34;</span>) <span style="color:#000;font-weight:bold">do</span> <span style="color:#000;font-weight:bold">|</span>config<span style="color:#000;font-weight:bold">|</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中&quot;2&quot;指定Vagrantfile所使用的语言版本，一般为<code>2</code>。</p>
+<ol start="2">
+<li>box相关</li>
+</ol>
+<p>指定创建虚机vm所需的box</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>box <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;ubuntu/xenial64&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>设置vm的hostname</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>hostname <span style="color:#000;font-weight:bold">=</span> <span style="color:#d14">&#34;ubuntu64&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>设置vm的网络，如果是设置私有网络，需指定ip地址；如果设置公有网络，则不需要。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 设置私有网络</span>
+</span></span><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;private_network&#34;</span>, <span style="color:#990073">ip</span>: <span style="color:#d14">&#34;192.168.33.10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 设置公有网络</span>
+</span></span><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;public_network&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 设置端口映射，即vm80端口映射到主机8080端口</span>
+</span></span><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>network <span style="color:#d14">&#34;forwarded_port&#34;</span>, <span style="color:#990073">guest</span>: <span style="color:#099">80</span>, <span style="color:#990073">host</span>: <span style="color:#099">8080</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>文件同步</li>
+</ol>
+<p>将主机的文件(或目录)挂载到vm中，实现文件同步。<br>
+第一个参数是主机的文件路径，第二个参数是vm里面的路径。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>config<span style="color:#000;font-weight:bold">.</span>vm<span style="color:#000;font-weight:bold">.</span>synced_folder <span style="color:#d14">&#34;../data&#34;</span>, <span style="color:#d14">&#34;/vagrant_data&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="5vagrant常用命令">5.Vagrant常用命令</h2>
+<ol>
+<li>box管理</li>
+</ol>
+<p>包括添加、删除、更新等等。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ vagrant box
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>虚机的管理</li>
+</ol>
+<p>包括启动，摧毁、打包，重载等等。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 关掉虚拟</span>
+</span></span><span style="display:flex;"><span>$ vagrant halt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 重载虚拟，即修改虚拟的配置后(Vagrantfile)需要重载才能生效</span>
+</span></span><span style="display:flex;"><span>$ vagrant reload
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 摧毁整个虚拟及其相关文件</span>
+</span></span><span style="display:flex;"><span>$ vagrant destory
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 将整个虚拟打包成一个box文件,</span>
+</span></span><span style="display:flex;"><span>$ vagrant package
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="参考资料">参考资料</h2>
+<p>[1]. Getting Started Vagrant<a href="https://www.vagrantup.com/intro/index.html">https://www.vagrantup.com/intro/index.html</a><br>
+[2]. Vagrant安装配置<a href="https://github.com/astaxie/go-best-practice/blob/master/ebook/zh/01.2.md">https://github.com/astaxie/go-best-practice/blob/master/ebook/zh/01.2.md</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2017-05-10_vagrant_startup/">http://www.subond.com/post/2017-05-10_vagrant_startup/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2017-05-01_docker_swarm5/">Docker进阶：服务配置</a></li>
+        
+        <li><a href="/post/2017-04-28_docker_swarm4/">Docker进阶：以Swarm模式运行Docker引擎</a></li>
+        
+        <li><a href="/post/2017-04-26_docker_swarm3/">Docker集群：工作原理</a></li>
+        
+        <li><a href="/post/2017-04-24_docker_swarm2/">Docker集群：服务回滚</a></li>
+        
+        <li><a href="/post/2017-04-22_docker_swarm/">Docker集群：服务部署</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/vagrant' target="_blank">vagrant</a></li>
+                
+                <li><a href='/tags/cloud' target="_blank">cloud</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="http://www.subond.com/">凯文的个人博客 By Kevin</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-20_06letter/" title="No.6 写在31岁" target="_blank">No.6 写在31岁</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-13_05letter/" title="No.5 聊聊个人养老金" target="_blank">No.5 聊聊个人养老金</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-06_04letter/" title="No.4 关于读书" target="_blank">No.4 关于读书</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-27_03letter/" title="No.3 尽情地去生活" target="_blank">No.3 尽情地去生活</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-20_02letter/" title="No.2 内在记分牌" target="_blank">No.2 内在记分牌</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-13_01letter/" title="No.1 2023, 启航" target="_blank">No.1 2023, 启航</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-26_golang_defer/" title="Go defer如何调用" target="_blank">Go defer如何调用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-09-13_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-03_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (21)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E7%94%9F%E6%B4%BB/">生活 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%98%85%E8%AF%BB/">阅读 (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (6)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E4%BA%BA%E7%94%9F%E4%BF%A1%E5%BF%B5/">人生信念</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%9C%A8%E8%AE%B0%E5%88%86%E7%89%8C/">内在记分牌</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="http://www.subond.com/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+    
+    <a href="http://www.subond.com/tags/%E9%98%85%E8%AF%BB/">阅读</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">Github</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://weibo.cn/u/2746421033" title="微博">微博</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

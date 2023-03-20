@@ -9,19 +9,19 @@
     <lastBuildDate>Mon, 15 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/vagrant/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Vagrant使用案例</title>
-      <link>http://www.subond.com/post/vagrant_usage/</link>
+      <link>http://www.subond.com/post/2017-05_15_vagrant_usage/</link>
       <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/vagrant_usage/</guid>
+      <guid>http://www.subond.com/post/2017-05_15_vagrant_usage/</guid>
       <description>1.单机配置 配置一个centos7系统，要求使用私有网络地址</description>
     </item>
     
     <item>
       <title>Vagrant的快速使用</title>
-      <link>http://www.subond.com/post/vagrant_startup/</link>
+      <link>http://www.subond.com/post/2017-05-10_vagrant_startup/</link>
       <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/vagrant_startup/</guid>
+      <guid>http://www.subond.com/post/2017-05-10_vagrant_startup/</guid>
       <description>Vagrant是为了方便的实现虚拟化环境而设计的，使用Rub</description>
     </item>
     

@@ -26,15 +26,6 @@
     </item>
     
     <item>
-      <title>Go笔记</title>
-      <link>http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/</link>
-      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Go高性能编程</title>
       <link>http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/</link>
       <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
@@ -44,29 +35,20 @@
     </item>
     
     <item>
-      <title>NextMe</title>
-      <link>http://www.subond.com/categories/nextme/</link>
-      <pubDate>Sat, 08 Sep 2018 00:00:00 +0000</pubDate>
+      <title>技术</title>
+      <link>http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/categories/nextme/</guid>
+      <guid>http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>READ</title>
-      <link>http://www.subond.com/categories/read/</link>
+      <title>阅读</title>
+      <link>http://www.subond.com/categories/%E9%98%85%E8%AF%BB/</link>
       <pubDate>Fri, 03 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/categories/read/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>TECH</title>
-      <link>http://www.subond.com/categories/tech/</link>
-      <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.subond.com/categories/tech/</guid>
+      <guid>http://www.subond.com/categories/%E9%98%85%E8%AF%BB/</guid>
       <description></description>
     </item>
     

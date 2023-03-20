@@ -9,100 +9,100 @@
     <lastBuildDate>Mon, 15 May 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/cloud/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Vagrant使用案例</title>
-      <link>http://www.subond.com/post/vagrant_usage/</link>
+      <link>http://www.subond.com/post/2017-05_15_vagrant_usage/</link>
       <pubDate>Mon, 15 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/vagrant_usage/</guid>
+      <guid>http://www.subond.com/post/2017-05_15_vagrant_usage/</guid>
       <description>1.单机配置 配置一个centos7系统，要求使用私有网络地址</description>
     </item>
     
     <item>
       <title>Vagrant的快速使用</title>
-      <link>http://www.subond.com/post/vagrant_startup/</link>
+      <link>http://www.subond.com/post/2017-05-10_vagrant_startup/</link>
       <pubDate>Wed, 10 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/vagrant_startup/</guid>
+      <guid>http://www.subond.com/post/2017-05-10_vagrant_startup/</guid>
       <description>Vagrant是为了方便的实现虚拟化环境而设计的，使用Rub</description>
     </item>
     
     <item>
       <title>Docker进阶：服务配置</title>
-      <link>http://www.subond.com/post/docker_swarm5/</link>
+      <link>http://www.subond.com/post/2017-05-01_docker_swarm5/</link>
       <pubDate>Mon, 01 May 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_swarm5/</guid>
+      <guid>http://www.subond.com/post/2017-05-01_docker_swarm5/</guid>
       <description>当使用Docker Swarm模式时，我们可以通过命令dock</description>
     </item>
     
     <item>
       <title>Docker进阶：以Swarm模式运行Docker引擎</title>
-      <link>http://www.subond.com/post/docker_swarm4/</link>
+      <link>http://www.subond.com/post/2017-04-28_docker_swarm4/</link>
       <pubDate>Fri, 28 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_swarm4/</guid>
+      <guid>http://www.subond.com/post/2017-04-28_docker_swarm4/</guid>
       <description>Docker Engine 1.12及后续版本支持Swarm模式，我们可以通过以下两</description>
     </item>
     
     <item>
       <title>Docker集群：工作原理</title>
-      <link>http://www.subond.com/post/docker_swarm3/</link>
+      <link>http://www.subond.com/post/2017-04-26_docker_swarm3/</link>
       <pubDate>Wed, 26 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_swarm3/</guid>
+      <guid>http://www.subond.com/post/2017-04-26_docker_swarm3/</guid>
       <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集</description>
     </item>
     
     <item>
       <title>Docker集群：服务回滚</title>
-      <link>http://www.subond.com/post/docker_swarm2/</link>
+      <link>http://www.subond.com/post/2017-04-24_docker_swarm2/</link>
       <pubDate>Mon, 24 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_swarm2/</guid>
+      <guid>http://www.subond.com/post/2017-04-24_docker_swarm2/</guid>
       <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集</description>
     </item>
     
     <item>
       <title>Docker集群：服务部署</title>
-      <link>http://www.subond.com/post/docker_swarm/</link>
+      <link>http://www.subond.com/post/2017-04-22_docker_swarm/</link>
       <pubDate>Sat, 22 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_swarm/</guid>
+      <guid>http://www.subond.com/post/2017-04-22_docker_swarm/</guid>
       <description>一个Swarm是一组Docker引擎或节点的集群，并在这个集</description>
     </item>
     
     <item>
       <title>Docker技术：快速上手教程</title>
-      <link>http://www.subond.com/post/docker_quickstart/</link>
+      <link>http://www.subond.com/post/2017-04-20_docker_quickstart/</link>
       <pubDate>Thu, 20 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_quickstart/</guid>
+      <guid>http://www.subond.com/post/2017-04-20_docker_quickstart/</guid>
       <description>本文目录： 1.构建容器-Containers 2.组合服务-C</description>
     </item>
     
     <item>
       <title>Docker技术：Dockerfile的定义与使用</title>
-      <link>http://www.subond.com/post/docker_dockerfile/</link>
+      <link>http://www.subond.com/post/2017-04-18_docker_dockerfile/</link>
       <pubDate>Tue, 18 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_dockerfile/</guid>
+      <guid>http://www.subond.com/post/2017-04-18_docker_dockerfile/</guid>
       <description>本文目录： Dockerfile的使用 Dockerfile指令</description>
     </item>
     
     <item>
       <title>Docker技术：Docker系统架构</title>
-      <link>http://www.subond.com/post/docker_docker_arch/</link>
+      <link>http://www.subond.com/post/2017-04-16_docker_docker_arch/</link>
       <pubDate>Sun, 16 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_docker_arch/</guid>
+      <guid>http://www.subond.com/post/2017-04-16_docker_docker_arch/</guid>
       <description>本文目录： [Docker Engine](#Docker Engine) Docker交付内容 Docker系统架构 Docker Engine</description>
     </item>
     
     <item>
       <title>Docker技术：认识Docker</title>
-      <link>http://www.subond.com/post/docker_docker/</link>
+      <link>http://www.subond.com/post/2017-04-14_docker_docker/</link>
       <pubDate>Fri, 14 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/docker_docker/</guid>
+      <guid>http://www.subond.com/post/2017-04-14_docker_docker/</guid>
       <description>Docker和传统虚拟化方式的不同如下图所示。传统虚拟化技术</description>
     </item>
     

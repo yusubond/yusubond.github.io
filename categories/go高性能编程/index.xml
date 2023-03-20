@@ -9,64 +9,64 @@
     <lastBuildDate>Mon, 26 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go defer如何调用</title>
-      <link>http://www.subond.com/post/007_golang_defer/</link>
+      <link>http://www.subond.com/post/2022-09-26_golang_defer/</link>
       <pubDate>Mon, 26 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/007_golang_defer/</guid>
+      <guid>http://www.subond.com/post/2022-09-26_golang_defer/</guid>
       <description>1、在defer语句声明时进行估值 我们都知道go中defer</description>
     </item>
     
     <item>
       <title>Go Slice性能与技巧</title>
-      <link>http://www.subond.com/post/003_golang_array_and_slice/</link>
+      <link>http://www.subond.com/post/2023-09-13_golang_array_and_slice/</link>
       <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/003_golang_array_and_slice/</guid>
+      <guid>http://www.subond.com/post/2023-09-13_golang_array_and_slice/</guid>
       <description>Go Slice性能与技巧 slice是Go语言中一个重要的数据类</description>
     </item>
     
     <item>
       <title>Go 空struct的使用技巧</title>
-      <link>http://www.subond.com/post/002_golang_struct_skill/</link>
+      <link>http://www.subond.com/post/2022-09-03_golang_struct_skill/</link>
       <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/002_golang_struct_skill/</guid>
+      <guid>http://www.subond.com/post/2022-09-03_golang_struct_skill/</guid>
       <description>1、空struct{}不占用内存空间 Go语言中，使用unsa</description>
     </item>
     
     <item>
       <title>Go Struct内存对齐</title>
-      <link>http://www.subond.com/post/001_golang_struct_memory_alignment/</link>
+      <link>http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/</link>
       <pubDate>Wed, 07 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/001_golang_struct_memory_alignment/</guid>
+      <guid>http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/</guid>
       <description>1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问</description>
     </item>
     
     <item>
       <title>Go字符串拼接性能对比</title>
-      <link>http://www.subond.com/post/006_golang_string_join/</link>
+      <link>http://www.subond.com/post/2023-06-17_golang_string_join/</link>
       <pubDate>Fri, 17 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/006_golang_string_join/</guid>
+      <guid>http://www.subond.com/post/2023-06-17_golang_string_join/</guid>
       <description>Go 语言中提供了基础数据结构类型 string，在实际使用中我们</description>
     </item>
     
     <item>
       <title>Go 互斥锁与读写锁</title>
-      <link>http://www.subond.com/post/005_golang_mutex/</link>
+      <link>http://www.subond.com/post/2023-06-07_golang_mutex/</link>
       <pubDate>Tue, 07 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/005_golang_mutex/</guid>
+      <guid>http://www.subond.com/post/2023-06-07_golang_mutex/</guid>
       <description>Go 语言标准包 sync 中提供了两种锁，互斥锁 Mutex 和读写锁 RWMutex ，那两者有什</description>
     </item>
     
     <item>
       <title>Go逃逸分析与性能</title>
-      <link>http://www.subond.com/post/004_golang_stack_or_heap/</link>
+      <link>http://www.subond.com/post/2023-09-15_golang_stack_or_heap/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/004_golang_stack_or_heap/</guid>
+      <guid>http://www.subond.com/post/2023-09-15_golang_stack_or_heap/</guid>
       <description>1、变量与内存 通常每种编程语言都有自己的内存模型，每个变量，</description>
     </item>
     

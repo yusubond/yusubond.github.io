@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Git学习手记 | 凯文的个人博客</title>
+    <meta property="og:title" content="Git学习手记 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2016-04-29T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-03-20T11:57:50&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="Git学习手记">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2016-04-29_gitxuexi/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
+                
+                <p class="description">专注于云计算网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于我">关于我</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Git学习手记</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2016年4月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h3 id="指令介绍">指令介绍</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ git config --global user.name <span style="color:#d14">&#34;username&#34;</span>   	<span style="color:#998;font-style:italic"># 配置仓库参数，全局应用该用户名</span>
+</span></span><span style="display:flex;"><span>$ git config --global user.email <span style="color:#d14">&#34;useremail&#34;</span>	<span style="color:#998;font-style:italic"># 配置仓库参数，全局应用该用户邮箱</span>
+</span></span><span style="display:flex;"><span>$ git config user.name          <span style="color:#998;font-style:italic"># 配置仓库参数，只应用本仓库</span>
+</span></span><span style="display:flex;"><span>$ git config user.email         <span style="color:#998;font-style:italic"># 配置仓库参数，只应用本仓库</span>
+</span></span><span style="display:flex;"><span>$ git init                      <span style="color:#998;font-style:italic"># 把当前目录变成git可管理的仓库</span>
+</span></span><span style="display:flex;"><span>$ git add files          <span style="color:#998;font-style:italic"># 添加文件到暂存区</span>
+</span></span><span style="display:flex;"><span>$ git diff file          <span style="color:#998;font-style:italic"># 查看文件的修改内容</span>
+</span></span><span style="display:flex;"><span>$ git commit -m <span style="color:#d14">&#34;提交说明信息&#34;</span>  <span style="color:#998;font-style:italic"># 提交文件到仓库</span>
+</span></span><span style="display:flex;"><span>$ git status                    <span style="color:#998;font-style:italic"># 获取当前仓库中文档的状态</span>
+</span></span><span style="display:flex;"><span>$ git log                       <span style="color:#998;font-style:italic"># 查看历史记录</span>
+</span></span><span style="display:flex;"><span>$ git log --oneline             <span style="color:#998;font-style:italic"># 单行显示历史信息</span>
+</span></span><span style="display:flex;"><span>$ git reflog                    <span style="color:#998;font-style:italic"># 显示版本号</span>
+</span></span><span style="display:flex;"><span>$ git checkout -- file          <span style="color:#998;font-style:italic"># 取出文件</span>
+</span></span><span style="display:flex;"><span>$ git remote add origin &lt;仓库地址&gt;    <span style="color:#998;font-style:italic"># 添加远程仓库地址</span>
+</span></span><span style="display:flex;"><span>$ git push origin &lt;分支名1&gt;           <span style="color:#998;font-style:italic"># 推送本地内容到远程仓库分支1</span>
+</span></span><span style="display:flex;"><span>$ git pull origin &lt;远程主机名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;
+</span></span><span style="display:flex;"><span>                                      <span style="color:#998;font-style:italic"># 取回远程主机某个分支，并与本地指定分支合并</span>
+</span></span><span style="display:flex;"><span>$ git clone &lt;仓库地址&gt;                <span style="color:#998;font-style:italic"># 克隆远程仓库到本地仓库</span>
+</span></span><span style="display:flex;"><span>$ git remote            <span style="color:#998;font-style:italic"># 查看远程仓库信息</span>
+</span></span><span style="display:flex;"><span>$ git remote -v         <span style="color:#998;font-style:italic"># 查看远程仓库详细信息</span>
+</span></span><span style="display:flex;"><span>$ git remote add origin &lt;仓库地址&gt;    <span style="color:#998;font-style:italic">#添加远程仓库地址</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 如果需要修改远程仓库地址，先删除地址，再添加</span>
+</span></span><span style="display:flex;"><span>$ git remote rm origin
+</span></span><span style="display:flex;"><span>$ git remote add origin &lt;your_url&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="版本回退">版本回退</h3>
+<p>git reset &ndash;hard 版本号(即commit_id)</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ git reset --hard HEAD^      <span style="color:#998;font-style:italic"># 回退至上一版本</span>
+</span></span><span style="display:flex;"><span>$ git reset --hard HEAD^^     <span style="color:#998;font-style:italic"># 回退至上上版本</span>
+</span></span><span style="display:flex;"><span>$ git reset --hard HEAD~10    <span style="color:#998;font-style:italic"># 回退至前10个版本</span>
+</span></span><span style="display:flex;"><span>$ git reset --hard commit_id  <span style="color:#998;font-style:italic"># 结合git reflog;git log使用</span>
+</span></span><span style="display:flex;"><span>                              <span style="color:#998;font-style:italic"># git log可以查看提交历史，以便确定回退到哪个版本;</span>
+</span></span><span style="display:flex;"><span>                              <span style="color:#998;font-style:italic"># git reflog可以查看命令历史，以便确定回到未来的哪个版本</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="分支操作">分支操作</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ git branch &lt;-a -r&gt;                                  <span style="color:#998;font-style:italic"># 查看分支</span>
+</span></span><span style="display:flex;"><span>$ git checkout &lt;branch_name&gt;                          <span style="color:#998;font-style:italic"># 切换至某分支</span>
+</span></span><span style="display:flex;"><span>$ git checkout -b &lt;branch_name&gt;                       <span style="color:#998;font-style:italic"># 创建并切换至分支名1</span>
+</span></span><span style="display:flex;"><span>$ git merge &lt;branch_name&gt;                             <span style="color:#998;font-style:italic"># 合并分支名1至当前分支</span>
+</span></span><span style="display:flex;"><span>$ git push origin &lt;local_branch&gt;:&lt;remote_branch&gt;      <span style="color:#998;font-style:italic"># 将本地分支提交到远程分支</span>
+</span></span><span style="display:flex;"><span>                                                      <span style="color:#998;font-style:italic"># -u 参数设置本地分支跟踪远程分支，对git pull/status有效</span>
+</span></span><span style="display:flex;"><span>                                                      <span style="color:#998;font-style:italic"># 当远程分支不存在时，将会创建同名的远程分支</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ git push origin :&lt;remote_branch&gt;                    <span style="color:#998;font-style:italic"># 提交空分支到远程分支，即删除远程分支</span>
+</span></span><span style="display:flex;"><span>$ git clone &lt;repository_url&gt; -b &lt;remote_branch_name&gt;  <span style="color:#998;font-style:italic"># 直接检出远程分支</span>
+</span></span><span style="display:flex;"><span>$ git checkout -b &lt;local_name&gt; origin/&lt;remote_branch_name&gt;    <span style="color:#998;font-style:italic"># 检出远程分支并创建本地分支</span>
+</span></span><span style="display:flex;"><span>$                                                             <span style="color:#998;font-style:italic"># 注意这个操作会自动设置跟踪，即本地分支会追踪远程分支</span>
+</span></span><span style="display:flex;"><span>$ git pull origin &lt;remote_branch&gt;:&lt;local_branch&gt;              <span style="color:#998;font-style:italic"># 拉去远程分支合并到本地分支</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>所以，最好的办法就是将本地分支名与远程分支名设为同名，同时查看.git/config中的分支追踪情况。</p>
+<pre tabindex="0"><code># .git/config
+[remote &#34;origin&#34;]
+     url = https://github.com/yusubond/gittest.git
+     fetch = +refs/heads/*:refs/remotes/origin/*
+[branch &#34;master&#34;]        # 本地master分支追踪远程master分支
+     remote = origin
+     merge = refs/heads/master
+[branch &#34;dev&#34;]
+     remote = origin     # 本地dev分支追踪远程dev分支
+     merge = refs/heads/dev
+</code></pre><p><strong>常见问题</strong></p>
+<p>1.gitignore不起作用</p>
+<p>.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的</p>
+<p>解决办法</p>
+<pre tabindex="0"><code>git rm -r --cached .
+git add .
+git commit -m &#34;update .gitignore&#34;
+</code></pre><p>2.gitignore忽略自身</p>
+<p>编辑.git/info/exclude文件，语法与.gitignore一致。两个文件区别在于，exclude只用于设置本地需要忽略的文件，而.gitignore是公共需要排除的。</p>
+<p>需要注意的是：先在.git/info/exclude文件中添加.gitignore，然后在创建.gitignore.</p>
+<h3 id="提交文件步骤">提交文件步骤</h3>
+<p>第一步：<code>git add file_name</code>,提交文件到暂存区(Index)</p>
+<p>第二步：<code>git commit -m &quot;message about file&quot;</code>,提交文件到本地仓库(Repository)</p>
+<p>第三步：<code>git push origin master</code>,提交文件到远程仓库master分支(Remote)</p>
+<p><strong>注意：</strong> 第一次推送至master分支，需要使用-u参数，即<code>git push -u origin master</code>。</p>
+<p>
+        <img class="mx-auto" alt="git-mechism" src="http://on64c9tla.bkt.clouddn.com/20160429gitcaozuo.jpg" />   
+    </p>
+<p>图1 Git基本操作示意图</p>
+<p>几个名词解释：</p>
+<p>Workspace:工作区<br>
+Index：暂存区<br>
+Repository：仓库区(本地仓库)<br>
+Remote：远程仓库</p>
+<p>推荐使用软件<a href="https://www.sourcetreeapp.com/">SourceTree</a>，可以很方便的查看每次commit细节和分支情况，支持MAC OSX和WINDOWS系统，软件界面如下。</p>
+<p>
+        <img class="mx-auto" alt="hero-mac-screenshot" src="http://on64c9tla.bkt.clouddn.com/www.subond.com/hero-mac-screenshot.png" />   
+    </p>
+<h2 id="二进阶篇">二、进阶篇</h2>
+<h3 id="分支管理">分支管理</h3>
+<p>一般而言，主分支master分支是非常稳定的版本，可以用来直接发布，一般情况下不允许直接在上面进行修改。一般都是新建一个dev分支，在dev分支上进行修改操作，工作完成后可合并到主分支master上。其流程一般如下：
+1.创建一个dev分支；<br>
+2.修改文件内容；<br>
+3.添加到暂存区；<br>
+4.切换至主分支(msater)；<br>
+5.合并dev分支；<br>
+6.查看历史记录。</p>
+<p>注意:合并分支时，git一般使用“Fast Forward”模式，在这种模式下，删除分支后，会丢掉分支信息。为了保证可以随时查看分支信息，合并时可使用命令git merge -no-ff -m &ldquo;注释信息&rdquo; dev</p>
+<h3 id="stach功能介绍">Stach功能介绍</h3>
+<ul>
+<li>使用场景</li>
+</ul>
+<p>工作过程中，我们一般在自己的分支上修改和调试代码，如果临时接到通知需要修改某个BUG问题，而且自己的工作还需要一段时间才能完成， 而修复BUG问题可能只需要一点时间，此时我们就需要使stash功能。”git stash“通俗地讲就是把当前的工作现场”隐藏起来“，待现场回复后可继续 工作。具体来说就是先使用’git stash&rsquo;将当前未提交到本地（或服务器）的代码推入git的栈中，这时我们的工作区和上一次提交的内容是一样，所以可以放心的修复BUG问题，等到 修复完成并提交到服务器之后，再使用&rsquo;git stash apply&rsquo;将以前的工作应用回来</p>
+<ul>
+<li>指令介绍</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ git stash       <span style="color:#998;font-style:italic"># 备份当前分支的工作区内容，保证工作区内容和上一次提交的内容一致，同时，将当前的工作内容压入git栈中</span>
+</span></span><span style="display:flex;"><span>$ git pop         <span style="color:#998;font-style:italic"># 从git栈中读取最近一次保存的内容，恢复工作区的相关内容</span>
+</span></span><span style="display:flex;"><span>$ git stash list  <span style="color:#998;font-style:italic"># 显示git栈中所有备份，可以利用列表选择从哪恢复内容</span>
+</span></span><span style="display:flex;"><span>$ git stash apply &lt;版本号&gt;   <span style="color:#998;font-style:italic"># 将制定版本号的内容恢复至当前工作区，配合git stash list使用</span>
+</span></span><span style="display:flex;"><span>$ git stash clear            <span style="color:#998;font-style:italic"># 清空git栈</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三gitbook使用指南">三、gitbook使用指南</h2>
+<p>gitbook的使用方法和git基本类似，其修改记录，发布版本等相关操作均可参考上面的git指令，略有不同，下面详细介绍：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 初始化书记目录</span>
+</span></span><span style="display:flex;"><span>$ gitbook init
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 编译图书，可在本地查看</span>
+</span></span><span style="display:flex;"><span>$ gitbook serve
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 克隆远程图书到本地</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ git clone https://git.gitbook.com/user_name/book_name.git
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 添加文件</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ git add file_name
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 提交修改记录</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ git commit -m <span style="color:#d14">&#34;sth about your changes&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 添加图书的远程地址</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ git remote add gitbook https://git.gitbook.com/user_name/book_name.git
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"># 发布图书至远程仓库</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ git push -u gitbook master  <span style="color:#998;font-style:italic"># 第一次使用-u参数，之后可以不用加-u参数</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="四参考资料">四、参考资料</h2>
+<p>[1] <a href="https://git-scm.com/book/zh/v2">Book</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2016-04-29_gitxuexi/">http://www.subond.com/post/2016-04-29_gitxuexi/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/qccode_wechat/"></a></li>
+        
+        <li><a href="/post/2023-09-15_golang_stack_or_heap/">Go逃逸分析与性能</a></li>
+        
+        <li><a href="/archives/">归档</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/git' target="_blank">git</a></li>
+                
+                <li><a href='/tags/gitbook' target="_blank">gitbook</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="http://www.subond.com/">凯文的个人博客 By Kevin</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-20_06letter/" title="No.6 写在31岁" target="_blank">No.6 写在31岁</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-13_05letter/" title="No.5 聊聊个人养老金" target="_blank">No.5 聊聊个人养老金</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-06_04letter/" title="No.4 关于读书" target="_blank">No.4 关于读书</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-27_03letter/" title="No.3 尽情地去生活" target="_blank">No.3 尽情地去生活</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-20_02letter/" title="No.2 内在记分牌" target="_blank">No.2 内在记分牌</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-13_01letter/" title="No.1 2023, 启航" target="_blank">No.1 2023, 启航</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-26_golang_defer/" title="Go defer如何调用" target="_blank">Go defer如何调用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-09-13_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-03_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (21)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E7%94%9F%E6%B4%BB/">生活 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%98%85%E8%AF%BB/">阅读 (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (6)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E4%BA%BA%E7%94%9F%E4%BF%A1%E5%BF%B5/">人生信念</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%9C%A8%E8%AE%B0%E5%88%86%E7%89%8C/">内在记分牌</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="http://www.subond.com/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+    
+    <a href="http://www.subond.com/tags/%E9%98%85%E8%AF%BB/">阅读</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">Github</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://weibo.cn/u/2746421033" title="微博">微博</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

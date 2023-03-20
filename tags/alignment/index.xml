@@ -9,10 +9,10 @@
     <lastBuildDate>Wed, 07 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/alignment/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go Struct内存对齐</title>
-      <link>http://www.subond.com/post/001_golang_struct_memory_alignment/</link>
+      <link>http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/</link>
       <pubDate>Wed, 07 Sep 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/001_golang_struct_memory_alignment/</guid>
+      <guid>http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/</guid>
       <description>1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问</description>
     </item>
     
