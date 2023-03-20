@@ -1,9 +1,8 @@
 ---
 title: "年轻的自信与成熟的笃定"
 date: 2017-11-19
-categories: ["LIFE"]
+categories: ["生活"]
 tags: ["reading", "work", "growth"]
-author: subond
 ---
 
 **当一个年轻人开始逐渐摆脱盲目自信的时候，脚步更加坚定的时候，他迎来的是更加成熟的笃定。**

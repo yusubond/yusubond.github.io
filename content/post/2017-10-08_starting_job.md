@@ -1,9 +1,8 @@
 ---
 title: "初入职场"
 date: 2017-10-08
-categories: ["LIFE"]
+categories: ["生活"]
 tags: ["carrer", "work"]
-author: subond
 ---
 
 “如何有机会让现在的你遇到刚毕业初入职场的你，你会对他说什么？”这是一个知乎上的问题，以下的回答部门节选自冯大辉。
