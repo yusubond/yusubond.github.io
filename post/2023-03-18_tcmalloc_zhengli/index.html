@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>内存管理：TCMalloc之魂 | 凯文的个人博客</title>
+    <meta property="og:title" content="内存管理：TCMalloc之魂 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-03-18T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-03-21T21:08:14&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="内存管理：TCMalloc之魂">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
+                
+                <p class="description">专注于云计算网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于我">关于我</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">内存管理：TCMalloc之魂</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2023年3月18日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h1 id="内存管理tcmalloc">内存管理：TCMalloc</h1>
+<p>TCMalloc 是 Google 开发的内存分配器，在不少项目中都有使用，Go 中就使用了类似的算法进行内存分配。</p>
+<p>本文对 TCMalloc 的设计和原理做一个整体的介绍和学习，主要是根据官方介绍作出的一些个人理解，难免有纰漏之处，不足的地方还请各位看官指正。</p>
+<h2 id="1-概述">1. 概述</h2>
+<p>TCMalloc为每个线程Thread预分配一块线程本地缓存，称为<code>ThreadCache</code>,所有的小对象优先从<code>ThreadCache</code>中申请；在所有的<code>ThreadCache</code>外，还有一个共享的中心缓存区，叫做<code>CentralCache</code>，<code>CentralCache</code>所有线程共享。</p>
+<p>当<code>ThreadCache</code>缓存不足时，线程就会从<code>CentralCache</code>获取；当<code>ThreadCache</code>缓存富裕或过多时，则将部分内存退还给<code>CentralCache</code>。由于<code>CentralCache</code>是所有线程共享的，所以访问一定需要加锁；而<code>ThreadCache</code>是线程独立的第一个交互内存，访问不需要加锁。</p>
+<p>按照 TCMalloc 的设计，<code>ThreadCache</code>和<code>CentralCache</code>只是为了解决小对象的内存申请，但对于大块内存的申请则不经过这两者，而是线程直接向全局共享的内存堆<code>PageHeap</code>申请。</p>
+<p>依据所占内存的大小，TCMalloc 将对象分为三类，如下表。</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>大小范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>小对象</td>
+<td>(0, 256KB]</td>
+</tr>
+<tr>
+<td>中对象</td>
+<td>(256KB, 1MB]</td>
+</tr>
+<tr>
+<td>大对象</td>
+<td>(1MB, 正无穷)</td>
+</tr>
+</tbody>
+</table>
+<p>
+        <img class="mx-auto" alt="central" src="/images/tcmalloc_central.png" />   
+    </p>
+<h2 id="2-tcmalloc中的基础单位">2. TCMalloc中的基础单位</h2>
+<p>想要进一步了解 TCMalloc 的内部设计，首先需要了解 TCMalloc 中的基本名词Size-Class,Page,Span。</p>
+<h3 id="21-size-class">2.1 Size-Class</h3>
+<p>如前所述，每个小对象优先从<code>ThreadCache</code>中申请，那么为了衡量和表示小对象，TCMalloc 按大小将内存拆分为一个个可分配的单元，这些单元称为<code>size-class</code>。<code>size-class</code>的间隔是8 Byte, 16Byte, 32Byte,依次类似，总共88种不同大小的<code>size-class</code>.</p>
+<p>最大间距会受到控制，这样当分配请求超过某个<code>size-class</code>时，可以直接四舍五入到下一级<code>size-class</code>，避免太多浪费。</p>
+<p><code>ThreadCache</code>包含各种<code>size-class</code>的单向链表，链表元素为自由可分配的对象。</p>
+<p>
+        <img class="mx-auto" alt="size-class" src="/images/tcmalloc_size_class.png" />   
+    </p>
+<p>注意：size-class的大小并不是完全的2的幂次方。因为这样也会存在的严重的浪费，具体值可以参见<a href="https://github.com/google/tcmalloc/blob/master/tcmalloc/size_classes.cc">Size-Class</a></p>
+<h3 id="22-pages">2.2 Pages</h3>
+<p>TCMalloc 将整个内存空间划分为同等大小的Page，每个 Page 默认是 8KB。当申请中等对象的时候，向上取整为一个Page的大小，即整数个Page。中心页面堆PageHeap是一个包含 128 个空闲列表的数组，其中第k个列表由k+1个页面组成，如下所示。</p>
+<p>
+        <img class="mx-auto" alt="pages" src="images/tcmalloc-pages.png" />   
+    </p>
+<blockquote>
+<p>[更新]</p>
+<p>在最新的设计中，<code>k&lt;256</code>时链表中每个元素包含k个page；第256个链表中包含的page数<code>k&gt;=256</code>。</p>
+</blockquote>
+<p>一个需要 <code>k</code> page的内存申请， 直接查看第<code>k</code>的空闲列表，如果列表为空，直接查找下一个，依次类推。</p>
+<p>如果查到最后一个列表依然为空，那么则直接向系统<code>mmap</code>申请内存。</p>
+<p>如果<code>k</code>page的内存申请，在<code>&gt;k</code>的空闲列表中满足，那么剩余的page会被插入到合适的空闲列表中。</p>
+<p>举个例子，一个需要4page的申请，第4个列表已经为空，且第5,6依旧为空，在第7列表中找到空闲的内存，那么则直接返回4个page，将剩下的3个page插入到第3个列表中。</p>
+<h3 id="23-span">2.3 Span</h3>
+<p>一组连续的Page称为Span，表示为<code>[p,q]</code>，其中<code>p</code>是起始Page的编号，<code>q</code>是终止Page的编号。如下所示。</p>
+<p>为了便于管理Span，Span集合以双向链表的方式构建。</p>
+<p>
+        <img class="mx-auto" alt="span" src="images/tcmalloc_span.png" />   
+    </p>
+<p>Span 只有两种状态：<strong>已分配</strong>和<strong>空闲</strong>。</p>
+<p>对于<code>PageHeap</code>来说，一个 Span 一旦分配出去，它既可以直接给到线程做大对象，也有可能给到<code>CentralCache</code>，由<code>CentalCache</code>拆分为<code>Size-Class</code>再给到<code>ThreadCache</code>做小对象。如果做小对象使用，<code>Size-Class</code>会被记录在Span中。如果 Span 是空闲的，意味着这个 Span 可以被分配出去。</p>
+<p>在32位地址空间中，中央数组由一个2级基数树表示，其中根包含32个条目，每个叶子包含 2^14 个条目。一个32位地址空间有<code>2^19</code> 个 <code>8K</code>页，而第一层树将<code>2^19</code>个页等分32份。这导致中央数组的起始内存使用量为 64KB（<code>2^14*4</code> Bytes），这似乎可以接受。</p>
+<p>注：<code>2^14</code>个条目，每个条目都需要<code>32bit</code>的内存地址，所以相当于<code>64KB</code>用来寻址。</p>
+<p>在64位地址空间中，我们使用3级基数树。</p>
+<p>如何管理Span和Page的映射关系呢？</p>
+<p>通过PageMap实现Page到Span的映射。</p>
+<p>那么，Span，Page和Size-Class的关系如何呢？</p>
+<p>我们以拆分为小对象的Span为例，一个Span所包含的N连续的Page可以被拆分成一组size-class的列表。</p>
+<p>
+        <img class="mx-auto" alt="span2" src="images/tcmalloc_span2.png" />   
+    </p>
+<h2 id="3-tcmalloc的内部结构">3. TCMalloc的内部结构</h2>
+<p>有了前面的介绍，我们可以知道<code>TreadCache</code>内部就是由一系列的不同<code>Size-Class</code>组成的空闲列表。</p>
+<p><code>CentralCache</code>作为<code>ThreadCache</code>的二级缓存，其内部结构和<code>ThreadCache</code>一致。当<code>ThreadCache</code>不足时，直接向<code>CentralCache</code>申请，如果<code>CentralCache</code>有空闲内存直接给，否则向<code>PageHeap</code>申请。</p>
+<p>
+        <img class="mx-auto" alt="all" src="images/tcmalloc_all.png" />   
+    </p>
+<p>PageHeap负责管理Span，相同规格的Span构成双向链表。</p>
+<h2 id="4-内存分配">4. 内存分配</h2>
+<h3 id="41-小对象分配">4.1 小对象分配</h3>
+<p>小对象为占用内存小于等于256KB的内存，其申请流程是：</p>
+<ol>
+<li>
+<p>用户线程Thread向<code>ThreadCache</code>申请小对象内存</p>
+</li>
+<li>
+<p><code>ThreadCache</code>得到请求后，找到合适的<code>Size-Class</code>（一般是向上取整，即大于等于要申请的内存大小），并查找其<code>FreeList</code></p>
+</li>
+<li>
+<p>如果<code>Thread-FreeList</code>不为空，直接返回列表中的第一个条目，结束</p>
+</li>
+<li>
+<p>如果<code>Thread-FreeList</code>为空，向<code>CentralCache</code>请求该<code>Size-Class</code>的内存</p>
+</li>
+<li>
+<p>如果<code>CentralCache</code>的<code>Central-FreeList</code>不为空，直接返回一段空闲列表给到<code>ThreadCache</code>,<code>ThreadCache</code>得到后，返回其中的一个条目，结束</p>
+</li>
+<li>
+<p>如果<code>CentralCache</code>的<code>Central-FreeList</code>为空，则从<code>PageHeap</code>中申请一个Span，并切分成该<code>size-class</code>大小的一组对象，并放在<code>CentralFreeList</code>中，然后返回部分对象给到<code>ThreadCache</code>，<code>ThreadCache</code>得到后，放入<code>Thread-FreeList</code>，并返回其中一个条目给线程。</p>
+</li>
+</ol>
+<h3 id="42-中对象分配">4.2 中对象分配</h3>
+<p>中等对象大小（256K≤大小≤1MB）向上取整到一个页面大小（8K），由中央页面堆处理。中央页面堆包括128个空闲列表的数组。第K个条目是由K+1页面组成的空闲列表。</p>
+<p>
+        <img class="mx-auto" alt="mobject" src="images/tcmalloc_mobject.png" />   
+    </p>
+<p>一个K页面大小的分配可以查找第K个空闲列表来满足。如果这个列表为空，则查找下一个列表，以此类推。如果每一个中等对象空闲列表满足这次分配，这次分配将被视为大对象。</p>
+<h3 id="43-大对象分配">4.3 大对象分配</h3>
+<p>1MB或更大的分配被认为是大对象分配。满足这些可分配内存按大小排序在<strong>红黑树</strong>中进行跟踪。分配遵循<strong>最佳匹配</strong>算法：搜索红黑树以找到大于请求分配的最小可用内存跨度。分配从该跨度中划分出去，剩下空间被重新插入大对象树，或者有可能适当地插入较小的空闲列表之一中。</p>
+<p>如果没有满足请求分配的内存空间跨度，我们会从系统申请内存（使用<code>sbrk</code>,<code>mmap</code>,或者通过映射部分<code>/dev/mem</code>）。</p>
+<p>如果一连串的页面长度大于一个K大小的页面分配，那么剩余的页面会重新插入页面堆的合适空闲列表中。</p>
+<p>1MB（128个Page）的大对象都超过了128个page，不在使用链表存储，而是选用红黑树，以便按大小进行搜索。</p>
+<p>假设一个需要x内存的申请，向上取整后得到k个page。或者中对象无法满足的时候也会进入此逻辑，其过程是：</p>
+<ol>
+<li>搜索红黑树，找到不小于k个page的最小span，假设这个span有n个page</li>
+<li>将这个span拆分为两个span
+<ol>
+<li>一个span大小为k个page，作为结果返回</li>
+<li>另一个span为n-k个page，如果<code>n-k&gt;128</code>，则直接插入到大对象的红黑树中；否则，插入中对象的空闲列表中</li>
+</ol>
+</li>
+<li>如果找不到合适的span，直接向系统申请内存。</li>
+</ol>
+<h3 id="44-慢启动算法freelist的长度控制">4.4 慢启动算法：FreeList的长度控制</h3>
+<p>正确地调整线程缓存空闲列表至关重要。如果空闲列表太小，我们需要频繁地访问中央空闲列表。如果太大，则造成浪费。</p>
+<p>请注意，线程缓存的释放和分配同样重要。如果没有线程缓存，每一次释放都需要将内存交还给中央空闲列表。此外，一些线程具有不对称的分配/释放行为（比如生产者和消费者线程），因此正确调整空闲列表的大小变得比较棘手。</p>
+<p>为了适时调整空闲列表，我们使用<strong>慢启动</strong>算法来确定空闲列表的最大长度。随着空闲列表使用越来越频繁，它的大小 一直在增长。然而，如果一个空闲列表更多地使用释放而不是分配，那么它的最大长度只会增长到可以立即有效地移动到中央空闲列表的程度。</p>
+<p>下面的伪代码说明了这种<strong>慢启动算法</strong>。请注意<code>num_objects_to_move</code>是特定于每个尺寸等级。通过移动已知长度的对象列表，中央缓存可以在线程缓存之间高效地传递这些列表。如果一个线程缓存需要的内存小于<code>num_objects_to_move</code>，则对中央空闲列表的操作具有线性时间复杂度。总是使用<code>num_objects_to_move</code>对象数量在中央缓存去来回传输的缺点是：在不需要这些对象的线程中造成浪费。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>Start each freelist max_length at <span style="color:#099">1.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Allocation
+</span></span><span style="display:flex;"><span>  <span style="color:#000;font-weight:bold">if</span> freelist empty {
+</span></span><span style="display:flex;"><span>    fetch <span style="color:#900;font-weight:bold">min</span>(max_length, num_objects_to_move) from central list;
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> max_length <span style="color:#000;font-weight:bold">&lt;</span> num_objects_to_move {  <span style="color:#998;font-style:italic">// slow-start
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>      max_length<span style="color:#000;font-weight:bold">++</span>;
+</span></span><span style="display:flex;"><span>    } <span style="color:#000;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span>      max_length <span style="color:#000;font-weight:bold">+=</span> num_objects_to_move;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Deallocation
+</span></span><span style="display:flex;"><span>  <span style="color:#000;font-weight:bold">if</span> length <span style="color:#000;font-weight:bold">&gt;</span> max_length {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// Don&#39;t try to release num_objects_to_move if we don&#39;t have that many.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    release <span style="color:#900;font-weight:bold">min</span>(max_length, num_objects_to_move) objects to central list
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">if</span> max_length <span style="color:#000;font-weight:bold">&lt;</span> num_objects_to_move {
+</span></span><span style="display:flex;"><span>      <span style="color:#998;font-style:italic">// Slow-start up to num_objects_to_move.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>      max_length<span style="color:#000;font-weight:bold">++</span>;
+</span></span><span style="display:flex;"><span>    } <span style="color:#000;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">if</span> max_length <span style="color:#000;font-weight:bold">&gt;</span> num_objects_to_move {
+</span></span><span style="display:flex;"><span>      <span style="color:#998;font-style:italic">// If we consistently go over max_length, shrink max_length.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>      overages<span style="color:#000;font-weight:bold">++</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#000;font-weight:bold">if</span> overages <span style="color:#000;font-weight:bold">&gt;</span> kMaxOverages {
+</span></span><span style="display:flex;"><span>        max_length <span style="color:#000;font-weight:bold">-=</span> num_objects_to_move;
+</span></span><span style="display:flex;"><span>        overages <span style="color:#000;font-weight:bold">=</span> <span style="color:#099">0</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="5内存回收">5.内存回收</h2>
+<p>当一个对象被释放时，我们计算它的页码并在中央数组中找到对应的span对象。span会告诉我们这个对象是否是小对象，如果是小对象，告诉我们它的大小级别。</p>
+<p>如果是小对象，我们会将其插入到当前线程缓存的合适空闲列表中。如果线程缓存超过超过预定大小（默认是2MB），我们将启动垃圾回收，将未使用的对象从线程缓存移到中央空闲列表。</p>
+<p>如果是大对象，span会告诉我们对象的页面跨度范围。假设跨度范围是<code>[p,q]</code>，我们会查找<code>p-1</code>和<code>q+1</code>页面的span，如果这些邻居任意一个span空闲，我们将其与<code>[p,q]</code>合并。生成的span会插入和页面堆的合适空闲列表中。</p>
+<h3 id="51-线程缓存的垃圾回收">5.1 线程缓存的垃圾回收</h3>
+<p>从线程缓存中收集垃圾对象可以控制线程缓存的大小，并将空闲对象返还给中央空闲列表。有些线程需要大缓存才能性能良好，但有些线程却使用很小甚至不使用线程缓存。当一个线程缓存超过它的最大值<code>max_size</code>时，垃圾回收启动，然后开始与其他线程竞争更大的缓存。</p>
+<p>垃圾回收只在释放期间运行。我们遍历线程缓存的所有空闲列表，然后将一定数量的对象交还给相对应的中央空闲列表。</p>
+<p>从空闲列表移动一定数量的对象取决于每个空闲列表的<strong>低水位线（low-water-mark）</strong><code>L</code>。<code>L</code>记录了上次垃圾回收后的列表最小长度。需要指出，我们可以在最后一次垃圾回收时按对象缩短列表，并不需要额外访问中央列表。我们使用过去的历史作为未来访问的预测器，然后将<code>L/2</code>对象从线程缓存空闲列凑返给相应的中央空闲列表。这个算法有个很好的特性就是，如果一个线程不在使用一个特定大小的对象，那么这个大小的所有对象可以很快地从线程缓存移到中央缓存以供其他线程使用。</p>
+<p>如果一个线程始终如一地释放比它分配更多的某个固定大小的对象，那么<code>L/2</code>的行为将会导致总有<code>L/2</code>的对象保留在空闲列表中。为了避免这种情况的内存浪费，我们要收敛空闲列表的最大长度到<code>num_objects_to_move</code>。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>Garbage Collection
+</span></span><span style="display:flex;"><span>  <span style="color:#900;font-weight:bold">if</span> (L <span style="color:#000;font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="color:#000;font-weight:bold">&amp;&amp;</span> max_length <span style="color:#000;font-weight:bold">&gt;</span> num_objects_to_move) {
+</span></span><span style="display:flex;"><span>    max_length <span style="color:#000;font-weight:bold">=</span> max(max_length <span style="color:#000;font-weight:bold">-</span> num_objects_to_move, num_objects_to_move)
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>线程缓存超过其容量<code>max_size</code>的事实表明线程可以从更大的缓存中获益。在一个具有大量活跃线程的程序中，简单地增加<code>max_size</code>的大小会造成过度的内存浪费。开发人员可以通过标志<code>--tcmalloc_max_total_thread_cache_bytes</code>来绑定单个线程可使用的内存。</p>
+<p>每个线程起初都使用很小的<code>max_size</code>（比如64KB），这样空闲线程就不会预先分配它不需要的内存。每一次运行垃圾回收，它会尝试增加<code>max_size</code>。</p>
+<p>如果线程缓存大小的总和小于<code>--tcmalloc_max_total_thread_cache_bytes</code>指定的大小，<code>max_size</code>简单地增加就好。</p>
+<p>如果不是这种情况，线程1会尝试从线程2（选择轮询法）中<strong>窃取</strong>内存，通过减小线程2的<code>max_size</code>。</p>
+<p>在这种情况下，更加活跃的线程会比它们自己窃取内存次数更加频繁地从其他线程中窃取内存。大多数空闲线程最终都有小缓存，活跃的线程最终有大缓存。</p>
+<p>请注意，这种窃取行为会导致线程缓存总和大于<code>--tcmalloc_max_total_thread_cache_bytes</code>，直到线程2释放某些内存以触发垃圾回收。</p>
+<h2 id="6-设计思想">6. 设计思想</h2>
+<p>TCMalloc是内存分配设计的，就是为了更快的分配内存。</p>
+<p>在多线程多核编程的现在，TCMalloc引入的第一层设计就是<strong>分级缓存</strong>。每个线程都有自己的缓存列表，同时还有全局的缓存列表，当申请内存时，每个线程优先使用自己的缓存，当自己的缓存不足时，向全局的缓存列表申请。这个线程内申请不需要加锁，加速了内存分配。</p>
+<p>第二个是<strong>窃取机制</strong>。每个线程缓存可以指定大小。起初每个线程的缓存很小，随着线程的活动其缓存也会不断增加。当不超过最大值时，简单地增加就好；一旦超过最大值，线程1会尝试从线程2中<strong>窃取</strong>内存，以减少线程2的缓存来满足线程1的内存需要。</p>
+<h2 id="7-问题解答">7. 问题解答</h2>
+<ol>
+<li>
+<p>Thread Cache为什么被线程持有？</p>
+<blockquote>
+<p>答：减少线程之间的竞争，分配内存时减少锁的过程。这就是为什么叫“Thread Cache Malloc&quot;的原因。</p>
+</blockquote>
+</li>
+<li>
+<p>Span是如何组织在一起的？为什么？</p>
+<blockquote>
+<p>答案：双向链表。</p>
+</blockquote>
+</li>
+<li>
+<p>Span的设计为何选用一组连续的Page？</p>
+<blockquote>
+<p>答案：为了便于回收。大对象的分配都是从Span出去的，即一组连续的Page。当大对象释放以后需要回收，根据page的起始坐标可以确定Span,如果起始坐标以外的page也是空闲的，那么刚好可以合并成一个大Span，便于回收并进一步收回到系统内存。</p>
+</blockquote>
+</li>
+<li>
+<p>Page是如何组织在一起的？为什么？</p>
+</li>
+<li>
+<p>FreeList为什么使用链表实现？</p>
+<blockquote>
+<p>答案：为了最大化内存使用率，最小化分配时间。第一，将整块内存按size-class切分为小单位，对于不同大小的内存申请能够向上取整即可，避免浪费。第二，链表的操作都是O(1)，分配效率高。</p>
+</blockquote>
+</li>
+<li>
+<p>ThreadCache什么时候被创建和销毁？</p>
+<blockquote>
+<p>答案：当某个线程第一次申请分配内存时，TCMalloc为该线程创建专属的ThreadCache；当一个线程被销毁时，其对应的ThreadCache也会被销毁。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="8-参考文档">8. 参考文档</h2>
+<ol>
+<li><a href="https://gperftools.github.io/gperftools/tcmalloc.html">https://gperftools.github.io/gperftools/tcmalloc.html</a></li>
+<li><a href="https://github.com/google/tcmalloc/blob/master/docs/design.md">https://github.com/google/tcmalloc/blob/master/docs/design.md</a></li>
+</ol>
+<h2 id="9-名词解释">9. 名词解释</h2>
+<table>
+<thead>
+<tr>
+<th>英文</th>
+<th>中文</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ThreadCache</td>
+<td>线程本地缓存</td>
+<td>也称为线程缓存，即每个线程自己的缓存</td>
+</tr>
+<tr>
+<td>Thread-FreeList</td>
+<td>线程空闲列表</td>
+<td>每个线程自己的空闲对象列表</td>
+</tr>
+<tr>
+<td>CentralCache</td>
+<td>中心缓存</td>
+<td>即每个线程共享的中心缓存</td>
+</tr>
+<tr>
+<td>Central-FreeList</td>
+<td>中心空闲列表</td>
+<td>每个线程共享的中心空闲列表</td>
+</tr>
+<tr>
+<td>Size-Class</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Object</td>
+<td>对象</td>
+<td>空闲列表中自由的对象，一般为<code>Size-Class</code>大小</td>
+</tr>
+<tr>
+<td>Page</td>
+<td>——</td>
+<td>虚拟空间等分的基本单位，默认大小为8KB</td>
+</tr>
+<tr>
+<td>Span</td>
+<td>——</td>
+<td>一组连续的Page</td>
+</tr>
+</tbody>
+</table>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/">http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2023-03-13_05letter/">No.5 聊聊个人养老金</a></li>
+        
+        <li><a href="/post/2023-03-06_04letter/">No.4 关于读书</a></li>
+        
+        <li><a href="/post/2023-02-27_03letter/">No.3 尽情地去生活</a></li>
+        
+        <li><a href="/post/2023-02-20_02letter/">No.2 内在记分牌</a></li>
+        
+        <li><a href="/post/2023-02-13_01letter/">No.1 2023, 启航</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86' target="_blank">内存管理</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="http://www.subond.com/">凯文的个人博客 By Kevin</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-20_06letter/" title="No.6 写在31岁" target="_blank">No.6 写在31岁</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/" title="内存管理：TCMalloc之魂" target="_blank">内存管理：TCMalloc之魂</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-13_05letter/" title="No.5 聊聊个人养老金" target="_blank">No.5 聊聊个人养老金</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-06_04letter/" title="No.4 关于读书" target="_blank">No.4 关于读书</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-27_03letter/" title="No.3 尽情地去生活" target="_blank">No.3 尽情地去生活</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-20_02letter/" title="No.2 内在记分牌" target="_blank">No.2 内在记分牌</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-13_01letter/" title="No.1 2023, 启航" target="_blank">No.1 2023, 启航</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-26_golang_defer/" title="Go defer如何调用" target="_blank">Go defer如何调用</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-13_golang_array_and_slice/" title="Go Slice性能与技巧" target="_blank">Go Slice性能与技巧</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2022-09-03_golang_struct_skill/" title="Go 空struct的使用技巧" target="_blank">Go 空struct的使用技巧</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (22)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E7%94%9F%E6%B4%BB/">生活 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%98%85%E8%AF%BB/">阅读 (1)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (6)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E4%BA%BA%E7%94%9F%E4%BF%A1%E5%BF%B5/">人生信念</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%9C%A8%E8%AE%B0%E5%88%86%E7%89%8C/">内在记分牌</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">内存管理</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="http://www.subond.com/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+    
+    <a href="http://www.subond.com/tags/%E9%98%85%E8%AF%BB/">阅读</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">Github</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://weibo.cn/u/2746421033" title="微博">微博</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

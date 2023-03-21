@@ -17,6 +17,15 @@
     </item>
     
     <item>
+      <title>内存管理：TCMalloc之魂</title>
+      <link>http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/</guid>
+      <description>内存管理：TCMalloc TCMalloc 是 Google 开发的内存分配器，在不少项目</description>
+    </item>
+    
+    <item>
       <title>No.5 聊聊个人养老金</title>
       <link>http://www.subond.com/post/2023-03-13_05letter/</link>
       <pubDate>Mon, 13 Mar 2023 00:00:00 +0000</pubDate>

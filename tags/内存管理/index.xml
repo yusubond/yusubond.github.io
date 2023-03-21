@@ -6,13 +6,13 @@
     <description>Recent content in 内存管理 on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 20 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 18 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>内存管理：TCMalloc之魂</title>
-      <link>http://www.subond.com/post/2023-03-17-tcmalloc-zhengli/</link>
-      <pubDate>Mon, 20 Mar 2023 00:00:00 +0000</pubDate>
+      <link>http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/2023-03-17-tcmalloc-zhengli/</guid>
+      <guid>http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/</guid>
       <description>内存管理：TCMalloc TCMalloc 是 Google 开发的内存分配器，在不少项目</description>
     </item>
     
