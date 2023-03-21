@@ -9,10 +9,10 @@
     <lastBuildDate>Fri, 17 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/string/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go字符串拼接性能对比</title>
-      <link>http://www.subond.com/post/2023-06-17_golang_string_join/</link>
+      <link>http://www.subond.com/post/2022-06-17_golang_string_join/</link>
       <pubDate>Fri, 17 Jun 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.subond.com/post/2023-06-17_golang_string_join/</guid>
+      <guid>http://www.subond.com/post/2022-06-17_golang_string_join/</guid>
       <description>Go 语言中提供了基础数据结构类型 string，在实际使用中我们</description>
     </item>
     
