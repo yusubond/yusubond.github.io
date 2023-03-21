@@ -1,6 +1,6 @@
 ---
 Title: "内存管理：TCMalloc之魂"
-Date: 2023-03-22
+Date: 2023-03-18
 Categories: ["技术"]
 Tags: ["内存管理"]
 ---
@@ -29,7 +29,7 @@ TCMalloc为每个线程Thread预分配一块线程本地缓存，称为`ThreadCa
 | 中对象 | (256KB, 1MB]  |
 | 大对象 | (1MB, 正无穷) |
 
-![central](images/tcmalloc_central.png)
+![central](/images/tcmalloc_central.png)
 
 ## 2. TCMalloc中的基础单位
 
@@ -43,7 +43,7 @@ TCMalloc为每个线程Thread预分配一块线程本地缓存，称为`ThreadCa
 
 `ThreadCache`包含各种`size-class`的单向链表，链表元素为自由可分配的对象。
 
-![size-class](images/tcmalloc_size_class.png)
+![size-class](/images/tcmalloc_size_class.png)
 
 注意：size-class的大小并不是完全的2的幂次方。因为这样也会存在的严重的浪费，具体值可以参见[Size-Class](https://github.com/google/tcmalloc/blob/master/tcmalloc/size_classes.cc)
 
