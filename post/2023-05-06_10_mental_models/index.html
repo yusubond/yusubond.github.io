@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>[译文]关于学习的10种心智模型 | 凯文的个人博客</title>
+    <meta property="og:title" content="[译文]关于学习的10种心智模型 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-05-06T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-05-06T11:31:59&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="[译文]关于学习的10种心智模型">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2023-05-06_10_mental_models/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
+                
+                <p class="description">专注于云计算网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于我">关于我</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">[译文]关于学习的10种心智模型</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2023年5月6日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E9%98%85%E8%AF%BB' target="_blank">阅读</a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p>心智模型是一种可以用来解释很多不同现象的一般概念。经济学中的供需关系，生物学中的自然选择，计算机科学中的递归，数学领域的归纳证明——一旦你知道它们，这些模型无处不在。</p>
+<p>就像理解供需关系可以帮助你解释经济学问题一样，理解学习的心智模型会让你更容易思考学习问题。</p>
+<p>不幸的是，学习很少单独作为一门课来教授——这意味大多数心智模型只有专家才知道。在这篇文章中，我将分享十个对我影响最大的模型。</p>
+<h3 id="1-解决问题就是探索">1. 解决问题就是探索</h3>
+<p>问题空间就像一个迷宫：你知道你现在在哪里，你也知道是否已经到达出口，但是你不知道如何到达那里。一路上，你的行动收到迷宫墙壁的限制。</p>
+<p>
+        <img class="mx-auto" alt="0*L575QGErxRf2GSTy" src="https://miro.medium.com/v2/resize:fit:720/format:webp/0*L575QGErxRf2GSTy.jpg" />   
+    </p>
+<p>问题空间也可以是抽象的。例如，解决魔方意味着在一个巨大的配置问题空间中移动——混乱的立方体是你的起点，每种颜色都被隔离到单边的立方体是出口，曲折定义了“墙”问题空间。</p>
+<p>现实生活中的问题通常比迷宫或魔方更广泛——开始状态、结束状态和确切的移动通常不明确。但是，在可能性空间中进行搜索仍然可以很好地描述人们在解决不熟悉的问题时所做的事情——这意味着当他们还没有一种方法或记忆可以直接引导他们找到答案时。</p>
+<p>该模型的一个含义是，在没有先验知识的情况下，大多数问题都很难解决。一个 Rubik 魔方有超过 43 个 quintillion 配置——如果你不聪明的话，这是一个很大的搜索空间。</p>
+<p><strong>学习是获取模式和方法以减少暴力搜索的过程</strong>。</p>
+<h3 id="2-记忆力因检索而增强">2. 记忆力因检索而增强</h3>
+<p>检索知识比第二次看到某样东西更能增强记忆力。测试知识不仅仅是一种衡量你知道什么的方法——它能积极提高你的记忆力。事实上，测试是研究人员发现的最好的学习技巧之一。</p>
+<p>
+        <img class="mx-auto" alt="0*xksAF2HcXdxfg20f" src="https://miro.medium.com/v2/resize:fit:720/format:webp/0*xksAF2HcXdxfg20f.jpg" />   
+    </p>
+<p>为什么检索如此有用？一种思考方式是大脑通过只记住那些可能被证明有用的事情来节省精力。如果手边总是有答案，则无需在内存中对其进行编码。相比之下，与检索相关的困难是您需要记住的强烈信号。</p>
+<p>检索仅在有要检索的内容时才有效。这就是为什么我们需要书籍、老师和课程。当记忆失败时，我们会求助于解决问题的搜索，这取决于问题空间的大小，可能完全无法给我们一个正确的答案。然而，一旦我们看到了答案，通过检索它比通过反复查看它会学到更多。</p>
+<h3 id="3-知识呈指数级增长">3. 知识呈指数级增长。</h3>
+<p>你能学到多少取决于你已经知道什么。研究发现，从文本中保留的知识量取决于<a href="https://psycnet.apa.org/record/1988-24805-001">该主题的先验知识</a>。在某些情况下，这种效果甚至可以超过一般智力。</p>
+<p>
+        <img class="mx-auto" alt="0*Nmhuf1zBJj2MIFzg" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*Nmhuf1zBJj2MIFzg.jpg" />   
+    </p>
+<p>当你学习新事物时，你会将它们整合到你已经知道的东西中。此集成提供了更多挂钩，供您稍后调用该信息。但是，当您对某个主题知之甚少时，放置新信息的机会就会减少。这使信息更容易忘记。就像种子长出水晶一样，一旦有了基础，以后的学习就会容易得多。</p>
+<p>当然，这个过程是有限制的，否则知识会无限加速。尽管如此，记住这一点还是有好处的，因为学习的早期阶段通常是最困难的，并且可能会给一个领域内未来的困难留下误导性印象。</p>
+<h3 id="4创意多为抄袭">4、创意多为抄袭。</h3>
+<p>很少有学科被误解为创造力。我们倾向于给有创造力的人赋予近乎神奇的光环，但创造力在实践中要平凡得多。</p>
+<p>
+        <img class="mx-auto" alt="0*YrPUhtf8DsCgnAJb" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*YrPUhtf8DsCgnAJb.jpg" />   
+    </p>
+<p>在对重大发明的令人印象深刻的回顾中，马特·里德利 (Matt Ridley) 认为<a href="https://www.amazon.ca/How-Innovation-Works-Flourishes-Freedom/">创新是进化过程的结果</a>。新发明并非以完整的形式涌入这个世界，而是本质上是旧思想的随机变异。当这些想法被证明有用时，它们就会扩展以填补新的利基市场。</p>
+<p>这种观点的证据来自近乎同步的创新现象。历史上无数次，多个互不相关的人开发了相同的创新，这表明这些发明在发现之前就以某种方式“接近”了可能性空间。</p>
+<p>即使在美术中，临摹的重要性也被忽视了。是的，许多艺术革命都是对过去趋势的明确拒绝。但革命者本身几乎无一例外地沉浸在他们反抗的传统中。反抗任何惯例需要了解该惯例。</p>
+<h3 id="5-技能是特定的">5. 技能是特定的。</h3>
+<p>转移是指在一项任务中经过实践或培训后在一项不同任务中的能力增强。在迁移研究中，一个典型的模式出现了：</p>
+<ul>
+<li>在一项任务上练习可以让你做得更好。</li>
+<li>在一项任务中练习有助于完成类似的任务（通常是在程序或知识上重叠的任务）。</li>
+<li>在一项任务上练习对不相关的任务帮助不大，即使它们似乎需要同样广泛的能力，如“记忆力”、“批判性思维”或“智力”。</li>
+</ul>
+<p>
+        <img class="mx-auto" alt="0*dUkyT_cQyONB8Bu-" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*dUkyT_cQyONB8Bu-.jpg" />   
+    </p>
+<p>很难对迁移做出准确的预测，因为它们依赖于准确了解人类思维的运作方式和所有知识的结构。然而，在更受限制的领域，约翰安德森发现产生式——对知识起作用的 IF-THEN 规则——与<a href="https://www.scotthyoung.com/blog/2022/02/15/act-r/">智力技能中观察到的转移量</a>形成了相当好的匹配。</p>
+<p>虽然技能可能是特定的，但广度创造了普遍性。例如，学习外语单词只有在使用或听到该单词时才有帮助。但是如果你知道很多单词，你就可以说很多不同的话。</p>
+<p>同样，了解一个想法可能无关紧要，但掌握多个想法会产生巨大的力量。每增加一年的教育，智商就会提高<a href="https://journals.sagepub.com/doi/abs/10.1177/0956797618774253">1-5 分</a>，部分原因是学校教授的知识广度与现实生活（以及智力测验）所需的知识广度重叠。</p>
+<p>如果你想变得更聪明，没有捷径可走——你必须学习很多东西。但反之亦然。多学会让你比你想象的更聪明。</p>
+<h3 id="6-心理带宽极其有限">6. 心理带宽极其有限。</h3>
+<p>我们在任何时候只能记住几件事。George Miller 最初将这个数字定为<a href="https://en.wikipedia.org/wiki/The_Magical_Number_Seven,_Plus_or_Minus_Two">七，加上或减去两项</a>。但最近的工作表明这个数字更<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2864034/">接近四件事</a>。</p>
+<p>
+        <img class="mx-auto" alt="0*cu4efd8jJ-KzpndP" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*cu4efd8jJ-KzpndP.jpg" />   
+    </p>
+<p>这个极其狭窄的空间是所有学习、每一个想法、记忆和经验都必须流动的瓶颈，如果它要成为我们长期经验的一部分的话。潜意识学习不起作用。如果你不注意，你就没有学习。</p>
+<p>我们提高学习效率的主要方法是确保流经瓶颈的东西是有用的。将带宽投入到不相关的元素上可能会减慢我们的速度。</p>
+<p>自 1980 年代以来，<a href="https://www.scotthyoung.com/blog/2022/01/04/cognitive-load-theory/">认知负荷理论</a>一直被用来解释干预措施如何根据我们有限的心理带宽优化（或限制）学习。本研究发现：</p>
+<ul>
+<li>解决问题对初学者来说可能适得其反。当向新手展示可行的示例（解决方案）时，他们会做得更好。</li>
+<li>材料的设计应避免需要在图表的页面或部分之间翻动才能理解材料。</li>
+<li>冗余信息会阻碍学习。</li>
+<li>当首先分部分呈现时，复杂的想法可以更容易地学习。</li>
+</ul>
+<h3 id="7成功是最好的老师">7、成功是最好的老师。</h3>
+<p>我们<a href="https://www.scotthyoung.com/blog/2022/09/06/failure-lousy-teacher/">从成功中学到的比失败更多</a>。原因是问题空间通常很大，而且大多数解决方案都是错误的。知道什么有效会大大减少可能性，而经历失败只会告诉你一种特定的策略不起作用。</p>
+<p>
+        <img class="mx-auto" alt="0*VVio5BUcVZpu2An8" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*VVio5BUcVZpu2An8.jpg" />   
+    </p>
+<p><a href="https://www.scotthyoung.com/blog/2022/07/05/85-percent-rule/">一个好的规则是在学习时以大约85% 的成功率为</a>目标。您可以通过校准练习的难度（开卷与闭卷、有导师与无导师、简单与复杂问题）或在低于此阈值时寻求额外的培训和帮助来做到这一点。如果你成功超过这个门槛，你可能没有在寻找足够困难的问题 - 并且正在练习例程而不是学习新技能。</p>
+<h3 id="8-我们通过例子推理">8. 我们通过例子推理。</h3>
+<p>人们如何进行逻辑思考是一个古老的难题。从康德开始，我们就知道逻辑不能从经验中获得。不知何故，我们必须已经知道逻辑规则，否则一个不合逻辑的头脑永远不可能发明它们。但如果是这样，为什么我们经常无法解决逻辑学家发明的问题呢？</p>
+<p>1983 年，Philip Johnson-Laird<a href="https://www.amazon.ca/Mental-Models-Philip-Johnson-Laird/dp/0674568826/ref=sr_1_1?crid=QXAJWW7OGNMP&amp;keywords=mental+models+johnson-laird&amp;qid=1647987740&amp;sprefix=mental+models+johnson-laird%2Caps%2C133&amp;sr=8-1">提出了一个解决方案</a>：我们通过构建情境的心智模型来进行推理。</p>
+<p>测试像“所有人都会死”这样的三段论。苏格拉底是人。因此，苏格拉底会死，”我们想象一群人，他们都会死，并想象苏格拉底是其中之一。我们通过这个检验推导出三段论是真的。</p>
+<p>
+        <img class="mx-auto" alt="0*aGtWIZb4rken6PMY" src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*aGtWIZb4rken6PMY.jpg" />   
+    </p>
+<p>Johnson-Laird 建议，这种基于心理模型的推理也可以解释我们的逻辑缺陷。我们最挣扎的是需要我们检查多个模型的逻辑语句。需要构建和审查的模型越多，我们就越有可能犯错误。</p>
+<p><a href="https://en.wikipedia.org/wiki/Availability_heuristic">丹尼尔·卡尼曼 (Daniel Kahneman) 和阿莫斯·特沃斯基 (Amos Tversky) 的相关研究</a>表明，这种基于示例的推理可能会导致我们将回忆示例的流畅性误认为是事件或模式的实际概率。例如，我们可能认为符合模式 K_ _ _ 的词多于 _ _ K _，因为与第二类（例如 TAKE、BIKE）相比，更容易想到第一类（例如 KITE、KALE、KILL）中的示例, 核弹）。</p>
+<p>通过示例进行推理有几个含义：</p>
+<ol>
+<li>通过示例学习通常比抽象描述更快。</li>
+<li>要学习一般模式，我们需要很多例子。</li>
+<li>我们在根据几个例子进行广泛的推断时必须注意。（你确定你已经考虑了所有可能的情况吗？）</li>
+</ol>
+<h3 id="9知识随着经验变得无形">9.知识随着经验变得无形。</h3>
+<p>技能通过实践练习变得越来越自动化。这会降低我们对技能的自觉意识，从而减少我们宝贵的工作记忆容量来执行。想一想开车：起初，使用转向灯和刹车是经过深思熟虑的。经过多年的驾驶，你几乎不会去想它。</p>
+<p>
+        <img class="mx-auto" alt="0*gUuxj7Wfyrnik_G7" src="https://miro.medium.com/v2/resize:fit:720/format:webp/0*gUuxj7Wfyrnik_G7.jpg" />   
+    </p>
+<p>然而，技能自动化程度的提高也有缺点。一是向他人传授一项技能变得更加困难。当知识变得隐性时，就更难明确你是如何做出决定的。专家们经常低估“基本”技能的重要性，因为长期以来一直被自动化，他们似乎并没有在日常决策中考虑太多因素。</p>
+<p>另一个缺点是自动化技能不太容易受到有意识的控制。当你继续按照你一直做的方式做某事时，这可能会导致进展停滞，即使那不再合适。寻求更困难的挑战变得至关重要，因为这些挑战会让你失去自动化，并迫使你尝试更好的解决方案。</p>
+<h3 id="10再学习比较快">10.再学习比较快。</h3>
+<p>毕业多年以后，我们当中还有多少人可以通过毕业考试？所学知识几乎都还给了老师。</p>
+<p>
+        <img class="mx-auto" alt="0*5kA7siGBrcQceLa0" src="https://miro.medium.com/v2/resize:fit:720/format:webp/0*5kA7siGBrcQceLa0.jpg" />   
+    </p>
+<p>任何技能只要不经常使用都难逃遗忘的命运。由记忆力遗忘曲线可知：开始时记忆力下降最快，随着时间的流逝逐渐减慢。</p>
+<p>然而，还有一线希望。重新学习通常比初始学习快得多。这其中可以理解为阈值问题。想象一下内存强度在 0 到 100 之间。在某个阈值（比如 35）下，内存是不可访问的。因此，如果记忆强度从 36 下降到 34，你就会忘记你所知道的。但即使是重新学习的一点点提升也会修复记忆，足以回忆起它。相比之下，新的记忆（从零开始）需要更多的工作。</p>
+<p>重新学习是一件令人讨厌的事情，尤其是因为与以前简单的问题作斗争可能会令人沮丧。然而，没有理由不深入和广泛地学习——即使是被遗忘的知识也可以比从头开始更快地恢复。</p>
+<p>原文链接：https://betterhumans.pub/10-mental-models-for-learning-anything-318446320c1e</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-05-06_10_mental_models/">http://www.subond.com/post/2023-05-06_10_mental_models/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2023-04-10_how-to-get-rich/">No.9 [译文]如何致富</a></li>
+        
+        <li><a href="/post/2023-04-03_08letter/">No.8 滑动门时刻</a></li>
+        
+        <li><a href="/post/2023-03-27_07letter/">No.7 一点工作思考</a></li>
+        
+        <li><a href="/post/2023-03-20_06letter/">No.6 写在31岁</a></li>
+        
+        <li><a href="/post/2023-03-18_tcmalloc_zhengli/">内存管理：TCMalloc之魂</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E5%AD%A6%E4%B9%A0' target="_blank">学习</a></li>
+                
+                <li><a href='/tags/%E5%BF%83%E7%90%86%E5%AD%A6' target="_blank">心理学</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="http://www.subond.com/">凯文的个人博客 By Kevin</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-05-06_10_mental_models/" title="[译文]关于学习的10种心智模型" target="_blank">[译文]关于学习的10种心智模型</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-04-10_how-to-get-rich/" title="No.9 [译文]如何致富" target="_blank">No.9 [译文]如何致富</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-04-03_08letter/" title="No.8 滑动门时刻" target="_blank">No.8 滑动门时刻</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-27_07letter/" title="No.7 一点工作思考" target="_blank">No.7 一点工作思考</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-20_06letter/" title="No.6 写在31岁" target="_blank">No.6 写在31岁</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/" title="内存管理：TCMalloc之魂" target="_blank">内存管理：TCMalloc之魂</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-13_05letter/" title="No.5 聊聊个人养老金" target="_blank">No.5 聊聊个人养老金</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-06_04letter/" title="No.4 关于读书" target="_blank">No.4 关于读书</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-27_03letter/" title="No.3 尽情地去生活" target="_blank">No.3 尽情地去生活</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-02-20_02letter/" title="No.2 内在记分牌" target="_blank">No.2 内在记分牌</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (22)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E7%94%9F%E6%B4%BB/">生活 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%98%85%E8%AF%BB/">阅读 (2)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (9)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E4%BA%BA%E7%94%9F%E4%BF%A1%E5%BF%B5/">人生信念</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%9C%A8%E8%AE%B0%E5%88%86%E7%89%8C/">内在记分牌</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">内存管理</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="http://www.subond.com/tags/%E5%AD%A6%E4%B9%A0/">学习</a>
+    
+    <a href="http://www.subond.com/tags/%E5%BF%83%E7%90%86%E5%AD%A6/">心理学</a>
+    
+    <a href="http://www.subond.com/tags/%E6%83%85%E6%84%9F/">情感</a>
+    
+    <a href="http://www.subond.com/tags/%E7%90%86%E8%B4%A2/">理财</a>
+    
+    <a href="http://www.subond.com/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+    
+    <a href="http://www.subond.com/tags/%E9%98%85%E8%AF%BB/">阅读</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">Github</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://weibo.cn/u/2746421033" title="微博">微博</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
