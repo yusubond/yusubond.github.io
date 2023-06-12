@@ -1,7 +1,7 @@
 ---
 title: "25岁应该学到的25堂课"
 date: 2018-09-08
-categories: ["生活"]
+categories: ["散文"]
 tags: ["life", "reading", "growth"]
 ---
 

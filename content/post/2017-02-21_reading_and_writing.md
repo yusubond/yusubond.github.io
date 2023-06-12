@@ -2,7 +2,7 @@
 title: "读书写作那点事儿"
 date: 2017-02-21
 tags: ["life", "reading", "writing"]
-categories: ["生活"]
+categories: ["散文"]
 ---
 
 

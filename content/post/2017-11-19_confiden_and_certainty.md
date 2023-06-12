@@ -1,7 +1,7 @@
 ---
 title: "年轻的自信与成熟的笃定"
 date: 2017-11-19
-categories: ["生活"]
+categories: ["散文"]
 tags: ["reading", "work", "growth"]
 ---
 

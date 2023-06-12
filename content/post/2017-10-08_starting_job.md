@@ -1,7 +1,7 @@
 ---
 title: "初入职场"
 date: 2017-10-08
-categories: ["生活"]
+categories: ["散文"]
 tags: ["carrer", "work"]
 ---
 

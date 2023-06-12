@@ -1,7 +1,7 @@
 ---
 title: "高创造性人士的7个习惯"
 date: 2018-08-03
-categories: ["阅读"]
+categories: ["散文"]
 tags: ["growth"]
 ---
 

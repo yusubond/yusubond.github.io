@@ -1,7 +1,7 @@
 ---
 title: "二十五六岁"
 date: 2016-12-15
-categories: ["生活"]
+categories: ["散文"]
 tags: ["life", "work", "essay"]
 author: subond
 ---

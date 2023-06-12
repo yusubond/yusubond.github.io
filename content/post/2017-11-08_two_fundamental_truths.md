@@ -1,7 +1,7 @@
 ---
 title: "关于找工作的两个基本事实"
 date: 2017-11-08
-categories: ["生活"]
+categories: ["散文"]
 tags: ["work", "growth"]
 ---
 
