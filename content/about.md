@@ -35,4 +35,4 @@ Date: 2023-02-11
 
 ## 关于阅读
 
-我读过的书基本都放在[Github](https://github.com/yusubond/reading)上，不定期更新。
+我读过的书基本都放在[阅读清单](https://github.com/yusubond/reading)上，不定期更新。
