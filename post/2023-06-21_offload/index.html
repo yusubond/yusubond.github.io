@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>聊聊网络卸载技术 | 凯文的个人博客</title>
+    <meta property="og:title" content="聊聊网络卸载技术 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-06-21T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-06-21T16:08:49&#43;08:00'>
+        
+    <meta name="Keywords" content="golang,博客">
+    <meta name="description" content="聊聊网络卸载技术">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2023-06-21_offload/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
+                
+                <p class="description">专注于云计算网络，个人成长</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="http://www.subond.com/">首页</a>
+                    
+                    <a  href="http://www.subond.com/archives/" title="归档">归档</a>
+                    
+                    <a  href="http://www.subond.com/reading/" title="阅读">阅读</a>
+                    
+                    <a  href="http://www.subond.com/about/" title="关于我">关于我</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">聊聊网络卸载技术</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2023年6月21日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
+            </span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h2 id="0-网络加速的起源">0. 网络加速的起源</h2>
+<p>传统数据中心基于冯诺依曼架构，所有的数据都需要送到CPU进行处理。随着数据中心的高速发展，摩尔定律逐渐失效，CPU的增长速度无法满足数据的爆发式增长，CPU的处理效率已经不能满足数据处理的要求。</p>
+<p>以24和计算型服务器为例，网络功能占用6个核心，虚拟化功能占用1个核心，可用于VM的核心数量为17个，可用的CPU资源比例为70%。当网卡升级到100G时，CPU资源基本被占用，算力资源基本不可用。</p>
+<p>计算架构从以CPU为中心的Onload模式向以数据为中心的Offload模式转变。以数据为中心的计算架构成为趋势。以数据为中心的模式即数据在哪里，计算就在哪里。当数据在存储资源上，对数据的计算就在存储上进行；当数据在网络中流动，对数据的处理就在网络上进行。</p>
+<p>通过架构的演进，典型的通信延时可以从30-40微妙，缩短为3-4微妙。网络计算和智能网卡/DPU成为数据中心计算架构的核心。</p>
+<h2 id="1-什么是网络硬件卸载">1. 什么是网络硬件卸载</h2>
+<p>在传统服务器上，网卡收到报文后需要经过内核处理，然后交给应用层。随着流量的增大，内核需要处理大量的报文，占用了过多的CPU资源。为此我们希望将协议报文的处理放在网卡上去做，让网卡做某些前期工作，以减轻内核的压力。</p>
+<p>常见的卸载包括</p>
+<ul>
+<li>Vlan</li>
+<li>checksum</li>
+<li>tunnel</li>
+<li>TSO/GSO/LRO/GRO</li>
+</ul>
+<h2 id="2-1-vlan硬件卸载">2-1 VLAN硬件卸载</h2>
+<p>如果由软件完成VLAN_TAG的插入将会给CPU带来额外的符合，涉及一次额外的内存拷贝（报文内容复制），最坏场景下，这可能是上百周期的开销。大多数网卡硬件提供了VLAN卸载功能。</p>
+<h3 id="接受侧对vlan进行包过滤">接受侧对VLAN进行包过滤</h3>
+<p>网卡最典型的卸载功能之一就是在接收侧对VLAN进行包过滤，在DPDK中app/testpmd提供了测试命令与实现代码。</p>
+<table>
+<thead>
+<tr>
+<th>testpmd命令</th>
+<th>功能解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vlan set filter(on|off) (port_id)</td>
+<td>打开或关闭端口的VLAN过滤功能。不匹配VLAN过滤表的VLAN包会被丢弃</td>
+</tr>
+<tr>
+<td>rx_vlan set tpid (value) (port_id)</td>
+<td>设置VLAN过滤的TPID选项，支持多个TPID</td>
+</tr>
+<tr>
+<td>Rx_vlan add (vlan_id|all) (port_id)</td>
+<td>添加过滤的VLAN ID，可以添加多个VLAN，最大支持VLAN的表项由网卡数据手册限定</td>
+</tr>
+<tr>
+<td>Rx_vlan rm (vlan_id|all) (port_id)</td>
+<td>删除单个或者所有VLAN过滤表项</td>
+</tr>
+<tr>
+<td>Rx_vlan add (vlan_id) port (port_id) vf (vf_mask)</td>
+<td>添加port/vf设置VLAN过滤表项</td>
+</tr>
+<tr>
+<td>Rx_vlan rm (vlan_id) port (port_id) vf (vf_mask)</td>
+<td>删除port/vf设置VLAN过滤表项</td>
+</tr>
+</tbody>
+</table>
+<h3 id="发包时vlan-tag的插入">发包时VLAN TAG的插入</h3>
+<p>在DPDK中，在调用发送函数前，必须提前设置mbuf数据结构，设置<code>PKT_TX_VLAN_PKT</code>位，同时将具体的TAG信息写入<code>vlan_tci</code>字段。</p>
+<h3 id="多层vlan">多层VLAN</h3>
+<p>现在网卡硬件大多支持两层VLAN TAG进行卸载，如VLAN TAG的剥离和插入。</p>
+<h2 id="2-2-iptcpudpsctp-checksum硬件卸载功能">2-2 IP/TCP/UDP/SCTP checksum硬件卸载功能</h2>
+<p>checksum在收发两个方向都需要支持，操作并不一致。</p>
+<p>在接收方向上，主要是检测。通过设置端口配置，强制对所有到达的数据报文进行检测，即判断哪些包的checksum是错误的，对于出错的包，可以选择将其丢弃，并在统计数据中体现出来。</p>
+<p>在DPDK中，每个数据包都有直接关联的rte_mbuf，网卡自动检测进来的包，如果发现checksum错误，就会设置错误标志。软件驱动会查询硬件标志状态，通过mbuf中的ol_flags字段来通知上层应用。</p>
+<h2 id="2-3-tunnel硬件卸载">2-3 tunnel硬件卸载</h2>
+<p>目前DPDK仅支持对VxLAN和NVGRE的流进行重定向：基于VxLAN和NVGRE的特定信息，TNI或VNI，以及内层的MAC或IP地址进行重定向。</p>
+<p>在dpdk/testpmd中，可以使用相关的命令行来使用VxLAN和NVGRE的数据流重定向功能，如下所示：</p>
+<pre tabindex="0"><code>flow_director_filter X mode Tunnel add/del/update mac XX:XX:XX:XX:XX:XX vlan XXXX tunnel NVGRE/VxLAN tunnel-id XXXX flexbytes (X,X) fwd/drop queue X fd_id X
+</code></pre><h2 id="2-4-tso硬件卸载">2-4 TSO硬件卸载</h2>
+<p>TSO（TCP Segment Offload）是TCP分片功能的硬件卸载，显然这是发送报文方向。</p>
+<p>网卡硬件提供的TCP分片卸载功能可以大幅减轻软件对TCP分片的负担。</p>
+<p>
+        <img class="mx-auto" alt="image" src="image/tso.png" />   
+    </p>
+<p>通过上图的对比可以发现，TSO关闭时由应用程序（即CPU）负责分片；一旦TSO打开，内核协议栈可以不关心数据大小，由网卡硬件进行分片，从而减轻了CPU的负载。</p>
+<h3 id="gso通用分片卸载">GSO通用分片卸载</h3>
+<p>GSO（Generic Segmentation Offload）是延缓分片技术，比TSO更同样，原因在于它不需要网卡硬件支持就可以进行分片。</p>
+<p>其过程是：首先查询网卡是否支持TSO，如果硬件支持TSO则使用网卡硬件的分片功能进行分片，具体流程如上一致；如果网卡不支持TSO功能，则将分片的执行延缓到将数据推送到网卡的前一刻执行，如下图所示。</p>
+<p>网卡关闭TSO或者网卡不支持TSO，GSO on状态下数据包的发送过程：</p>
+<p>
+        <img class="mx-auto" alt="image" src="image/gso.png" />   
+    </p>
+<p>TSO和GSO对应数据发送过程，数据接收过程的是LRO和GRO。</p>
+<h3 id="lrogro接收卸载">LRO/GRO接收卸载</h3>
+<p>LRO（Large Receive Offload）是将网卡收到的多个数据包合并成一个大数据包，再传递给网络协议栈处理的技术。这样可以提升系统接收报文的能力，减轻CPU负载。</p>
+<p>LRO开启和关闭状态下数据包的接收过程如下：</p>
+<p>
+        <img class="mx-auto" alt="image" src="image/lro.png" />   
+    </p>
+<p>GRO（Generic Receive Offload）是LRO的软件实现，只是GRO的合并条件更加严格和灵活。</p>
+<p>GRO on状态下数据包的接收过程：</p>
+<p>
+        <img class="mx-auto" alt="image" src="image/gro_on.png" />   
+    </p>
+<h2 id="参考资料">参考资料</h2>
+<p><a href="https://www.sdnlab.com/25376.html">https://www.sdnlab.com/25376.html</a></p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-06-21_offload/">http://www.subond.com/post/2023-06-21_offload/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
+
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/20230612_wang_er/">《王二的经济学故事》读后感</a></li>
+        
+        <li><a href="/post/2023-06-07_11letter/">No.11 没有不出错的系统</a></li>
+        
+        <li><a href="/post/2023-05-08_10letter/">No.10 往前看，别回头</a></li>
+        
+        <li><a href="/post/2023-05-06_10_mental_models/">[译文]关于学习的10种心智模型</a></li>
+        
+        <li><a href="/post/2023-04-10_how-to-get-rich/">No.9 [译文]如何致富</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/%E7%BD%91%E7%BB%9C%E5%8D%B8%E8%BD%BD' target="_blank">网络卸载</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2023 <a href="http://www.subond.com/">凯文的个人博客 By Kevin</a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='http://www.subond.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://www.subond.com/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-06-21_offload/" title="聊聊网络卸载技术" target="_blank">聊聊网络卸载技术</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/20230612_wang_er/" title="《王二的经济学故事》读后感" target="_blank">《王二的经济学故事》读后感</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-06-07_11letter/" title="No.11 没有不出错的系统" target="_blank">No.11 没有不出错的系统</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-05-08_10letter/" title="No.10 往前看，别回头" target="_blank">No.10 往前看，别回头</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-05-06_10_mental_models/" title="[译文]关于学习的10种心智模型" target="_blank">[译文]关于学习的10种心智模型</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-04-10_how-to-get-rich/" title="No.9 [译文]如何致富" target="_blank">No.9 [译文]如何致富</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-04-03_08letter/" title="No.8 滑动门时刻" target="_blank">No.8 滑动门时刻</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-27_07letter/" title="No.7 一点工作思考" target="_blank">No.7 一点工作思考</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-20_06letter/" title="No.6 写在31岁" target="_blank">No.6 写在31岁</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-03-18_tcmalloc_zhengli/" title="内存管理：TCMalloc之魂" target="_blank">内存管理：TCMalloc之魂</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (23)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E6%95%A3%E6%96%87/">散文 (10)</a></li>
+    
+    <li><a href="http://www.subond.com/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6/">鸿雁传书 (11)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="http://www.subond.com/tags/algorithm/">algorithm</a>
+    
+    <a href="http://www.subond.com/tags/alignment/">alignment</a>
+    
+    <a href="http://www.subond.com/tags/carrer/">carrer</a>
+    
+    <a href="http://www.subond.com/tags/cloud/">cloud</a>
+    
+    <a href="http://www.subond.com/tags/defer/">defer</a>
+    
+    <a href="http://www.subond.com/tags/distributed-systems/">distributed systems</a>
+    
+    <a href="http://www.subond.com/tags/docker/">docker</a>
+    
+    <a href="http://www.subond.com/tags/essay/">essay</a>
+    
+    <a href="http://www.subond.com/tags/git/">git</a>
+    
+    <a href="http://www.subond.com/tags/gitbook/">gitbook</a>
+    
+    <a href="http://www.subond.com/tags/go/">go</a>
+    
+    <a href="http://www.subond.com/tags/growth/">growth</a>
+    
+    <a href="http://www.subond.com/tags/life/">life</a>
+    
+    <a href="http://www.subond.com/tags/linux/">linux</a>
+    
+    <a href="http://www.subond.com/tags/mutex/">mutex</a>
+    
+    <a href="http://www.subond.com/tags/process/">process</a>
+    
+    <a href="http://www.subond.com/tags/pthread/">pthread</a>
+    
+    <a href="http://www.subond.com/tags/reading/">reading</a>
+    
+    <a href="http://www.subond.com/tags/slice/">slice</a>
+    
+    <a href="http://www.subond.com/tags/string/">string</a>
+    
+    <a href="http://www.subond.com/tags/struct/">struct</a>
+    
+    <a href="http://www.subond.com/tags/vagrant/">vagrant</a>
+    
+    <a href="http://www.subond.com/tags/work/">work</a>
+    
+    <a href="http://www.subond.com/tags/writing/">writing</a>
+    
+    <a href="http://www.subond.com/tags/%E4%BA%BA%E7%94%9F%E4%BF%A1%E5%BF%B5/">人生信念</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%9C%A8%E8%AE%B0%E5%88%86%E7%89%8C/">内在记分牌</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">内存管理</a>
+    
+    <a href="http://www.subond.com/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="http://www.subond.com/tags/%E5%AD%A6%E4%B9%A0/">学习</a>
+    
+    <a href="http://www.subond.com/tags/%E5%BF%83%E7%90%86%E5%AD%A6/">心理学</a>
+    
+    <a href="http://www.subond.com/tags/%E6%80%9D%E8%80%83/">思考</a>
+    
+    <a href="http://www.subond.com/tags/%E6%83%85%E6%84%9F/">情感</a>
+    
+    <a href="http://www.subond.com/tags/%E7%90%86%E8%B4%A2/">理财</a>
+    
+    <a href="http://www.subond.com/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+    
+    <a href="http://www.subond.com/tags/%E7%BB%8F%E6%B5%8E/">经济</a>
+    
+    <a href="http://www.subond.com/tags/%E7%BD%91%E7%BB%9C%E5%8D%B8%E8%BD%BD/">网络卸载</a>
+    
+    <a href="http://www.subond.com/tags/%E9%98%85%E8%AF%BB/">阅读</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="http://github.com/yusubond" title="github">Github</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://weibo.cn/u/2746421033" title="微博">微博</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="http://www.subond.com/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
