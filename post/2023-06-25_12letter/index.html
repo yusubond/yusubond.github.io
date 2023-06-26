@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>深入理解Paxos算法 | 凯文的个人博客</title>
-    <meta property="og:title" content="深入理解Paxos算法 - 凯文的个人博客">
+    <title>No.12 你会做锅包肉吗？ | 凯文的个人博客</title>
+    <meta property="og:title" content="No.12 你会做锅包肉吗？ - 凯文的个人博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2017-03-21T00:00:00&#43;08:00'>
+    <meta property="article:published_time" content='2023-06-25T00:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-03-20T12:04:28&#43;08:00'>
+    <meta property="article:modified_time" content='2023-06-26T11:39:44&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
-    <meta name="description" content="深入理解Paxos算法">
+    <meta name="description" content="No.12 你会做锅包肉吗？">
         
     <meta name="author" content="Kevin">
-    <meta property="og:url" content="http://www.subond.com/post/2017-03-21_learn_paxos/">
+    <meta property="og:url" content="http://www.subond.com/post/2023-06-25_12letter/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -75,17 +75,17 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title">深入理解Paxos算法</h1>
+            <h1 class="post-title">No.12 你会做锅包肉吗？</h1>
         </header>
         <date class="post-meta meta-date">
-            2017年3月21日
+            2023年6月25日
         </date>
         
         <div class="post-meta">
             <span>|</span>
             
             <span class="meta-category">
-                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
+                <a href='/categories/%E9%B8%BF%E9%9B%81%E4%BC%A0%E4%B9%A6' target="_blank">鸿雁传书</a>
             </span>
             
         </div>
@@ -98,96 +98,78 @@
         
         
         <div class="post-content">
-            <h2 id="1paxos算法">1.Paxos算法</h2>
-<p>Paxos算法是Leslie Lanmport(2013年获图灵奖)在1990年提出的一种基于消息传递的共识算法(也称为，一致性算法)，由于算法难以理解并没有被ACM TOCS发表。直到1998年，才引起人们的注意，Lanmport重新发表文章。为了便于人们通俗地理解Paxos算法，Lanmport于2001年简化原来的文章，发表了<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a>，文章循序渐进地推导出了Paxos算法，并用数学归纳法进行了证明。在此基础上，本文结合Paxos Made Simple，与其他优秀的Paxos算法解读，重新描述Paxos协议，希望可以深入理解基本的Paxos算法理论。</p>
-<p>Paxos算法解决的问题是一个分布式系统中如何就某个值(或协议)达成一致。在一个分布式系统中，如果各节点的初始状态一致，每个节点都执行相同的操作，那么他们最后的得到的也是一个一致的状态。一个分布式系统中，通常包含一个主节点和多个备节点。为了保证每个节点执行相同的操作指令，需要每一条执行执行一个“一致性算法”来选举出主节点，进而保证每个节点得到的指令一致。这是一个分布式系统中的重要问题。</p>
-<h2 id="2基本概念">2.基本概念</h2>
-<p>Paxos算法中有三种角色：<em>Proposer</em>, <em>Acceptor</em>, <em>Learner</em>。每个节点需要同时扮演 <strong>两种或两种以上的角色</strong>。</p>
+            <p><em>你好，我是Kevin，见字如面，这是为你寄来的第 12 封信。</em></p>
+<p>这次来信，讲讲在一次深夜畅聊中我对悲观和乐观的理解。</p>
+<h2 id="乐观与悲观">乐观与悲观</h2>
+<p>悲观和乐观是人们看待事物的不同认知态度，也是一种情绪。如果我们把这种情绪感受的来源分为思维和体验。那么就会有四种组合，分别是思维乐观，思维悲观，体验乐观和体验悲观。</p>
+<p>这样说可能有些抽象，我们举个做饭的例子好了。两个都不会做锅包肉的A和B，想做一次锅包肉。</p>
+<p>A说：”这还不简单，照着菜谱先这样后那样。“</p>
+<p>B说：”可能没这么简单吧，浆肉和过油都很难的。”</p>
+<p>A说：“多说无益，我这就做一次”。</p>
+<p>紧接着，翻了翻菜谱，A就是开始做了，结果一塌糊涂，差点没烧了厨房。</p>
+<p>再看B呢，先对着菜谱研究了半天，然后开始浆肉，调汁，可能有点炒菜的底子，最后还真做成了，味道也不错。</p>
+<p>通过这个简单的例子想说明四种组合的不同。就像A一开始那样，还没做就认为事情不难，这是一种思维上的乐观。仅凭着脑子里的想象而低估了事情的难易程度，往往就会产生这种思维上的乐观。通常「脑子学会了，手还没学会」说的就是这种。</p>
+<p>再看B，因为没做过，拿不准，所以会认为事情很难，这是思维上的悲观。</p>
+<p>等两个人都真正实践过一次后，有了对做锅包肉真实而具体的体验，A就变成了体验上的悲观，B变成了体验上的乐观。</p>
+<p>这里的乐观和悲观并不仅仅是一种情绪，更想表达的是在体验过程中你获得究竟是正向的反馈，还是负向的反馈。</p>
+<p>体验上的乐观对应着正向反馈，悲观对应着负向反馈。</p>
+<h2 id="如何应对">如何应对</h2>
+<p>通常思维上乐观的人，往往在体验上悲观；而思维上悲观的人，往往在体验上乐观，我就是后者。</p>
+<p>对于我这样的人，一般会遇到什么问题呢？我总结了下可能有这样几种：</p>
 <ul>
-<li>Proposal Value: 提议的值　　</li>
-<li>Proposal Number: 提议编号，并且要求提议编号不能冲突　　</li>
-<li>Proposal: 提议　=　提议编号 + 提议的值　　</li>
-<li>Proposer: 提议发起者　　</li>
-<li>Acceptors: 提议接受者　　</li>
-<li>Learners: 提议学习者　　</li>
+<li><!-- raw HTML omitted -->不敢尝试<!-- raw HTML omitted -->。因为思维上的悲观，进而产生了畏难情绪，担心自己做不好，所以迟迟不肯行动，一直停留在原地。</li>
+<li><!-- raw HTML omitted -->不能理性看待自己<!-- raw HTML omitted -->。从最后体验上的乐观可以知道我们是有能力做好这件事情的，但是因为没做过导致了思维上的悲观。这种心里预期和实际预期不一样的反差，就是我们不能理性，正确的看待自己。</li>
 </ul>
-<p>需要说明的是，Proposer有两种行为，一个是向Acceptors发起Prepare请求，另一个是向Acceptors发起Accept请求。Acceptors则根据协议规则或(自身状态)对Proposers的请求做出应答。Learners根据Acceptors的状态，学习最终被确定的值。</p>
-<h2 id="3两个原则">3.两个原则</h2>
-<p><strong>1安全原则</strong></p>
-<ol>
-<li>
-<p>只能(而且必须)允许一个值被选定；</p>
-</li>
-<li>
-<p>每个节点只能学习已经被选定的值；</p>
-</li>
-</ol>
-<p><strong>2存活原则</strong></p>
-<p>只要多数节点存活，并且彼此可以通信，则会达成以下两件事：</p>
-<ol>
-<li>最终会选定某个提议的值　　</li>
-<li>一个被选定的值，其他节点最终会学习到这个值　　</li>
-</ol>
-<h2 id="4算法过程">4.算法过程</h2>
-<p><strong>第一阶段A</strong>，即Prepare阶段</p>
-<p>Proposer选择一个提议编号n，向所有的Acceptors发送(广播)Prepare(n)请求。</p>
-<p><strong>第一阶段B</strong>，即Prepare阶段</p>
-<p>Acceptor接收到Prepare(n)请求后，若提议编号比之前接收的Prepare提议编号都要大，则做出如下承诺：即不会在接收比n小的提议，并携带之前Accept的提议中编号小于n的最大值的提议，否则不予理会。</p>
-<p><strong>第二阶段A</strong>，即Accept阶段</p>
-<p>Proposer接收到多数Acceptors的承诺后，如果没有一个Acceptor接受过这个值，则向所有的Acceptors的发起自己的值和提议编号，否则从接受过的值中选择对应的提议编号最大的那个值，作为提议的值，提议编号仍为n。</p>
-<p><strong>第二阶段B</strong>，即Accept阶段</p>
-<p>Acceptor接收到Accept请求后，如果该提议编号不违反自己的做过的承诺，则接受提议。</p>
+<p>那如何突破这些问题，我认为从以下两点进行尝试：</p>
+<ul>
+<li><!-- raw HTML omitted -->降低预期<!-- raw HTML omitted -->。这条本来想写「勇于尝试」，多么简单又直白的建议（好像跟没说一样，大道至简嘛）。仔细想想，其实想说勇于尝试的背后还需要降低预期。思维上的悲观者，往往也是完美主义者，压倒他的不是思维，而是思维下<strong>过高的目标</strong>。太想把一件事做漂亮，做完美，在没有十足把握的时候，不会轻易开始。所以，适当地调整自己的预期，降低标准，在实践中通过不断地正反馈来达成最终的目标。</li>
+<li><!-- raw HTML omitted -->学会经验的复用<!-- raw HTML omitted -->。如何理性看待自己，这是一个有点“道”的问题，不好作答。我就从“术”的角度讲讲吧。有太多事情是我们没有做过的，也有事情是我们熟悉的。当面对新事物的时候，可以想想「先前的」「已有的」的经验是不是可以迁移，可以复用。如果有，这件事是不是可以照猫画虎地试着解决。通过这个思维过程，试着缩小心里预期和实际预期的差距，从而达到正确地认识自己。</li>
+</ul>
+<p>那对于前者，一般会遇到哪些问题呢？</p>
+<p>我想可能会出现<!-- raw HTML omitted -->自信与自我怀疑间的横跳<!-- raw HTML omitted -->。思维上的乐观，只需要想就可以了，但在具体实践中，却遭受了体验上的悲观，这种负反馈容易造成对自我的批评和怀疑。</p>
+<p>如何破解？可以向古人学习，陆游在《冬夜读书示子聿》中写到：“<strong>纸上得来终觉浅，绝知此事要躬行</strong>”。所以实践出真知。</p>
+<p>其次，尽量避免过多地自我批评和攻击，要正确地认识到「不是事情有多难，只是你乐观估计了而已」，降低预期，慢慢摸索就会成。</p>
+<p>同样地，前者也面临不能理性看待自己的问题。想要缩小思维和体验上的差距，就需要做到「先有调查，后有发言权」。也就是说先去实践和体验，然后再下结论。</p>
+<p>尽管前者和后者都存在不能理性看待自己的问题，但在解决问题的层面。<strong>前者需要更多的关注体验，从实践事实找依据，而后者需要更多的聚焦思维，从先前经验出发，找到可行的解决办法。</strong></p>
+<h2 id="理性乐观派">理性乐观派</h2>
+<p>记得前领导对我也说过类似的话，说我是那种明明可以做到100分，却看起来像只能做80分的样子。同样的，有的人就是那种明明只能做到100分，却看起来像能做到120分的人，反映的就是这种思维上的乐观和悲观。</p>
+<p>我认为悲观和乐观，<strong>只是每个人对事物的反映机制不同而已，没有绝对孰优孰劣。</strong></p>
+<p>不同的场景里，我们需要找到适合的思维。就像听见狮子的嘶吼，我们来不及反应就知道拔腿就跑，这是刻在基因的东西。</p>
+<p>尽管改变一个人对待事物的态度很难，但是一旦你意识到它的存在，问题就解决了一半。</p>
+<p>有人说「悲观者往往正确，但乐观者往往成功」，但我更希望我们都是理性的乐观派。</p>
+<p>好啦，本周书信就到这里，你可以觉察下，你身边的人都是哪种类型。</p>
+<h2 id="本期推荐">本期推荐</h2>
+<p>本期推荐马特·里德利的<a href="https://book.douban.com/subject/6913343/">《理性乐观派：一部人类经济进步史》</a>。</p>
+<p>悲观者总是宣称情况正在越来越糟糕，比如20世纪60年代的人口爆炸，全球饥荒，70年代的资源枯竭，80年代的酸雨，90年代的瘟疫，甚至21世纪的全球变暖。</p>
+<p>但是纵观人类的整个历史，你会发现人们的生活实际上越变越好。本书不光阐述了情况怎样越变越好，还解释了原因。技术的发明，物质的交换，专业化的分工，创造出加速改善人类生活水平的集体大脑。我认为这本书很好地诠释了悲观与乐观，值得一读。</p>
 <p>
-        <img class="mx-auto" alt="paxos-protocolflow" src="http://on64c9tla.bkt.clouddn.com/2017A/paxos.png" />   
+        <img class="mx-auto" alt="6971687696941_.pic" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/6971687696941_.pic.jpg" />   
     </p>
-<p>需要说明是，Proposer发出Prepare请求后，得到多数派的应答，然后再选择一个多数派广播Accept请求，而不一定是将Accept请求发给有应答的Acceptor。这样做的原因是，Prepare阶段得到只是Proposal number 和 Proposal value，而一个值最终是否被选定，还需要Accept阶段的验证。</p>
-<p>当一个提议被多数接受后，这个提议的值就被选定choesn，一旦有一个值被选定，那么只有按协议的规则继续演进，后续被选定的值也是同一个值。这就是chosen的一致性问题。</p>
-<h2 id="5算法证明">5.算法证明</h2>
-<p>其实，Paxos算法是一个非常确定的数学问题，可以用数学语言表达，进而用严谨的数学逻辑进行证明。</p>
-<p><strong>Paxso算法原命题</strong></p>
-<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在提议{n1,v1}被多数Acceptors接受，其中n0 &lt; n1,v1 != v0。</p>
-<p><strong>Paxso算法原命题加强</strong></p>
-<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Acceptors接受提议{n1,v1}，其中n0 &lt; n1, v1 != v0。</p>
-<p><strong>Paxso算法原命题进一步加强</strong></p>
-<p>如果一个提议{n0,v0}被多数Acceptors所接受，那么不存在Proposer发出提议{n1,v1}，其中n0 &lt; n1, v1 != v0。</p>
-<p><strong>归纳法证明</strong></p>
-<p>假设，提议{m, v}(简称m)被多数派接受，那么提议m到n(n &gt;= m)，对应的值也是v。对n进行归纳假设。</p>
-<ol>
-<li>
-<p>n = m时，显然结论成立。</p>
-</li>
-<li>
-<p>设n = k时，结论成立，即如果提议(m, v)被多数派接受，则提议m到k对应的值为v。</p>
-</li>
-<li>
-<p>当n = k + 1时，若提议k+1不存在，则结论成立。</p>
-</li>
-</ol>
-<p>接下来，证明提议提议k+1不存问题。</p>
-<p>假设，提议k+1存在，对应的值为v1。因为提议m被多数派接受，又因为提议k+1的Prepare请求被承诺并返回结果。<strong>两个多数派必有交集</strong>，那么提议k+1的第一阶段B必有提议带回来，那么v1就是从返回的提议中选择出来的，设v1对应的提议编号为t。根据第二阶段B可知，t是返回的提议编号最大的一个，因此t&gt;=m。又因为第一阶段A，t&lt;n。根据假设,t对应的值也是v，即v1 = v。所以，n=k成立时，n=k+1也成立。</p>
-<h2 id="6示例演示">6.示例演示</h2>
-<p>为了便于理解，记(n,v)为提议编号为n,提议的值为v的提议，(m,(n,v))为承诺了Prepare(m)请求，并接受了提议(n,v)。</p>
+<p><em>这里是凯文的生活随想，如果文章对你有帮助，欢迎转发分享。</em></p>
+<h2 id="往期推荐">往期推荐</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/Xc9NkCPPssWcxwGBnbtTxQ">No.11 没有不出错的系统</a></li>
+<li><a href="https://mp.weixin.qq.com/s/RY0qOVSj9Bak9EvCJuX66g">No.10 往前看，别回头</a></li>
+<li><a href="https://mp.weixin.qq.com/s/IxNSKcGayJsmPmqmFO_bgg">No.9 如何致富</a></li>
+</ul>
+<p><strong>PS：</strong></p>
+<p>我们每个人都会有一些奇奇怪怪的想法和思考。当我们想交流的时候，如果对方正好能够接住你的话，并由此你来我往地产生了很多思想的碰撞，那真是很幸运的。</p>
+<p>这就像在一个孤独的星球上，独自漫游的你突然碰到了一个同类，那样的开心和欣喜。</p>
+<p>本期书信的话题就是我跟我老婆在SoulTalk中碰撞出来的。所以亲密关系中彼此能够聊得来，真得真得很重要。</p>
+<p>好啦，最后以村上春树的一个小故事作为结尾吧。</p>
+<blockquote>
+<p>“最最最喜欢你，绿字”</p>
+<p>“什么程度？“</p>
+<p>”像喜欢春天的熊一样。“</p>
+<p>”春天的熊？“绿字再次扬起脸，”什么春天的熊？”</p>
+<p>“春天的原野里，你一个人正走着，对面走来一只可爱的小熊，浑身的毛活像天鹅绒，眼睛圆鼓鼓的。它这么对你说到：‘你好，小姐，和我一块打滚玩好么？’接着，你就和小熊抱在一起，顺着长满三叶草的山坡咕噜咕噜滚下去，整整玩了一大天。你说棒不棒？“</p>
+<p>”太棒了。“</p>
+<p>”我就这么喜欢你。“</p>
+<p>——村上春树《挪威的森林》</p>
+</blockquote>
 <p>
-        <img class="mx-auto" alt="simple-paxos" src="http://on64c9tla.bkt.clouddn.com/2017A/simple-paxos.png" />   
+        <img class="mx-auto" alt="qccode_for_wechat" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/qccode_for_wechat.png" />   
     </p>
-<h2 id="7小结">7.小结</h2>
-<p>通过前面的讨论和学习，我们可以回顾一下协议的细节：</p>
-<ol>
-<li>
-<p>为什么要被大多数接受？因为两个多数派必有交集，所以一般是奇数个(2n+1)Acceptors，然后允许最多n个Acceptors宕机，而保证算法仍然可以正常运行，最终得到一个确定的chosen值。</p>
-</li>
-<li>
-<p>为什么需要做一个承诺？首先，可以保证第二阶段A的Proposer的选择不受未来某个值的影响(因为对方已经给出了承诺)；其次，对于每一个Acceptors而言，承诺决定了它回应提议编号较大的Prepare请求，和接受提议编号较小的Accept请求的先后顺序。</p>
-</li>
-<li>
-<p>为什么第二阶段A要从返回的提议编号中选取最大的一个？这样选出来的提议编号一定不小于已经被多数派接受的提议编号，进而可以保证该提议编号对应的那个值是chosen的那个值。</p>
-</li>
-</ol>
-<p><strong>&ldquo;与其预测未来，不如限制未来&rdquo;</strong>,应该是Paxos协议的核心思想。——郑建军(微信工程师)</p>
-<p><strong>参考资料</strong></p>
-<p>Leslie Lanmport:<a href="http://on64c9tla.bkt.clouddn.com/2017A/paxos-simple-Copy.pdf">Paxos Made Simple</a></p>
-<p>Info架构师2017年1月刊:<a href="http://www.infoq.com/cn/minibooks/architect-201701">微信PaxsoStore:深入浅出Paxos算法协议</a></p>
-<p><a href="http://www.cnblogs.com/zhengran/p/4212502.html">一步一步理解Paxos算法</a></p>
 
         </div>
 
@@ -195,7 +177,7 @@
 <div class="post-archive">
     <ul class="post-copyright">
         <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2017-03-21_learn_paxos/">http://www.subond.com/post/2017-03-21_learn_paxos/</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-06-25_12letter/">http://www.subond.com/post/2023-06-25_12letter/</a></li>
         <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
     </ul>
 </div>
@@ -209,15 +191,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/2017-02-21_reading_and_writing/">读书写作那点事儿</a></li>
+        <li><a href="/post/2023-05-08_10letter/">No.10 往前看，别回头</a></li>
         
-        <li><a href="/post/2016-12-15_the_middle_twenties/">二十五六岁</a></li>
+        <li><a href="/post/2023-03-27_07letter/">No.7 一点工作思考</a></li>
         
-        <li><a href="/post/2016-10-07_reply-1988/">Reply 1988: 人生是个迷啊</a></li>
+        <li><a href="/post/2023-03-20_06letter/">No.6 写在31岁</a></li>
         
-        <li><a href="/post/2016-06-19_linux_process2/">Linux中的线程管理</a></li>
+        <li><a href="/post/2023-06-21_offload/">聊聊网络卸载技术</a></li>
         
-        <li><a href="/post/2016-06-17_linux_process/">Linux中的进程管理</a></li>
+        <li><a href="/post/20230612_wang_er/">《王二的经济学故事》读后感</a></li>
         
     </ul>
 </div>
@@ -227,9 +209,7 @@
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/algorithm' target="_blank">algorithm</a></li>
-                
-                <li><a href='/tags/distributed-systems' target="_blank">distributed systems</a></li>
+                <li><a href='/tags/%E7%94%9F%E6%B4%BB' target="_blank">生活</a></li>
                 
             </ul>
             
