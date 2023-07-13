@@ -1,13 +1,9 @@
 ---
 Title: "内存管理：TCMalloc之魂"
-Date: 2023-03-18
+Date: 2023-03-20
 Categories: ["技术"]
 Tags: ["内存管理"]
 ---
-
-
-
-# 内存管理：TCMalloc
 
 TCMalloc 是 Google 开发的内存分配器，在不少项目中都有使用，Go 中就使用了类似的算法进行内存分配。
 
@@ -29,7 +25,7 @@ TCMalloc为每个线程Thread预分配一块线程本地缓存，称为`ThreadCa
 | 中对象 | (256KB, 1MB]  |
 | 大对象 | (1MB, 正无穷) |
 
-![central](/images/tcmalloc_central.png)
+![tcmalloc_central](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc_central.png)
 
 ## 2. TCMalloc中的基础单位
 
@@ -43,7 +39,7 @@ TCMalloc为每个线程Thread预分配一块线程本地缓存，称为`ThreadCa
 
 `ThreadCache`包含各种`size-class`的单向链表，链表元素为自由可分配的对象。
 
-![size-class](/images/tcmalloc_size_class.png)
+![tcmalloc_size_class](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc_size_class.png)
 
 注意：size-class的大小并不是完全的2的幂次方。因为这样也会存在的严重的浪费，具体值可以参见[Size-Class](https://github.com/google/tcmalloc/blob/master/tcmalloc/size_classes.cc)
 
@@ -53,7 +49,7 @@ TCMalloc为每个线程Thread预分配一块线程本地缓存，称为`ThreadCa
 
 TCMalloc 将整个内存空间划分为同等大小的Page，每个 Page 默认是 8KB。当申请中等对象的时候，向上取整为一个Page的大小，即整数个Page。中心页面堆PageHeap是一个包含 128 个空闲列表的数组，其中第k个列表由k+1个页面组成，如下所示。
 
-![pages](images/tcmalloc-pages.png)
+![tcmalloc-pages](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc-pages.png)
 
 > [更新]
 >
@@ -75,7 +71,7 @@ TCMalloc 将整个内存空间划分为同等大小的Page，每个 Page 默认�
 
 为了便于管理Span，Span集合以双向链表的方式构建。
 
-![span](images/tcmalloc_span.png)
+![tcmalloc_span](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc_span.png)
 
 Span 只有两种状态：**已分配**和**空闲**。
 
@@ -99,7 +95,7 @@ Span 只有两种状态：**已分配**和**空闲**。
 
 我们以拆分为小对象的Span为例，一个Span所包含的N连续的Page可以被拆分成一组size-class的列表。
 
-![span2](images/tcmalloc_span2.png)
+![tcmalloc_span2](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc_span2.png)
 
 
 
@@ -109,7 +105,7 @@ Span 只有两种状态：**已分配**和**空闲**。
 
 `CentralCache`作为`ThreadCache`的二级缓存，其内部结构和`ThreadCache`一致。当`ThreadCache`不足时，直接向`CentralCache`申请，如果`CentralCache`有空闲内存直接给，否则向`PageHeap`申请。
 
-![all](images/tcmalloc_all.png)
+![tcmalloc_all](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc_all.png)
 
 PageHeap负责管理Span，相同规格的Span构成双向链表。
 
@@ -139,7 +135,7 @@ PageHeap负责管理Span，相同规格的Span构成双向链表。
 
 中等对象大小（256K≤大小≤1MB）向上取整到一个页面大小（8K），由中央页面堆处理。中央页面堆包括128个空闲列表的数组。第K个条目是由K+1页面组成的空闲列表。
 
-![mobject](images/tcmalloc_mobject.png)
+![tcmalloc_mobject](https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/tcmalloc_mobject.png)
 
 一个K页面大小的分配可以查找第K个空闲列表来满足。如果这个列表为空，则查找下一个列表，以此类推。如果每一个中等对象空闲列表满足这次分配，这次分配将被视为大对象。
 
