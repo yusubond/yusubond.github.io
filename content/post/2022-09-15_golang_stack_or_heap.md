@@ -1,6 +1,6 @@
 ---
 title: "Go逃逸分析与性能"
-data: 2022-09-15
+date: 2022-09-15
 categories: ["技术","Go高性能编程"]
 tags: ["go"]
 ---
