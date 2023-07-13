@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>Linux中的进程管理 | 凯文的个人博客</title>
-    <meta property="og:title" content="Linux中的进程管理 - 凯文的个人博客">
+    <title>《王二的经济学故事》读后感 | 凯文的个人博客</title>
+    <meta property="og:title" content="《王二的经济学故事》读后感 - 凯文的个人博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2016-06-17T00:00:00&#43;08:00'>
+    <meta property="article:published_time" content='2023-06-12T00:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-03-20T12:05:23&#43;08:00'>
+    <meta property="article:modified_time" content='2023-06-12T19:28:28&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
-    <meta name="description" content="Linux中的进程管理">
+    <meta name="description" content="《王二的经济学故事》读后感">
         
     <meta name="author" content="Kevin">
-    <meta property="og:url" content="http://www.subond.com/post/2016-06-17_linux_process/">
+    <meta property="og:url" content="http://www.subond.com/post/2023-06-12_wang_er/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -75,11 +75,20 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title">Linux中的进程管理</h1>
+            <h1 class="post-title">《王二的经济学故事》读后感</h1>
         </header>
         <date class="post-meta meta-date">
-            2016年6月17日
+            2023年6月12日
         </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/%E6%95%A3%E6%96%87' target="_blank">散文</a>
+            </span>
+            
+        </div>
         
         
         <div class="post-meta">
@@ -89,70 +98,50 @@
         
         
         <div class="post-content">
-            <h3 id="1进程">1.进程</h3>
-<p>进程是执行中的程序，是大多数系统的工作单元，是 <strong>活动实体</strong>。一般，进程具有以下几种状态：新的，运行，等待，就绪，终止。每个进程在操作系统中用进程控制块(PCB)表示，其包含许多与一个特定进程相关的信息(进程状态，程序计数器，CPU寄存器，CPU调度信息，内存管理信息，记账信息，I/O状态信息等)。</p>
-<p><strong>进程调度</strong></p>
-<p>进程调度是指选择一个可用的进程到CPU上执行的过程，由相应的 <strong>调度程序</strong> 来执行。进程进入系统后，进入 <strong>作业队列</strong> (包含系统中的所有队列)；驻留在内存中就绪，等待执行的进程位于 <strong>就绪队列</strong>。就绪队列通常用链表实现，其头节点指向链表的第一个和最后一个PCB块的指针；每个PCB包括一个指向就绪队列的下一个的PCB的指针域。</p>
+            <p>最近我读完了<a href="(https://book.douban.com/subject/10733032/)">《王二的经济学故事》</a>)，这是我上半年读过的最有价值的好书之一。</p>
+<h2 id="好书介绍">好书介绍</h2>
 <p>
-        <img class="mx-auto" alt="三种进程调度的区别" src="http://on64c9tla.bkt.clouddn.com/20160617process2.jpg" />   
+        <img class="mx-auto" alt="uLnozr" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/uLnozr.jpg" />   
     </p>
-<p>调度程序分为 <strong>长期调度程序</strong>, <strong>中期调度程序</strong> 和 <strong>短期调度程序</strong>。长期调度(高级调度)，又称为 <strong>作业调度</strong>，是指从池中选择进程，并装入内存准备执行，其使用频率比较低，主要用来控制内存中进程的数量；中期调度(中级调度)，又称为 <strong>交换调度</strong>，是指将进程中内存或CPU竞争中移出，从而降低多道程序设计的程度，之后进程被重新装入内存；短期调度(低级调度)，又称为 <strong>进程调度</strong>，是指按照一定的策略和算法，将CPU分配给一个处于就绪的进程，分为 <strong>抢占式</strong> 和 <strong>非抢占式</strong>。</p>
+<p>先说作者，本书作者郭凯先后获得北京大学经济学硕士和哈佛大学经济学博士，读书的时候开始写博客，很受青年学生的追捧，后来博客结集为<a href="https://book.douban.com/subject/5378548/">《一沙一世界：郭凯经济学札记》</a>。《王二的经济学故事》也是一系列的博客，并集结成书发版。</p>
+<p>这是一本用有趣的故事讲透深奥经济学原理的书。书中作者虚构了一个普通的小人物”王二“，他一会儿是佃农，一会儿是进城的打工仔，一会儿又摇身一变成了小企业老板或写字楼里的小白领……王二买火车票，卖粮，买地，盖房子，装修，记账，打工，开公司，上五险一金，去香港打酱油……总之，他就是中国普通大众中的一员。</p>
+<p>小到超时购物，大到买房置业，我们每天都在做出经济决策，朦胧中也都能感觉到自己的决策受国家政策、经济环境的影响，但究竟如何受到影响的，并不是每个人都清楚。</p>
+<p>作者却用王二的故事轻松地说清楚了，他具备那种洞穿池底的本事。透过王二的故事，作者把中国重大的经济问题信手拈来，把本来深奥的经济学原理活灵活现地呈现给读者。</p>
+<p>读懂了王二，就读懂了经济学，就读懂了中国。</p>
+<p>如果你对经济学感兴趣，这本书推荐给你。</p>
+<p>我一直认为能够把复杂的原理通过简单的故事讲清楚是一项很重要的能力，它意味着你必须对某件事情有足够深刻的认识。只有足够深刻，站得足够高远，才能看清事物的骨架。这是我读的过程中很大的一个收获。</p>
+<h2 id="以下是摘录">以下是摘录</h2>
+<ol>
+<li>事实上，给定供不应求这个基本的矛盾，火车票的分配是不存在”完美“的解决方案的，因为无论怎么解决，最后都会有200个人不能做火车回家。</li>
+<li>春运票价的辩论不只是一个价格问题的辩论，更是一个分配问题的辩论。</li>
+<li>无论收入分配差距的根源是什么，收入分配差距的拉大，在一个市场经济环境下，必然造成富人对穷人的挤出效应，特别是在那些供给相对有限而需求相对刚性的瓶颈部门。</li>
+<li>我反复说的是，中国这么多人买房用于投资，其实是对中国投资渠道缺乏和利率管制的一个理性、自然、正常的反应。</li>
+<li>房子这东西，一直都是水涨船高，王二们的收入上去了，房价也会上涨。事实上，有时候还是王二们自己把房价给推上去的。收入高了，大家都想住得好点、大点，最后均衡的结果是，房价上去了，但也没多少人能住得大点、好点，倒是政府手里的土地收入不断上涨了。</li>
+<li>500年前，每个人都要种地，但不是每个人生下来就有地的；500年后，每个人都要有房住，但不是每个人生下来就有房的。</li>
+<li>从某种意义上说，生下来没有房子或地，就等于一生下来就背了一笔债，欠那些有房子、有地的人的债，而且这笔债还是随着收入水平水涨船高的。</li>
+<li>房地产也许是中国人保存财富最不差的手段之一。</li>
+<li>中国有很多人没有钱，但也有很多人有钱。而那部分有闲钱的人，当他们只能在不好的投资（买房）和更不好的投资（存银行或者买股票）之间做选择时，很多人选择了买房。</li>
+<li>这样做不仅导致了房价高涨、住房空置和很多普通人购房发生困难，这样做更是对资源的错误配置——如果有好的金融体系和投资渠道，这些钱原本可以投到更有价值的地方。</li>
+<li>这件事情本身就挺让人好奇的：如果全中国所有城市的房价都是外地人推上去的，那外地人是从哪里来的？全国所有城市之外的地方我能想到的只有一个，那就是农村。中国的农民一下子变得这么有购买力对我来说还是一个很大的新闻。如果这是事实，那意味着中国的房价还有得涨——中国还有很多农民没在城里买房呢。</li>
+<li>总而言之，不去触动房价走高的根源，让在本质上没有动力调低房价的地方政府去执行，最后还是采用行政手段，这些都很难让人对房价调控的质量感到乐观。</li>
+<li>完全靠市场方式了进行分配，也就是谁有钱谁就有房子住，其实是一种最简单的方法，也是一种相对”公正“的做法，就像王二第一次遇到洪水的那样。</li>
+<li>政府介入应该是一个社会选择，而不是一个政府选择。</li>
+<li>所有这一切唇枪舌剑的背后，反应的是一个很简单的事实：在全球经济增长乏力的状况下，每个国家都害怕失去出口的市场，也担心自己的市场被外国人占领。所有的国家都希望在一个变小的馅饼里，分得更大的份额，从而保证本国经济的增长。</li>
+<li>如果一个经济中最需要的劳动力是泥瓦匠，一年800万左右大学毕业生确实很难找到理想的工作。</li>
+<li>一个经济，如果老子干什么儿子还继续干什么，这个经济不会是一个快速增长的经济。</li>
+<li>一个人，如果20岁干什么，到了50岁还是干一样的事情，那这个人有可能属于进步慢的。如果我们期待中国会继续快速增长下去，那我们就得现实地预期：我们的孩子很可能不会干和我们一样的事情。我们50岁的时候，很可能会在干20岁想都没想过的事情。很多时候，这种选择可能是被动的。</li>
+<li>政府主导是一把双刃剑。如果政府选择了错误的发展战略，违背了一个国家的比较优势，那带来的不会是繁荣而是各种扭曲；而如果政府选择了正确的发展战略，遵从一个国家的比较优势，那才可能带来经济的成功。</li>
+<li>政府不是用来否认和替代市场的，而是用来弥补和支持市场的。</li>
+<li>承担责任是获取话语权和规则制定权的代价。</li>
+</ol>
+<p>PS：这本书微信读书上叫<a href="https://book.douban.com/subject/35377805/">《每个人的经济学》</a>，是原书的再版，内容基本没变。喜欢电子书的朋友可以直接在微信读书上看。</p>
 <p>
-        <img class="mx-auto" alt="三种进程调度的区别" src="http://on64c9tla.bkt.clouddn.com/20160617process.jpg" />   
+        <img class="mx-auto" alt="301564bda749f439fbf09f83644071ac" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/301564bda749f439fbf09f83644071ac.jpg" />   
     </p>
-<p><strong>上下文切换</strong></p>
-<p>将CPU切换找另一个进程需要保存当前进程的状态，并恢复另一个进程的状态，这个过程称为上下文切换。</p>
-<h3 id="2进程操作">2.进程操作</h3>
-<p><strong>进程创建</strong> 和 <strong>进程终止</strong></p>
-<p>进程创建新进程时，有两种执行可能：</p>
-<p>1）父进程与子进程并发执行；2）父进程等待，直到某个子进程或全部子进程执行完毕。</p>
-<p>同样，新进程的地址空间也有两种可能：</p>
-<p>1）子进程是父进程的复制品（具有父进程相同的程序和数据）；2）子进程装入一个新程序。</p>
-<p>在linux系统，使用fork()函数可以创建一个新进程，相关内容参考fork()函数。</p>
-<p>当进程完成执行最后的语句病使用系统调用exit()请求操作系统删除自身时，进程终止。进程终止时，可以返回状态值(整数)到父进程(通过系统调用wait())，所有进程资源将会被操作系统回收。</p>
-<h3 id="3进程间通信">3.进程间通信</h3>
-<p>进程间通信(IPC)有两种基本模式：<strong>共享内存</strong> 和 <strong>消息传递</strong>。进程间通信可以调用send()和receive()来进行，其可分为 <strong>阻塞</strong> 或 <strong>非阻塞</strong>——也称为 <strong>同步</strong> 和 <strong>异步</strong>。</p>
-<p>阻塞send: 发送进程阻塞，直到消息被进程或邮箱所接收；<br>
-非阻塞send: 发送进程发送消息并继续操作；<br>
-阻塞receive: 接收进程阻塞，直到有消息可用；<br>
-非阻塞receive: 接收进程接收到一个有用消息或空消息；</p>
-<p>值得注意的是，无论是直接通信还是间接通信，通信进程的消息的驻留在临时队列中。队列的实现有三种方式：零容量，有限容量，无限容量。</p>
-<p><strong>共享内存实例</strong></p>
-<p>创建共享内存段shmget()</p>
-<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
-<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
-</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#998;font-style:italic">//三个参数：标识符，字节数，读写模式
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//函数返回整数标识值
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>segment_id <span style="color:#000;font-weight:bold">=</span> shmget(IPC_PRIVATE, size, S_IRUSR <span style="color:#000;font-weight:bold">|</span> S_IWURS);
-</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//三个参数：共享内存段的ID，指针，读写模式
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//返回初始位置的指针
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>share_memory <span style="color:#000;font-weight:bold">=</span> (<span style="color:#458;font-weight:bold">char</span> <span style="color:#000;font-weight:bold">*</span>)shmat(id, <span style="color:#0086b3">NULL</span>, <span style="color:#099">0</span>);
-</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">//删除共享内存段，释放指针
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>shmdt(share_memory);
-</span></span><span style="display:flex;"><span>shmctl();
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><strong>消息传递</strong>: Mach</p>
-<p>Mach系统主要为分布式系统设计。在Mach系统中，每个任务创建时，同时创建了两个特别的邮箱：<strong>内核邮箱</strong> 和 <strong>通报邮箱</strong>。内核使用内核邮箱与任务通信，使用通报邮箱发送事件发生的通知。</p>
-<p>消息传递使用三个系统调用：</p>
-<p>1）msg_send():发送数据；<br>
-2）msg_receive():接收数据；<br>
-3）msg_rpc():发送远程消息，并只等待来自发送者的一个返回消息；</p>
-<p>值得注意的是，Mach可以确保来自同一个发送者额多个消息满足FIFO顺序排队，但不是绝对顺序。即两个发送者的消息可以任意排队。其次，Mach使用的是双重复制机制(发送者&lt;&ndash;复制&ndash;&gt;邮箱&lt;&ndash;复制&ndash;&gt;接收者)。若使用虚拟内存管理技术(即将发送者的地址空间映射到接收者的地址空间，但只适用与系统内部)，可以避免这种双重复制。</p>
-<h2 id="4进程小结">4.进程小结</h2>
-<p>进程是执行中的程序。随着程序的执行，它改变状态。进程状态由进程当前活动所定义。每个进程可处于：新的，就绪，执行，等待或终止状态。每个进程在操作系统内通过自己的进程控制块PCB来表示。当前不执行的进程放在某个等待队列中。操作系统有两种主要队列：<strong>I/O请求队列</strong> 和 <strong>就绪队列</strong>。就绪队列包括所有准备执行或等待CPU的进程。每个都有PCB，PCB链接起来就形成了就绪队列。长期调度通过选择进程来争用CPU。短期调度从就绪队列中选择进程。</p>
-<p>操作系统的执行进程可以是独立进程，也可以是协作进程。协作进程需要进程间有互相通信机制，主要有两种形式：共享内存和消息传递。<strong>共享内存</strong> 方法通过要求通信进程共享一些变量，进程通过使用共享变量来交换信息；而 <strong>消息系统</strong> 方法允许进程交换信息。</p>
+<p>好啦，这里是「凯文的生活随想」。愿你开卷有益~</p>
+<p>
+        <img class="mx-auto" alt="qccode_for_wechat" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/qccode_for_wechat.png" />   
+    </p>
 
         </div>
 
@@ -160,7 +149,7 @@
 <div class="post-archive">
     <ul class="post-copyright">
         <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2016-06-17_linux_process/">http://www.subond.com/post/2016-06-17_linux_process/</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-06-12_wang_er/">http://www.subond.com/post/2023-06-12_wang_er/</a></li>
         <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
     </ul>
 </div>
@@ -174,13 +163,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/2016-06-14_linux_pthread/">Linux中的线程函数</a></li>
+        <li><a href="/post/2023-03-13_05letter/">No.5 聊聊个人养老金</a></li>
         
-        <li><a href="/post/2016-04-29_gitxuexi/">Git学习手记</a></li>
+        <li><a href="/post/2023-03-06_04letter/">No.4 关于读书</a></li>
         
-        <li><a href="/qccode_wechat/"></a></li>
+        <li><a href="/post/2023-06-07_11letter/">No.11 没有不出错的系统</a></li>
         
-        <li><a href="/archives/">归档</a></li>
+        <li><a href="/post/2023-05-08_10letter/">No.10 往前看，别回头</a></li>
+        
+        <li><a href="/post/2023-05-06_10_mental_models/">[译文]关于学习的10种心智模型</a></li>
         
     </ul>
 </div>
@@ -190,9 +181,9 @@
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/linux' target="_blank">linux</a></li>
+                <li><a href='/tags/%E9%98%85%E8%AF%BB' target="_blank">阅读</a></li>
                 
-                <li><a href='/tags/process' target="_blank">process</a></li>
+                <li><a href='/tags/%E7%BB%8F%E6%B5%8E' target="_blank">经济</a></li>
                 
             </ul>
             
