@@ -6,7 +6,16 @@
     <description>Recent content in Posts on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 07 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 13 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>No.14 来，设计你的富裕人生</title>
+      <link>http://www.subond.com/post/2023-07-13_14letter/</link>
+      <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-07-13_14letter/</guid>
+      <description>你好，我是Kevin，见字如面，这是为你寄来的第 14 封信。 最近</description>
+    </item>
+    
     <item>
       <title>《Go 细节和小技巧100》阅读记录</title>
       <link>http://www.subond.com/post/2023-07-07_go_details/</link>
@@ -14,15 +23,6 @@
       
       <guid>http://www.subond.com/post/2023-07-07_go_details/</guid>
       <description>最近读了老貘的《Go细节和小技巧101》,很有收获，里面讲到</description>
-    </item>
-    
-    <item>
-      <title>《Go 细节和小技巧100》阅读记录</title>
-      <link>http://www.subond.com/post/2023-07-07_go_range/</link>
-      <pubDate>Fri, 07 Jul 2023 00:00:00 +0000</pubDate>
-      
-      <guid>http://www.subond.com/post/2023-07-07_go_range/</guid>
-      <description>最近读了老貘的《Go细节和小技巧101》,里面讲到很多实用的</description>
     </item>
     
     <item>
