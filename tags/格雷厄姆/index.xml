@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>格雷厄姆 on 凯文的个人博客</title>
+    <link>http://www.subond.com/tags/%E6%A0%BC%E9%9B%B7%E5%8E%84%E5%A7%86/</link>
+    <description>Recent content in 格雷厄姆 on 凯文的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 03 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/%E6%A0%BC%E9%9B%B7%E5%8E%84%E5%A7%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[译文]时间和财富是如何流失的</title>
+      <link>http://www.subond.com/post/2023-08-03_selfindulgent/</link>
+      <pubDate>Thu, 03 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-08-03_selfindulgent/</guid>
+      <description>时间和财富是如何流失的 时间总是在不经意间流逝，那金钱呢？ 如果</description>
+    </item>
+    
+    <item>
+      <title>[译文]养育孩子</title>
+      <link>http://www.subond.com/post/2023-07-31_kids/</link>
+      <pubDate>Mon, 31 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-07-31_kids/</guid>
+      <description>最近对Paul Graham有点上头，我第一次知道他是因为《黑</description>
+    </item>
+    
+    <item>
+      <title>[译文]智慧，是否值得？</title>
+      <link>http://www.subond.com/post/2023-07-28_wisdom/</link>
+      <pubDate>Fri, 28 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-07-28_wisdom/</guid>
+      <description>这是一篇中文译文，原文为保罗·格雷厄姆于2007年2月发表的</description>
+    </item>
+    
+  </channel>
+</rss>
