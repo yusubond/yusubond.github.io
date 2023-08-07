@@ -35,6 +35,15 @@
     </item>
     
     <item>
+      <title>深入理解Go调度器：初识GMP模型</title>
+      <link>http://www.subond.com/post/2023-07-24_golang_gpm/</link>
+      <pubDate>Mon, 24 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-07-24_golang_gpm/</guid>
+      <description>认识GMP模型 本文主要介绍当前runtime中调度器的 GMP 模型</description>
+    </item>
+    
+    <item>
       <title>No.14 来，设计你的富裕人生</title>
       <link>http://www.subond.com/post/2023-07-13_14letter/</link>
       <pubDate>Thu, 13 Jul 2023 00:00:00 +0000</pubDate>

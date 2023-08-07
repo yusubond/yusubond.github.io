@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GO调度器 on 凯文的个人博客</title>
+    <link>http://www.subond.com/tags/go%E8%B0%83%E5%BA%A6%E5%99%A8/</link>
+    <description>Recent content in GO调度器 on 凯文的个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 24 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/tags/go%E8%B0%83%E5%BA%A6%E5%99%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解Go调度器：初识GMP模型</title>
+      <link>http://www.subond.com/post/2023-07-24_golang_gpm/</link>
+      <pubDate>Mon, 24 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-07-24_golang_gpm/</guid>
+      <description>认识GMP模型 本文主要介绍当前runtime中调度器的 GMP 模型</description>
+    </item>
+    
+  </channel>
+</rss>
