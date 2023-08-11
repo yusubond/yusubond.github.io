@@ -6,7 +6,16 @@
     <description>Recent content in Posts on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 03 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 07 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解Go调度器：M 如何找工作（二）</title>
+      <link>http://www.subond.com/post/2023-08-07_gmp_m/</link>
+      <pubDate>Mon, 07 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-08-07_gmp_m/</guid>
+      <description>本文源码基于 go 1.20.3 版本，如有问题，欢迎指出。 更新时间：2023</description>
+    </item>
+    
     <item>
       <title>[译文]时间和财富是如何流失的</title>
       <link>http://www.subond.com/post/2023-08-03_selfindulgent/</link>
