@@ -6,7 +6,16 @@
     <description>Recent content on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 12 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[转载]Go 语言机制之栈与指针</title>
+      <link>http://www.subond.com/post/2023-08-15_go_stack/</link>
+      <pubDate>Tue, 15 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-08-15_go_stack/</guid>
+      <description>这篇文章，通过两个简单的 go 程序，讲清楚了 Go 语言中 栈 和 指针的使</description>
+    </item>
+    
     <item>
       <title>深入理解Go调度器：如何初始化P</title>
       <link>http://www.subond.com/post/2023-08-12_gmp_p/</link>

@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-	<meta name="generator" content="Hugo 0.102.3" />
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,17 +9,24 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>凯文的个人博客 | 专注于云计算网络，个人成长</title>
-    <meta property="og:title" content="凯文的个人博客 | 专注于云计算网络，个人成长">
-    <meta property="og:type" content="website">
+    <title>[转载]Go 语言机制之栈与指针 | 凯文的个人博客</title>
+    <meta property="og:title" content="[转载]Go 语言机制之栈与指针 - 凯文的个人博客">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2023-08-15T00:00:00&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2023-08-15T20:18:02&#43;08:00'>
+        
     <meta name="Keywords" content="golang,博客">
-    <meta name="description" content="专注于云网络，个人成长">
-    <meta property="og:url" content="http://www.subond.com/">
+    <meta name="description" content="[转载]Go 语言机制之栈与指针">
+        
+    <meta name="author" content="Kevin">
+    <meta property="og:url" content="http://www.subond.com/post/2023-08-15_go_stack/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
     <link rel="stylesheet" href='/css/style.css'>
-    <link rel="alternate" type="application/rss+xml" href="http://www.subond.com/index.xml" title="凯文的个人博客" />
     <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
@@ -37,11 +43,9 @@
         <div class="col-group">
             <div class="site-name ">
                 
-                    <h1>
-                        <a id="logo" href="http://www.subond.com/">
-                            凯文的个人博客
-                        </a>
-                    </h1>
+                    <a id="logo" href="http://www.subond.com/">
+                        凯文的个人博客
+                    </a>
                 
                 <p class="description">专注于云计算网络，个人成长</p>
             </div>
@@ -69,53 +73,19 @@
                     
 <div class="res-cons">
     
-    
     <article class="post">
         <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/" title="Go Struct内存对齐" target="_blank">Go Struct内存对齐</a>
-            </h1>
+            <h1 class="post-title">[转载]Go 语言机制之栈与指针</h1>
         </header>
         <date class="post-meta meta-date">
-            2022年9月7日
+            2023年8月15日
         </date>
         
         <div class="post-meta">
             <span>|</span>
             
             <span class="meta-category">
-                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
-            </span>
-            
-            <span class="meta-category">
-                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            1 为什么需要考虑内存对齐 CPU访问内存时，并不是逐个字节访问……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2022-09-07_golang_struct_memory_alignment/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2022-06-17_golang_string_join/" title="Go字符串拼接性能对比" target="_blank">Go字符串拼接性能对比</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2022年6月17日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
+                <a href='/categories/go%E7%AC%94%E8%AE%B0' target="_blank">Go笔记</a>
             </span>
             
             <span class="meta-category">
@@ -124,278 +94,95 @@
             
         </div>
         
-        <div class="post-content">
-            Go 语言中提供了基础数据结构类型 string，在实际使用中我们……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2022-06-17_golang_string_join/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2022-06-07_golang_mutex/" title="Go 互斥锁与读写锁" target="_blank">Go 互斥锁与读写锁</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2022年6月7日
-        </date>
         
         <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B' target="_blank">Go高性能编程</a>
-            </span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
-            </span>
-            
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
         </div>
+        
         
         <div class="post-content">
-            Go 语言标准包 sync 中提供了两种锁，互斥锁 Mutex 和读写锁 RWMutex ，那两者有什……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2022-06-07_golang_mutex/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2018-09-08_25lessonsbefore25/" title="25岁应该学到的25堂课" target="_blank">25岁应该学到的25堂课</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年9月8日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%95%A3%E6%96%87' target="_blank">散文</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            作者：Andrew Ferebee 原文：25 Lessons I Wish I Had Learned Before 25 几个月前我才3……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2018-09-08_25lessonsbefore25/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2018-08-03_create_habits/" title="高创造性人士的7个习惯" target="_blank">高创造性人士的7个习惯</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2018年8月3日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%95%A3%E6%96%87' target="_blank">散文</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            古希腊人认为，创造力是一种神圣的伴随精神，源于一些遥远而不可……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2018-08-03_create_habits/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2017-11-19_confiden_and_certainty/" title="年轻的自信与成熟的笃定" target="_blank">年轻的自信与成熟的笃定</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年11月19日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%95%A3%E6%96%87' target="_blank">散文</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            当一个年轻人开始逐渐摆脱盲目自信的时候，脚步更加坚定的时候，……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2017-11-19_confiden_and_certainty/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2017-11-08_two_fundamental_truths/" title="关于找工作的两个基本事实" target="_blank">关于找工作的两个基本事实</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年11月8日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%95%A3%E6%96%87' target="_blank">散文</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            对于应届毕业生而言，由于缺乏工作经验，对工作环境缺少了解，往……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2017-11-08_two_fundamental_truths/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2017-10-08_starting_job/" title="初入职场" target="_blank">初入职场</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年10月8日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%95%A3%E6%96%87' target="_blank">散文</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            “如何有机会让现在的你遇到刚毕业初入职场的你，你会对他说什么……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2017-10-08_starting_job/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2017-05_15_vagrant_usage/" title="Vagrant使用案例" target="_blank">Vagrant使用案例</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年5月15日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            1.单机配置 配置一个centos7系统，要求使用私有网络地址……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2017-05_15_vagrant_usage/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-    <article class="post">
-        <header>
-            <h1 class="post-title">
-                <a href="http://www.subond.com/post/2017-05-10_vagrant_startup/" title="Vagrant的快速使用" target="_blank">Vagrant的快速使用</a>
-            </h1>
-        </header>
-        <date class="post-meta meta-date">
-            2017年5月10日
-        </date>
-        
-        <div class="post-meta">
-            <span>|</span>
-            
-            <span class="meta-category">
-                <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
-            </span>
-            
-        </div>
-        
-        <div class="post-content">
-            Vagrant是为了方便的实现虚拟化环境而设计的，使用Rub……
-        </div>
-        <p class="readmore"><a href="http://www.subond.com/post/2017-05-10_vagrant_startup/" target="_blank">阅读全文</a></p>
-    </article>
-    
-    
-    
-
-
-
-<ol class="page-navigator">
-    
-    <li class="prev">
-        <a href="http://www.subond.com/page/3/">上一页</a>
-    </li>
-    
-
-    
-    <li >
-        <a href="http://www.subond.com/">1</a>
-    </li>
-    
-    <li >
-        <a href="http://www.subond.com/page/2/">2</a>
-    </li>
-    
-    <li >
-        <a href="http://www.subond.com/page/3/">3</a>
-    </li>
-    
-    <li  class="current">
-        <a href="http://www.subond.com/page/4/">4</a>
-    </li>
-    
-    <li >
-        <a href="http://www.subond.com/page/5/">5</a>
-    </li>
-    
-    <li >
-        <a href="http://www.subond.com/page/6/">6</a>
-    </li>
-    
-
-    
-    <li class="next">
-        <a href="http://www.subond.com/page/5/">下一页</a>
-    </li>
-    
+            <p>这篇<a href="https://studygolang.com/articles/12443">文章</a>，通过两个简单的 go 程序，讲清楚了 Go 语言中 栈 和 指针的使用。</p>
+<p>以下是阅读记录。</p>
+<p>图1：主函数的栈空间</p>
+<p>
+        <img class="mx-auto" alt="image1" src="https://www.ardanlabs.com/images/goinggo/80_figure1.png" />   
+    </p>
+<p>图2：调用函数的栈空间</p>
+<p>
+        <img class="mx-auto" alt="image2" src="https://www.ardanlabs.com/images/goinggo/80_figure2.png" />   
+    </p>
+<p>图3：指针变量被调函数的帧空间（间接访问）</p>
+<p>
+        <img class="mx-auto" alt="image3" src="https://www.ardanlabs.com/images/goinggo/80_figure5.png" />   
+    </p>
+<ol>
+<li>帧边界为每个函数提供了它自己独有的内存空间，函数就是在这个内存空间执行的。</li>
+<li>当调用函数时，上下文环境会在两个帧边界间切换。</li>
+<li>按「值」传递的优点是可读性好。</li>
+<li>栈，是非常重要的，因为它为分配给每个函数的帧边界提供了可访问的物理内存空间。【当我们说，你是在堆上，还是栈上，说的就是这个栈。】</li>
+<li>在活动栈帧以下的栈空间是不可用的，只有活动栈和它之上的栈空间是可用的。【因为，栈是自上而下开始使用的。】</li>
+<li>函数调用意味着 goroutine 需要在栈上为函数创建一个新的栈帧。</li>
+<li>只有当发生函数调用，栈区块被分配的栈帧占用后，相应栈空间才会被初始化。【翻译一下就是，函数调用结束以后，不会立马清理栈空间，而是在这块栈空间再次被用到的时候才会被初始化。】</li>
+<li>使用指针是为了和被调用函数共享变量，使「被调函数」可以用间接方式访问自己栈帧之外的变量。</li>
+<li>每一个类型，不管是语言内置的还是用户定义的，都有一个与之对应的指针类型。</li>
+<li>使用「指针」变量的函数，可以通过「指针」变量间接访问函数栈帧之外的内存。</li>
+<li>指针变量和其他变量一样，并不特殊，同样是有一块内存，只不过指针变量上存放不是变量的值，而是变量的地址。</li>
 </ol>
+<p>中文原文连接：https://studygolang.com/articles/12443</p>
+<p>外文连接：https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-stacks-and-pointers.html</p>
+
+        </div>
+
+        
+<div class="post-archive">
+    <ul class="post-copyright">
+        <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-08-15_go_stack/">http://www.subond.com/post/2023-08-15_go_stack/</a></li>
+        <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
+    </ul>
+</div>
+<br/>
 
 
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2023-08-12_gmp_p/">深入理解Go调度器：如何初始化P</a></li>
+        
+        <li><a href="/post/2023-08-07_gmp_m/">深入理解Go调度器：M 如何找工作（二）</a></li>
+        
+        <li><a href="/post/2023-08-03_selfindulgent/">[译文]时间和财富是如何流失的</a></li>
+        
+        <li><a href="/post/2023-07-31_kids/">[译文]养育孩子</a></li>
+        
+        <li><a href="/post/2023-07-28_wisdom/">[译文]智慧，是否值得？</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go' target="_blank">GO</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
 
 </div>
 
@@ -419,9 +206,94 @@
 </footer>
 
 
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+<style type="text/css">
+div.highlight {
+    position: relative;
+    margin: 1em 0px;
+}
+
+.copy-code {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(78, 78, 78, 0.8);
+    border-radius: var(--radius);
+    padding: 0 5px;
+    font: inherit;
+    user-select: none;
+    cursor: pointer;
+    border: 0;
+    --radius: 8px;
+}
+
+div.highlight:hover .copy-code,pre:hover .copy-code {
+    display: block;
+}
+
+</style>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
 
 
     <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
