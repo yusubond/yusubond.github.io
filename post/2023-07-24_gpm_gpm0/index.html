@@ -9,20 +9,20 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>Linux中的线程管理 | 凯文的个人博客</title>
-    <meta property="og:title" content="Linux中的线程管理 - 凯文的个人博客">
+    <title>深入理解Go调度器：初识GMP模型（一） | 凯文的个人博客</title>
+    <meta property="og:title" content="深入理解Go调度器：初识GMP模型（一） - 凯文的个人博客">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content='2016-06-19T00:00:00&#43;08:00'>
+    <meta property="article:published_time" content='2023-07-24T00:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-03-20T12:05:50&#43;08:00'>
+    <meta property="article:modified_time" content='2023-08-28T20:09:08&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
-    <meta name="description" content="Linux中的线程管理">
+    <meta name="description" content="深入理解Go调度器：初识GMP模型（一）">
         
     <meta name="author" content="Kevin">
-    <meta property="og:url" content="http://www.subond.com/post/2016-06-19_linux_process2/">
+    <meta property="og:url" content="http://www.subond.com/post/2023-07-24_gpm_gpm0/">
     <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
     <link rel="stylesheet" href='/css/normalize.css'>
@@ -75,14 +75,18 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title">Linux中的线程管理</h1>
+            <h1 class="post-title">深入理解Go调度器：初识GMP模型（一）</h1>
         </header>
         <date class="post-meta meta-date">
-            2016年6月19日
+            2023年7月24日
         </date>
         
         <div class="post-meta">
             <span>|</span>
+            
+            <span class="meta-category">
+                <a href='/categories/go%E7%AC%94%E8%AE%B0' target="_blank">Go笔记</a>
+            </span>
             
             <span class="meta-category">
                 <a href='/categories/%E6%8A%80%E6%9C%AF' target="_blank">技术</a>
@@ -98,91 +102,142 @@
         
         
         <div class="post-content">
-            <h3 id="1线程">1.线程</h3>
-<p>线程是CPU使用的基本单元，由线程ID，程序计数器，寄存器和栈组成。同属一个进程的所有线程共享代码数据，系统资源。多线程具有如下优点：响应度高，资源共享，更经济(较进程)，充分利用多处理器系统的结构。</p>
-<h3 id="2多线程模型">2.多线程模型</h3>
-<p>操作系统中有两种方法提供线程支持：用户层的 <strong>用户线程</strong> 和 内核层的 <strong>内核线程</strong>。用户线程受内核内核支持，而无需内核管理；内核线程由系统直接支持和管理。</p>
-<p>1）多对一模型：多个用户线程映射到一个内核线程</p>
-<p>特点：线程管理由线程库在用户空间进行，效率高；一个线程阻塞系统调用，整个进程阻塞；任意时刻，只有一个线程能访问内核(也就是，多线程不能并行运行在多处理器上)</p>
-<p>2）一对一模型：每个用户线程映射到一个内核线程</p>
-<p>特点：一个线程阻塞，其他线程不受影响，具有并发功能；允许多线程运行在多处理器上。</p>
-<p>3）多对多模型：即多路复用，许多用户线程映射到同等数量或较少数量的内核线程</p>
-<p>特点：结合多对一模型和一对一模型的优点，其对应的一个变形是 <strong>二级模型</strong> (先允许一个用户线程绑定到一个内核线程上，然后，其他用户线程多路复用)</p>
-<h3 id="3线程库">3.线程库</h3>
-<p>线程库为程序员提供创建和管理线程的API函数，主要有两种方法来实现线程库：<!-- raw HTML omitted -->系统调用<!-- raw HTML omitted -->和<!-- raw HTML omitted -->非系统调用<!-- raw HTML omitted --></p>
-<p>1）在用户空间提供没有内核支持的库，称为 <strong>非系统调用</strong>；<br>
-2）由系统支持的内核级库，称为 <strong>系统调用</strong></p>
-<p><!-- raw HTML omitted -->系统调用fork()和exec()<!-- raw HTML omitted --></p>
-<p>exec():如果一个线程调用exec()，则其指定的程序替换整个进程，包括所有线程。<br>
-fork(): 1）fork()之后立即调用exec()，则没有必要替换所有线程，因为exec()会替换所有线程；2）fork()之后没有调用exec()，则另一个进程复制所有线程。</p>
-<h3 id="4线程取消">4.线程取消</h3>
-<p>线程取消是在线程完成之前来终止线程的任务。要取消的线程称为 <strong>目标线程</strong>。目标线程可以在两种情况下发生：</p>
-<p>1）<strong>异步取消</strong>: 一个线程立即终止目标线程。  (所有线程共享进程的数据，因为异步取消并不会使系统资源空闲)<br>
-2）<strong>延迟取消</strong>: 目标线程不断检查自己是否应该终止，让线程有机会有序结束自己。  (因为具有 <strong>取消点</strong>，因此更安全)</p>
-<h3 id="5信号处理">5.信号处理</h3>
-<p>信号是用来通知进程某个事件已发生，可分为 <strong>异步接收</strong> 和 <strong>同步接收</strong>。所有的信号具有同样的模式：</p>
-<p>1）信号是由特定事件发生；2）信号发送至进程；3）一旦发送，信号必须加以处理。</p>
-<p><strong>同步信号</strong>: 指发送信号到执行操作的同一进程(例如，非法访问，被0除)<br>
-<strong>异步信号</strong>: 指信号由进程外事件产生，发送到另一个进程。(例如，特定键(ctrl+c))</p>
-<p>标准发送信号的函数:1) kill(pid_t id, int signal)指定信号的发送进程；2）pthread_kill(pthread_t id, int signal)允许信号被传送到一个指定的线程。</p>
-<h3 id="6线程池">6.线程池</h3>
-<p>其思想是：进程开始时，创建一定数量的线程，放入线程池等待工作。其优点有，1）不必创建新线程，响应时间更快；2）可以限制线程数量，有效利用系统资源。</p>
-<p><strong>Linux线程</strong></p>
-<p>Linux系统中并不区分进程和线程，统称为 <strong>任务</strong>。其系统调用包括：fork()和clone()。</p>
-<p>fork():传统复制进程——具备父任务的所有数据的副本<br>
-clone()创建线程(子任务)——根据传递给clone()的标志位，子任务指向父任务的数据结构</p>
-<h2 id="线程小结">线程小结</h2>
-<p>线程是进程内的控制流，多线程进程在同一地址空间内包括多个不同的控制流。用户线程对程序员是可见的，对内核来说却是未知的。操作系统支持和管理内核线程。有三种不同的模式将用户线程和内核线程关联起来：多对一模式，一对一模式和多对多模式。</p>
-<h2 id="一个小栗子">一个小栗子</h2>
-<pre tabindex="0"><code>/*
-*Author:subond
-* Time: 2016-06-19
-* Function: 用户在命令行输入一个数字，然后创建一个独立线程来输出小于或等于输入数的所有素数
-*/
-#include &lt;pthread.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;sys/types.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;sys/wait.h&gt;
-#include &lt;math.h&gt;
-int n;
-void *runner(void *param) {
-  if(n &lt;= 1) return(NULL);
-  for(int i = 2; i &lt;= n; i++) {
-    int len = sqrt(i * 1.0);
-    int flag = 1;
-    for(int j = 2; j &lt;= len; j++) {
-      if(i % j == 0)
-        flag = 0;
-    }
-    if(flag == 1)
-      printf(&#34;%d &#34;, i);
-  }
-  pthread_exit(0);
-}
-int main() {
-  printf(&#34;Enter a number(&gt;= 0):&#34;);
-  scanf(&#34;%d&#34;, &amp;n);
-  int pid;
-  pthread_t tid;
-  pthread_attr_t attr;
-  pthread_attr_init(&amp;attr);
-  pid = pthread_create(&amp;tid, &amp;attr, runner, NULL);
-  if(pid != 0) {
-    printf(&#34;Create pthread error\n&#34;);
-    return 1;
-  }
-  pthread_join(tid, NULL);
-  return 0;
-}
-</code></pre>
+            <h2 id="认识gmp模型">认识GMP模型</h2>
+<p>本文主要介绍当前runtime中调度器的 GMP 模型的基本概念，建立起对调度器相对粗框架的认识。理解调度器需要先了解下 GMP 模型中三个组件的关系和定义：</p>
+<ul>
+<li>G：Goroutine，即 Go 协程，就是程序中使用 <code>go</code> 关键字运行的函数</li>
+<li>M：Machine，代表系统线程，M 是 runtime 中的一个对象，每创建一个 M 的同时创建一个系统线程，并与 M 进行绑定</li>
+<li>P：Processer，代表处理器，这是一层抽象的概念【稍后会讲到为什么需要引入这一层】</li>
+</ul>
+<p>G 运行需要与 M 绑定，M 需要与 P 绑定。</p>
+<p>关于 P &amp; M 的数量问题。</p>
+<ol>
+<li>P 的数量由用户决定，程序启动时环境变量<code>$GOMAXPROCS</code>或者 runtime 的<code>GOMAXPROCS()</code>方法决定。这意味着在程序的整个生命周期都最多只有<code>$GOMAXPROCS</code>个 G 在同时运行。</li>
+<li>M 的数量由 Go 语言本身决定。尽管 <code>runtime/deBug</code>中<code>SetMaxThread</code>可以设置 M 的数量，默认为10000，但通常操作系统层面不太可能让创建这么多。</li>
+</ol>
+<p>其次，任意一个时刻，只有一个 M 能够运行一个P，所以可以认为 P 和 M是一对一的绑定关系。但是，M 在需要的时候，调度器可以创建更多，比如某些 M 被阻塞。</p>
+<p>下面是G/M/P三个组件的整体关系：</p>
+<p>
+        <img class="mx-auto" alt="go_scheduler_p1" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/go_scheduler_p1.png" />   
+    </p>
+<p>G，M，P都解释了，还有两个比较重要的结构没有解释：</p>
+<ul>
+<li>全局可运行队列（GRQ）：存储全局可运行的G，都说全局了，所以访问它肯定需要加锁。这里的加锁是针对 M 说的，因为某些情况下，M 可能会从 GRQ 中获取 G 来执行。</li>
+<li>本地可运行队列（LRQ）：存储 P 上可以可运行的G，既然本地了，所以不用加锁，M 直接从绑定的 P 的 LRQ 中获取 G 来执行。</li>
+<li>P 列表：所有的 P 都在程序启动时创建，并保存在数组中。最多有<code>GOMAXPROCS</code>个。</li>
+</ul>
+<p>注意，在 Go 的早期版本中，并没有 P 这个结构，M 必须从一个全局队列中获取要运行的 G，当并发量很大时，锁就成了瓶颈。所以，后来大神 Dmitry Vyokov 在调度器的实现中增加了 P 结构，每个 P 维护一个自己的 G 队列，解决了全局锁的问题。详见：https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit</p>
+<h2 id="调度的目标">调度的目标</h2>
+<blockquote>
+<p>For scheduling goroutines onto kernel threads.</p>
+<p>
+        <img class="mx-auto" alt="WeS0F5" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/WeS0F5.jpg" />   
+    </p>
+</blockquote>
+<p>翻译一下就是，调度 goroutine 到系统线程：</p>
+<p>如果让我来说，更直观的目标有三个：</p>
+<ul>
+<li>目标1：尽可能地不要让 CPU 闲着</li>
+<li>目标2：尽可能地运行更多的 G （代码）</li>
+<li>目标3：尽量最小化 Go 协程切换所带来的开销</li>
+</ul>
+<h2 id="调度机制">调度机制</h2>
+<p>接下来，看两个比较重要的调度机制。</p>
+<ul>
+<li>窃取机制</li>
+<li>交接机制</li>
+</ul>
+<h3 id="work-stealing-mechanism偷窃机制">work stealing mechanism(偷窃机制)</h3>
+<p>前面讲到，G 最终要在 M 上执行，且 M 优先从与之绑定的 P 的 LRQ 中取出 G 来执行，但如果 LRQ 为空，那么 M 会从 GRQ 队列中取出 G 并执行。（还有这么多活没有认领，当然要主动在组织分担啦。）</p>
+<p>但是，如果GRQ 也为空呢？M 则会尝试从其他 P 的 LRQ 中 ”偷“ 一些 G 来执行。这就是 work-steal 机制。</p>
+<p>
+        <img class="mx-auto" alt="go_scheduler_p2" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/go_scheduler_p2.png" />   
+    </p>
+<p>图2 窃取机制</p>
+<p>当 M2 从全局队列 GRQ 获取一批 G 放到与之绑定的 P2 的本地队列 LRQ，其拉取的 G 的数量符合下面的公式：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>n = <span style="color:#900;font-weight:bold">min</span>(<span style="color:#0086b3">len</span>(GRQ)<span style="color:#000;font-weight:bold">/</span>GOMAXPROCS <span style="color:#000;font-weight:bold">+</span> <span style="color:#099">1</span>, <span style="color:#0086b3">len</span>(LRQ)<span style="color:#000;font-weight:bold">/</span><span style="color:#099">2</span>)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>从公式可以看出，每次至少从全局队列拉取一个 G，但又不会将太多的 G 放到 P 的本地队列，目的是为了给其他 P 留一些。这就是从全局队列到本地队列的负载均衡。</p>
+<p>如果全局队列已经没有 G，M2 会执行偷取，从其他 P 的本地队列尾部取一半放到自己的本地队列。</p>
+<h3 id="hand-over-mechanism交接机制">hand over mechanism(交接机制)</h3>
+<p>接着讲，如果 M 在执行某个 G 时，G 中因为系统调用而阻塞，导致 M 没有办法继续执行 LRQ 中的 G。那么，M 会主动把与之绑定 P 交接给其他空闲的M，以便 P 中 LRQ 的 G 能够得到执行。</p>
+<p>如果没有空闲的 M 可用，调度器会创建新的 M。</p>
+<p><strong>这就是为了目标2，尽可能地运行更多的G</strong>。</p>
+<p>当 G5 因系统调用进入阻塞，那么 M2 和 P2 会立即解绑，P2 会执行以下判断：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#099">1.</span> 如果 P2 的本地队列有 G<span style="color:#a61717;background-color:#e3d2d2">，</span>或者全局队列有 G<span style="color:#a61717;background-color:#e3d2d2">，</span>即有 G 需要执行<span style="color:#a61717;background-color:#e3d2d2">，</span>并且有空闲的 M, 那么 P2 会立即唤醒一个 M , 并与之绑定<span style="color:#a61717;background-color:#e3d2d2">。</span>如果没有空闲的 M, 会创建一个 M 出来<span style="color:#a61717;background-color:#e3d2d2">。</span>
+</span></span><span style="display:flex;"><span><span style="color:#099">2.</span> 否则 P2 会加入空闲 P 列表<span style="color:#a61717;background-color:#e3d2d2">，</span>等待 M 获取可用的 P<span style="color:#a61717;background-color:#e3d2d2">。</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+        <img class="mx-auto" alt="go_scheduler_p3" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/go_scheduler_p3.png" />   
+    </p>
+<h2 id="goroutine-和-thread的联系">goroutine 和 thread的联系</h2>
+<p>说到<code>goroutine</code>，不得不提 thread，因为他们很像，但又不同。</p>
+<p>这篇<a href="https://blog.nindalf.com/posts/how-goroutines-work/">文章</a>给了很好的启发，从内存占用，创建和销毁，以及切换时间三个角度来认识两者的不同。</p>
+<p><strong>内存占用</strong></p>
+<p>创建一个 goroutine 栈内存消耗只有 2KB。实际运行时，可以根据需要在堆内存空间扩缩容。</p>
+<p>创建一个 thread 需要消耗 1MB 的栈内存，而且还需要一个称为“guard page&quot;的区域，用于和其他 thread 的栈空间进行隔离。</p>
+<p>对于一个用 Go 构建的 HTTP Server 来说，对到来的每个请求，创建一个 goroutine 来处理事非常轻松的事情。但对于一个使用线程作为并发原语的语言构建的服务，每个请求对应一个线程实在是太浪费了，很快就会出现 OOM 错误（OutOfMermonyError）。</p>
+<p><strong>创建和销毁</strong></p>
+<p>Thread 创建和销毁都有巨大的消耗，因为它直接跟操作系统打交道，是内核级。一般常见的做法是维护一个线程池。</p>
+<p>然而，goroutine 是由 runtime 负责，创建和销毁非常容易，消耗特别小，是用户级。</p>
+<p><strong>切换成本</strong></p>
+<p>Thread 是抢占式调度，在线程切换的时候，调度器必须保存/恢复<strong>所有</strong>的寄存器。</p>
+<blockquote>
+<p>16 general purpose registers, PC (Program Counter), SP (Stack Pointer), segment registers, 16 XMM registers, FP coprocessor state, 16 AVX registers, all MSRs etc.</p>
+</blockquote>
+<p>而 goroutine 是协作式调度（cooperatively），当切换发生时，只需要保存/恢复3个寄存器。</p>
+<blockquote>
+<p>Program Counter, Stack Pointer and DX.</p>
+</blockquote>
+<p>所以，goroutine 切换成本要比 thread 小得多。</p>
+<h2 id="mn模型">M:N模型</h2>
+<p>接下来，再解释下什么是M:N模型。</p>
+<p><code>goroutine</code> 是代码层面的并发单位，而 CPU 执行调度的基本单位是线程。</p>
+<p><code>runtime</code>在启动时，创建 M 个系统线程，用户程序在运行中可能创建 N 个<code>goroutine</code> 。N 个协程需要依附在 M 个线程上执行，这就是 <code>M:N</code>模型。</p>
+<p>所以，在同一时刻，最多有 M 个<code>goroutine</code>在同时执行。</p>
+<p>
+        <img class="mx-auto" alt="go_scheduler-m_n" src="https://wechat-1315555539.cos.ap-nanjing.myqcloud.com/uPic/go_scheduler-m_n.png" />   
+    </p>
+<p>好了，让我们回到开头的那个问题：为什么一定需要 P 组件呢。</p>
+<p>其实在 Go 的早期版本，调度器的模型不是 GMP，而是 GM。调度器维护一个全局等待队列，存放所有的 G，所有的 M 从全局队列中拉取 G 来执行。</p>
+<p>这个模型已经在 go 1.1被废弃了，取而代之是当前的 GMP 模型。增加 P 组件，官方给到的原因有两点：</p>
+<ol>
+<li>在 GM 模型中，M 从全局队列拉取 G，需要加锁。当并发量很大时，上锁/下锁的开销会非常大，严重地限制了 Go 的并发能力。</li>
+<li>对于 IO 敏感性的任务，如果没有本地队列，当 M 阻塞在 IO 系统调用时，其他 G 没办法得到执行。而 GMP 模型中可以通过 P 将 G 放到其他 M 上执行。</li>
+</ol>
+<blockquote>
+<p>You might wonder now, why have contexts at all? Can’t we just put the runqueues on the threads and get rid of contexts? Not really. The reason we have contexts is so that we can hand them off to other threads if the running thread needs to block for some reason.</p>
+</blockquote>
+<blockquote>
+<p>An example of when we need to block, is when we call into a syscall. Since a thread cannot both be executing code and be blocked on a syscall, we need to hand off the context so it can keep scheduling.</p>
+</blockquote>
+<p>翻译一下，当一个线程阻塞的时候，将与这个 M 绑定 P 转移到其他线程。</p>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><a href="https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit">https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit</a></li>
+<li><a href="https://blog.nindalf.com/posts/how-goroutines-work/">https://blog.nindalf.com/posts/how-goroutines-work/</a></li>
+</ol>
+
         </div>
 
         
 <div class="post-archive">
     <ul class="post-copyright">
         <li><strong>原文作者：</strong><a rel="author" href="http://www.subond.com/">Kevin</a></li>
-        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2016-06-19_linux_process2/">http://www.subond.com/post/2016-06-19_linux_process2/</a></li>
+        <li style="word-break:break-all"><strong>原文链接：</strong><a href="http://www.subond.com/post/2023-07-24_gpm_gpm0/">http://www.subond.com/post/2023-07-24_gpm_gpm0/</a></li>
         <li><strong>版权声明：</strong>本作品采用<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可，非商业转载请注明出处（作者，原文链接），商业转载请联系作者获得授权。</li>
     </ul>
 </div>
@@ -196,15 +251,15 @@ int main() {
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/2016-06-14_linux_pthread/">Linux中的线程函数</a></li>
+        <li><a href="/post/2023-07-13_14letter/">No.14 来，设计你的富裕人生</a></li>
         
-        <li><a href="/post/2016-06-17_linux_process/">Linux中的进程管理</a></li>
+        <li><a href="/post/2023-07-07_go_details/">《Go 细节和小技巧100》阅读记录</a></li>
         
-        <li><a href="/post/2016-04-29_gitxuexi/">Git学习手记</a></li>
+        <li><a href="/post/2023-06-30_13letter/">No.13 复利之谜</a></li>
         
-        <li><a href="/qccode_wechat/"></a></li>
+        <li><a href="/post/2023-06-25_12letter/">No.12 你会做锅包肉吗？</a></li>
         
-        <li><a href="/archives/">归档</a></li>
+        <li><a href="/post/2023-06-21_offload/">聊聊网络卸载技术</a></li>
         
     </ul>
 </div>
@@ -214,11 +269,7 @@ int main() {
             
             <ul class="clearfix">
                 
-                <li><a href='/tags/linux' target="_blank">linux</a></li>
-                
-                <li><a href='/tags/process' target="_blank">process</a></li>
-                
-                <li><a href='/tags/pthread' target="_blank">pthread</a></li>
+                <li><a href='/tags/go%E8%B0%83%E5%BA%A6%E5%99%A8' target="_blank">GO调度器</a></li>
                 
             </ul>
             

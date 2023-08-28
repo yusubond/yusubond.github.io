@@ -9,17 +9,17 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
     
 
-    <title>深入理解Go调度器：M 如何找工作（二） | 凯文的个人博客</title>
-    <meta property="og:title" content="深入理解Go调度器：M 如何找工作（二） - 凯文的个人博客">
+    <title>深入理解Go调度器：M 如何找工作（三） | 凯文的个人博客</title>
+    <meta property="og:title" content="深入理解Go调度器：M 如何找工作（三） - 凯文的个人博客">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content='2023-08-07T00:00:00&#43;08:00'>
         
         
-    <meta property="article:modified_time" content='2023-08-11T11:12:35&#43;08:00'>
+    <meta property="article:modified_time" content='2023-08-28T20:09:19&#43;08:00'>
         
     <meta name="Keywords" content="golang,博客">
-    <meta name="description" content="深入理解Go调度器：M 如何找工作（二）">
+    <meta name="description" content="深入理解Go调度器：M 如何找工作（三）">
         
     <meta name="author" content="Kevin">
     <meta property="og:url" content="http://www.subond.com/post/2023-08-07_gmp_m/">
@@ -75,7 +75,7 @@
     
     <article class="post">
         <header>
-            <h1 class="post-title">深入理解Go调度器：M 如何找工作（二）</h1>
+            <h1 class="post-title">深入理解Go调度器：M 如何找工作（三）</h1>
         </header>
         <date class="post-meta meta-date">
             2023年8月7日
@@ -137,20 +137,24 @@
 </span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
 </span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
 </span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#998;font-style:italic">// src/runtime/runtime2.go
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="color:#000;font-weight:bold">type</span> m <span style="color:#000;font-weight:bold">struct</span> {
-</span></span><span style="display:flex;"><span>	g0      <span style="color:#000;font-weight:bold">*</span>g     <span style="color:#998;font-style:italic">// 用于执行调度的g0
+</span></span><span style="display:flex;"><span>	g0      <span style="color:#000;font-weight:bold">*</span>g     <span style="color:#998;font-style:italic">// g0主要用来记录工作线程使用的栈信息，在执行调度代码时使用g0
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	gsignal       <span style="color:#000;font-weight:bold">*</span>g                <span style="color:#998;font-style:italic">// 用于信号处理的g
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	tls           [tlsSlots]<span style="color:#458;font-weight:bold">uintptr</span> <span style="color:#998;font-style:italic">// 线程本地存储
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	curg          <span style="color:#000;font-weight:bold">*</span>g       <span style="color:#998;font-style:italic">// 当前正在运行的 g
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	tls           [tlsSlots]<span style="color:#458;font-weight:bold">uintptr</span> <span style="color:#998;font-style:italic">// 工作线程本地存储
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	curg          <span style="color:#000;font-weight:bold">*</span>g       <span style="color:#998;font-style:italic">// 当前正在运行的 g，即用户创建的可运行的 g 放在这里执行
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>  p             puintptr <span style="color:#998;font-style:italic">// 执行Goroutine代码时绑定的p（如果没有执行，则为nil)
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	nextp         puintptr <span style="color:#998;font-style:italic">// 【当 m 被唤醒时，首先绑定这个p】
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	oldp          puintptr <span style="color:#998;font-style:italic">// G进入系统调用前上一次绑定的p
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	spinning      <span style="color:#458;font-weight:bold">bool</span> <span style="color:#998;font-style:italic">// 自旋标志位（当 m 没有work 且 处于寻找 work 的状态）
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	incgo         <span style="color:#458;font-weight:bold">bool</span>          <span style="color:#998;font-style:italic">// m 正在执行 cgo 调用
-</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	park          note
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// 没有 g 需要运行时，工作线程休眠在这个 park 成员上
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>  <span style="color:#998;font-style:italic">// 当有工作需要做时，其他工作线程通过 park 字段唤醒该工作线程
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>  park          note
 </span></span><span style="display:flex;"><span>	alllink       <span style="color:#000;font-weight:bold">*</span>m <span style="color:#998;font-style:italic">// 在 allm 上
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>	freelink      <span style="color:#000;font-weight:bold">*</span>m <span style="color:#998;font-style:italic">// 在 sched.freem 上
 </span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>  <span style="color:#000;font-weight:bold">...</span>
@@ -2246,7 +2250,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>总结一下，<code>runqputslow</code>就是将 LRQ 中一半的 g 放入 GRQ，如果随机调度打开，将 g 的顺序随机打乱一次。</p>
+</div><p>总结一下，<code>runqputslow</code>就是将 LRQ 队列中靠近头的一半 g 放入 GRQ，如果随机调度打开，将 g 的顺序随机打乱一次。</p>
 <h2 id="内容回顾">内容回顾</h2>
 <h2 id="参考资料">参考资料</h2>
 <ol>
@@ -2277,15 +2281,15 @@
     <h2>See Also</h2>
     <ul class="listing">
         
-        <li><a href="/post/2023-07-24_golang_gpm/">深入理解Go调度器：初识GMP模型</a></li>
+        <li><a href="/post/2023-07-25_gmp_g/">深入理解Go调度器：G 的创建（二）</a></li>
+        
+        <li><a href="/post/2023-07-24_gpm_gpm0/">深入理解Go调度器：初识GMP模型（一）</a></li>
         
         <li><a href="/post/2023-08-03_selfindulgent/">[译文]时间和财富是如何流失的</a></li>
         
         <li><a href="/post/2023-07-31_kids/">[译文]养育孩子</a></li>
         
         <li><a href="/post/2023-07-28_wisdom/">[译文]智慧，是否值得？</a></li>
-        
-        <li><a href="/post/2023-07-13_14letter/">No.14 来，设计你的富裕人生</a></li>
         
     </ul>
 </div>
@@ -2443,15 +2447,19 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
 <ul class="widget-list">
     
     <li>
+        <a href="http://www.subond.com/post/2023-08-23_gmp_scheduler_init/" title="深入理解Go调度器：调度器的初始化（五）" target="_blank">深入理解Go调度器：调度器的初始化（五）</a>
+    </li>
+    
+    <li>
         <a href="http://www.subond.com/post/2023-08-15_go_stack/" title="[转载]Go 语言机制之栈与指针" target="_blank">[转载]Go 语言机制之栈与指针</a>
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/2023-08-12_gmp_p/" title="深入理解Go调度器：如何初始化P" target="_blank">深入理解Go调度器：如何初始化P</a>
+        <a href="http://www.subond.com/post/2023-08-12_gmp_p/" title="深入理解Go调度器：如何初始化P（四）" target="_blank">深入理解Go调度器：如何初始化P（四）</a>
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/2023-08-07_gmp_m/" title="深入理解Go调度器：M 如何找工作（二）" target="_blank">深入理解Go调度器：M 如何找工作（二）</a>
+        <a href="http://www.subond.com/post/2023-08-07_gmp_m/" title="深入理解Go调度器：M 如何找工作（三）" target="_blank">深入理解Go调度器：M 如何找工作（三）</a>
     </li>
     
     <li>
@@ -2467,19 +2475,15 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
     </li>
     
     <li>
-        <a href="http://www.subond.com/post/2023-07-24_golang_gpm/" title="深入理解Go调度器：初识GMP模型" target="_blank">深入理解Go调度器：初识GMP模型</a>
+        <a href="http://www.subond.com/post/2023-07-25_gmp_g/" title="深入理解Go调度器：G 的创建（二）" target="_blank">深入理解Go调度器：G 的创建（二）</a>
+    </li>
+    
+    <li>
+        <a href="http://www.subond.com/post/2023-07-24_gpm_gpm0/" title="深入理解Go调度器：初识GMP模型（一）" target="_blank">深入理解Go调度器：初识GMP模型（一）</a>
     </li>
     
     <li>
         <a href="http://www.subond.com/post/2023-07-13_14letter/" title="No.14 来，设计你的富裕人生" target="_blank">No.14 来，设计你的富裕人生</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/2023-07-07_go_details/" title="《Go 细节和小技巧100》阅读记录" target="_blank">《Go 细节和小技巧100》阅读记录</a>
-    </li>
-    
-    <li>
-        <a href="http://www.subond.com/post/2023-06-30_13letter/" title="No.13 复利之谜" target="_blank">No.13 复利之谜</a>
     </li>
     
 </ul>
@@ -2491,11 +2495,11 @@ div.highlight:hover .copy-code,pre:hover .copy-code {
         <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li><a href="http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (5)</a></li>
+    <li><a href="http://www.subond.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (7)</a></li>
     
     <li><a href="http://www.subond.com/categories/go%E9%AB%98%E6%80%A7%E8%83%BD%E7%BC%96%E7%A8%8B/">Go高性能编程 (7)</a></li>
     
-    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (27)</a></li>
+    <li><a href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/">技术 (29)</a></li>
     
     <li><a href="http://www.subond.com/categories/%E6%95%A3%E6%96%87/">散文 (10)</a></li>
     
