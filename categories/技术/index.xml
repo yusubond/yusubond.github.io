@@ -6,7 +6,16 @@
     <description>Recent content in 技术 on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 23 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 30 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入理解Go调度器：main goroutine的创建（六）</title>
+      <link>http://www.subond.com/post/2023-08-30_gmp_scheduler_init2/</link>
+      <pubDate>Wed, 30 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-08-30_gmp_scheduler_init2/</guid>
+      <description>在上篇文章调度器的初始化，我们沿着runtime·rt0_g</description>
+    </item>
+    
     <item>
       <title>深入理解Go调度器：调度器的初始化（五）</title>
       <link>http://www.subond.com/post/2023-08-23_gmp_scheduler_init/</link>
