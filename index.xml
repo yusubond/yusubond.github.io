@@ -6,7 +6,16 @@
     <description>Recent content on 凯文的个人博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 08 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 19 Sep 2023 00:00:00 +0000</lastBuildDate><atom:link href="http://www.subond.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[译]长文写作的魔力</title>
+      <link>http://www.subond.com/post/2023-09-19_zh_writing_is_magic/</link>
+      <pubDate>Tue, 19 Sep 2023 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.subond.com/post/2023-09-19_zh_writing_is_magic/</guid>
+      <description>译者序 本文翻译自 2022 年的一篇文章，Writing is Magic。</description>
+    </item>
+    
     <item>
       <title>如何在 Shell 中实现并发执行</title>
       <link>http://www.subond.com/post/2023-09-08_shell_concurrency/</link>
