@@ -369,6 +369,20 @@ textarea {
 }
 .post-content pre{
     padding: 1em;
+    overflow-x: auto;
+}
+.post-content .highlight{
+    overflow-x: auto;
+    border: 1px solid #ddd;
+}
+.post-content .highlight pre{
+    padding: 1em;
+    border: none;
+    margin: 0;
+}
+.post-content .highlight table{
+    width: 100%;
+    border-spacing: 0;
 }
 .post-content code{
     display:inline;
