@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(hugo version *)",
+      "Bash(git *)",
+      "Bash(hugo server *)",
+      "Bash(open *)",
+      "Bash(gh repo *)",
+      "Bash(hugo)",
+      "Bash(pkill *)",
+      "mcp__web-reader__webReader",
+      "Bash(npx skills *)",
+      "Read(//Users/subond/.agents/skills/frontend-ui-ux-design/**)",
+      "WebSearch",
+      "mcp__zread__get_repo_structure",
+      "mcp__zread__read_file",
+      "Bash(mkdir -p /tmp/hugo-backup)",
+      "Bash(cp -r content /tmp/hugo-backup/)",
+      "Bash(cp -r static /tmp/hugo-backup/)",
+      "Bash(cp config.yaml /tmp/hugo-backup/)",
+      "Bash(cp -r /tmp/tnxb-template/app /tmp/tnxb-template/components /tmp/tnxb-template/css /tmp/tnxb-template/data /tmp/tnxb-template/layouts /tmp/tnxb-template/public /tmp/tnxb-template/scripts /tmp/tnxb-template/faq .)",
+      "Bash(cp /tmp/tnxb-template/contentlayer.config.ts /tmp/tnxb-template/next.config.js /tmp/tnxb-template/package.json /tmp/tnxb-template/postcss.config.js /tmp/tnxb-template/tsconfig.json /tmp/tnxb-template/jsconfig.json /tmp/tnxb-template/yarn.lock /tmp/tnxb-template/eslint.config.mjs /tmp/tnxb-template/prettier.config.js /tmp/tnxb-template/next-env.d.txt /tmp/tnxb-template/LICENSE /tmp/tnxb-template/.gitignore .)",
+      "Bash(cp /tmp/tnxb-template/.gitignore .)",
+      "Bash(cp -r /tmp/tnxb-template/.github .)",
+      "Bash(yarn install *)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(cp /tmp/hugo-backup/static/favicon.ico public/static/)",
+      "Bash(cp /tmp/hugo-backup/static/qccode_for_wechat.png public/static/)",
+      "Bash(node *)",
+      "Bash(EXPORT=1 UNOPTIMIZED=1 npm run build)",
+      "Bash(grep -v '^\\\\s*\\\\`\\\\`\\\\|^[0-9]*:.*`<\\\\|^[0-9]*:.*`.*<')",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)"
+    ]
+  }
+}
