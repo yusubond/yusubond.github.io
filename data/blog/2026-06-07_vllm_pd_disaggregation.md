@@ -7,8 +7,6 @@ authors: ['default']
 layout: PostLayout
 ---
 
-# vLLM PD 分离架构实现详解
-
 ## 1. 整体架构：两进程 + 一代理
 
 vLLM 的调度器内部确实没有区分 prefill/decode phase，但 PD 分离不是在调度器层面做的，而是在部署层面做的 — 启动两个独立的 vLLM 实例，一个专职 prefill，一个专职 decode，中间通过 **KV Connector** 传递 KV cache。

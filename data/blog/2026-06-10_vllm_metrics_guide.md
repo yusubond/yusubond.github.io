@@ -7,8 +7,6 @@ authors: ['default']
 layout: PostLayout
 ---
 
-# vLLM 源码解析：从源码到运营，深度理解推理系统的 Metrics 体系搭建
-
 ## 背景
 
 在 LLM 推理服务的生产化过程中，可观测性（Observability）是连接"模型跑起来"和"服务可用"之间的桥梁。作为一个高性能的 LLM 推理引擎，vLLM 不仅在调度算法（PagedAttention、Continuous Batching、Speculative Decoding）上做了大量工程优化，也在 Metrics 层面建设了一套覆盖完整的 Prometheus 指标体系。
