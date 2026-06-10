@@ -1,7 +1,7 @@
 {
   "git": 1,
   "gitbook": 1,
-  "技术": 34,
+  "技术": 35,
   "linux": 3,
   "pthread": 2,
   "process": 3,
@@ -56,9 +56,12 @@
   "云网络": 1,
   "dpu": 1,
   "smartswitch": 1,
-  "vllm": 2,
+  "vllm": 3,
   "pagedattention": 1,
-  "llm推理": 2,
+  "llm推理": 3,
   "kv-cache": 2,
-  "pd分离": 1
+  "pd分离": 1,
+  "prometheus": 1,
+  "metrics": 1,
+  "可观测性": 1
 }
