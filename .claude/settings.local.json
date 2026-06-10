@@ -31,7 +31,13 @@
       "Bash(EXPORT=1 UNOPTIMIZED=1 npm run build)",
       "Bash(grep -v '^\\\\s*\\\\`\\\\`\\\\|^[0-9]*:.*`<\\\\|^[0-9]*:.*`.*<')",
       "Bash(npm run *)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "mcp__web-search-prime__web_search_prime",
+      "Bash(yarn build *)",
+      "Bash(curl -s -I https://www.liaoweiming.org)",
+      "Bash(curl -s https://www.liaoweiming.org)",
+      "Bash(curl -s https://www.liaoweiming.org/blog)",
+      "Bash(curl -s https://www.liaoweiming.org/feed.xml)"
     ]
   }
 }
