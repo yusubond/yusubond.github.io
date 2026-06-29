@@ -37,7 +37,11 @@
       "Bash(curl -s -I https://www.liaoweiming.org)",
       "Bash(curl -s https://www.liaoweiming.org)",
       "Bash(curl -s https://www.liaoweiming.org/blog)",
-      "Bash(curl -s https://www.liaoweiming.org/feed.xml)"
+      "Bash(curl -s https://www.liaoweiming.org/feed.xml)",
+      "Bash(grep -c '^```' data/blog/2026-06-27_vllm_kv_cache_3tier_offload.md)",
+      "Bash(echo \"fence count: $\\(grep -c '^```' data/blog/2026-06-27_vllm_kv_cache_3tier_offload.md\\) \\(should be even\\)\")",
+      "Bash(awk ' *)",
+      "Bash(grep -vE '`[^`]*[<>{}][^`]*`')"
     ]
   }
 }
