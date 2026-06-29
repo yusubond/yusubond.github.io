@@ -1,5 +1,5 @@
 ---
-title: 'vLLM Prefix Cache 原理深读：是什么、为什么这么做（含 SGLang 对照）'
+title: 'vLLM 深入理解Prefix Cache 原理'
 date: '2026-06-29'
 tags: ['vLLM', 'Prefix Cache', 'LLM推理', '技术']
 draft: false
